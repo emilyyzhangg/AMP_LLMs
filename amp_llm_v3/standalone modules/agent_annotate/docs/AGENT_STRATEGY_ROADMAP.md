@@ -8,12 +8,17 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 ---
 
-## 1. Current state
+## 1. Current state (last refreshed 2026-04-25)
 
 - **Authoritative pipelines:** legacy for every field.
 - **Shadow pipelines:** `classification_atomic`, `failure_reason_atomic`, `outcome_atomic` all run and write `<field>_atomic` for audit — never in the critical path.
-- **Commit:** `257810da` on main (v42.6.9).
-- **Last validation baseline:** Job #78 (in flight) — 50-NCT re-run of the #75c/#76 set with every efficiency/cut-over flag off. Target: restore v40-equivalent accuracy (peptide ≥90%, classification ≥90%, delivery ≥80%, outcome ≥60%, RfF ≥85%).
+- **Commit:** `a11411ef` on main (v42.6.17).
+- **Validation baselines:**
+  - Same-set comparison (50 NCTs, GT/registry-divergent): peptide 86%, classification 97.5%, delivery 87% (after v42.6.17 fix), outcome 25% (limited by GT/registry mismatch).
+  - **Outcome-clean slice (47 NCTs, Job #83):** peptide 81%, classification 91%, delivery 92%, **outcome 62%** (true ceiling), sequence 75% (canonical-set).
+  - 0–2 warnings per run (down from 59 pre-v42.6.13).
+- **Active iteration line:** v42.6.10 → .11 → .12 → .13 → .14 → .15 → .16 → .17. Each commit is one or two narrow fixes with smoke validation, not a full re-baseline.
+- **Test suite:** 83 unit tests across 11 files. Run `for s in scripts/test_*.py; do python3 $s; done` for full regression.
 
 ---
 
@@ -214,34 +219,49 @@ We lose most of the v42.6.8 speedup but we get back to **better accuracy than #7
 
 ---
 
-## 7. Near-term concrete plan (next 4 jobs)
+## 7. Near-term concrete plan
 
-### Job #78 — IN FLIGHT
-- **Purpose:** confirm flag flip restores v40 baseline.
-- **Config:** v42.6.9 (atomic + efficiency flags off), legacy authoritative.
-- **Data:** same 50 NCTs as #75c/#76.
-- **Gate:** peptide ≥90%, classification ≥90%, delivery ≥80%, outcome ≥60%, RfF ≥85%.
-- **Pass:** proceed to Job #79.
-- **Fail:** the regression isn't config-gated; full code-level investigation required.
+(Section last refreshed 2026-04-25. Jobs #78–#85 already executed —
+see `LEARNING_RUN_PLAN.md` for the full registry.)
 
-### Job #79 — classification_atomic shadow re-validation (pending)
-- **Purpose:** test Lesson 5 — is Phase 5's 93% atomic real or noise?
-- **Config:** v42.6.9. Atomic shadow ON (default). No cut-over flag.
-- **Data:** 500 NCTs, stratified: 150 AMPs + 200 non-AMP peptides + 150 others.
-- **Measurement:** `classification_atomic` vs legacy `classification` on same 500 trials. AMP recall, precision, overall agreement.
-- **Gate for promotion (Job #80):** atomic ≥ legacy on AMP recall AND overall agreement within 5pp.
+The original Phase-1-classification cut-over plan in this section was
+abandoned after the v42.6.x recovery cycle. The actual jobs that ran:
+Job #78 (recovery) → #79 (cascade narrowing) → #80 (Positive overcall fix)
+→ #81 (status safety net + diagnostic preservation) → #82 (cancelled, see
+discipline note in §9) → #82s (smoke) → #82b (pub classifier smoke) → #83
+(outcome-clean slice, the real baseline) → #84s (Positive recovery smoke)
+→ #85 (RfF-rich slice, in flight).
 
-### Job #80 — classification_atomic cut-over (pending Job #79)
-- **Purpose:** confirm hybrid-mode behavior matches shadow prediction.
-- **Config:** v42.6.9 + `prefer_atomic_classification: true`. No other change.
-- **Data:** 100 fresh NCTs.
-- **Gate:** classification field within 2pp of Job #79 atomic score.
+### Currently in flight
+- **Job #85** (`d1ab2634377e`) — 20-NCT RfF-rich slice. First honest RfF
+  measurement on the legacy failure_reason agent. Gate: RfF accuracy >0%
+  on at least 3 categories.
+- **v42.6.17 smoke** (`f44a87f1477c`) — 2 NCTs targeting the bugs found
+  in #83 audit (NCT05269381 imaging false-positive, NCT03196219 DBAASP
+  empty evidence). Queued behind #85.
 
-### Job #81 — drug_cache speedup validation (concurrent with #79)
-- **Purpose:** confirm drug_cache is pure speedup.
-- **Config:** v42.6.9 + drug_cache wired into research clients.
-- **Data:** 50 NCTs with high drug repetition (e.g. 50 semaglutide trials from training CSV).
-- **Gate:** identical field values to legacy reference run AND ≥25% wall-clock reduction.
+### Recurring discipline (not jobs — process)
+1. Every code change ships with a unit test in `scripts/test_v42_6_NN_*.py`.
+2. Smoke validation on a targeted slice (5–20 NCTs that exercise the
+   change) before any full re-baseline.
+3. Full re-baseline only when ≥3 narrow fixes have accumulated, OR when a
+   change touches the global pipeline.
+4. Jobs that fail their gate are rolled back via revert commit, not by
+   pushing a "fix the fix" patch on top.
+5. NCT slices for outcome accuracy must be GT/registry-aligned (excluded
+   GT=active when CT.gov says COMPLETED/UNKNOWN). See §9 entry.
+
+### Future targets (not committed; ranked by ROI)
+1. **drug_cache validation run** — 50-NCT slice with high drug repetition
+   (e.g. semaglutide-only). Wired in v42.6.15 but never measured for
+   actual speedup. Gate: ≥25% wall-clock reduction, identical field
+   outputs to a non-cached reference run.
+2. **classification_atomic shadow re-validation** — 500 NCTs to test
+   whether Phase 5's 93% beat-legacy was real or noise. Only after the
+   v42.6.16/17 strong-efficacy work has settled.
+3. **Pub classifier expansion** — apply `_GENERAL_SIGNALS` patterns to
+   research_results citation snippets, not just titles. Could lift
+   outcome ~3pp by catching review snippets the title classifier misses.
 
 ---
 
