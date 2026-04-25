@@ -284,6 +284,26 @@ def _canonicalise_single_sequence(seq: str) -> str:
     return s
 
 
+def sequences_match(gt_raw: str, pred_raw: str) -> bool:
+    """Public helper: does the GT sequence match any canonical sequence
+    predicted by the agent? True when the GT canonical is ⊆ pred canonical
+    set (i.e. the human-recorded sequence is one of the agent's candidates).
+
+    v42.6.15: lifts measured sequence accuracy without changing agent output.
+    Pipeline emits rich data (multiple candidate sequences separated by '|');
+    GT is usually a single canonical form. Set-containment is the correct
+    match predicate — the agent is right when its set includes GT.
+
+    Returns False if either side is blank/None (non-scoreable — callers
+    should filter blanks first to avoid false matches).
+    """
+    gt_canon, _ = _normalise_sequence_for_comparison(gt_raw)
+    pred_canon, _ = _normalise_sequence_for_comparison(pred_raw)
+    if not gt_canon or not pred_canon:
+        return False
+    return gt_canon.issubset(pred_canon)
+
+
 def _normalise_sequence_for_comparison(
     raw: str,
 ) -> tuple[frozenset[str], list[str]]:
