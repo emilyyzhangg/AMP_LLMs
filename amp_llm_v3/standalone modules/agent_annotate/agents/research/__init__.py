@@ -28,6 +28,15 @@ from agents.research.openalex_client import OpenAlexClient
 from agents.research.semantic_scholar_client import SemanticScholarClient
 from agents.research.crossref_client import CrossRefClient
 from agents.research.biorxiv_client import BioRxivClient
+# v42.7.0 (2026-04-25): two new free research APIs targeting outcome/RfF gap.
+# SEC EDGAR surfaces sponsor-disclosed trial failures from 10-K/10-Q/8-K
+# filings (closes the GT/registry divergence we saw in Job #83 — humans
+# knew the trial failed because they read the press release, EDGAR is
+# that press release as a primary source). FDA Drugs@FDA gives structured
+# regulatory-approval evidence with application numbers, approval letters,
+# and dates — strengthens the v42.6.14 "FDA approved" strong-efficacy gate.
+from agents.research.sec_edgar_client import SECEdgarClient
+from agents.research.fda_drugs_client import FDADrugsClient
 
 RESEARCH_AGENTS = {
     "clinical_protocol": ClinicalProtocolAgent,
@@ -49,4 +58,7 @@ RESEARCH_AGENTS = {
     # identified in the 94-NCT shadow run. Queries Europe PMC's SRC:PPR
     # corpus (bioRxiv + medRxiv + smaller preprint servers).
     "biorxiv": BioRxivClient,
+    # v42.7.0: regulatory + sponsor disclosure evidence
+    "sec_edgar": SECEdgarClient,
+    "fda_drugs": FDADrugsClient,
 }
