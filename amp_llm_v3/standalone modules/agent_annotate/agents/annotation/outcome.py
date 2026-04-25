@@ -799,6 +799,15 @@ class OutcomeAgent(BaseAnnotationAgent):
         "primary endpoint was met", "primary endpoint met",
         "primary endpoint achieved", "met the primary endpoint",
         "met primary", "met the primary",
+        # v42.6.16 (2026-04-25): expand primary-endpoint-anchored phrases.
+        # Job #83 had 6 Positive under-calls where pubs reported the trial
+        # met its endpoint but used a different verb pattern than the v42.6.11
+        # list. Require "primary" anchor to keep noise low.
+        "achieved primary endpoint", "achieved its primary endpoint",
+        "primary outcome was met", "primary outcome achieved",
+        "demonstrated efficacy in primary", "demonstrated efficacy on primary",
+        "significant improvement in the primary",
+        "significantly improved the primary",
         "statistically significant", "p < 0.05", "p<0.05",
         "fda approved", "fda-approved", "ema approved", "ema-approved",
         "regulatory approval", "marketing authorization", "marketing authorisation",
