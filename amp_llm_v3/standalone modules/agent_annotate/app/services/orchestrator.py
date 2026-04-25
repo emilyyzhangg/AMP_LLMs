@@ -532,12 +532,22 @@ class PipelineOrchestrator:
         job.progress.timeouts = ollama_client.get_timeout_stats()
 
         # v17: Add diagnostics to output
+        # v42.6.19 (2026-04-25): include drug_cache stats so we can validate
+        # the cache is hitting on high-drug-repetition batches without having
+        # to add a separate API call. cleared==True means the cache was reset
+        # before this job (clean baseline measurement).
+        try:
+            from agents.research.drug_cache import drug_cache
+            cache_stats = drug_cache.stats()
+        except Exception:
+            cache_stats = {}
         output["diagnostics"] = {
             "warnings": job.progress.warnings,
             "timeouts": job.progress.timeouts,
             "retries": job.progress.retries,
             "timing_anomalies": len([w for w in job.progress.warnings if "ANOMALY" in w]),
             "quality_issues": len([w for w in job.progress.warnings if "QUALITY" in w]),
+            "drug_cache": cache_stats,
         }
 
         save_json_output(job_id, output)
