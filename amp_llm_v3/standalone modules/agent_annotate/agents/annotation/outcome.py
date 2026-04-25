@@ -112,7 +112,34 @@ def _classify_publication(title_or_snippet: str, nct_id: str) -> str:
         "editorial", "landscape", "pipeline", "next-generation", "next generation",
         "systematic review", "meta-analysis", "narrative review", "mini-review",
         "recent developments", "recent advances",
+        # v42.6.15 (2026-04-24): review-shape patterns that Job #81 missed
+        # and caused 2 Positive over-calls (NCT04449926 BCG vaccines for
+        # dementia; NCT04461795 CGRP monoclonal antibodies). These titles
+        # lacked the word "review" but are structurally reviews — they
+        # describe drug CLASSES, list multiple drugs, or cover a treatment
+        # topic without reporting from a specific trial.
+        "and other",            # "BCG and Other Vaccines Against Dementia"
+        "monoclonal antibodies", "receptor antagonists",  # drug-class plurals
+        "inhibitors in",        # e.g. "XX inhibitors in migraine prevention"
+        "agonists in", "agonists for",
+        " in prevention", " in treatment",  # topic-review framing
+        " in migraine prevention", " in dementia",  # condition-level
+        "part i:", "part ii:", "part iii:",  # series/book format
+        "vaccines against", "therapy for",  # overview framing
     ]
+
+    # v42.6.15: Drug-class plural-form detection. Review titles usually
+    # discuss a CLASS of drugs ("CGRP monoclonal antibodies", "peptide-based
+    # vaccines") whereas trial reports name a SPECIFIC drug and trial design.
+    # Treat as review if the title uses a class term AND has no explicit
+    # trial marker (no "randomized", "phase", NCT ID etc. caught above).
+    _CLASS_PLURALS = (
+        "peptide-based vaccines", "peptide based vaccines",
+        "vaccines against", "antibodies against",
+    )
+    for cp in _CLASS_PLURALS:
+        if cp in text:
+            return "general"
 
     for signal in _GENERAL_SIGNALS:
         if signal in text:
