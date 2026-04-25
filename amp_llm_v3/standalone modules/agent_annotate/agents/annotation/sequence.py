@@ -590,9 +590,18 @@ class SequenceAgent(BaseAnnotationAgent):
                 )
 
         # v18: Check known sequences table first (deterministic, highest priority)
+        # v42.6.18 part 2 (2026-04-25): iterate by longest key first. The original
+        # word-boundary regex doesn't disambiguate 'glucagon' vs 'glucagon-like
+        # peptide 1' when the input contains 'glucagon-like peptide 1' (because
+        # '-' is in the word-boundary set, so 'glucagon-' is a valid match for
+        # the 'glucagon' key). Longest-first ensures the more specific drug name
+        # is checked first. Same root cause as resolve_known_sequence(); fixing
+        # both call sites for consistency. Job #83 NCT01689051 surfaced this.
+        _sorted_seq_keys = sorted(_KNOWN_SEQUENCES.keys(), key=len, reverse=True)
         for intervention in interventions:
             lookup_name = _strip_formulation(intervention).lower()
-            for drug_name, known_seq in _KNOWN_SEQUENCES.items():
+            for drug_name in _sorted_seq_keys:
+                known_seq = _KNOWN_SEQUENCES[drug_name]
                 # Short drug names (<=4 chars) require near-exact match to avoid
                 # false positives (e.g. "bnp" matching "bnp levels in ...")
                 if len(drug_name) <= 4:

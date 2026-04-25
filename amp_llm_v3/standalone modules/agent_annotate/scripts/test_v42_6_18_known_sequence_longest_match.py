@@ -83,6 +83,23 @@ def test_substring_in_unrelated_text_no_false_match():
     print("  ✓ substring search consistent with longest-first rule")
 
 
+def test_sequence_agent_inner_loop_also_uses_longest_first():
+    """Source check: the second known-sequence loop in sequence.py
+    (around line 593, the agent body's word-boundary regex search) must
+    also iterate by longest key first. Job #83 smoke gate 3 failed
+    because resolve_known_sequence() was fixed but THIS loop wasn't,
+    so the agent still returned glucagon for GLP-1 inputs."""
+    from pathlib import Path
+    src = (Path(__file__).resolve().parent.parent / "agents" / "annotation" / "sequence.py").read_text()
+    # The fix introduces a sorted-keys list before the inner loop
+    assert "_sorted_seq_keys = sorted(_KNOWN_SEQUENCES.keys(), key=len, reverse=True)" in src, \
+        "second known-sequence loop must iterate sorted keys"
+    # The inner loop must use the sorted iterable
+    assert "for drug_name in _sorted_seq_keys:" in src, \
+        "second known-sequence loop must iterate _sorted_seq_keys"
+    print("  ✓ sequence agent's inner known-sequence loop uses longest-first iteration")
+
+
 def main() -> int:
     print("v42.6.18 known-sequence longest-match tests")
     print("-" * 60)
@@ -92,6 +109,7 @@ def main() -> int:
         test_plain_glucagon_still_resolves,
         test_glucagon_like_peptide_2_unchanged,
         test_substring_in_unrelated_text_no_false_match,
+        test_sequence_agent_inner_loop_also_uses_longest_first,
     ]
     failed = 0
     for t in tests:
