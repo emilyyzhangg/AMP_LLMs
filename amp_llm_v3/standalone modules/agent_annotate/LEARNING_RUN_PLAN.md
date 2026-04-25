@@ -451,3 +451,5 @@ Agent-only, no human counterpart. Final code version + clean EDAM (if validated)
 | `results/json/{job_id}.json` | Consolidated output |
 | `scripts/human_annotated_ncts.txt` | All 964 NCTs |
 | `scripts/fast_learning_batch_50.txt` | Batches A+B (50 NCTs) |
+
+<!-- v42.6.17/18 redeploy trigger 2026-04-25 — autoupdater skipped restart while Job #85 was running; in-memory code was stale (v42.6.15-era). Force pull+restart by touching this file. No semantic change. -->
