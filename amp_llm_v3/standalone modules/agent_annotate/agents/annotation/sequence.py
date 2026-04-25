@@ -227,20 +227,33 @@ def resolve_known_sequence(name_lower: str) -> tuple[str, str] | None:
     """Look up a drug name in _KNOWN_SEQUENCES with alias fallback.
 
     Returns (drug_key, sequence) if found, None otherwise.
-    Checks: direct key → substring against keys → alias substring → None.
+    Checks: direct key → longest-substring match against keys → longest-
+    alias substring → None.
+
+    v42.6.18 (2026-04-25): substring search now prefers the LONGEST matching
+    key to avoid 'glucagon' matching inside 'glucagon-like peptide 1' and
+    returning glucagon's sequence (HSQGTFTSDY...) instead of GLP-1's
+    (HAEGTFTSDV...). Job #83 NCT01689051 surfaced this — GLP-1 trial got
+    glucagon's sequence because dict iteration order put 'glucagon' first.
     """
     # Direct key match
     if name_lower in _KNOWN_SEQUENCES:
         return name_lower, _KNOWN_SEQUENCES[name_lower]
 
-    # Substring match against keys
-    for drug, seq in _KNOWN_SEQUENCES.items():
+    # Longest-substring key match — sort by key length descending so a more
+    # specific name like 'glucagon-like peptide 1' wins over 'glucagon'.
+    # name_lower-in-drug ('peptide YY' input matches drug 'peptide YY...')
+    # uses the same order.
+    sorted_keys = sorted(_KNOWN_SEQUENCES.keys(), key=len, reverse=True)
+    for drug in sorted_keys:
         if drug in name_lower or name_lower in drug:
-            return drug, seq
+            return drug, _KNOWN_SEQUENCES[drug]
 
-    # Alias lookup (substring both ways)
-    for alias, canonical in _KNOWN_SEQUENCE_ALIASES.items():
+    # Alias lookup (also longest-first for consistency)
+    sorted_aliases = sorted(_KNOWN_SEQUENCE_ALIASES.keys(), key=len, reverse=True)
+    for alias in sorted_aliases:
         if alias in name_lower or name_lower in alias:
+            canonical = _KNOWN_SEQUENCE_ALIASES[alias]
             seq = _KNOWN_SEQUENCES.get(canonical)
             if seq:
                 return canonical, seq
