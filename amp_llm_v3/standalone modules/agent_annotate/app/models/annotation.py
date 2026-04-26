@@ -16,7 +16,24 @@ class FieldAnnotation(BaseModel):
     evidence: list[SourceCitation] = []
     model_name: str = ""       # Which model produced this
     skip_verification: bool = False  # v9: deterministic pre-classifiers set True to bypass blind verification
-    evidence_grade: str = "llm"  # v31: "deterministic", "db_confirmed", or "llm"
+    # v31: original 3-tier grading.
+    # v42.7.1 (2026-04-26): extended to 5-tier per roadmap §11 calibrated-decline
+    # phase 1. In ranked confidence order:
+    #   "db_confirmed"        — annotation backed by an authoritative database
+    #                            (UniProt/DRAMP/DBAASP/ChEMBL/APD/RCSB/SEC EDGAR/
+    #                            FDA Drugs) citation in evidence list.
+    #   "deterministic"       — set by skip_verification=True paths (cascade,
+    #                            registry-status mapping, known-sequence lookup).
+    #   "pub_trial_specific"  — LLM-driven annotation with ≥2 trial-specific
+    #                            publication citations supporting it.
+    #   "llm"                 — LLM-driven annotation with verifier consensus
+    #                            but fewer than 2 pub citations (default).
+    #   "inconclusive"        — empty value or no reasoning; downstream
+    #                            consumers should filter these out.
+    # Only metadata — does NOT change annotation value. For commit_accuracy
+    # scoring, downstream filters by grade ≥ "pub_trial_specific" or
+    # ≥ "deterministic" depending on the precision/recall trade-off needed.
+    evidence_grade: str = "llm"
 
 
 class TrialMetadata(BaseModel):
