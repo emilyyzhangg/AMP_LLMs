@@ -1873,8 +1873,40 @@ class PipelineOrchestrator:
         #                         and no verifier consensus
         # No agent logic changes; values unchanged. This is purely metadata
         # for downstream filtering ("commit_accuracy" scoring).
-        _DB_KEYWORDS = ("uniprot", "dramp", "dbaasp", "chembl", "apd", "rcsb",
-                        "sec_edgar", "fda_drugs")
+        #
+        # v42.7.3 (2026-04-26): per-field _DB_KEYWORDS. Job #83 commit_accuracy
+        # showed db_confirmed=71% on classification but llm=100% — meaning
+        # ChEMBL/UniProt/RCSB hits triggered db_confirmed but those DBs aren't
+        # AMP-specific (a ChEMBL entry doesn't make a drug an antimicrobial
+        # peptide). Each field now has its own list of authoritative DBs:
+        #   classification — AMP-only (dramp, dbaasp, apd) since the field's
+        #                    binary is AMP/Other; non-AMP DBs are not
+        #                    discriminating evidence.
+        #   peptide        — structural+composition DBs (uniprot, dramp,
+        #                    dbaasp, apd, chembl, rcsb, ebi_proteins, pdbe)
+        #                    — any of these confirm "is a peptide".
+        #   sequence       — same as peptide; structural DBs hold sequences.
+        #   outcome        — regulatory + sponsor-disclosure (fda_drugs,
+        #                    sec_edgar). These are the authoritative answers
+        #                    on "did the trial succeed/fail/withdraw."
+        #   reason_for_failure — same as outcome.
+        #   delivery_mode  — registry-deterministic; no DB grading applies
+        #                    (skip_verification path handles it).
+        _DB_KEYWORDS_BY_FIELD = {
+            "classification":      ("dramp", "dbaasp", "apd"),
+            "classification_atomic": ("dramp", "dbaasp", "apd"),
+            "peptide":             ("uniprot", "dramp", "dbaasp", "apd",
+                                    "chembl", "rcsb", "ebi_proteins", "pdbe"),
+            "sequence":            ("uniprot", "dramp", "dbaasp", "apd",
+                                    "chembl", "rcsb", "ebi_proteins", "pdbe"),
+            "outcome":             ("fda_drugs", "sec_edgar"),
+            "outcome_atomic":      ("fda_drugs", "sec_edgar"),
+            "reason_for_failure":  ("fda_drugs", "sec_edgar"),
+            "reason_for_failure_atomic": ("fda_drugs", "sec_edgar"),
+        }
+        # Fallback for any unrecognized field name.
+        _DB_KEYWORDS_DEFAULT = ("uniprot", "dramp", "dbaasp", "chembl", "apd",
+                                 "rcsb", "sec_edgar", "fda_drugs")
         for ann in annotations:
             if ann.skip_verification:
                 ann.evidence_grade = "deterministic"
@@ -1895,8 +1927,12 @@ class PipelineOrchestrator:
                     1 for src in evidence_sources
                     if any(p in src for p in _PUB_SOURCES)
                 )
-                if any(kw in reasoning_lower for kw in _DB_KEYWORDS) or any(
-                    kw in src for src in evidence_sources for kw in _DB_KEYWORDS
+                # v42.7.3: pick the DB keyword set appropriate to this field.
+                _db_kw = _DB_KEYWORDS_BY_FIELD.get(
+                    ann.field_name, _DB_KEYWORDS_DEFAULT
+                )
+                if any(kw in reasoning_lower for kw in _db_kw) or any(
+                    kw in src for src in evidence_sources for kw in _db_kw
                 ):
                     ann.evidence_grade = "db_confirmed"
                 elif pub_cite_count >= 2:
@@ -1906,6 +1942,8 @@ class PipelineOrchestrator:
             # v42.7.1: detect inconclusive — empty value AND no DB-backed
             # reasoning AND no skip_verification. These are the cases the
             # downstream commit_accuracy filter should exclude.
+            # v42.7.3: pick the field-appropriate DB keyword set for the
+            # inconclusive guard too (was using global _DB_KEYWORDS).
             if (not ann.value or ann.value.strip().lower() in ("", "n/a", "unknown"))\
                     and not ann.skip_verification \
                     and ann.evidence_grade not in ("db_confirmed", "deterministic"):
