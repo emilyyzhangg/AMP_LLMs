@@ -106,6 +106,17 @@ research_agents:
   biorxiv:
     sources:
       - biorxiv_medrxiv
+  # v42.7.0 (2026-04-25): two free research APIs targeting the outcome/RfF
+  # gap identified in Job #83 audit. SEC EDGAR surfaces pharma sponsor
+  # disclosures of trial failures/discontinuations from 10-K/10-Q/8-K
+  # filings. FDA Drugs@FDA gives structured regulatory-approval records
+  # (BLA/NDA application number, approval dates, brand/generic names).
+  sec_edgar:
+    sources:
+      - sec_edgar
+  fda_drugs:
+    sources:
+      - fda_drugs
 
 annotation_agents:
   classification:

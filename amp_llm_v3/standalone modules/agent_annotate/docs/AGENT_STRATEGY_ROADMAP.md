@@ -252,16 +252,155 @@ discipline note in §9) → #82s (smoke) → #82b (pub classifier smoke) → #83
    GT=active when CT.gov says COMPLETED/UNKNOWN). See §9 entry.
 
 ### Future targets (not committed; ranked by ROI)
-1. **drug_cache validation run** — 50-NCT slice with high drug repetition
-   (e.g. semaglutide-only). Wired in v42.6.15 but never measured for
-   actual speedup. Gate: ≥25% wall-clock reduction, identical field
-   outputs to a non-cached reference run.
-2. **classification_atomic shadow re-validation** — 500 NCTs to test
-   whether Phase 5's 93% beat-legacy was real or noise. Only after the
-   v42.6.16/17 strong-efficacy work has settled.
-3. **Pub classifier expansion** — apply `_GENERAL_SIGNALS` patterns to
-   research_results citation snippets, not just titles. Could lift
-   outcome ~3pp by catching review snippets the title classifier misses.
+1. **drug_cache validation run** — Job #87 in flight (4f5243d0360e).
+2. **SEC EDGAR research agent** — sponsor 10-K/10-Q/8-K full-text search
+   for trial NCT IDs. Pharma sponsors disclose failures, discontinuations,
+   and write-offs in SEC filings. This is the data source that closes
+   Job #83's "GT=active+CT.gov=COMPLETED" divergence — humans knew the
+   trial failed because they read the press release; SEC EDGAR is that
+   press release. Free, no key. Largest expected outcome/RfF lift.
+3. **FDA Drugs@FDA research agent** — `api.fda.gov/drug/drugsfda.json`,
+   structured approval letters and indications. Strengthens v42.6.14's
+   "FDA approved" strong-efficacy gate with structured data instead of
+   pub-text matching. Free, no key.
+4. **NIH RePORTER research agent** — `api.reporter.nih.gov/v2/projects/search`,
+   grant funding history. Trials whose grant terminated without renewal
+   usually failed. Free, no key.
+5. **PMC OpenAccess full-text** — currently we read abstracts; PMC OAI
+   has full article XML for open-access papers. 2-3x the trial-specific
+   evidence we extract.
+6. **Calibrated-decline layer** — see §11. Output evidence-graded labels;
+   add "Inconclusive" as a first-class label. Score on commit-accuracy
+   not raw-accuracy. Major design change. Roadmapped, not committed.
+7. **classification_atomic shadow re-validation** — 500 NCTs to test
+   whether Phase 5's 93% beat-legacy was real or noise. Defer until the
+   new data sources have settled.
+8. **Pub classifier expansion** — apply `_GENERAL_SIGNALS` patterns to
+   citation snippets, not just titles. Smaller lift; do after #2.
+
+### Free data sources surveyed (2026-04-25)
+
+Already wired: ClinicalTrials.gov, PubMed/PMC abstracts, UniProt, DRAMP,
+APD, DBAASP, ChEMBL, IUPHAR, RCSB PDB, EBI Proteins, PDBe, WHO ICTRP,
+DuckDuckGo, bioRxiv/medRxiv, OpenAlex, Semantic Scholar, CrossRef.
+
+To add (priority order matches §7 ranking above):
+- **SEC EDGAR** — `efts.sec.gov/LATEST/search-index` — 10-K/10-Q/8-K
+- **FDA Drugs@FDA** — `api.fda.gov/drug/drugsfda.json`
+- **NIH RePORTER** — `api.reporter.nih.gov/v2/projects/search`
+- **PMC OpenAccess full-text** — `eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc`
+- **Europe PMC full-spectrum** — extend existing client to query `SRC:MED`, `SRC:CTX`, `SRC:PMC`, not just `SRC:PPR`
+- **CORE** — `core.ac.uk/services/api` — open-access aggregator, free key 10K/month
+- **Wikidata SPARQL** — pre-curated drug discontinuation dates
+- **Crossref Event Data** — `api.eventdata.crossref.org` — social/blog mentions
+
+Excluded (not free or not useful enough): pharma-news scrapers
+(FiercePharma, Endpoints — paid/ToS issues), conference-abstract
+aggregators beyond what PMC already covers.
+
+**Excluded by user direction (2026-04-25):** active-learning loop. No
+human-in-the-loop will correct agent indecision. The pipeline must
+self-resolve: every NCT gets a final committed value AND a confidence
+grade; downstream filters by confidence (see §11). No retraining loop
+from human corrections.
+
+---
+
+## 11. Calibrated-decline layer (planned, not committed)
+
+User goal: "truth in reality, not hallucinations or math problem
+solutions." Every committed answer must be grounded in citable
+evidence; otherwise the agent emits a confidence flag downstream can
+filter on. No human in the loop — Inconclusive is a **final state**,
+not a hand-off.
+
+### Evidence grades (5-tier)
+
+Every annotation carries a `confidence_grade` field in addition to
+`value` + `confidence` (numeric). Grades, in descending strength:
+
+1. **DB_CONFIRMED** — authoritative database entry.
+   - DRAMP/DBAASP/APD hit (classification, sequence)
+   - FDA approval letter (outcome=Positive)
+   - SEC 8-K disclosing trial discontinuation (outcome=Failed/Terminated, RfF=*)
+   - p<0.05 verbatim in trial-specific publication (outcome=Positive)
+   - UniProt mature chain length 2-100 aa (peptide=True)
+2. **REGISTRY_DETERMINISTIC** — CT.gov status mapping.
+   - status=TERMINATED + whyStopped match → Terminated/Failed
+   - status=ACTIVE_NOT_RECRUITING + not stale → Active, not recruiting
+   - status=COMPLETED + hasResults=True → Positive
+3. **PUB_TRIAL_SPECIFIC** — multiple (≥2) trial-specific pubs agree.
+   - 2+ pubs say "primary endpoint met" or equivalent strong-efficacy
+   - 2+ pubs report a specific failure (not just safety mention)
+4. **LLM_INFERRED** — LLM judgment over evidence.
+   - The current default. Pass 1+2+verifier consensus, no DB anchor.
+5. **INCONCLUSIVE** — no grounded signal.
+   - Output for cases where the agent has no business committing.
+
+### Per-field commit thresholds
+
+Different fields have different evidence requirements before they may
+commit (otherwise → INCONCLUSIVE):
+
+| Field | Minimum to commit |
+|---|---|
+| Peptide | LLM_INFERRED OK (already near-ceiling) |
+| Classification (Other) | LLM_INFERRED OK |
+| Classification (AMP) | DB_CONFIRMED preferred, PUB_TRIAL_SPECIFIC OK |
+| Delivery_mode | REGISTRY_DETERMINISTIC OK |
+| Outcome (Positive) | **DB_CONFIRMED or PUB_TRIAL_SPECIFIC required** |
+| Outcome (Failed) | DB_CONFIRMED or REGISTRY_DETERMINISTIC required |
+| Outcome (Terminated/Withdrawn/Active/Recruiting) | REGISTRY_DETERMINISTIC required |
+| Outcome (Unknown) | reserved for "trial state genuinely unknown after evidence review" |
+| RfF | DB_CONFIRMED (whyStopped parse, SEC filing) or PUB_TRIAL_SPECIFIC |
+| Sequence | DB_CONFIRMED OK (UniProt/DRAMP/DBAASP/APD/known-sequence) |
+
+### Why this matches "truth in reality"
+
+1. Every committed answer cites specific evidence (DRAMP entry,
+   SEC filing URL, pub PMID, registry status). No hand-wavy LLM
+   "Positive because pubs looked good".
+2. Hallucinations are blocked at the commit gate — if no DB / pub /
+   registry signal backs the LLM's answer, the agent declines to
+   commit.
+3. Confidence becomes empirical (count of grounded signals agreeing),
+   not LLM self-reported.
+4. The audit trail is reviewable per-trial — every output has a
+   citable provenance chain.
+
+### Use of INCONCLUSIVE downstream
+
+- **Training-data filtering**: a downstream consumer building a
+  high-precision dataset filters to commits ≥ DB_CONFIRMED.
+- **Coverage trade-off**: a high-recall consumer keeps LLM_INFERRED
+  too, accepting more noise.
+- **Confidence-weighted prediction**: downstream weights predictions
+  by their evidence grade.
+
+### Scoring impact
+
+Concordance scoring should report TWO numbers:
+- **Coverage**: % of trials where agent committed (i.e. NOT Inconclusive)
+- **Commit accuracy**: of committed cases, % matching GT
+
+An agent that commits on 60% of trials at 95% accuracy is more useful
+than one that commits on 100% at 70% accuracy — in any use case where
+wrong labels cost more than missing labels (which is most of them).
+
+### Roll-out phases (when committed)
+
+- Phase 1: add `confidence_grade` field to FieldAnnotation. All current
+  output keeps existing values, gets graded.
+- Phase 2: implement INCONCLUSIVE for outcome only (highest gain). Run
+  shadow validation: how does coverage × commit-accuracy compare to
+  current raw accuracy?
+- Phase 3: extend to RfF, then sequence (DB_CONFIRMED is most natural
+  there).
+- Phase 4: extend to other fields if Phases 1-3 deliver expected lift.
+
+Not committed yet — pending the SEC EDGAR / FDA Drugs / NIH RePORTER
+work to give the calibrated-decline layer enough DB_CONFIRMED signals
+to commit on.
 
 ---
 
