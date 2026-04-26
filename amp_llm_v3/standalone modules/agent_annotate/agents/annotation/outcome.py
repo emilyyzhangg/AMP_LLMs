@@ -307,7 +307,15 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
                     dossier["primary_endpoints"].append(ep)
 
         # --- Publication data ---
-        if result.agent_name == "literature":
+        # v42.7.2 (2026-04-26): expand from literature-only to all publication-
+        # shaped agents (OpenAlex, Semantic Scholar, CrossRef, bioRxiv).
+        # Previously only `literature` agent's citations contributed to the
+        # dossier's publication list — meaning ~4 agents' worth of citation
+        # signal was discarded by the outcome dossier. Pub classifier already
+        # has v42.6.15 review-shape detection, so adding more pubs is safe.
+        _PUB_AGENTS = ("literature", "openalex", "semantic_scholar",
+                       "crossref", "biorxiv")
+        if result.agent_name in _PUB_AGENTS:
             for citation in getattr(result, "citations", []):
                 pmid = getattr(citation, "identifier", "") or ""
                 title = getattr(citation, "snippet", "") or ""
@@ -323,7 +331,8 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         # --- v41: Scan ONLY trial-specific literature for valence keywords ---
         # Generic reviews from OpenAlex/CrossRef contain drug-class keywords
         # ("well-tolerated", "favorable") that don't describe this trial's results.
-        if result.agent_name == "literature":
+        # v42.7.2: same agent expansion as publication-data block above.
+        if result.agent_name in _PUB_AGENTS:
             for citation in getattr(result, "citations", []):
                 snippet_text = (getattr(citation, "snippet", "") or "")
                 if _classify_publication(snippet_text, nct_id) != "trial_specific":
