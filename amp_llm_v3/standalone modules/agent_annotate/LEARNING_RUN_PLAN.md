@@ -458,3 +458,5 @@ Agent-only, no human counterpart. Final code version + clean EDAM (if validated)
 | `scripts/fast_learning_batch_50.txt` | Batches A+B (50 NCTs) |
 
 <!-- v42.6.17/18 redeploy trigger 2026-04-25 — autoupdater skipped restart while Job #85 was running; in-memory code was stale (v42.6.15-era). Force pull+restart by touching this file. No semantic change. -->
+
+<!-- v42.7.2 redeploy trigger 2026-04-26 — autoupdater skipped restart between v42.7.1 and v42.7.2 merges; running service had stale memory. v72_smoke (9515627521d9) showed identical pub_count to v71 baseline. Force restart. -->
