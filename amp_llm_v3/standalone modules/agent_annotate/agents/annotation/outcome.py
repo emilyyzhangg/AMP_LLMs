@@ -313,8 +313,20 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         # dossier's publication list — meaning ~4 agents' worth of citation
         # signal was discarded by the outcome dossier. Pub classifier already
         # has v42.6.15 review-shape detection, so adding more pubs is safe.
+        #
+        # v42.7.4 (2026-04-26): two-tier source weighting. The publication-list
+        # gets all 5 agents (the LLM benefits from broader context). The
+        # keyword scan (which feeds efficacy_keywords/negative_keywords used
+        # by the deterministic override) is restricted to peer-reviewed
+        # sources only — bioRxiv preprints + Semantic Scholar/CrossRef
+        # aggregators added noise to the keyword tally, costing -2.1pp on
+        # outcome accuracy in Job #88. RfF retained the +7.6pp gain because
+        # it primarily uses the LLM-visible pub list.
         _PUB_AGENTS = ("literature", "openalex", "semantic_scholar",
                        "crossref", "biorxiv")
+        # High-quality peer-reviewed sources only — used for valence keyword
+        # extraction where false positives matter (override fires deterministically).
+        _PUB_AGENTS_HIGH_QUALITY = ("literature", "openalex")
         if result.agent_name in _PUB_AGENTS:
             for citation in getattr(result, "citations", []):
                 pmid = getattr(citation, "identifier", "") or ""
@@ -332,7 +344,9 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         # Generic reviews from OpenAlex/CrossRef contain drug-class keywords
         # ("well-tolerated", "favorable") that don't describe this trial's results.
         # v42.7.2: same agent expansion as publication-data block above.
-        if result.agent_name in _PUB_AGENTS:
+        # v42.7.4: REVERTED to high-quality-only for keyword scan. Outcome
+        # regressions in #88 traced to noisy bioRxiv/CrossRef/SS keyword hits.
+        if result.agent_name in _PUB_AGENTS_HIGH_QUALITY:
             for citation in getattr(result, "citations", []):
                 snippet_text = (getattr(citation, "snippet", "") or "")
                 if _classify_publication(snippet_text, nct_id) != "trial_specific":
