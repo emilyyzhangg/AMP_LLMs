@@ -541,6 +541,30 @@ class PipelineOrchestrator:
             cache_stats = drug_cache.stats()
         except Exception:
             cache_stats = {}
+
+        # v42.7.1 (2026-04-26): aggregate evidence_grade distribution across
+        # all annotations. Lets downstream see how many fields ended up at
+        # each grade per job — basis for commit_accuracy reporting and
+        # roadmap §11 calibrated-decline. Counts per (field_name, grade).
+        from collections import Counter as _Counter
+        grade_counts: dict = {}
+        try:
+            for trial_result in all_trial_results:
+                if not isinstance(trial_result, dict):
+                    continue
+                for ann in trial_result.get("annotations", []) or []:
+                    if isinstance(ann, dict):
+                        fld = ann.get("field_name", "?")
+                        grade = ann.get("evidence_grade", "llm")
+                    else:
+                        fld = getattr(ann, "field_name", "?")
+                        grade = getattr(ann, "evidence_grade", "llm")
+                    grade_counts.setdefault(fld, _Counter())[grade] += 1
+            # serialize Counters → dicts
+            grade_counts = {f: dict(c) for f, c in grade_counts.items()}
+        except Exception:
+            grade_counts = {}
+
         output["diagnostics"] = {
             "warnings": job.progress.warnings,
             "timeouts": job.progress.timeouts,
@@ -548,6 +572,7 @@ class PipelineOrchestrator:
             "timing_anomalies": len([w for w in job.progress.warnings if "ANOMALY" in w]),
             "quality_issues": len([w for w in job.progress.warnings if "QUALITY" in w]),
             "drug_cache": cache_stats,
+            "evidence_grades": grade_counts,
         }
 
         save_json_output(job_id, output)
@@ -1839,14 +1864,58 @@ class PipelineOrchestrator:
 
         # v31: Set evidence_grade for annotations backed by database citations.
         # DB-confirmed annotations get stronger protection against verifier override.
-        _DB_KEYWORDS = ("uniprot", "dramp", "dbaasp", "chembl", "apd", "rcsb")
+        # v42.7.1 (2026-04-26): extended to 5-tier grade per roadmap §11
+        # calibrated-decline phase 1. Existing 3 grades (deterministic /
+        # db_confirmed / llm) preserved; 2 new grades added:
+        #   pub_trial_specific  — LLM call with ≥2 trial-specific pub
+        #                         citations in evidence (stronger than 'llm')
+        #   inconclusive        — empty value or LLM call with no evidence
+        #                         and no verifier consensus
+        # No agent logic changes; values unchanged. This is purely metadata
+        # for downstream filtering ("commit_accuracy" scoring).
+        _DB_KEYWORDS = ("uniprot", "dramp", "dbaasp", "chembl", "apd", "rcsb",
+                        "sec_edgar", "fda_drugs")
         for ann in annotations:
             if ann.skip_verification:
                 ann.evidence_grade = "deterministic"
             elif ann.value and ann.reasoning:
                 reasoning_lower = ann.reasoning.lower()
-                if any(kw in reasoning_lower for kw in _DB_KEYWORDS):
+                evidence_sources = [
+                    (c.source_name or "").lower() for c in (ann.evidence or [])
+                ]
+                # v42.7.1: count trial-specific pub citations in evidence.
+                # europe_pmc / pubmed / pmc / openalex / semantic_scholar /
+                # crossref / biorxiv all qualify as publications. The
+                # outcome_pub_classifier separately tags trial_specific vs
+                # general; we approximate here by counting pub-shaped
+                # citations.
+                _PUB_SOURCES = ("europe_pmc", "pubmed", "pmc", "openalex",
+                                "semantic_scholar", "crossref", "biorxiv")
+                pub_cite_count = sum(
+                    1 for src in evidence_sources
+                    if any(p in src for p in _PUB_SOURCES)
+                )
+                if any(kw in reasoning_lower for kw in _DB_KEYWORDS) or any(
+                    kw in src for src in evidence_sources for kw in _DB_KEYWORDS
+                ):
                     ann.evidence_grade = "db_confirmed"
+                elif pub_cite_count >= 2:
+                    ann.evidence_grade = "pub_trial_specific"
+                # else: stays default "llm"
+
+            # v42.7.1: detect inconclusive — empty value AND no DB-backed
+            # reasoning AND no skip_verification. These are the cases the
+            # downstream commit_accuracy filter should exclude.
+            if (not ann.value or ann.value.strip().lower() in ("", "n/a", "unknown"))\
+                    and not ann.skip_verification \
+                    and ann.evidence_grade not in ("db_confirmed", "deterministic"):
+                # Don't downgrade legitimate "Unknown" outcome from a
+                # registry-deterministic mapping (those have skip_verification=True
+                # so the first condition catches them).
+                # Keep "Unknown" outcome as-is when LLM said so with reasoning,
+                # but if there's no reasoning, mark inconclusive.
+                if not (ann.reasoning or "").strip():
+                    ann.evidence_grade = "inconclusive"
 
         return annotations
 
