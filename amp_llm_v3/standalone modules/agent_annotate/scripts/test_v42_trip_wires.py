@@ -124,6 +124,22 @@ def test_v42_7_5_boot_commit_captured_at_module_load():
     print("  ✓ v42.7.5: BOOT_COMMIT_FULL captured at import")
 
 
+def test_v42_7_7_vaccine_immunogenicity_override():
+    """v42.7.7 (2026-04-27): vaccine-immunogenicity Positive override.
+    The override must be tightly gated on is_vaccine_trial — removing
+    that gate recreates the v41 over-call regression. Both the
+    is_vaccine_trial dossier field AND the prompt's Rule 7 exception
+    must remain in place."""
+    src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert "_IMMUNOGENICITY_KW" in src and "_VACCINE_NAME_TOKENS" in src, \
+        "v42.7.7 trip-wire: vaccine + immunogenicity keyword sets missing"
+    assert 'dossier.get("is_vaccine_trial")' in src, \
+        "v42.7.7 trip-wire: override must gate on is_vaccine_trial"
+    assert "EXCEPTION (vaccine" in src, \
+        "v42.7.7 trip-wire: prompt Rule 7 must keep the vaccine EXCEPTION"
+    print("  ✓ v42.7.7: vaccine+immunogenicity gate intact (is_vaccine_trial guard preserved)")
+
+
 def test_v42_7_6_nih_reporter_uses_advanced_text_search():
     """v42.7.6 (2026-04-26): the documented `clinical_trial_ids` filter
     on api.reporter.nih.gov silently no-ops. Only `advanced_text_search`
@@ -170,6 +186,7 @@ def main() -> int:
         test_v42_7_4_two_tier_pub_agents,
         test_v42_7_5_boot_commit_captured_at_module_load,
         test_v42_7_6_nih_reporter_uses_advanced_text_search,
+        test_v42_7_7_vaccine_immunogenicity_override,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0

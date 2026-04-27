@@ -222,6 +222,15 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         "efficacy_keywords": [],     # v41: efficacy-only subset of positive
         "safety_keywords": [],       # v41: safety-only subset of positive
         "stale_status": False,       # completion date >180 days ago but status says Active
+        # v42.7.7 (2026-04-27): trial-type signals for the vaccine-immunogenicity
+        # Positive override. is_vaccine_trial fires when any intervention name
+        # contains vaccine/vaccination/immunotherapy/immunisation/immunization;
+        # immunogenicity_keywords accumulates pub-snippet hits that count as
+        # primary-endpoint-met for vaccine trials (induces immune response,
+        # antibody titer/response, T-cell response, seroconversion).
+        "is_vaccine_trial": False,
+        "intervention_names": [],    # for diagnostics
+        "immunogenicity_keywords": [],
     }
 
     # v41: Split positive keywords into efficacy (supports Positive) and safety (does NOT).
@@ -249,6 +258,31 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         "unacceptable", "not tolerated", "dose-limiting", "safety concern",
         "serious adverse event", "discontinued due to",
     ]
+    # v42.7.7 (2026-04-27): immunogenicity primary-endpoint signals.
+    # For vaccine/immunotherapy trials, these phrases — when reported in a
+    # trial-specific publication — function as "primary endpoint met."
+    # Phase 1 vaccine trials' primary endpoints are immunogenicity, not
+    # efficacy in the traditional sense; treating "induces immune response"
+    # as a Positive signal IFF the trial is a vaccine/immunotherapy trial
+    # closes the under-call gap surfaced in Job #83 (NCT03199872 RhoC,
+    # NCT03272269 peptide immunotherapy, NCT03645148 pancreatic vaccine,
+    # NCT03380871 lung cancer vaccine).
+    _IMMUNOGENICITY_KW = [
+        "induces immune response", "induces immune responses",
+        "induces long-lasting immune", "long-lasting immune response",
+        "long-lasting immune responses",
+        "antibody response", "antibody responses", "antibody titer",
+        "antibody titers", "neutralizing antibodies",
+        "t cell response", "t-cell response", "t cell responses",
+        "cd8+ t cell", "cd4+ t cell",
+        "seroconversion", "seroprotection",
+        "robust immune response", "sustained immune response",
+        "specific immune response", "vaccine-induced immune",
+    ]
+    _VACCINE_NAME_TOKENS = (
+        "vaccine", "vaccination", "vaccinated", "immunotherapy",
+        "immunisation", "immunization", "immunogen",
+    )
 
     for result in research_results:
         if result.error:
@@ -282,6 +316,28 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
 
             # Why stopped
             dossier["why_stopped"] = status_mod.get("whyStopped", "") or ""
+
+            # v42.7.7: detect vaccine/immunotherapy trial via intervention
+            # names. Used by the Positive override + LLM prompt to relax the
+            # "Phase I requires explicit primary-endpoint statement" rule
+            # for trials whose primary endpoint IS immunogenicity.
+            ai_module = proto.get("armsInterventionsModule", {})
+            interventions = ai_module.get("interventions", []) or []
+            for intv in interventions:
+                if not isinstance(intv, dict):
+                    continue
+                name = (intv.get("name") or intv.get("interventionName") or "").strip()
+                if name and name not in dossier["intervention_names"]:
+                    dossier["intervention_names"].append(name)
+                lname = name.lower()
+                if any(tok in lname for tok in _VACCINE_NAME_TOKENS):
+                    dossier["is_vaccine_trial"] = True
+            # Also check the brief title — some trials list interventions as
+            # generic names but title clarifies (e.g. "Cancer Vaccine Trial").
+            id_module = proto.get("identificationModule", {})
+            brief_title = (id_module.get("briefTitle") or "").lower()
+            if any(tok in brief_title for tok in _VACCINE_NAME_TOKENS):
+                dossier["is_vaccine_trial"] = True
 
             # Results section: primary endpoints
             results_section = result.raw_data.get("resultsSection", {})
@@ -364,6 +420,13 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
                 for kw in _SAFETY_KW:
                     if kw in combined and kw not in dossier["safety_keywords"]:
                         dossier["safety_keywords"].append(kw)
+                # v42.7.7: collect immunogenicity signals (peer-reviewed only,
+                # trial-specific only). Used by the vaccine-trial Positive
+                # override; gated on is_vaccine_trial so non-vaccine trials
+                # get unchanged behaviour.
+                for kw in _IMMUNOGENICITY_KW:
+                    if kw in combined and kw not in dossier["immunogenicity_keywords"]:
+                        dossier["immunogenicity_keywords"].append(kw)
 
         # --- ChEMBL drug advancement ---
         if result.agent_name == "chembl" and result.raw_data:
@@ -562,6 +625,12 @@ def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
         lines.append(f"Safety-Only Signals: {', '.join(dossier['safety_keywords'][:6])}")
     if dossier["negative_keywords"]:
         lines.append(f"Negative Signals in Evidence: {', '.join(dossier['negative_keywords'][:8])}")
+    # v42.7.7: surface vaccine-trial flag and immunogenicity signals so the
+    # LLM can apply Rule 7's vaccine exception correctly.
+    if dossier.get("is_vaccine_trial"):
+        lines.append("Trial Type: VACCINE / IMMUNOTHERAPY (immunogenicity is the Phase I primary endpoint)")
+    if dossier.get("immunogenicity_keywords"):
+        lines.append(f"Immunogenicity Signals: {', '.join(dossier['immunogenicity_keywords'][:6])}")
 
     return "\n".join(lines)
 
@@ -594,6 +663,7 @@ RULES (follow in order):
 5. TERMINATED with no publications and no results posted → "Terminated"
 6. COMPLETED with no trial-specific publications and no results posted → "Unknown"
 7. Phase I: only mark Positive with an explicit primary-endpoint-met statement. Safety + biological activity without that statement → "Unknown".
+   EXCEPTION (vaccine / immunotherapy trials only): if the dossier indicates this is a VACCINE or IMMUNOTHERAPY trial AND ≥2 trial-specific publications report immunogenicity outcomes (induces immune response, antibody titers, T-cell response, seroconversion, sustained immune response) AND there are no failure/adverse signals — this counts as primary-endpoint-met because immunogenicity IS the Phase I endpoint for vaccines. Mark Positive.
 8. Default when evidence is inconclusive → "Unknown" (not "Positive").
 
 CRITICAL: "Positive" REQUIRES a specific primary-endpoint-met / p<0.05 / approval / phase-advancement signal. Vague "efficacy" or "benefit" language is NOT sufficient.
@@ -874,6 +944,21 @@ class OutcomeAgent(BaseAnnotationAgent):
         # v42.6.11: STRONG-evidence gate for Unknown → Positive
         if (trial_specific >= 2
                 and cls._has_strong_efficacy(efficacy)
+                and not neg):
+            return "Positive"
+
+        # v42.7.7: vaccine-immunogenicity gate. For vaccine/immunotherapy
+        # trials, immunogenicity IS the primary endpoint (Phase 1 vaccine
+        # trials cannot show clinical efficacy by design). When the trial is
+        # a vaccine, has ≥2 trial-specific publications, AT LEAST ONE
+        # immunogenicity primary-endpoint signal in those publications, and
+        # NO failure/adverse signals, this counts as primary-endpoint-met
+        # under the same evidence-strength bar as the strong-efficacy gate.
+        # Tightly gated on is_vaccine_trial to avoid the over-call risk that
+        # caused the v42.6.11 prompt tightening.
+        if (dossier.get("is_vaccine_trial")
+                and trial_specific >= 2
+                and dossier.get("immunogenicity_keywords")
                 and not neg):
             return "Positive"
 
