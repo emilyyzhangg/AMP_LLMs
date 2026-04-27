@@ -240,7 +240,20 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         # this fires only when the drug is approved, not when it's "under
         # review.")
         "fda_approved_drugs": [],    # list of intervention names with FDA AP submission status
+        "fda_label_indications": {},  # v42.7.12: drug name → indication text from drug/label.json
         "sec_edgar_disclosed": False,  # any 8-K/10-K mention of this NCT
+        # v42.7.12 (2026-04-27): canonical CT.gov-registered publications for
+        # this trial. Sponsors register their trial's pubs in
+        # protocolSection.referencesModule.references[]. PMIDs in this list
+        # are PROVEN trial-specific (the registry knows they belong to this
+        # trial), not "trial-specific by classifier heuristic". Used as a
+        # stronger gate for Rule 7 vaccine exception + structural overrides
+        # — Job #92 surfaced 3/4 over-calls where the LLM trusted classifier
+        # heuristic on review articles. Requiring registered PMIDs blocks
+        # those cases without harming the trials that do have proper
+        # registered publications.
+        "registered_pmids": [],
+        "registered_trial_pubs_count": 0,
     }
 
     # v41: Split positive keywords into efficacy (supports Positive) and safety (does NOT).
@@ -349,6 +362,17 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
             if any(tok in brief_title for tok in _VACCINE_NAME_TOKENS):
                 dossier["is_vaccine_trial"] = True
 
+            # v42.7.12: extract CT.gov-registered publications. PMIDs here are
+            # proven trial-specific because the trial sponsor registered them.
+            ref_module = proto.get("referencesModule", {})
+            for ref in ref_module.get("references", []) or []:
+                if not isinstance(ref, dict):
+                    continue
+                pmid = (ref.get("pmid") or "").strip()
+                if pmid and pmid not in dossier["registered_pmids"]:
+                    dossier["registered_pmids"].append(pmid)
+            dossier["registered_trial_pubs_count"] = len(dossier["registered_pmids"])
+
             # Results section: primary endpoints
             results_section = result.raw_data.get("resultsSection", {})
             if results_section:
@@ -454,6 +478,13 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
                     name = k[len("fda_drugs_"):-len("_approved")]
                     if name and name not in dossier["fda_approved_drugs"]:
                         dossier["fda_approved_drugs"].append(name)
+            # v42.7.12: pair approved drugs with their FDA label indication
+            # text so the LLM can apply Rule 3.c indication-match check.
+            for k, v in result.raw_data.items():
+                if k.endswith("_indication") and v:
+                    name = k[len("fda_drugs_"):-len("_indication")]
+                    if name:
+                        dossier["fda_label_indications"][name] = v
 
         # --- v42.7.8: SEC EDGAR sponsor disclosure presence ---
         if result.agent_name == "sec_edgar" and getattr(result, "citations", []):
@@ -670,8 +701,26 @@ def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
     # and SEC EDGAR sponsor disclosure presence.
     if dossier.get("fda_approved_drugs"):
         lines.append(f"FDA Approved (structured Drugs@FDA): {', '.join(dossier['fda_approved_drugs'][:3])}")
+        # v42.7.12: also surface label indications when available so the LLM
+        # can compare the trial's condition against what the drug is approved
+        # to treat. If the trial tests indication Y but the drug is only
+        # approved for indication X, regulatory approval is NOT trial-specific
+        # evidence (per Rule 3.c).
+        for name, indication in list(dossier.get("fda_label_indications", {}).items())[:3]:
+            lines.append(f"  → {name} approved for: {indication[:240]}")
     if dossier.get("sec_edgar_disclosed"):
         lines.append("SEC EDGAR: sponsor 10-K/10-Q/8-K filing(s) reference this NCT or drug")
+    # v42.7.12: surface CT.gov-registered publication count. PMIDs in this
+    # list are PROVEN trial-specific (sponsor registered them with the
+    # registry). Distinct from the heuristic "[TRIAL-SPECIFIC]" classification
+    # which can mis-tag review articles that mention the drug.
+    if dossier.get("registered_trial_pubs_count", 0) > 0:
+        cnt = dossier["registered_trial_pubs_count"]
+        sample = ", ".join(f"PMID:{p}" for p in dossier["registered_pmids"][:3])
+        lines.append(
+            f"Registered Trial Publications: {cnt} CT.gov-registered PMID(s)"
+            f" — these are proven trial-specific [{sample}]"
+        )
 
     return "\n".join(lines)
 
@@ -692,7 +741,8 @@ RULES (follow in order):
 3. "Positive" requires ONE OF these specific signals from a trial-specific publication:
    (a) Explicit statement that the PRIMARY ENDPOINT was met / achieved.
    (b) Statistically significant result on the primary endpoint (p-value < 0.05 reported).
-   (c) Regulatory approval (FDA/EMA/etc.) of the drug for this specific indication.
+   (c) Regulatory approval (FDA/EMA/etc.) of the drug for THIS TRIAL'S specific indication.
+       CRITICAL: If the dossier shows "FDA Approved" but the listed indications don't overlap with the trial's condition (e.g. drug is approved for diabetes but the trial tests Parkinson's, or approved for osteoporosis but trial tests post-thyroidectomy bone loss), the FDA approval is NOT trial-specific evidence. The trial is studying an OFF-LABEL use; outcome must be determined from THIS trial's pubs alone, not the drug's prior approval. Compare the "FDA Approved (...) approved for: ..." line in the dossier against the trial's brief title / condition before applying this rule.
    (d) Explicit phase advancement citing the trial's positive results.
    DO NOT mark Positive based on:
    - "Efficacy signals" or "clinical benefit" language without a primary-endpoint statement.
@@ -700,11 +750,13 @@ RULES (follow in order):
    - Phase I safety + biological activity alone.
    - Review articles describing the drug class.
    - Abstract titles that use efficacy words without detailed results.
+   - Cross-indication FDA approval (per (c) above).
 4. "Failed - completed trial" requires evidence of failure (primary endpoint not met, futility declared, no efficacy demonstrated).
 5. TERMINATED with no publications and no results posted → "Terminated"
 6. COMPLETED with no trial-specific publications and no results posted → "Unknown"
 7. Phase I: only mark Positive with an explicit primary-endpoint-met statement. Safety + biological activity without that statement → "Unknown".
-   EXCEPTION (vaccine / immunotherapy trials only): if the dossier indicates this is a VACCINE or IMMUNOTHERAPY trial AND ≥2 trial-specific publications report immunogenicity outcomes (induces immune response, antibody titers, T-cell response, seroconversion, sustained immune response) AND there are no failure/adverse signals — this counts as primary-endpoint-met because immunogenicity IS the Phase I endpoint for vaccines. Mark Positive.
+   EXCEPTION (vaccine / immunotherapy trials only): if the dossier indicates this is a VACCINE or IMMUNOTHERAPY trial AND it has ≥1 CT.gov-REGISTERED publication (see "Registered Trial Publications" line in the dossier — these are PMIDs the sponsor formally registered, proven trial-specific) AND ≥2 trial-specific publications report immunogenicity outcomes (induces immune response, antibody titers, T-cell response, seroconversion, sustained immune response) AND there are no failure/adverse signals — this counts as primary-endpoint-met because immunogenicity IS the Phase I endpoint for vaccines. Mark Positive.
+   IMPORTANT: A vaccine/immunotherapy trial with ZERO CT.gov-registered publications does NOT qualify for this exception, even if the dossier's heuristic-classified [TRIAL-SPECIFIC] pubs mention immune responses — those may be drug-class review articles mis-classified by the heuristic. Without a sponsor-registered publication anchoring the trial, default to Unknown.
 8. Default when evidence is inconclusive → "Unknown" (not "Positive").
 
 CRITICAL: "Positive" REQUIRES a specific primary-endpoint-met / p<0.05 / approval / phase-advancement signal. Vague "efficacy" or "benefit" language is NOT sufficient.
@@ -982,16 +1034,18 @@ class OutcomeAgent(BaseAnnotationAgent):
         if any(kw in neg for kw in _STRONG_ADVERSE):
             return "Failed - completed trial"
 
-        # v42.7.8: FDA-approved drug override. If openFDA Drugs@FDA reports
-        # the drug as having an "AP" (Approved) submission status, the drug
-        # has cleared regulatory review for an indication — the trial that
-        # supports the approval is, by definition, Positive. Tightly bounded:
-        # only fires when has_results is False AND there are no negative
-        # signals (otherwise the existing branches handle it correctly).
-        # This is the structured analogue of the "fda approved" / "received
-        # approval" pub-text gate; the structured signal is more reliable
-        # than text matching (no review-article false positives).
+        # v42.7.8 + v42.7.12: FDA-approved drug override (TIGHTENED in v42.7.12).
+        # Original v42.7.8 gate fired on any FDA-approved drug with no
+        # negatives — Job #92 surfaced 4 over-calls where the drug was
+        # approved for indication X but the trial tested indication Y
+        # (calcitonin/exenatide/etc.). New v42.7.12 gate also requires ≥1
+        # strong-efficacy keyword from trial-specific publications, treating
+        # FDA-approval as a confidence MULTIPLIER rather than a sole trigger.
+        # Indication-overlap is delegated to the LLM (which sees trial
+        # condition + FDA label indication in the dossier) — string-matching
+        # indications is too brittle (osteoporosis vs thyroidectomy bone loss).
         if (dossier.get("fda_approved_drugs")
+                and cls._has_strong_efficacy(efficacy)
                 and not neg
                 and current_value not in ("Positive", "Failed - completed trial")):
             return "Positive"
@@ -1002,17 +1056,21 @@ class OutcomeAgent(BaseAnnotationAgent):
                 and not neg):
             return "Positive"
 
-        # v42.7.7: vaccine-immunogenicity gate. For vaccine/immunotherapy
-        # trials, immunogenicity IS the primary endpoint (Phase 1 vaccine
-        # trials cannot show clinical efficacy by design). When the trial is
-        # a vaccine, has ≥2 trial-specific publications, AT LEAST ONE
-        # immunogenicity primary-endpoint signal in those publications, and
-        # NO failure/adverse signals, this counts as primary-endpoint-met
-        # under the same evidence-strength bar as the strong-efficacy gate.
-        # Tightly gated on is_vaccine_trial to avoid the over-call risk that
-        # caused the v42.6.11 prompt tightening.
+        # v42.7.7 + v42.7.12: vaccine-immunogenicity gate (TIGHTENED in v42.7.12).
+        # Original v42.7.7 trusted the pub_classifier's "trial_specific" tag,
+        # which Job #92 showed mis-classifies review articles that mention
+        # the drug name (NCT01673217: review on epigenetic immunology
+        # tagged trial-specific). v42.7.12 adds a CT.gov-REGISTERED
+        # publications requirement — PMIDs registered in
+        # protocolSection.referencesModule are PROVEN trial-specific
+        # because the trial sponsor registered them with the registry, a
+        # signal the classifier can't fake. Trials with no registered refs
+        # don't get this auto-Positive path; the LLM can still call them
+        # Positive based on stronger evidence (strong-efficacy keywords +
+        # explicit primary-endpoint statement in the prompt).
         if (dossier.get("is_vaccine_trial")
                 and trial_specific >= 2
+                and dossier.get("registered_trial_pubs_count", 0) >= 1
                 and dossier.get("immunogenicity_keywords")
                 and not neg):
             return "Positive"

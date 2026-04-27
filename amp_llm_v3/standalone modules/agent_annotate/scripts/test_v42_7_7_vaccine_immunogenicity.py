@@ -116,7 +116,11 @@ def test_dossier_formatter_surfaces_vaccine_signals():
 def test_runtime_vaccine_trial_with_immunogenicity_returns_positive():
     """End-to-end-ish: build a stub dossier matching the Job #83 NCT03199872
     pattern (RhoC vaccine, COMPLETED, multiple pubs, immune-response language)
-    and confirm the override returns Positive."""
+    and confirm the override returns Positive.
+
+    v42.7.12 update: NCT03199872 has 1 CT.gov-registered PMID (33184050),
+    so the v42.7.12 tightening still allows this override to fire.
+    """
     try:
         from agents.annotation.outcome import OutcomeAgent
     except ImportError as e:
@@ -142,6 +146,12 @@ def test_runtime_vaccine_trial_with_immunogenicity_returns_positive():
         "completion_date": "2023-06-01",
         "days_since_completion": 700,
         "why_stopped": "",
+        # v42.7.12 fields — NCT03199872 has 1 registered PMID
+        "registered_pmids": ["33184050"],
+        "registered_trial_pubs_count": 1,
+        "fda_approved_drugs": [],
+        "fda_label_indications": {},
+        "sec_edgar_disclosed": False,
     }
     val = OutcomeAgent._dossier_publication_override(dossier, "Unknown")
     assert val == "Positive", f"vaccine + immuno → expected Positive, got {val!r}"

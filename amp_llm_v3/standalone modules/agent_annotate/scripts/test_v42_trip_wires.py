@@ -137,6 +137,37 @@ def test_v42_7_9_fda_query_includes_products_fields():
     print("  ✓ v42.7.9: FDA Drugs query covers both openfda.* and products.* (pre-2010 records)")
 
 
+def test_v42_7_12_indication_match_and_registered_pubs():
+    """v42.7.12 (2026-04-27): two override-tightenings to fix Job #92's
+    over-call class. (a) FDA-approved override must require strong-efficacy
+    keywords (treats FDA-approval as multiplier, not sole trigger).
+    (b) Vaccine override must require ≥1 CT.gov-registered publication
+    (PMIDs in protocolSection.referencesModule, proven trial-specific).
+    Removing either gate recreates the Job #92 over-call regression
+    (calcitonin/exenatide/decitabine cross-indication or off-label cases).
+    """
+    src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    # v42.7.12 FDA-approved override requires strong-efficacy
+    fda_idx = src.find("FDA-approved drug override (TIGHTENED in v42.7.12)")
+    assert fda_idx > 0, "v42.7.12 trip-wire: FDA-approved override TIGHTENING comment missing"
+    fda_block = src[fda_idx:fda_idx + 1500]
+    assert "_has_strong_efficacy(efficacy)" in fda_block, \
+        "v42.7.12 trip-wire: FDA-approved override must require strong-efficacy"
+    # v42.7.12 vaccine override requires registered_trial_pubs_count >= 1
+    vac_idx = src.find("vaccine-immunogenicity gate (TIGHTENED in v42.7.12)")
+    assert vac_idx > 0, "v42.7.12 trip-wire: vaccine override TIGHTENING comment missing"
+    vac_block = src[vac_idx:vac_idx + 1500]
+    assert "registered_trial_pubs_count" in vac_block, \
+        "v42.7.12 trip-wire: vaccine override must require registered pubs"
+    # Dossier must capture registered_pmids
+    assert '"registered_pmids"' in src
+    # FDA Drugs client must fetch label.json indications
+    fda_src = (PKG_ROOT / "agents" / "research" / "fda_drugs_client.py").read_text()
+    assert "FDA_LABEL_URL" in fda_src and "drug/label.json" in fda_src, \
+        "v42.7.12 trip-wire: FDA Drugs client must fetch label.json indications"
+    print("  ✓ v42.7.12: indication-match + registered-pubs gates intact")
+
+
 def test_v42_7_10_intervention_type_preserved():
     """v42.7.10 (2026-04-27): orchestrator._run_research must include the
     `type` field when building intervention metadata for research agents.
@@ -240,6 +271,7 @@ def main() -> int:
         test_v42_7_8_fda_drugs_signal_wired,
         test_v42_7_9_fda_query_includes_products_fields,
         test_v42_7_10_intervention_type_preserved,
+        test_v42_7_12_indication_match_and_registered_pubs,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
