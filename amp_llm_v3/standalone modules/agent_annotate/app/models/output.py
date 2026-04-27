@@ -10,10 +10,22 @@ from app.models.job import now_pacific
 
 
 class VersionInfo(BaseModel):
-    """Build / version metadata stamped on every output."""
+    """Build / version metadata stamped on every output.
+
+    ``git_commit_*`` reflects the on-disk HEAD at the moment this struct
+    was built — it changes the instant the autoupdater pulls.
+    ``boot_commit_*`` is the commit the running Python process was
+    loaded from; it does not change until the process is restarted.
+    A divergence (``code_in_sync = False``) means a smoke validation
+    is running against stale in-memory code despite the new commit
+    being on disk.
+    """
     semantic_version: str
     git_commit_short: str
     git_commit_full: str
+    boot_commit_short: str = ""
+    boot_commit_full: str = ""
+    code_in_sync: bool = True
     config_hash: str = ""
 
 
