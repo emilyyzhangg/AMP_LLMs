@@ -137,6 +137,29 @@ def test_v42_7_9_fda_query_includes_products_fields():
     print("  ✓ v42.7.9: FDA Drugs query covers both openfda.* and products.* (pre-2010 records)")
 
 
+def test_v42_7_15_negative_keyword_tightened():
+    """v42.7.15 (2026-04-27): _NEGATIVE_KW must NOT include bare 'failed'
+    or bare 'negative'. Both fire on patient-cohort descriptions and
+    mechanistic terminology that have nothing to do with trial outcome
+    ('treatment-failed patients', 'negative control', 'negative regulator').
+    Outcome-specific 'failed X' / 'X not met' phrases retained."""
+    src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    import re
+    m = re.search(r"_NEGATIVE_KW = \[\s*((?:[^]])*?)\s*\]", src, re.DOTALL)
+    assert m, "v42.7.15 trip-wire: _NEGATIVE_KW list missing"
+    items = re.findall(r'"([^"]+)"', m.group(1))
+    assert "failed" not in items, \
+        "v42.7.15 trip-wire: bare 'failed' must not be in _NEGATIVE_KW"
+    assert "negative" not in items, \
+        "v42.7.15 trip-wire: bare 'negative' must not be in _NEGATIVE_KW"
+    # The qualified outcome-specific phrases must still be there
+    assert "failed to meet" in items, \
+        "v42.7.15 trip-wire: 'failed to meet' must remain in _NEGATIVE_KW"
+    assert "trial failed" in items, \
+        "v42.7.15 trip-wire: 'trial failed' must remain in _NEGATIVE_KW"
+    print("  ✓ v42.7.15: _NEGATIVE_KW lacks bare 'failed'/'negative', has qualifiers")
+
+
 def test_v42_7_14_failed_override_status_gated():
     """v42.7.14 (2026-04-27): the 'trial-specific + neg + no efficacy →
     Failed' path must be gated on registry status. Pre-v42.7.14 it
@@ -289,6 +312,7 @@ def main() -> int:
         test_v42_7_10_intervention_type_preserved,
         test_v42_7_12_indication_match_and_registered_pubs,
         test_v42_7_14_failed_override_status_gated,
+        test_v42_7_15_negative_keyword_tightened,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
