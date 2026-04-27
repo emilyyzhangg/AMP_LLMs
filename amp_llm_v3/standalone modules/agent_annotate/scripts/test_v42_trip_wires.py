@@ -124,6 +124,72 @@ def test_v42_7_5_boot_commit_captured_at_module_load():
     print("  ✓ v42.7.5: BOOT_COMMIT_FULL captured at import")
 
 
+def test_v42_7_9_fda_query_includes_products_fields():
+    """v42.7.9 (2026-04-27): the FDA Drugs Lucene query must include
+    `products.brand_name` and `products.active_ingredients.name` so that
+    pre-2010 approvals (with empty openfda.* blocks) are matched.
+    Removing these regresses the v42.7.0 enfuvirtide/Fuzeon miss."""
+    src = (PKG_ROOT / "agents" / "research" / "fda_drugs_client.py").read_text()
+    assert "products.brand_name" in src, \
+        "v42.7.9 trip-wire: query must include products.brand_name"
+    assert "products.active_ingredients.name" in src, \
+        "v42.7.9 trip-wire: query must include products.active_ingredients.name"
+    print("  ✓ v42.7.9: FDA Drugs query covers both openfda.* and products.* (pre-2010 records)")
+
+
+def test_v42_7_10_intervention_type_preserved():
+    """v42.7.10 (2026-04-27): orchestrator._run_research must include the
+    `type` field when building intervention metadata for research agents.
+    Earlier versions only kept `name`, causing SEC EDGAR / FDA Drugs /
+    NIH RePORTER to filter every intervention out (their extractor
+    requires type in DRUG/BIOLOGICAL). v42.7.0/v42.7.6 agents looked
+    healthy in unit tests but were silently no-op-ing in prod for ~2 days
+    because of this gap."""
+    src = (PKG_ROOT / "app" / "services" / "orchestrator.py").read_text()
+    idx = src.find("Extract intervention names from raw protocol data")
+    assert idx > 0, "intervention extraction block missing"
+    block = src[idx:idx + 2500]
+    assert 'interv.get("type"' in block, \
+        "v42.7.10 trip-wire: orchestrator must preserve interv['type'] " \
+        "in research metadata; without this, SEC EDGAR / FDA Drugs / " \
+        "NIH RePORTER receive empty interventions and skip every trial."
+    print("  ✓ v42.7.10: orchestrator preserves interv['type'] in research metadata")
+
+
+def test_v42_7_8_fda_drugs_signal_wired():
+    """v42.7.8 (2026-04-27): FDA Drugs / SEC EDGAR raw_data flags must
+    flow into the outcome dossier. The dossier must consume the
+    `fda_drugs_<name>_approved` boolean and the FDA-approved override
+    must remain present. Removing this regresses to v42.7.0 plumbing
+    gap where the new agents fired but their output was discarded."""
+    src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert '"fda_approved_drugs"' in src, \
+        "v42.7.8 trip-wire: dossier must define fda_approved_drugs field"
+    assert 'result.agent_name == "fda_drugs"' in src, \
+        "v42.7.8 trip-wire: outcome dossier must extract from fda_drugs raw_data"
+    assert 'result.agent_name == "sec_edgar"' in src, \
+        "v42.7.8 trip-wire: outcome dossier must consume sec_edgar citations"
+    assert "FDA-approved drug override" in src, \
+        "v42.7.8 trip-wire: FDA-approved Positive override must remain"
+    print("  ✓ v42.7.8: FDA Drugs + SEC EDGAR raw_data flow into outcome dossier")
+
+
+def test_v42_7_7_vaccine_immunogenicity_override():
+    """v42.7.7 (2026-04-27): vaccine-immunogenicity Positive override.
+    The override must be tightly gated on is_vaccine_trial — removing
+    that gate recreates the v41 over-call regression. Both the
+    is_vaccine_trial dossier field AND the prompt's Rule 7 exception
+    must remain in place."""
+    src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert "_IMMUNOGENICITY_KW" in src and "_VACCINE_NAME_TOKENS" in src, \
+        "v42.7.7 trip-wire: vaccine + immunogenicity keyword sets missing"
+    assert 'dossier.get("is_vaccine_trial")' in src, \
+        "v42.7.7 trip-wire: override must gate on is_vaccine_trial"
+    assert "EXCEPTION (vaccine" in src, \
+        "v42.7.7 trip-wire: prompt Rule 7 must keep the vaccine EXCEPTION"
+    print("  ✓ v42.7.7: vaccine+immunogenicity gate intact (is_vaccine_trial guard preserved)")
+
+
 def test_v42_7_6_nih_reporter_uses_advanced_text_search():
     """v42.7.6 (2026-04-26): the documented `clinical_trial_ids` filter
     on api.reporter.nih.gov silently no-ops. Only `advanced_text_search`
@@ -170,6 +236,10 @@ def main() -> int:
         test_v42_7_4_two_tier_pub_agents,
         test_v42_7_5_boot_commit_captured_at_module_load,
         test_v42_7_6_nih_reporter_uses_advanced_text_search,
+        test_v42_7_7_vaccine_immunogenicity_override,
+        test_v42_7_8_fda_drugs_signal_wired,
+        test_v42_7_9_fda_query_includes_products_fields,
+        test_v42_7_10_intervention_type_preserved,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0

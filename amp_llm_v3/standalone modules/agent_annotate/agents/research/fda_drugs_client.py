@@ -102,18 +102,24 @@ class FDADrugsClient(BaseResearchAgent):
         """Search Drugs@FDA for one drug name. Pure function of name."""
         citations: list = []
         raw_data: dict = {}
-        # openFDA full-text search across openfda.* fields.
-        # Use brand_name + generic_name + substance_name for max coverage.
-        # Quote the term to handle multi-word drug names (e.g. "Glucagon-like peptide 1").
+        # openFDA full-text search. Quote the term to handle multi-word drug
+        # names (e.g. "Glucagon-like peptide 1"). FDA API uses Lucene syntax.
+        # Use literal spaces around OR; httpx URL-encodes as '+' which the API
+        # parses as whitespace. Hand-coding '+OR+' gets double-encoded.
+        #
+        # v42.7.9 (2026-04-27): older Drugs@FDA records (e.g. NDA021481
+        # Fuzeon/enfuvirtide, approved 2003) have empty `openfda.*` blocks
+        # but the drug names ARE present in `products[].brand_name` and
+        # `products[].active_ingredients[].name`. Restricting search to
+        # openfda.* misses every pre-2010 approval. The fix: query both
+        # field families. The first hit on either path returns the record.
         clean = intervention.replace('"', "")
-        # FDA api uses Lucene query syntax. Use literal spaces around OR;
-        # httpx will URL-encode them as '+' which the API parses back as
-        # whitespace (the natural Lucene separator). Hand-coding '+OR+'
-        # gets double-encoded to '%2BOR%2B' and breaks the parser.
         query = (
             f'openfda.brand_name:"{clean}" OR '
             f'openfda.generic_name:"{clean}" OR '
-            f'openfda.substance_name:"{clean}"'
+            f'openfda.substance_name:"{clean}" OR '
+            f'products.brand_name:"{clean}" OR '
+            f'products.active_ingredients.name:"{clean}"'
         )
         params = {"search": query, "limit": 5}
         try:

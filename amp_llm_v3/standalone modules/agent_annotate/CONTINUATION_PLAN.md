@@ -1,11 +1,48 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-21 (Phase 5 complete + post-hoc round + docs pass)
-**Current state:** v42 Phase 5 **complete**. 94-NCT shadow validation run finished with three atomic agents evaluated and five post-hoc fixes landed on main.
+**Last updated:** 2026-04-27 (v42.7 cycle complete + v42.7.5/6 merged + v42.7.7/8 on dev)
+**Current state:** v42.7 cycle delivered. 18 research agents (15 prior + bioRxiv + SEC EDGAR + FDA Drugs + NIH RePORTER). Code-sync diagnostic ships; held-out 30-NCT slice ready for next-cycle validation. Two new outcome-Positive overrides on dev (vaccine-immunogenicity + FDA-approved drug) await held-out validation.
 
-**Main at:** `9f287521` (or later after doc commits)
-**Active branch:** `dev` (content-identical to main via merge commits)
-**Prod status:** autoupdate synced; shadow agents running on every new annotation job via `<field>_atomic` outputs.
+**Main at:** `f574536f` (v42.7.6 merged 2026-04-27 03:04 PT)
+**Dev at:** `d605a702` (v42.7.8 + compare_jobs.py + docs)
+**Prod status:** autoupdater synced; 18-agent pipeline serving v42.7.6.
+
+### Active iteration line (post-Phase-6 cycles)
+v42.6.10–.19 (recovery + audit-driven narrow fixes) → v42.7.0 (SEC EDGAR + FDA Drugs) → v42.7.1 (5-tier evidence_grade) → v42.7.2 (commit_accuracy + pub-classifier expansion) → v42.7.3 (per-field DB grading) → v42.7.4 (two-tier source weighting) → **v42.7.5** (code-sync diagnostic, on main) → **v42.7.6** (NIH RePORTER 18th agent, on main) → **v42.7.7** (vaccine-immunogenicity override, dev) → **v42.7.8** (wire FDA Drugs / SEC EDGAR into outcome dossier, dev) → **v42.7.9** (FDA Drugs query extension to `products.*`, dev) → **v42.7.10** (CRITICAL: orchestrator preserves intervention `type`; fixes silent v42.7.0 regression where SEC EDGAR / FDA Drugs / NIH RePORTER had been receiving empty interventions for 2 days, dev).
+
+### Dev smoke validation (v42.7.7+8 prototype, 2026-04-27)
+Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Positive, matching GT:**
+  - **NCT03199872 (RhoC vaccine):** Positive, evidence_grade=pub_trial_specific. LLM reasoning explicitly quoted the v42.7.7 Rule 7 vaccine exception ("immunogenicity is the primary endpoint for Phase I vaccine trials"). Vaccine override fired through the prompt-driven path.
+  - **NCT00002228 (Enfuvirtide):** Positive, evidence_grade=pub_trial_specific. LLM resolved on trial-specific publication evidence.
+  - **Hidden bug surfaced:** FDA Drugs / SEC EDGAR / NIH RePORTER all reported "No interventions to search" — led directly to v42.7.10 fix.
+
+### Validation baselines (47-NCT outcome-clean slice)
+| Job | Code | peptide | classification | delivery | outcome | RfF | sequence | Notes |
+|---|---|---|---|---|---|---|---|---|
+| #83 | v42.6.15 | 30/37=81.1% | 39/43=90.7% | 91.7% | 29/47=61.7% | 10/12=83.3% | 75% | True baseline. |
+| #88 | v42.7.3 | 81.1% | 90.7% | 91.7% | 28/47=59.6% | 10/11=90.9% | 75% | RfF +7.6pp; outcome -2.1pp (within noise). |
+| #89 | v42.7.4 | 81.1% | 90.7% | 94.4% | 29/47=61.7% | 11/12=91.7% | 75% | Recovered outcome; net positive cycle. |
+| #90 | v42.7.4 stability | 81.1% | 90.7% | 91.7% | 29/47=61.7% | 10/16=62.5% | 75% | Same code as #89; **4 outcome flips → ~8.5% noise floor.** |
+
+**Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
+
+### Currently in flight
+- **Smoke #91** (`5a3ff88bcbb2`, prod) — 10 NCTs validating v42.7.5/6 on prod (code-sync gate + NIH RePORTER fires + 0 errors). Started 2026-04-27 ~06:55 PT, ~50min wall time.
+- **Dev smoke** (`e46797571504`) — NCT03199872 (RhoC vaccine, v42.7.7 prototype) + NCT00002228 (enfuvirtide, v42.7.8 prototype). 2 NCTs.
+
+### Next steps (queued)
+1. Once smokes pass: merge v42.7.7 + v42.7.8 to main.
+2. Run held-out 30-NCT validation against new main (`scripts/holdout_outcome_slice_v42_7_5.json`). First independent measurement of the 18-agent pipeline + override changes.
+3. Decide based on held-out results whether to add a third outcome-Positive override (the GLP-1/biomarker class still under-calls; may need a "biomarker primary endpoint" pattern, but careful design needed to avoid v41-era over-call regression).
+
+### Test suite
+18 test files under `scripts/test_v42_*.py` + `scripts/test_v42_trip_wires.py`, 123 tests — full sweep clean. Trip-wire suite (9 source-level assertions) protects the most expensive past-bug fixes from refactor regression.
+
+---
+
+## Archived state (pre-v42.7)
+
+The pre-v42.7 sections below remain for historical reference. Active context is in §1 above + `docs/AGENT_STRATEGY_ROADMAP.md`.
 
 ### Phase 5 results (94-NCT, 2026-04-21)
 
