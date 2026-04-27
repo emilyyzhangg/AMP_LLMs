@@ -137,6 +137,22 @@ def test_v42_7_9_fda_query_includes_products_fields():
     print("  ✓ v42.7.9: FDA Drugs query covers both openfda.* and products.* (pre-2010 records)")
 
 
+def test_v42_7_14_failed_override_status_gated():
+    """v42.7.14 (2026-04-27): the 'trial-specific + neg + no efficacy →
+    Failed' path must be gated on registry status. Pre-v42.7.14 it
+    fired regardless of status — Job #92 NCT03018665 (status=UNKNOWN,
+    mixed pubs) got mis-called Failed when GT was Unknown. The gate
+    must restrict to terminal statuses (COMPLETED / TERMINATED /
+    WITHDRAWN). Removing it recreates the over-call class."""
+    src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    idx = src.find("v42.7.14")
+    assert idx > 0, "v42.7.14 marker missing in outcome.py"
+    block = src[idx:idx + 1500]
+    assert 'status in ("COMPLETED", "TERMINATED", "WITHDRAWN")' in block, \
+        "v42.7.14 trip-wire: Failed override must remain gated on terminal status"
+    print("  ✓ v42.7.14: Failed override gated on terminal status")
+
+
 def test_v42_7_12_indication_match_and_registered_pubs():
     """v42.7.12 (2026-04-27): two override-tightenings to fix Job #92's
     over-call class. (a) FDA-approved override must require strong-efficacy
@@ -272,6 +288,7 @@ def main() -> int:
         test_v42_7_9_fda_query_includes_products_fields,
         test_v42_7_10_intervention_type_preserved,
         test_v42_7_12_indication_match_and_registered_pubs,
+        test_v42_7_14_failed_override_status_gated,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
