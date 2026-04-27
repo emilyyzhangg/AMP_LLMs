@@ -27,7 +27,7 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-*(none — Job #92 complete)*
+- **Job #93 (v42.7.12 over-call validation)** (`5bd9c3f28df6`, prod) — 4 NCTs from Job #92's over-calls (NCT01673217, NCT03456687, NCT03597893, NCT03342001). Targets: 3/4 flip Positive → Unknown (those with 0 CT.gov-registered references); NCT03342001 (Phase 4 calcitonin/osteoporosis) is the candidate-GT-error case and may stay Positive. Eta ~50 min.
 
 ### Job #92 results (2026-04-27, 4h 37m, commit 401806ab)
 - **classification 27/27 = 100%** ⭐
