@@ -231,6 +231,16 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         "is_vaccine_trial": False,
         "intervention_names": [],    # for diagnostics
         "immunogenicity_keywords": [],
+        # v42.7.8 (2026-04-27): wire FDA Drugs / SEC EDGAR raw_data flags
+        # back into the outcome decision. v42.7.0 added the agents but the
+        # outcome dossier never consumed their structured flags. The
+        # `fda_drugs_<name>_approved` boolean is the strongest possible
+        # Positive signal — regulators already approved the drug for an
+        # indication, so the trial succeeded by definition. (We're careful:
+        # this fires only when the drug is approved, not when it's "under
+        # review.")
+        "fda_approved_drugs": [],    # list of intervention names with FDA AP submission status
+        "sec_edgar_disclosed": False,  # any 8-K/10-K mention of this NCT
     }
 
     # v41: Split positive keywords into efficacy (supports Positive) and safety (does NOT).
@@ -436,6 +446,24 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
                                   or max_phase > dossier["drug_max_phase"]):
                     dossier["drug_max_phase"] = max_phase
 
+        # --- v42.7.8: FDA Drugs structured approval signal ---
+        if result.agent_name == "fda_drugs" and result.raw_data:
+            for k, v in result.raw_data.items():
+                if k.endswith("_approved") and v is True:
+                    # k is "fda_drugs_<intervention>_approved"
+                    name = k[len("fda_drugs_"):-len("_approved")]
+                    if name and name not in dossier["fda_approved_drugs"]:
+                        dossier["fda_approved_drugs"].append(name)
+
+        # --- v42.7.8: SEC EDGAR sponsor disclosure presence ---
+        if result.agent_name == "sec_edgar" and getattr(result, "citations", []):
+            # Any non-zero citation count = sponsor publicly disclosed
+            # this NCT (or a related drug name) in a 10-K/10-Q/8-K. The
+            # disclosure itself is informative; the LLM uses it as context
+            # alongside negative_keywords (which would already capture
+            # an explicit "discontinued due to" or "write-off" snippet).
+            dossier["sec_edgar_disclosed"] = True
+
     # Compute derived fields
     dossier["publication_count"] = len(dossier["publications"])
     dossier["trial_specific_count"] = sum(
@@ -631,6 +659,12 @@ def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
         lines.append("Trial Type: VACCINE / IMMUNOTHERAPY (immunogenicity is the Phase I primary endpoint)")
     if dossier.get("immunogenicity_keywords"):
         lines.append(f"Immunogenicity Signals: {', '.join(dossier['immunogenicity_keywords'][:6])}")
+    # v42.7.8: surface FDA-approval status from openFDA structured data,
+    # and SEC EDGAR sponsor disclosure presence.
+    if dossier.get("fda_approved_drugs"):
+        lines.append(f"FDA Approved (structured Drugs@FDA): {', '.join(dossier['fda_approved_drugs'][:3])}")
+    if dossier.get("sec_edgar_disclosed"):
+        lines.append("SEC EDGAR: sponsor 10-K/10-Q/8-K filing(s) reference this NCT or drug")
 
     return "\n".join(lines)
 
@@ -940,6 +974,20 @@ class OutcomeAgent(BaseAnnotationAgent):
                            "safety concern", "serious adverse event", "discontinued due to"]
         if any(kw in neg for kw in _STRONG_ADVERSE):
             return "Failed - completed trial"
+
+        # v42.7.8: FDA-approved drug override. If openFDA Drugs@FDA reports
+        # the drug as having an "AP" (Approved) submission status, the drug
+        # has cleared regulatory review for an indication — the trial that
+        # supports the approval is, by definition, Positive. Tightly bounded:
+        # only fires when has_results is False AND there are no negative
+        # signals (otherwise the existing branches handle it correctly).
+        # This is the structured analogue of the "fda approved" / "received
+        # approval" pub-text gate; the structured signal is more reliable
+        # than text matching (no review-article false positives).
+        if (dossier.get("fda_approved_drugs")
+                and not neg
+                and current_value not in ("Positive", "Failed - completed trial")):
+            return "Positive"
 
         # v42.6.11: STRONG-evidence gate for Unknown → Positive
         if (trial_specific >= 2

@@ -124,6 +124,24 @@ def test_v42_7_5_boot_commit_captured_at_module_load():
     print("  ✓ v42.7.5: BOOT_COMMIT_FULL captured at import")
 
 
+def test_v42_7_8_fda_drugs_signal_wired():
+    """v42.7.8 (2026-04-27): FDA Drugs / SEC EDGAR raw_data flags must
+    flow into the outcome dossier. The dossier must consume the
+    `fda_drugs_<name>_approved` boolean and the FDA-approved override
+    must remain present. Removing this regresses to v42.7.0 plumbing
+    gap where the new agents fired but their output was discarded."""
+    src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert '"fda_approved_drugs"' in src, \
+        "v42.7.8 trip-wire: dossier must define fda_approved_drugs field"
+    assert 'result.agent_name == "fda_drugs"' in src, \
+        "v42.7.8 trip-wire: outcome dossier must extract from fda_drugs raw_data"
+    assert 'result.agent_name == "sec_edgar"' in src, \
+        "v42.7.8 trip-wire: outcome dossier must consume sec_edgar citations"
+    assert "FDA-approved drug override" in src, \
+        "v42.7.8 trip-wire: FDA-approved Positive override must remain"
+    print("  ✓ v42.7.8: FDA Drugs + SEC EDGAR raw_data flow into outcome dossier")
+
+
 def test_v42_7_7_vaccine_immunogenicity_override():
     """v42.7.7 (2026-04-27): vaccine-immunogenicity Positive override.
     The override must be tightly gated on is_vaccine_trial — removing
@@ -187,6 +205,7 @@ def main() -> int:
         test_v42_7_5_boot_commit_captured_at_module_load,
         test_v42_7_6_nih_reporter_uses_advanced_text_search,
         test_v42_7_7_vaccine_immunogenicity_override,
+        test_v42_7_8_fda_drugs_signal_wired,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
