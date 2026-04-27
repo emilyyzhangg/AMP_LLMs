@@ -27,8 +27,25 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **Smoke #91** (`5a3ff88bcbb2`, prod) — 10 NCTs validating v42.7.5/6 on prod (code-sync gate + NIH RePORTER fires + 0 errors). Started 2026-04-27 ~06:55 PT, ~50min wall time.
-- **Dev smoke** (`e46797571504`) — NCT03199872 (RhoC vaccine, v42.7.7 prototype) + NCT00002228 (enfuvirtide, v42.7.8 prototype). 2 NCTs.
+*(none — Job #92 complete)*
+
+### Job #92 results (2026-04-27, 4h 37m, commit 401806ab)
+- **classification 27/27 = 100%** ⭐
+- **sequence 50.0%** (vs Job #83's 23.5%) ⭐
+- peptide 85.2%, delivery 89.3%
+- outcome 60.0% — **within ~3pp noise floor of Job #83's 61.7% baseline**
+- v42.7.10 fix VALIDATED: NIH RePORTER 67%, FDA Drugs 40%, SEC EDGAR 50% (vs 0/0/4.3% pre-fix)
+
+**Pattern surfaced:** outcome is flat because 4 over-calls (Positive when GT=Unknown) canceled the v42.7.7+8 gains. The over-calls share a pattern: drug is FDA-approved for indication X, trial tested it for indication Y. Examples: calcitonin (approved for osteoporosis, trial tested thyroid); exenatide (approved for diabetes, trial tested Parkinson's). The current FDA-approved override + Rule 7 vaccine exception don't disambiguate indications — they fire on "any approved" + "any pub mentions efficacy."
+
+**Next cycle target (v42.7.12+):**
+- Tighten FDA-approved override with indication-matching: require trial title/condition to overlap with FDA label indication, OR require strong-efficacy keywords ALSO present (FDA-approved as a multiplier, not sole signal).
+- Investigate whether the GT annotators are correct on the 4 over-call cases — these may be "humans had out-of-band knowledge" cases similar to the GT/registry divergence we found in Job #78-83.
+
+### Validated this morning
+- **Smoke #91** (`5a3ff88bcbb2`, 10 NCTs, 1h 41m): 0 errors. Empirically confirmed v42.7.10 silent regression existed (0 citations from SEC EDGAR/FDA Drugs/NIH RePORTER on all 10 trials).
+- **Dev smoke** (`e46797571504`, 2 NCTs): NCT03199872 (RhoC vaccine) + NCT00002228 (Enfuvirtide) both flipped Job #83 Unknown → Positive matching GT, with v42.7.7 vaccine exception explicitly cited in LLM reasoning.
+- **v42.7.10 live in prod**: Job #92 research phase (first 5 trials) shows SEC EDGAR 5+ / FDA Drugs 3 / NIH RePORTER 3-6 citations per trial — vs smoke #91's uniform 0/0/0. Fix is empirically working.
 
 ### Next steps (queued)
 1. Once smokes pass: merge v42.7.7 + v42.7.8 to main.

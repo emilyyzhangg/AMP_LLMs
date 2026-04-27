@@ -71,7 +71,14 @@ def test_dossier_formatter_surfaces_fda_and_sec():
 
 
 def test_runtime_fda_approved_drug_returns_positive():
-    """Stub a dossier with an FDA-approved drug and confirm override fires."""
+    """Stub a dossier with an FDA-approved drug + strong-efficacy keywords
+    and confirm override fires.
+
+    v42.7.12 update: the FDA-approved override now requires strong-efficacy
+    keywords too (treats FDA-approval as multiplier, not sole trigger).
+    Without strong-efficacy, the LLM applies Rule 3.c indication-match
+    instead of an automatic flip.
+    """
     try:
         from agents.annotation.outcome import OutcomeAgent
     except ImportError as e:
@@ -84,13 +91,15 @@ def test_runtime_fda_approved_drug_returns_positive():
         "is_vaccine_trial": False,
         "intervention_names": ["Enfuvirtide"],
         "fda_approved_drugs": ["enfuvirtide"],   # the v42.7.0 plumbing flag
+        "fda_label_indications": {"enfuvirtide": "HIV-1 infection"},
         "sec_edgar_disclosed": True,
         "publication_count": 5,
         "trial_specific_count": 3,
         "publications": [],
         "primary_endpoints": [],
         "drug_max_phase": 4,
-        "efficacy_keywords": [],
+        # v42.7.12: strong-efficacy keyword now required alongside FDA-approval
+        "efficacy_keywords": ["fda approved", "primary endpoint met"],
         "safety_keywords": [],
         "positive_keywords": [],
         "negative_keywords": [],
@@ -99,10 +108,12 @@ def test_runtime_fda_approved_drug_returns_positive():
         "completion_date": "2003-06-01",
         "days_since_completion": 8000,
         "why_stopped": "",
+        "registered_pmids": [],
+        "registered_trial_pubs_count": 0,
     }
     val = OutcomeAgent._dossier_publication_override(dossier, "Unknown")
     assert val == "Positive", f"FDA-approved override → expected Positive, got {val!r}"
-    print("  ✓ FDA-approved drug + Unknown LLM call → Positive override")
+    print("  ✓ FDA-approved drug + strong-efficacy → Positive override (v42.7.12)")
 
 
 def test_runtime_fda_approved_with_negatives_returns_failed():

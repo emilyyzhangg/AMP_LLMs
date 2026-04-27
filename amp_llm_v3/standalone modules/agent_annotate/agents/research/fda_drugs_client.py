@@ -38,6 +38,12 @@ from app.models.research import ResearchResult, SourceCitation
 logger = logging.getLogger("agent_annotate.research.fda_drugs")
 
 FDA_DRUGS_URL = "https://api.fda.gov/drug/drugsfda.json"
+# v42.7.12 (2026-04-27): label endpoint for indications_and_usage text.
+# Used to surface "drug X is approved for indication Y" so the outcome agent
+# can disambiguate "drug approved for X, trial tested Y" — the over-call
+# pattern Job #92 surfaced (calcitonin/exenatide/etc. approved for one
+# indication but tested off-label for another).
+FDA_LABEL_URL = "https://api.fda.gov/drug/label.json"
 
 
 def _extract_intervention_names(metadata: Optional[dict]) -> list[str]:
@@ -197,13 +203,62 @@ class FDADrugsClient(BaseResearchAgent):
                     retrieved_at=datetime.utcnow().isoformat(),
                 ))
             # Save approved-yes structurally for downstream agents to consume
-            raw_data[f"fda_drugs_{intervention}_approved"] = any(
+            is_approved = any(
                 s.get("submission_status") == "AP"
                 for r in results for s in (r.get("submissions") or [])
             )
+            raw_data[f"fda_drugs_{intervention}_approved"] = is_approved
+
+            # v42.7.12: when the drug is approved, fetch the label
+            # indications_and_usage text. This is the canonical "what is
+            # this drug approved to treat" string and lets downstream
+            # disambiguate cross-indication trials (Job #92's over-call
+            # pattern). One extra API call per approved drug.
+            if is_approved:
+                indication = await self._fetch_label_indication(client, clean)
+                if indication:
+                    raw_data[f"fda_drugs_{intervention}_indication"] = indication
 
         except Exception as e:
             logger.warning(f"openFDA Drugs@FDA failed for {intervention!r}: {e}")
             raw_data[f"fda_drugs_{intervention}_error"] = str(e)
 
         return {"citations": citations, "raw_data": raw_data}
+
+    async def _fetch_label_indication(self, client: httpx.AsyncClient, drug_name: str) -> str:
+        """Fetch the FDA label's indications_and_usage text for a drug.
+
+        Returns the first ~500 characters of the indication text, or empty
+        string if no label record found. Older drugs and non-prescription
+        products may not have label records — in that case we return empty
+        and the dossier just says "FDA approved" without indication detail.
+        """
+        try:
+            # Field-scoped query first (most precise, avoids matching drugs
+            # whose labels merely mention this drug name as comparator).
+            params = {
+                "search": (
+                    f'openfda.generic_name:"{drug_name}" OR '
+                    f'openfda.brand_name:"{drug_name}" OR '
+                    f'openfda.substance_name:"{drug_name}"'
+                ),
+                "limit": 1,
+            }
+            resp = await resilient_get(FDA_LABEL_URL, client=client, params=params)
+            if resp.status_code == 404:
+                return ""
+            if resp.status_code != 200:
+                return ""
+            data = resp.json()
+            results = data.get("results", []) or []
+            if not results:
+                return ""
+            iu = results[0].get("indications_and_usage", []) or []
+            if not iu:
+                return ""
+            # First entry, capped at 500 chars to keep dossier compact
+            text = (iu[0] or "").strip()
+            return text[:500]
+        except Exception as e:
+            logger.debug(f"label fetch failed for {drug_name!r}: {e}")
+            return ""
