@@ -18,12 +18,21 @@ for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
+        --slice-a) ;;  # handled below; suppresses default held-out-B
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
 
 THIS_DIR="$(cd "$(dirname "$0")" && pwd)"
-SLICE="$THIS_DIR/holdout_outcome_slice_v42_7_5.json"
+# Default to held-out-B (post-v42.7.13). The original held-out-A was
+# retired after Job #95 (the second use of that slice) per the standard
+# tune-set/held-out separation. Use --slice-a to force the original.
+SLICE="$THIS_DIR/holdout_outcome_slice_b_v42_7_14.json"
+for arg in "$@"; do
+    if [ "$arg" = "--slice-a" ]; then
+        SLICE="$THIS_DIR/holdout_outcome_slice_v42_7_5.json"
+    fi
+done
 if [ ! -f "$SLICE" ]; then
     echo "slice file not found: $SLICE" >&2
     exit 2

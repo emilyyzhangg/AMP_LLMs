@@ -267,14 +267,26 @@ def _normalise_grouped(value: str, field_name: str) -> str:
 def _canonicalise_single_sequence(seq: str) -> str:
     """Reduce a single sequence string to its canonical form for comparison.
 
-    Strips: whitespace, hyphens, parenthesised modifications, case → uppercase.
-    This lets us detect 'same molecule, different format' situations.
+    Strips: whitespace, hyphens, parenthesised modifications, terminal
+    chemistry suffixes (-OH, -NH2, -NH₂), case → uppercase.
+
+    v42.7.16 (2026-04-27): added terminal-suffix stripping. Previously
+    "(glp)lyenkprrpyil-oh" canonicalized to "LYENKPRRPYILOH" — the
+    naïve hyphen-removal treats "OH" as the AA pair Ornithine-Histidine.
+    But "-OH" is a chemistry notation for C-terminal hydroxyl, not an
+    AA tail. The agent almost never emits this suffix; GT (manually
+    annotated from chemistry papers) often does. Job #92 NCT03522792's
+    sequence miss was exactly this format gap. Stripping the suffix
+    before AA-matching closes it.
     """
     s = seq.strip()
     if not s or s.upper() in ("N/A", "NONE", ""):
         return ""
-    # Remove parenthesised modifications: (Ac), (NH2), etc.
+    # Remove parenthesised modifications: (Ac), (NH2), (Glp), etc.
     s = re.sub(r"\([^)]*\)", "", s)
+    # v42.7.16: strip terminal chemistry suffixes BEFORE general hyphen
+    # removal, because the suffix is hyphen-anchored ("-OH" / "-NH2").
+    s = re.sub(r"-(?:NH2|NH₂|OH)\s*$", "", s, flags=re.IGNORECASE)
     # Remove hyphens (format artefact)
     s = s.replace("-", "")
     # Remove spaces
