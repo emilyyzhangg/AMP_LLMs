@@ -117,6 +117,12 @@ research_agents:
   fda_drugs:
     sources:
       - fda_drugs
+  # v42.7.6 (2026-04-26): NIH RePORTER federal-grants index. Returns
+  # NIH-funded projects whose abstracts mention the drug intervention.
+  # Useful for funding context (active grants → drug program is alive).
+  nih_reporter:
+    sources:
+      - nih_reporter
 
 annotation_agents:
   classification:

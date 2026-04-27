@@ -8,17 +8,19 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 ---
 
-## 1. Current state (last refreshed 2026-04-25)
+## 1. Current state (last refreshed 2026-04-26)
 
 - **Authoritative pipelines:** legacy for every field.
 - **Shadow pipelines:** `classification_atomic`, `failure_reason_atomic`, `outcome_atomic` all run and write `<field>_atomic` for audit — never in the critical path.
-- **Commit:** `a11411ef` on main (v42.6.17).
-- **Validation baselines:**
-  - Same-set comparison (50 NCTs, GT/registry-divergent): peptide 86%, classification 97.5%, delivery 87% (after v42.6.17 fix), outcome 25% (limited by GT/registry mismatch).
-  - **Outcome-clean slice (47 NCTs, Job #83):** peptide 81%, classification 91%, delivery 92%, **outcome 62%** (true ceiling), sequence 75% (canonical-set).
+- **Commit:** `a609d683` on dev (v42.7.6, dev-only). main is still at `0916e05f` (v42.7.4). v42.7.5 (code-sync diagnostic) and v42.7.6 (NIH RePORTER, 18th research agent) await smoke validation before any merge.
+- **Research agents:** 18 total — 15 prior + bioRxiv (v42) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
+- **Validation baselines (47-NCT clean slice, GT/registry-aligned):**
+  - **Job #83 (v42.6.15)** — peptide 81.1%, classification 90.7%, delivery 91.7%, outcome 61.7%, RfF 83.3%, sequence 75.0%.
+  - **Job #88 (v42.7.3)** — same five fields essentially flat with **RfF +7.6pp** (90.9%) and **outcome -2.1pp** (59.6%). Pub expansion 281 → 809 cites (4.7x).
+  - **Job #89 (v42.7.4, current)** — peptide 81.1%, classification 90.7%, **delivery 94.4% (+2.8)**, **outcome 61.7% (recovered)**, **RfF 91.7% (+8.3)**, sequence 75.0%. Pubs 838.
   - 0–2 warnings per run (down from 59 pre-v42.6.13).
-- **Active iteration line:** v42.6.10 → .11 → .12 → .13 → .14 → .15 → .16 → .17. Each commit is one or two narrow fixes with smoke validation, not a full re-baseline.
-- **Test suite:** 83 unit tests across 11 files. Run `for s in scripts/test_*.py; do python3 $s; done` for full regression.
+- **Active iteration line:** v42.6.10 → .11 → .12 → .13 → .14 → .15 → .16 → .17 → .18 → .19 → v42.7.0 → .1 → .2 → .3 → .4. Each commit is one or two narrow fixes with smoke validation; full re-baselines reserved for cycle close-out (Jobs #83, #88, #89 are the v42.7 re-baseline trio).
+- **Test suite:** 116+ unit tests across 17+ files (`scripts/test_v42_*.py`). Run `for s in scripts/test_v42_*.py; do python3 "$s"; done` for full regression.
 
 ---
 
@@ -221,27 +223,28 @@ We lose most of the v42.6.8 speedup but we get back to **better accuracy than #7
 
 ## 7. Near-term concrete plan
 
-(Section last refreshed 2026-04-25. Jobs #78–#85 already executed —
+(Section last refreshed 2026-04-26. Jobs #78–#89 already executed —
 see `LEARNING_RUN_PLAN.md` for the full registry.)
 
-The original Phase-1-classification cut-over plan in this section was
-abandoned after the v42.6.x recovery cycle. The actual jobs that ran:
-Job #78 (recovery) → #79 (cascade narrowing) → #80 (Positive overcall fix)
-→ #81 (status safety net + diagnostic preservation) → #82 (cancelled, see
-discipline note in §9) → #82s (smoke) → #82b (pub classifier smoke) → #83
-(outcome-clean slice, the real baseline) → #84s (Positive recovery smoke)
-→ #85 (RfF-rich slice, in flight).
+The v42.7 cycle just closed with Jobs #88 + #89 on the 47-NCT clean slice.
+Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
++2.8pp, outcome flat (recovered after #88's -2.1pp dip), RfF +8.3pp. All
+116+ unit tests pass.
 
 ### Currently in flight
-- **Job #85** (`d1ab2634377e`) — 20-NCT RfF-rich slice. First honest RfF
-  measurement on the legacy failure_reason agent. Gate: RfF accuracy >0%
-  on at least 3 categories.
-- **v42.6.17 smoke** (`f44a87f1477c`) — 2 NCTs targeting the bugs found
-  in #83 audit (NCT05269381 imaging false-positive, NCT03196219 DBAASP
-  empty evidence). Queued behind #85.
+*(none — v42.7 cycle closed; planning next cycle)*
+
+### v42.7 cycle close-out (what shipped)
+| Sub-version | Commit | What it did | Validated by |
+|---|---|---|---|
+| v42.7.0 | 2cd0378a | SEC EDGAR + FDA Drugs research agents (17 agents total) | live tests + Job #87s |
+| v42.7.1 | f1c57e08 | 5-tier `evidence_grade` + diagnostics aggregate | Job #87t |
+| v42.7.2 | ed380774 | `commit_accuracy_report.py` + pub classifier expansion (5 agents in deterministic outcome override) | Job #88 |
+| v42.7.3 | 5e548125 | Per-field `_DB_KEYWORDS_BY_FIELD` dispatch (fixes commit-accuracy inversion) | Job #88 |
+| v42.7.4 | 0c0a7471 | Two-tier source weighting (`_PUB_AGENTS_HIGH_QUALITY` for keyword scan) | Job #89 |
 
 ### Recurring discipline (not jobs — process)
-1. Every code change ships with a unit test in `scripts/test_v42_6_NN_*.py`.
+1. Every code change ships with a unit test in `scripts/test_v42_*_*.py`.
 2. Smoke validation on a targeted slice (5–20 NCTs that exercise the
    change) before any full re-baseline.
 3. Full re-baseline only when ≥3 narrow fixes have accumulated, OR when a
@@ -250,33 +253,39 @@ discipline note in §9) → #82s (smoke) → #82b (pub classifier smoke) → #83
    pushing a "fix the fix" patch on top.
 5. NCT slices for outcome accuracy must be GT/registry-aligned (excluded
    GT=active when CT.gov says COMPLETED/UNKNOWN). See §9 entry.
+6. Smoke runs assert running-service commit hash equals on-disk HEAD
+   before reporting pass (memory-vs-disk pitfall — see §9 2026-04-25 entry).
 
-### Future targets (not committed; ranked by ROI)
-1. **drug_cache validation run** — Job #87 in flight (4f5243d0360e).
-2. **SEC EDGAR research agent** — sponsor 10-K/10-Q/8-K full-text search
-   for trial NCT IDs. Pharma sponsors disclose failures, discontinuations,
-   and write-offs in SEC filings. This is the data source that closes
-   Job #83's "GT=active+CT.gov=COMPLETED" divergence — humans knew the
-   trial failed because they read the press release; SEC EDGAR is that
-   press release. Free, no key. Largest expected outcome/RfF lift.
-3. **FDA Drugs@FDA research agent** — `api.fda.gov/drug/drugsfda.json`,
-   structured approval letters and indications. Strengthens v42.6.14's
-   "FDA approved" strong-efficacy gate with structured data instead of
-   pub-text matching. Free, no key.
-4. **NIH RePORTER research agent** — `api.reporter.nih.gov/v2/projects/search`,
-   grant funding history. Trials whose grant terminated without renewal
-   usually failed. Free, no key.
-5. **PMC OpenAccess full-text** — currently we read abstracts; PMC OAI
-   has full article XML for open-access papers. 2-3x the trial-specific
-   evidence we extract.
-6. **Calibrated-decline layer** — see §11. Output evidence-graded labels;
-   add "Inconclusive" as a first-class label. Score on commit-accuracy
-   not raw-accuracy. Major design change. Roadmapped, not committed.
-7. **classification_atomic shadow re-validation** — 500 NCTs to test
-   whether Phase 5's 93% beat-legacy was real or noise. Defer until the
-   new data sources have settled.
-8. **Pub classifier expansion** — apply `_GENERAL_SIGNALS` patterns to
-   citation snippets, not just titles. Smaller lift; do after #2.
+### Future targets (not committed; ranked by ROI, post-v42.7)
+1. **PMC OpenAccess full-text.** Currently reads abstracts; PMC OAI has
+   full article XML. 2-3x trial-specific evidence per pub. Adds compute
+   for parsing — measure cost-per-NCT before committing.
+2. **Calibrated-decline layer phase 3** — extend INCONCLUSIVE first-class
+   labelling to outcome (Phase 2 was scaffolding only). Once SEC EDGAR
+   + FDA Drugs commit-accuracy is measured, we'll know the threshold.
+3. **classification_atomic shadow re-validation** — 500 NCTs to test
+   whether Phase 5's 93% beat-legacy was real or noise. Now realistic
+   given the 18-agent pipeline is stable.
+4. **Phase 1 outcome reasoning push.** Job #83's confusion matrix shows
+   Positive-class recall 46% (the under-call, biggest single bucket).
+   Targeted prompt + dossier work on positives. Independent of new APIs.
+5. **Reduce 5-NCT smoke ceremony.** v42.7.x cycle had 4–5 smokes; some
+   were redundant. Define a clearer "trip-wire test" — a 1-NCT
+   regression test pinned to specific past bugs (NCT04527575 EpiVacCorona,
+   NCT01689051 GLP-1, NCT03196219 DBAASP) — to replace exploratory smokes.
+6. **v42.7.5 + v42.7.6 main-merge cadence.** Both items currently sit on
+   dev pending smoke validation. Smoke #91 (10-NCT, code-sync gate +
+   NIH RePORTER hit count) merges both atomically once active job ≠ 0
+   becomes a non-issue (post-Job-#90).
+
+### What's no longer on the list (closed in v42.7.0–v42.7.6)
+- ~~SEC EDGAR research agent~~ — shipped v42.7.0.
+- ~~FDA Drugs@FDA research agent~~ — shipped v42.7.0.
+- ~~Pub classifier expansion (broaden `_GENERAL_SIGNALS`)~~ — shipped v42.7.2 (then refined in v42.7.4 to two-tier).
+- ~~drug_cache validation run~~ — Jobs #87s + #87t confirmed cache stats wired and populated; hit_rate is currently low (7–15%) on drug-diverse slices but works as designed.
+- ~~Memory-vs-disk pitfall — structural fix~~ — shipped v42.7.5 (BOOT_COMMIT_* + `/api/diagnostics/code_sync` + `scripts/check_code_sync.sh`).
+- ~~Held-out 30-NCT outcome test set~~ — shipped as `scripts/holdout_outcome_slice_v42_7_5.json` (30 NCTs: 7 terminated + 14 positive-heavy + 9 unknown). Use for next code-cycle validation.
+- ~~NIH RePORTER research agent~~ — shipped v42.7.6 as the 18th agent. Discovery: documented `clinical_trial_ids` criterion silently no-ops; only `advanced_text_search` actually filters.
 
 ### Free data sources surveyed (2026-04-25)
 
@@ -457,3 +466,6 @@ Record what was decided and why. Future-you needs to read this.
 | 2026-04-25 | Pipeline emits `reason_for_failure` (full name) as the FieldAnnotation field_name; old analysis scripts that searched for `failure_reason` (short) silently returned empty for every RfF query. ALWAYS try both variants when scoring RfF outside the production concordance_service. | Job #85 first looked like 0/20 on RfF (catastrophe); actually 8/20 = 40% once the field-name lookup checked both spellings. Real category breakdown: Business 62.5%, Recruitment 75%, Ineffective 0% (gated upstream by Unknown outcome), Toxic 0/1, Covid 0/1. | N/A — the production concordance_service uses the correct name. Discipline applies to ad-hoc analysis scripts only. |
 | 2026-04-25 | When the autoupdater skips an annotate restart (because of an active job), code-on-disk diverges from code-in-memory. Smoke validations must verify the running service's commit reflects the change — not just the on-disk commit. Push a no-op trigger commit if needed to force restart on the next active-jobs=0 cycle. | The v42.6.17 + v42.6.18 smokes (f44a87f1477c, 57bd65a8d271, 925f4dfc3b54 first run) both ran on stale memory because Job #85 ran continuously through the merges; the no-op-commit trigger (00660388) forced the autoupdater to redeploy and the re-run smoke (3d8862f2dcd6) finally validated cleanly. | N/A — permanent operational discipline. |
 | 2026-04-25 | When fixing a substring/disambiguation issue in a helper, grep the whole file for OTHER places that iterate the same data structure directly. The first v42.6.18 commit fixed `resolve_known_sequence()` but missed a parallel loop at sequence.py:595 that uses the same `_KNOWN_SEQUENCES` dict; only the second commit (v42.6.18 part 2) caught it. | Smoke 86s passed Gates 1+2 but failed Gate 3 (GLP-1 still resolved to glucagon) because the second iteration site bypassed the helper. Now both call sites use longest-first iteration. | N/A — permanent code-review discipline. |
+| 2026-04-26 | Active-learning loop is OUT of the calibrated-decline design. INCONCLUSIVE is a final state for downstream filtering, NOT a hand-off to humans. Downstream consumers filter by evidence_grade and accept lower coverage in exchange for higher commit-accuracy. | User direction: "no human will come in an correct any indecision by the llms." The pipeline must self-resolve every NCT to a final committed value plus an evidence grade; the grade IS the indecision signal. | User reverses on human-in-the-loop. Unlikely. |
+| 2026-04-26 | Two-tier publication source weighting is the right pattern: broad set for LLM-visible context, peer-reviewed-only set for deterministic keyword overrides. Preprints and aggregators (biorxiv, semantic_scholar, crossref) add useful breadth in the LLM dossier but introduce noise when their titles are scanned for strong-efficacy keywords. | Job #88's pub-classifier expansion to all 5 agents lost -2.1pp outcome (4 new under-calls, 3 new gains) while gaining +7.6pp RfF. Job #89's restriction of the keyword-scan branch to `_PUB_AGENTS_HIGH_QUALITY = (literature, openalex)` recovered outcome to baseline while keeping the +8.3pp RfF gain. Two-tier source weighting is now a documented design pattern for any future expansion of dossier sources. | A future expansion adds a sixth pub agent that is BOTH peer-reviewed AND noisy on keyword scan — would need a third tier or per-keyword tier. Not currently anticipated. |
+| 2026-04-26 | Per-field `_DB_KEYWORDS_BY_FIELD` is mandatory for any future evidence-grading work. UniProt/ChEMBL/RCSB confirm peptide-ness but say nothing about AMP-vs-Other; treating their hits as `db_confirmed` for classification overrates an LLM call dressed up in DB clothing. | Job #88's commit_accuracy_report showed db_confirmed at 71% accuracy on classification while llm registered 100% — inverted ranking. Fixed by per-field dispatch: classification db_confirmed only when DRAMP/DBAASP/APD hits. Outcome db_confirmed only when SEC EDGAR/FDA Drugs hits. | Future evidence sources (NIH RePORTER, PMC) need to declare which fields they confirm — same dispatch pattern. |

@@ -37,6 +37,11 @@ from agents.research.biorxiv_client import BioRxivClient
 # and dates — strengthens the v42.6.14 "FDA approved" strong-efficacy gate.
 from agents.research.sec_edgar_client import SECEdgarClient
 from agents.research.fda_drugs_client import FDADrugsClient
+# v42.7.6 (2026-04-26): NIH RePORTER federal-grants index. Orthogonal to
+# SEC EDGAR (private sponsor) and FDA Drugs (regulator). A drug with NIH
+# grant funding is the subject of academic/federally-funded research;
+# project end dates without renewals are a weak discontinuation signal.
+from agents.research.nih_reporter_client import NIHRePORTERClient
 
 RESEARCH_AGENTS = {
     "clinical_protocol": ClinicalProtocolAgent,
@@ -61,4 +66,6 @@ RESEARCH_AGENTS = {
     # v42.7.0: regulatory + sponsor disclosure evidence
     "sec_edgar": SECEdgarClient,
     "fda_drugs": FDADrugsClient,
+    # v42.7.6: federal-grants funding context
+    "nih_reporter": NIHRePORTERClient,
 }
