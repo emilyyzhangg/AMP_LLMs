@@ -26,7 +26,7 @@ PKG_ROOT = THIS_DIR.parent
 if str(PKG_ROOT) not in sys.path:
     sys.path.insert(0, str(PKG_ROOT))
 
-from app.services.concordance_service import _normalise  # noqa: E402
+from app.services.concordance_service import _normalise, sequences_match  # noqa: E402
 
 CSV_FIELDS = {
     "peptide": "Peptide",
@@ -89,7 +89,8 @@ def gt_consensus(row: dict, csv_fld: str, agent_fld: str) -> str:
     return (a or b).lower()
 
 
-def get_pred(trial: dict, agent_fld: str) -> str:
+def get_pred(trial: dict, agent_fld: str) -> tuple[str, str]:
+    """Return (normalised_lower, raw)."""
     pipeline_fld = "failure_reason" if agent_fld == "reason_for_failure" else agent_fld
     raw = ""
     ver = trial.get("verification") or {}
@@ -103,7 +104,15 @@ def get_pred(trial: dict, agent_fld: str) -> str:
                 raw = a.get("value", "") or ""
                 break
     norm, blank = _normalise(raw, agent_fld)
-    return "" if blank else norm.lower()
+    return ("" if blank else norm.lower(), raw)
+
+
+def _gt_raw(row: dict, csv_fld: str) -> str:
+    a = (row.get(f"{csv_fld}_ann1") or "").strip()
+    b = (row.get(f"{csv_fld}_ann2") or "").strip()
+    if a and b:
+        return a if a == b else (a or b)
+    return a or b
 
 
 def score_field(job: dict, gt: dict, agent_fld: str) -> tuple[int, int]:
@@ -117,9 +126,14 @@ def score_field(job: dict, gt: dict, agent_fld: str) -> tuple[int, int]:
         gt_v = gt_consensus(gt[nct], csv_fld, agent_fld)
         if not gt_v:
             continue
-        pred = get_pred(t, agent_fld)
+        pred_norm, pred_raw = get_pred(t, agent_fld)
         scoreable += 1
-        if pred == gt_v:
+        # v42.7.16: sequence set-containment (matches compare_jobs.py)
+        if agent_fld == "sequence":
+            ok = sequences_match(_gt_raw(gt[nct], csv_fld), pred_raw)
+        else:
+            ok = (pred_norm == gt_v)
+        if ok:
             correct += 1
     return correct, scoreable
 

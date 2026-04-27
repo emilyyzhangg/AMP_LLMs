@@ -31,7 +31,7 @@ PKG_ROOT = THIS_DIR.parent
 if str(PKG_ROOT) not in sys.path:
     sys.path.insert(0, str(PKG_ROOT))
 
-from app.services.concordance_service import _normalise  # noqa: E402
+from app.services.concordance_service import _normalise, sequences_match  # noqa: E402
 
 CSV_FIELDS = {
     "peptide": "Peptide",
@@ -112,6 +112,16 @@ def get_pred(trial: dict, agent_fld: str) -> tuple[str, str]:
     return ("" if blank else norm.lower(), raw)
 
 
+def _gt_raw_for_field(row: dict, csv_fld: str) -> str:
+    """Return the raw GT string used for sequence matching (consensus —
+    same logic as gt_consensus but without normalisation)."""
+    a = (row.get(f"{csv_fld}_ann1") or "").strip()
+    b = (row.get(f"{csv_fld}_ann2") or "").strip()
+    if a and b:
+        return a if a == b else (a or b)
+    return a or b
+
+
 def score(job: dict, gt: dict, only_field: str | None) -> dict:
     fields = [only_field] if only_field else list(CSV_FIELDS)
     out = {}
@@ -130,7 +140,15 @@ def score(job: dict, gt: dict, only_field: str | None) -> dict:
                 continue  # no consensus → not scoreable
             pred_norm, pred_raw = get_pred(t, fld)
             scoreable += 1
-            ok = (pred_norm == gt_v)
+            # v42.7.16 (2026-04-27): for sequence, use set-containment
+            # via sequences_match (handles multi-sequence pred + chemistry-
+            # suffix canonicalization). String equality on _normalise'd
+            # values misses cases like '(Glp)LYENKPRRPYIL' vs '(glp)lyenkprrpyil-oh'.
+            if fld == "sequence":
+                gt_raw = _gt_raw_for_field(gt[nct], csv_fld)
+                ok = sequences_match(gt_raw, pred_raw)
+            else:
+                ok = (pred_norm == gt_v)
             if ok:
                 correct += 1
             per_nct[fld][nct] = (gt_v, pred_norm, pred_raw, ok)
