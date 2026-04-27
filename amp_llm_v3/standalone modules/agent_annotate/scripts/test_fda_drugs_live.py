@@ -59,6 +59,24 @@ async def test_fda_drugs_glp1_returns_multiple_drugs():
     print("  ✓ semaglutide returns FDA drug records")
 
 
+async def test_fda_drugs_old_approval_with_empty_openfda_block():
+    """v42.7.9 regression: enfuvirtide (Fuzeon, NDA021481, approved 2003) has
+    an empty `openfda.*` block but the drug name IS in `products[].brand_name`
+    and `products[].active_ingredients[].name`. The query must hit both
+    field families to catch pre-2010 approvals."""
+    from agents.research.fda_drugs_client import FDADrugsClient
+    client = FDADrugsClient()
+    metadata = {"interventions": [{"type": "DRUG", "name": "Enfuvirtide"}]}
+    result = await client.research("NCT00002228", metadata)
+    print(f"  cite count: {len(result.citations)}")
+    approved_keys = [k for k in result.raw_data if k.endswith("_approved")]
+    flags = {k: result.raw_data[k] for k in approved_keys}
+    print(f"  approved flags: {flags}")
+    assert any(v is True for v in flags.values()), \
+        "v42.7.9: enfuvirtide must register approved=True via products.* fallback"
+    print("  ✓ enfuvirtide approved (pre-2010 record with empty openfda block)")
+
+
 async def test_fda_drugs_skips_placebo():
     from agents.research.fda_drugs_client import _extract_intervention_names
     metadata = {"interventions": [
@@ -78,6 +96,7 @@ async def main() -> int:
         test_fda_drugs_unknown_drug_no_results,
         test_fda_drugs_known_approved_drug,
         test_fda_drugs_glp1_returns_multiple_drugs,
+        test_fda_drugs_old_approval_with_empty_openfda_block,
     ]
     failed = 0
     for t in tests:
