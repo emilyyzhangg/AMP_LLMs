@@ -137,6 +137,21 @@ def test_v42_7_9_fda_query_includes_products_fields():
     print("  ✓ v42.7.9: FDA Drugs query covers both openfda.* and products.* (pre-2010 records)")
 
 
+def test_v42_7_16_sequence_canonicaliser_strips_chemistry_suffix():
+    """v42.7.16 (2026-04-27): sequence canonicalization must strip
+    terminal -OH / -NH2 / -NH₂ chemistry suffixes BEFORE the general
+    hyphen removal. Without this, GT "(glp)lyenkprrpyil-oh"
+    canonicalizes to "LYENKPRRPYILOH" (treating OH as Ornithine-
+    Histidine residues) and disagrees with the agent's
+    "LYENKPRRPYIL" — false sequence miss.
+    """
+    src = (PKG_ROOT / "app" / "services" / "concordance_service.py").read_text()
+    assert "v42.7.16" in src, "v42.7.16 trip-wire: marker missing in concordance_service"
+    assert "NH2|NH₂|OH" in src, \
+        "v42.7.16 trip-wire: chemistry-suffix regex missing"
+    print("  ✓ v42.7.16: sequence canonicaliser strips -OH/-NH2 terminal suffixes")
+
+
 def test_v42_7_15_negative_keyword_tightened():
     """v42.7.15 (2026-04-27): _NEGATIVE_KW must NOT include bare 'failed'
     or bare 'negative'. Both fire on patient-cohort descriptions and
@@ -313,6 +328,7 @@ def main() -> int:
         test_v42_7_12_indication_match_and_registered_pubs,
         test_v42_7_14_failed_override_status_gated,
         test_v42_7_15_negative_keyword_tightened,
+        test_v42_7_16_sequence_canonicaliser_strips_chemistry_suffix,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
