@@ -34,7 +34,7 @@ PKG_ROOT = THIS_DIR.parent
 if str(PKG_ROOT) not in sys.path:
     sys.path.insert(0, str(PKG_ROOT))
 
-from app.services.concordance_service import _normalise  # noqa: E402
+from app.services.concordance_service import _normalise, sequences_match  # noqa: E402
 
 CSV_PATH = PKG_ROOT / "docs" / "human_ground_truth_train_df.csv"
 RESULTS_DIR = PKG_ROOT / "results" / "json"
@@ -89,8 +89,13 @@ def consensus(row: dict, csv_fld: str, agent_fld: str) -> str | None:
     return a or b or None
 
 
-def get_pred(trial: dict, agent_fld: str) -> tuple[str, str]:
-    """Return (normalised_pred_value, evidence_grade)."""
+def get_pred(trial: dict, agent_fld: str) -> tuple[str, str, str]:
+    """Return (normalised_pred_value, evidence_grade, raw_pred_value).
+
+    raw_pred_value is needed for sequence comparison (set-containment via
+    sequences_match), where the canonicalisation needs the original
+    string form (multi-pipe separators, modifiers, etc.).
+    """
     # Prefer verification.fields[*].final_value, fall back to annotations[*]
     pipeline_fld = "failure_reason" if agent_fld == "reason_for_failure" else agent_fld
     final_raw = ""
@@ -108,7 +113,7 @@ def get_pred(trial: dict, agent_fld: str) -> tuple[str, str]:
                 final_raw = a.get("value", "")
             break
     norm, blank = _normalise(final_raw, agent_fld)
-    return ("" if blank else norm.lower()), grade
+    return ("" if blank else norm.lower()), grade, final_raw or ""
 
 
 def report(job_id: str, only_field: str | None = None) -> int:
@@ -161,12 +166,20 @@ def report(job_id: str, only_field: str | None = None) -> int:
                 total_skipped_nogt += 1
                 continue
             total_scoreable += 1
-            pred, grade = get_pred(t, fld)
+            pred, grade, pred_raw = get_pred(t, fld)
             if grade == "inconclusive" or not pred:
                 total_inconclusive += 1
                 continue
             total_committed += 1
-            match = pred == truth
+            # v42.7.16: sequence uses set-containment (handles multi-pipe
+            # candidates + chemistry-suffix canonicalisation).
+            if fld == "sequence":
+                gt_raw_a = (row.get(f"{csv_fld}_ann1") or "").strip()
+                gt_raw_b = (row.get(f"{csv_fld}_ann2") or "").strip()
+                gt_raw = (gt_raw_a if gt_raw_a == gt_raw_b else gt_raw_a or gt_raw_b)
+                match = sequences_match(gt_raw, pred_raw)
+            else:
+                match = pred == truth
             per_grade[grade]["total"] += 1
             if match:
                 per_grade[grade]["matches"] += 1
