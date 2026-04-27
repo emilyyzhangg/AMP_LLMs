@@ -1092,8 +1092,17 @@ class OutcomeAgent(BaseAnnotationAgent):
                 and not neg):
             return "Positive"
 
-        # Trial-specific publications with negative signals → Failed (unchanged)
-        if trial_specific > 0 and neg and not efficacy:
+        # v42.7.14 (2026-04-27): Trial-specific publications with negative
+        # signals → Failed, BUT only when CT.gov status confirms the trial
+        # has actually ended. For status=UNKNOWN trials, the registry
+        # itself doesn't know the trial's state — auto-flipping to Failed
+        # based on mixed pub signals is an over-call (Job #92's NCT03018665
+        # was status=UNKNOWN with mixed pubs and got mis-called Failed
+        # when GT was Unknown).
+        if (trial_specific > 0
+                and neg
+                and not efficacy
+                and status in ("COMPLETED", "TERMINATED", "WITHDRAWN")):
             return "Failed - completed trial"
 
         # Stale Active: respect the LLM's Unknown unless strong evidence overrides
