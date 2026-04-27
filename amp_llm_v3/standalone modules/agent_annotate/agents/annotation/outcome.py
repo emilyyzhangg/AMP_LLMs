@@ -657,6 +657,13 @@ def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
     # LLM can apply Rule 7's vaccine exception correctly.
     if dossier.get("is_vaccine_trial"):
         lines.append("Trial Type: VACCINE / IMMUNOTHERAPY (immunogenicity is the Phase I primary endpoint)")
+    # v42.7.11 (2026-04-27): surface intervention names so the LLM can
+    # correlate "this trial's drug" with publication titles. Especially
+    # useful when pub titles use chemical names instead of brand names
+    # (e.g. "T-20" vs "Enfuvirtide" / "Fuzeon").
+    if dossier.get("intervention_names"):
+        names = dossier["intervention_names"][:5]
+        lines.append(f"Trial Drugs: {', '.join(names)}")
     if dossier.get("immunogenicity_keywords"):
         lines.append(f"Immunogenicity Signals: {', '.join(dossier['immunogenicity_keywords'][:6])}")
     # v42.7.8: surface FDA-approval status from openFDA structured data,
