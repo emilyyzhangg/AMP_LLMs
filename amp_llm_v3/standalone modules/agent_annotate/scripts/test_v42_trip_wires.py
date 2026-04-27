@@ -124,6 +124,19 @@ def test_v42_7_5_boot_commit_captured_at_module_load():
     print("  ✓ v42.7.5: BOOT_COMMIT_FULL captured at import")
 
 
+def test_v42_7_9_fda_query_includes_products_fields():
+    """v42.7.9 (2026-04-27): the FDA Drugs Lucene query must include
+    `products.brand_name` and `products.active_ingredients.name` so that
+    pre-2010 approvals (with empty openfda.* blocks) are matched.
+    Removing these regresses the v42.7.0 enfuvirtide/Fuzeon miss."""
+    src = (PKG_ROOT / "agents" / "research" / "fda_drugs_client.py").read_text()
+    assert "products.brand_name" in src, \
+        "v42.7.9 trip-wire: query must include products.brand_name"
+    assert "products.active_ingredients.name" in src, \
+        "v42.7.9 trip-wire: query must include products.active_ingredients.name"
+    print("  ✓ v42.7.9: FDA Drugs query covers both openfda.* and products.* (pre-2010 records)")
+
+
 def test_v42_7_8_fda_drugs_signal_wired():
     """v42.7.8 (2026-04-27): FDA Drugs / SEC EDGAR raw_data flags must
     flow into the outcome dossier. The dossier must consume the
@@ -206,6 +219,7 @@ def main() -> int:
         test_v42_7_6_nih_reporter_uses_advanced_text_search,
         test_v42_7_7_vaccine_immunogenicity_override,
         test_v42_7_8_fda_drugs_signal_wired,
+        test_v42_7_9_fda_query_includes_products_fields,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
