@@ -33,18 +33,22 @@ def test_pub_agents_set_includes_all_five():
 
 
 def test_publication_data_block_uses_pub_agents():
-    """The publication-data and keyword-scan blocks should both branch on
-    `agent_name in _PUB_AGENTS` (was `agent_name == 'literature'`)."""
+    """The publication-data block branches on `agent_name in _PUB_AGENTS`
+    (broad set — LLM-visible context). The keyword-scan block, after
+    v42.7.4, branches on `_PUB_AGENTS_HIGH_QUALITY` (peer-reviewed only).
+
+    Together: at least 1 of each pattern must be present, AND the legacy
+    literature-only branch in the publication block must be gone.
+    """
     src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
-    # Two locations should now read 'in _PUB_AGENTS'
-    occurrences = src.count("if result.agent_name in _PUB_AGENTS:")
-    assert occurrences >= 2, (
-        f"expected ≥2 'in _PUB_AGENTS' branches; got {occurrences}"
-    )
+    broad = src.count("if result.agent_name in _PUB_AGENTS:")
+    hq = src.count("if result.agent_name in _PUB_AGENTS_HIGH_QUALITY:")
+    assert broad >= 1, f"publication-list block must use _PUB_AGENTS (found {broad})"
+    assert hq >= 1, f"keyword-scan block must use _PUB_AGENTS_HIGH_QUALITY (found {hq})"
     # The old narrow check should be gone for the publication block
     old_pat = "if result.agent_name == \"literature\":\n            for citation in getattr(result, \"citations\", []):\n                pmid"
     assert old_pat not in src, "old literature-only publication block still present"
-    print("  ✓ publication-data + keyword-scan blocks both use _PUB_AGENTS")
+    print(f"  ✓ pub-list block on _PUB_AGENTS ({broad}); keyword-scan on _PUB_AGENTS_HIGH_QUALITY ({hq}) [v42.7.4 two-tier]")
 
 
 def test_runtime_dossier_includes_openalex_pubs():
