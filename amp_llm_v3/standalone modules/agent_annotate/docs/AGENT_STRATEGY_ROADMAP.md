@@ -12,7 +12,8 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 - **Authoritative pipelines:** legacy for every field.
 - **Shadow pipelines:** `classification_atomic`, `failure_reason_atomic`, `outcome_atomic` all run and write `<field>_atomic` for audit — never in the critical path.
-- **Commit:** `0c0a7471` on dev (v42.7.4). 19 research agents (15 prior + bioRxiv from v42 + SEC EDGAR + FDA Drugs from v42.7.0; calibrated-decline scaffolding from v42.7.1; per-field DB grading from v42.7.3; two-tier pub-source weighting from v42.7.4).
+- **Commit:** `a609d683` on dev (v42.7.6, dev-only). main is still at `0916e05f` (v42.7.4). v42.7.5 (code-sync diagnostic) and v42.7.6 (NIH RePORTER, 18th research agent) await smoke validation before any merge.
+- **Research agents:** 18 total — 15 prior + bioRxiv (v42) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
 - **Validation baselines (47-NCT clean slice, GT/registry-aligned):**
   - **Job #83 (v42.6.15)** — peptide 81.1%, classification 90.7%, delivery 91.7%, outcome 61.7%, RfF 83.3%, sequence 75.0%.
   - **Job #88 (v42.7.3)** — same five fields essentially flat with **RfF +7.6pp** (90.9%) and **outcome -2.1pp** (59.6%). Pub expansion 281 → 809 cites (4.7x).
@@ -256,46 +257,35 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
    before reporting pass (memory-vs-disk pitfall — see §9 2026-04-25 entry).
 
 ### Future targets (not committed; ranked by ROI, post-v42.7)
-1. **Memory-vs-disk pitfall — structural fix.** Recurred 3+ times this
-   month. Service skips restart while jobs are active, so smokes silently
-   run on stale code. Fix: bake current git HEAD into the running process
-   (e.g. `app.state.commit_sha`), expose via `/api/diagnostics`, and have
-   smoke harness assert hash == on-disk HEAD before declaring pass. Tiny
-   change, recovers tens of minutes per recurrence.
-2. **Held-out 30-NCT outcome test set.** v42.7 has been validated against
-   the same 47 NCTs three times (#83, #88, #89). Overfitting risk is real.
-   Stratify a fresh 30-NCT outcome-clean slice (training CSV minus #83
-   NCTs) and use it as a held-out validator for the next cycle.
-3. **Stability run on the #89 slice (LLM noise floor).** Two identical
-   runs of v42.7.4 on the same 47 NCTs measures the LLM noise floor.
-   Establishes the minimum delta we can call "signal" on this slice.
-   Without this number we can't honestly distinguish Job #88's -2.1pp
-   regression from run-to-run jitter.
-4. **NIH RePORTER research agent.** `api.reporter.nih.gov/v2/projects/search`.
-   Grant funding history. Trials whose grant terminated without renewal
-   typically failed. Free, no key. Probably 18th research agent.
-5. **PMC OpenAccess full-text.** Currently reads abstracts; PMC OAI has
+1. **PMC OpenAccess full-text.** Currently reads abstracts; PMC OAI has
    full article XML. 2-3x trial-specific evidence per pub. Adds compute
    for parsing — measure cost-per-NCT before committing.
-6. **Calibrated-decline layer phase 3** — extend INCONCLUSIVE first-class
+2. **Calibrated-decline layer phase 3** — extend INCONCLUSIVE first-class
    labelling to outcome (Phase 2 was scaffolding only). Once SEC EDGAR
    + FDA Drugs commit-accuracy is measured, we'll know the threshold.
-7. **classification_atomic shadow re-validation** — 500 NCTs to test
+3. **classification_atomic shadow re-validation** — 500 NCTs to test
    whether Phase 5's 93% beat-legacy was real or noise. Now realistic
-   given the 17-agent pipeline is stable.
-8. **Phase 1 outcome reasoning push.** Job #83's confusion matrix shows
+   given the 18-agent pipeline is stable.
+4. **Phase 1 outcome reasoning push.** Job #83's confusion matrix shows
    Positive-class recall 46% (the under-call, biggest single bucket).
    Targeted prompt + dossier work on positives. Independent of new APIs.
-9. **Reduce 5-NCT smoke ceremony.** v42.7.x cycle had 4–5 smokes; some
+5. **Reduce 5-NCT smoke ceremony.** v42.7.x cycle had 4–5 smokes; some
    were redundant. Define a clearer "trip-wire test" — a 1-NCT
    regression test pinned to specific past bugs (NCT04527575 EpiVacCorona,
    NCT01689051 GLP-1, NCT03196219 DBAASP) — to replace exploratory smokes.
+6. **v42.7.5 + v42.7.6 main-merge cadence.** Both items currently sit on
+   dev pending smoke validation. Smoke #91 (10-NCT, code-sync gate +
+   NIH RePORTER hit count) merges both atomically once active job ≠ 0
+   becomes a non-issue (post-Job-#90).
 
-### What's no longer on the list (closed in v42.7)
+### What's no longer on the list (closed in v42.7.0–v42.7.6)
 - ~~SEC EDGAR research agent~~ — shipped v42.7.0.
 - ~~FDA Drugs@FDA research agent~~ — shipped v42.7.0.
 - ~~Pub classifier expansion (broaden `_GENERAL_SIGNALS`)~~ — shipped v42.7.2 (then refined in v42.7.4 to two-tier).
 - ~~drug_cache validation run~~ — Jobs #87s + #87t confirmed cache stats wired and populated; hit_rate is currently low (7–15%) on drug-diverse slices but works as designed.
+- ~~Memory-vs-disk pitfall — structural fix~~ — shipped v42.7.5 (BOOT_COMMIT_* + `/api/diagnostics/code_sync` + `scripts/check_code_sync.sh`).
+- ~~Held-out 30-NCT outcome test set~~ — shipped as `scripts/holdout_outcome_slice_v42_7_5.json` (30 NCTs: 7 terminated + 14 positive-heavy + 9 unknown). Use for next code-cycle validation.
+- ~~NIH RePORTER research agent~~ — shipped v42.7.6 as the 18th agent. Discovery: documented `clinical_trial_ids` criterion silently no-ops; only `advanced_text_search` actually filters.
 
 ### Free data sources surveyed (2026-04-25)
 
