@@ -8,7 +8,13 @@
 **Prod status:** autoupdater synced; 18-agent pipeline serving v42.7.6.
 
 ### Active iteration line (post-Phase-6 cycles)
-v42.6.10–.19 (recovery + audit-driven narrow fixes) → v42.7.0 (SEC EDGAR + FDA Drugs) → v42.7.1 (5-tier evidence_grade) → v42.7.2 (commit_accuracy + pub-classifier expansion) → v42.7.3 (per-field DB grading) → v42.7.4 (two-tier source weighting) → **v42.7.5** (code-sync diagnostic, structural fix for memory-vs-disk pitfall) → **v42.7.6** (NIH RePORTER 18th agent) → **v42.7.7** (vaccine-immunogenicity Positive override, dev-only) → **v42.7.8** (wire FDA Drugs / SEC EDGAR raw_data into outcome dossier, dev-only).
+v42.6.10–.19 (recovery + audit-driven narrow fixes) → v42.7.0 (SEC EDGAR + FDA Drugs) → v42.7.1 (5-tier evidence_grade) → v42.7.2 (commit_accuracy + pub-classifier expansion) → v42.7.3 (per-field DB grading) → v42.7.4 (two-tier source weighting) → **v42.7.5** (code-sync diagnostic, on main) → **v42.7.6** (NIH RePORTER 18th agent, on main) → **v42.7.7** (vaccine-immunogenicity override, dev) → **v42.7.8** (wire FDA Drugs / SEC EDGAR into outcome dossier, dev) → **v42.7.9** (FDA Drugs query extension to `products.*`, dev) → **v42.7.10** (CRITICAL: orchestrator preserves intervention `type`; fixes silent v42.7.0 regression where SEC EDGAR / FDA Drugs / NIH RePORTER had been receiving empty interventions for 2 days, dev).
+
+### Dev smoke validation (v42.7.7+8 prototype, 2026-04-27)
+Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Positive, matching GT:**
+  - **NCT03199872 (RhoC vaccine):** Positive, evidence_grade=pub_trial_specific. LLM reasoning explicitly quoted the v42.7.7 Rule 7 vaccine exception ("immunogenicity is the primary endpoint for Phase I vaccine trials"). Vaccine override fired through the prompt-driven path.
+  - **NCT00002228 (Enfuvirtide):** Positive, evidence_grade=pub_trial_specific. LLM resolved on trial-specific publication evidence.
+  - **Hidden bug surfaced:** FDA Drugs / SEC EDGAR / NIH RePORTER all reported "No interventions to search" — led directly to v42.7.10 fix.
 
 ### Validation baselines (47-NCT outcome-clean slice)
 | Job | Code | peptide | classification | delivery | outcome | RfF | sequence | Notes |
