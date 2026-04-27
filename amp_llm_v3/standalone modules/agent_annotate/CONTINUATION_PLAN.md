@@ -27,8 +27,12 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **Smoke #91** (`5a3ff88bcbb2`, prod) — 10 NCTs validating v42.7.5/6 on prod (code-sync gate + NIH RePORTER fires + 0 errors). Started 2026-04-27 ~06:55 PT, ~50min wall time.
-- **Dev smoke** (`e46797571504`) — NCT03199872 (RhoC vaccine, v42.7.7 prototype) + NCT00002228 (enfuvirtide, v42.7.8 prototype). 2 NCTs.
+- **Job #92 (held-out 30-NCT validation)** (`f12c09b79b76`, prod) — first independent measurement of v42.7.7-11 stack on unseen trials. Submitted 2026-04-27 08:40 PT against commit `401806ab`. Eta ~6-8h.
+
+### Validated this morning
+- **Smoke #91** (`5a3ff88bcbb2`, 10 NCTs, 1h 41m): 0 errors. Empirically confirmed v42.7.10 silent regression existed (0 citations from SEC EDGAR/FDA Drugs/NIH RePORTER on all 10 trials).
+- **Dev smoke** (`e46797571504`, 2 NCTs): NCT03199872 (RhoC vaccine) + NCT00002228 (Enfuvirtide) both flipped Job #83 Unknown → Positive matching GT, with v42.7.7 vaccine exception explicitly cited in LLM reasoning.
+- **v42.7.10 live in prod**: Job #92 research phase (first 5 trials) shows SEC EDGAR 5+ / FDA Drugs 3 / NIH RePORTER 3-6 citations per trial — vs smoke #91's uniform 0/0/0. Fix is empirically working.
 
 ### Next steps (queued)
 1. Once smokes pass: merge v42.7.7 + v42.7.8 to main.
