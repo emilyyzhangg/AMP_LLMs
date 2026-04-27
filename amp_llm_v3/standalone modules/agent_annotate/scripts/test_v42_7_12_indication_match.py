@@ -130,13 +130,17 @@ def test_prompt_rule_7_requires_registered_pubs():
     src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
     idx = src.find("EXCEPTION (vaccine")
     assert idx > 0
-    block = src[idx:idx + 2000]
-    assert "CT.gov-REGISTERED" in block or "CT.gov-registered" in block.lower()
-    assert "Registered Trial Publications" in block
-    # Important: explicit fallback for trials with 0 registered refs
-    assert "ZERO" in block or "default to Unknown" in block.lower(), \
+    block = src[idx:idx + 2200]
+    block_lower = block.lower()
+    assert "ct.gov-registered" in block_lower
+    assert "registered trial publications" in block_lower
+    # v42.7.13: explicit fallback when registered count is 0
+    assert ("default to" in block_lower and "unknown" in block_lower), \
         "Rule 7 must explicitly fall back to Unknown for trials with no registered pubs"
-    print("  ✓ Rule 7 vaccine exception requires CT.gov-registered publication")
+    # v42.7.13: explicitly distinguish heuristic [TRIAL-SPECIFIC] from registered
+    assert "heuristic" in block_lower, \
+        "Rule 7 must call out that [TRIAL-SPECIFIC] is heuristic ≠ registered"
+    print("  ✓ Rule 7 vaccine exception requires CT.gov-registered + heuristic-distinction")
 
 
 def test_runtime_fda_approved_alone_no_longer_fires():
