@@ -272,12 +272,22 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         "enhanced immune", "immune activation",
     ]
     _POSITIVE_KW = _EFFICACY_KW + _SAFETY_KW
+    # v42.7.15 (2026-04-27): tightened negative keywords. Removed bare
+    # "failed" — fires on "treatment-failed patients" / "previously
+    # failed therapy" (descriptions of patient COHORTS, not trial
+    # outcomes). Removed bare "negative" — fires on "negative control"
+    # / "negative regulator" / "negative cohort" (mechanistic, not
+    # outcome). Both were over-firing in Job #92's diagnostics. Stronger
+    # phrases retained (e.g. "failed to meet", "failed primary",
+    # "did not show"), and a few more outcome-specific phrases added.
     _NEGATIVE_KW = [
-        "failed", "did not meet", "did not demonstrate", "did not achieve",
+        "did not meet", "did not demonstrate", "did not achieve",
         "did not show", "no significant", "no benefit", "no improvement",
         "failed to demonstrate", "failed to meet", "failed primary",
+        "primary endpoint not met", "primary endpoint was not met",
+        "primary outcome not met", "trial failed",
         "lack of efficacy", "ineffective", "no efficacy", "futility",
-        "inferior", "not effective", "negative",
+        "inferior", "not effective",
         "unacceptable", "not tolerated", "dose-limiting", "safety concern",
         "serious adverse event", "discontinued due to",
     ]

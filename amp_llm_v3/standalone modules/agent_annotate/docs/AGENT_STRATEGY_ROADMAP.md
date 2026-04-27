@@ -8,11 +8,21 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 ---
 
-## 1. Current state (last refreshed 2026-04-26)
+## 1. Current state (last refreshed 2026-04-27)
 
 - **Authoritative pipelines:** legacy for every field.
 - **Shadow pipelines:** `classification_atomic`, `failure_reason_atomic`, `outcome_atomic` all run and write `<field>_atomic` for audit — never in the critical path.
-- **Commit:** `87bda950` on dev (v42.7.10 + docs). main is at `f574536f` (v42.7.6 merged 2026-04-27). v42.7.5 (code-sync diagnostic) + v42.7.6 (NIH RePORTER) shipped to prod. v42.7.7 (vaccine-immunogenicity override) + v42.7.8 (FDA Drugs/SEC EDGAR signal wiring) + v42.7.9 (FDA Drugs `products.*` query) + v42.7.10 (CRITICAL: orchestrator preserves intervention `type` — fixes silent v42.7.0 regression where SEC EDGAR / FDA Drugs / NIH RePORTER had been receiving empty interventions for 2 days) all on dev awaiting smoke #91 completion + held-out validation.
+- **Commit:** `26345b9f` on main (v42.7.14 — Failed override status-gating). All v42.7.5–v42.7.14 shipped:
+  - v42.7.5: code-sync diagnostic (memory-vs-disk fix)
+  - v42.7.6: NIH RePORTER (18th research agent)
+  - v42.7.7: vaccine-immunogenicity Positive override
+  - v42.7.8: FDA Drugs / SEC EDGAR raw_data → outcome dossier
+  - v42.7.9: FDA Drugs query covers `products.*` fields (pre-2010 drugs)
+  - v42.7.10: orchestrator preserves intervention `type` — CRITICAL silent regression fix (SEC EDGAR / FDA Drugs / NIH RePORTER had been receiving empty interventions for 2 days)
+  - v42.7.11: surface "Trial Drugs: X, Y, Z" in dossier
+  - v42.7.12: FDA label indications + CT.gov registered-pubs gate (Job #92 over-call fix)
+  - v42.7.13: explicit "Registered Trial Publications: 0" line + Rule 7 hallucination fix (Job #93 LLM hallucination fix)
+  - v42.7.14: Failed override gated on terminal registry status (Job #92 NCT03018665 fix)
 - **Research agents:** 18 total — 15 prior + bioRxiv (v42) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
 - **Validation baselines (47-NCT clean slice, GT/registry-aligned):**
   - **Job #83 (v42.6.15)** — peptide 81.1%, classification 90.7%, delivery 91.7%, outcome 61.7%, RfF 83.3%, sequence 75.0%.
