@@ -714,12 +714,25 @@ def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
     # list are PROVEN trial-specific (sponsor registered them with the
     # registry). Distinct from the heuristic "[TRIAL-SPECIFIC]" classification
     # which can mis-tag review articles that mention the drug.
-    if dossier.get("registered_trial_pubs_count", 0) > 0:
-        cnt = dossier["registered_trial_pubs_count"]
+    # v42.7.13 (2026-04-27): ALWAYS print this line (even when count=0) so
+    # the LLM can see the absence of registered pubs and apply Rule 7's
+    # fallback. Job #93 surfaced an over-call (NCT01673217) where the LLM
+    # hallucinated "PMC:12563070 is CT.gov-registered" because the dossier
+    # didn't tell it the registered-pubs count was zero — the LLM then
+    # conflated the heuristic [TRIAL-SPECIFIC] tag with sponsor registration.
+    cnt = dossier.get("registered_trial_pubs_count", 0)
+    if cnt > 0:
         sample = ", ".join(f"PMID:{p}" for p in dossier["registered_pmids"][:3])
         lines.append(
             f"Registered Trial Publications: {cnt} CT.gov-registered PMID(s)"
             f" — these are proven trial-specific [{sample}]"
+        )
+    else:
+        lines.append(
+            "Registered Trial Publications: 0 — NO publications are registered "
+            "with CT.gov for this trial. Pubs marked [TRIAL-SPECIFIC] above are "
+            "based on heuristic classification only and may include review "
+            "articles that mention the drug; they are NOT proven trial-specific."
         )
 
     return "\n".join(lines)
@@ -755,8 +768,12 @@ RULES (follow in order):
 5. TERMINATED with no publications and no results posted → "Terminated"
 6. COMPLETED with no trial-specific publications and no results posted → "Unknown"
 7. Phase I: only mark Positive with an explicit primary-endpoint-met statement. Safety + biological activity without that statement → "Unknown".
-   EXCEPTION (vaccine / immunotherapy trials only): if the dossier indicates this is a VACCINE or IMMUNOTHERAPY trial AND it has ≥1 CT.gov-REGISTERED publication (see "Registered Trial Publications" line in the dossier — these are PMIDs the sponsor formally registered, proven trial-specific) AND ≥2 trial-specific publications report immunogenicity outcomes (induces immune response, antibody titers, T-cell response, seroconversion, sustained immune response) AND there are no failure/adverse signals — this counts as primary-endpoint-met because immunogenicity IS the Phase I endpoint for vaccines. Mark Positive.
-   IMPORTANT: A vaccine/immunotherapy trial with ZERO CT.gov-registered publications does NOT qualify for this exception, even if the dossier's heuristic-classified [TRIAL-SPECIFIC] pubs mention immune responses — those may be drug-class review articles mis-classified by the heuristic. Without a sponsor-registered publication anchoring the trial, default to Unknown.
+   EXCEPTION (vaccine / immunotherapy trials only): mark Positive ONLY when ALL of the following hold:
+     (i) The dossier indicates a VACCINE or IMMUNOTHERAPY trial.
+     (ii) The "Registered Trial Publications" line in the dossier shows count ≥ 1 — these are CT.gov-registered PMIDs (sponsor-registered, proven trial-specific). The [TRIAL-SPECIFIC] tag on individual publications is a HEURISTIC and is NOT the same thing — heuristic [TRIAL-SPECIFIC] does NOT satisfy this requirement.
+     (iii) ≥2 publications report immunogenicity outcomes (induces immune response, antibody titers, T-cell response, seroconversion, sustained immune response).
+     (iv) No failure/adverse signals.
+   FALLBACK: If "Registered Trial Publications: 0" appears in the dossier, this exception does NOT apply, regardless of how many [TRIAL-SPECIFIC] heuristic-tagged pubs mention immune responses. Default to "Unknown" — those may be drug-class review articles mis-classified by the heuristic.
 8. Default when evidence is inconclusive → "Unknown" (not "Positive").
 
 CRITICAL: "Positive" REQUIRES a specific primary-endpoint-met / p<0.05 / approval / phase-advancement signal. Vague "efficacy" or "benefit" language is NOT sufficient.
