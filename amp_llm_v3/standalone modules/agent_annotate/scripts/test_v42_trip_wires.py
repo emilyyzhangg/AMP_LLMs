@@ -137,6 +137,25 @@ def test_v42_7_9_fda_query_includes_products_fields():
     print("  ✓ v42.7.9: FDA Drugs query covers both openfda.* and products.* (pre-2010 records)")
 
 
+def test_v42_7_10_intervention_type_preserved():
+    """v42.7.10 (2026-04-27): orchestrator._run_research must include the
+    `type` field when building intervention metadata for research agents.
+    Earlier versions only kept `name`, causing SEC EDGAR / FDA Drugs /
+    NIH RePORTER to filter every intervention out (their extractor
+    requires type in DRUG/BIOLOGICAL). v42.7.0/v42.7.6 agents looked
+    healthy in unit tests but were silently no-op-ing in prod for ~2 days
+    because of this gap."""
+    src = (PKG_ROOT / "app" / "services" / "orchestrator.py").read_text()
+    idx = src.find("Extract intervention names from raw protocol data")
+    assert idx > 0, "intervention extraction block missing"
+    block = src[idx:idx + 2500]
+    assert 'interv.get("type"' in block, \
+        "v42.7.10 trip-wire: orchestrator must preserve interv['type'] " \
+        "in research metadata; without this, SEC EDGAR / FDA Drugs / " \
+        "NIH RePORTER receive empty interventions and skip every trial."
+    print("  ✓ v42.7.10: orchestrator preserves interv['type'] in research metadata")
+
+
 def test_v42_7_8_fda_drugs_signal_wired():
     """v42.7.8 (2026-04-27): FDA Drugs / SEC EDGAR raw_data flags must
     flow into the outcome dossier. The dossier must consume the
@@ -220,6 +239,7 @@ def main() -> int:
         test_v42_7_7_vaccine_immunogenicity_override,
         test_v42_7_8_fda_drugs_signal_wired,
         test_v42_7_9_fda_query_includes_products_fields,
+        test_v42_7_10_intervention_type_preserved,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0

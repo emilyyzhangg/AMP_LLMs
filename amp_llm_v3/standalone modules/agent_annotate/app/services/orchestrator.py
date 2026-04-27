@@ -1161,7 +1161,18 @@ class PipelineOrchestrator:
                 results.append(proto_result)
                 logger.info(f"  clinical_protocol: {len(proto_result.citations)} citations")
 
-                # Extract intervention names from raw protocol data
+                # Extract intervention names from raw protocol data.
+                # v42.7.10 (2026-04-27): preserve `type` (DRUG / BIOLOGICAL /
+                # GENETIC / DEVICE / etc.). Earlier versions only kept `name`,
+                # which caused SEC EDGAR / FDA Drugs / NIH RePORTER to filter
+                # every intervention out (their _extract_intervention_names
+                # requires type in (DRUG, BIOLOGICAL)). Result: every prod
+                # trial since v42.7.0 reported "No interventions to search"
+                # for those three agents — they fired but never had a term
+                # to query. Discovered while investigating dev smoke
+                # e46797571504 (NCT00002228 enfuvirtide DRUG, NCT03199872
+                # RV001V BIOLOGICAL — both should have hit FDA Drugs / NIH
+                # RePORTER but didn't).
                 interventions = []
                 if proto_result.raw_data:
                     proto_section = proto_result.raw_data.get(
@@ -1172,7 +1183,10 @@ class PipelineOrchestrator:
                     for interv in arms_mod.get("interventions", []):
                         name = interv.get("name", "")
                         if name:
-                            interventions.append({"name": name})
+                            interventions.append({
+                                "name": name,
+                                "type": interv.get("type", "") or "",
+                            })
                 if interventions:
                     # v31: Include title for literature API fallback searches
                     id_mod = proto_section.get("identificationModule", {})
