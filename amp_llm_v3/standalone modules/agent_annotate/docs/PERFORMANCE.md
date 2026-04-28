@@ -1,6 +1,18 @@
 # Agent Annotate — Performance & Scale
 
-Operational guide for running Agent Annotate at scale (hundreds to tens of thousands of NCTs). Written 2026-04-21 as part of the v42.6 efficiency pack.
+Operational guide for running Agent Annotate at scale (hundreds to tens of thousands of NCTs). Written 2026-04-21 as part of the v42.6 efficiency pack; updated 2026-04-28 with v42.7 research-pipeline expansion.
+
+## v42.7 research-pipeline cost (post-2026-04-25)
+
+The v42.7.0 / v42.7.6 cycle added 3 research agents — SEC EDGAR, openFDA Drugs@FDA, NIH RePORTER. Each is small per-trial (1–4 HTTP calls):
+
+| Agent | Calls/trial | Wall time/trial | Notes |
+|---|---|---|---|
+| SEC EDGAR | 1 NCT search + up to 3 drug-name searches | ~3–5s | Search-index API; rate-limited by polite UA |
+| openFDA Drugs@FDA | 1 drugsfda.json + 1 label.json per approved drug (v42.7.12) | ~2–5s | Free, no key |
+| NIH RePORTER | 1 POST per drug name (≤3) | ~2–4s | advanced_text_search criterion |
+
+Net research-phase cost ~10–14s additional per trial vs pre-v42.7. Outweighed by improved evidence quality (Job #92 confirmed all 3 agents fire on ≥40% of trials with v42.7.10 fix). Already amortized by `parallel_research: true` (default ON) — agents run concurrently within trials.
 
 ## Per-trial cost model (Mac Mini, qwen3:14b stack)
 
