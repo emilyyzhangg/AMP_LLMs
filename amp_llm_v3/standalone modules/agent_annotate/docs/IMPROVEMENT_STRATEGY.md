@@ -755,7 +755,7 @@ After v25, the project went through a substantial overhaul. This file is no long
 
 ### Headlines from the v42.7 cycle (≈2 weeks of work, 17 sub-versions)
 
-**Research pipeline expansion:** 3 new free agents (SEC EDGAR sponsor disclosures, openFDA Drugs@FDA approvals, NIH RePORTER federal grants). 18 research agents total. v42.7.10 fixed a CRITICAL silent regression where the orchestrator was dropping the intervention `type` field, causing all 3 new agents to receive empty interventions for 2 days post-deployment.
+**Research pipeline expansion:** 3 new free agents (SEC EDGAR sponsor disclosures, openFDA Drugs@FDA approvals, NIH RePORTER federal grants). 19 research agents total. v42.7.10 fixed a CRITICAL silent regression where the orchestrator was dropping the intervention `type` field, causing all 3 new agents to receive empty interventions for 2 days post-deployment.
 
 **Outcome agent overrides (over-call control):** v42.7.7 vaccine-immunogenicity Positive override; v42.7.8 wired FDA-approved drug + SEC EDGAR signals into the dossier; v42.7.12 added FDA label indications + CT.gov registered-pubs gate to prevent off-label over-calls; v42.7.14 status-gated Failed override; v42.7.15 tightened _NEGATIVE_KW.
 

@@ -13,7 +13,7 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 - **Authoritative pipelines:** legacy for every field.
 - **Shadow pipelines:** `classification_atomic`, `failure_reason_atomic`, `outcome_atomic` all run and write `<field>_atomic` for audit — never in the critical path.
 - **Commit:** `fdd6859b` on main (v42.7.17 — Rule 7 softening). Full v42.7.5–v42.7.17 shipped:
-  - v42.7.5–v42.7.11: code-sync, NIH RePORTER (18th agent), vaccine override, FDA/SEC wiring, query extension, intervention type preservation, drug-name surfacing
+  - v42.7.5–v42.7.11: code-sync, NIH RePORTER (19th agent), vaccine override, FDA/SEC wiring, query extension, intervention type preservation, drug-name surfacing
   - v42.7.12: FDA label indications + CT.gov registered-pubs gate (Job #92 over-call fix)
   - v42.7.13: explicit "Registered Trial Publications: 0" line + Rule 7 hallucination fix
   - v42.7.14: Failed override gated on terminal registry status
@@ -27,14 +27,14 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
   - Job #95 (held-out-A re-run, v42.7.13): outcome 60.0% (same accuracy, 4 over-calls fixed but 4 noise-floor losses)
   - Job #96 (held-out-B, v42.7.16): outcome 36% — revealed v42.7.13 over-correction
   - Job #97 (held-out-C, v42.7.17): in flight, target outcome ≥55%
-- **Research agents:** 18 total — 15 prior + bioRxiv (v42) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
+- **Research agents:** 19 total — 15 pre-v42 + bioRxiv (v42 Phase 6) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
 - **Validation baselines (47-NCT clean slice, GT/registry-aligned):**
   - **Job #83 (v42.6.15)** — peptide 81.1%, classification 90.7%, delivery 91.7%, outcome 61.7%, RfF 83.3%, sequence 75.0%.
   - **Job #88 (v42.7.3)** — same five fields essentially flat with **RfF +7.6pp** (90.9%) and **outcome -2.1pp** (59.6%). Pub expansion 281 → 809 cites (4.7x).
   - **Job #89 (v42.7.4, current)** — peptide 81.1%, classification 90.7%, **delivery 94.4% (+2.8)**, **outcome 61.7% (recovered)**, **RfF 91.7% (+8.3)**, sequence 75.0%. Pubs 838.
   - 0–2 warnings per run (down from 59 pre-v42.6.13).
 - **Active iteration line:** v42.6.10 → .11 → .12 → .13 → .14 → .15 → .16 → .17 → .18 → .19 → v42.7.0 → .1 → .2 → .3 → .4. Each commit is one or two narrow fixes with smoke validation; full re-baselines reserved for cycle close-out (Jobs #83, #88, #89 are the v42.7 re-baseline trio).
-- **Test suite:** 116+ unit tests across 17+ files (`scripts/test_v42_*.py`). Run `for s in scripts/test_v42_*.py; do python3 "$s"; done` for full regression.
+- **Test suite:** 167+ unit tests across 23+ files (`scripts/test_v42_*.py`) + 15 trip-wires (`scripts/test_v42_trip_wires.py`) + live-API integration (`scripts/test_*_live.py`). Run `bash scripts/run_full_regression.sh` for the 3-tier sweep (source / trip-wires / live).
 
 ---
 
@@ -279,7 +279,7 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
    + FDA Drugs commit-accuracy is measured, we'll know the threshold.
 3. **classification_atomic shadow re-validation** — 500 NCTs to test
    whether Phase 5's 93% beat-legacy was real or noise. Now realistic
-   given the 18-agent pipeline is stable.
+   given the 19-agent pipeline is stable.
 4. **Phase 1 outcome reasoning push.** Job #83's confusion matrix shows
    Positive-class recall 46% (the under-call, biggest single bucket).
    Targeted prompt + dossier work on positives. Independent of new APIs.
@@ -299,7 +299,7 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
 - ~~drug_cache validation run~~ — Jobs #87s + #87t confirmed cache stats wired and populated; hit_rate is currently low (7–15%) on drug-diverse slices but works as designed.
 - ~~Memory-vs-disk pitfall — structural fix~~ — shipped v42.7.5 (BOOT_COMMIT_* + `/api/diagnostics/code_sync` + `scripts/check_code_sync.sh`).
 - ~~Held-out 30-NCT outcome test set~~ — shipped as `scripts/holdout_outcome_slice_v42_7_5.json` (30 NCTs: 7 terminated + 14 positive-heavy + 9 unknown). Use for next code-cycle validation.
-- ~~NIH RePORTER research agent~~ — shipped v42.7.6 as the 18th agent. Discovery: documented `clinical_trial_ids` criterion silently no-ops; only `advanced_text_search` actually filters.
+- ~~NIH RePORTER research agent~~ — shipped v42.7.6 as the 19th agent. Discovery: documented `clinical_trial_ids` criterion silently no-ops; only `advanced_text_search` actually filters.
 
 ### Free data sources surveyed (2026-04-25)
 

@@ -1,7 +1,7 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-28 (v42.7.17 cycle close-out, held-out-C in flight)
-**Current state:** Three full held-out cycles complete (Jobs #92/#95 on slice A, #96 on slice B); v42.7.13 over-correction caught and fixed by v42.7.17 (alternative pub-title-pattern path in Rule 7 EXCEPTION). 18 research agents stable. Held-out-C (Job #97) running on prod for v42.7.17 first independent validation.
+**Current state:** Three full held-out cycles complete (Jobs #92/#95 on slice A, #96 on slice B); v42.7.13 over-correction caught and fixed by v42.7.17 (alternative pub-title-pattern path in Rule 7 EXCEPTION). 19 research agents stable. Held-out-C (Job #97) running on prod for v42.7.17 first independent validation.
 
 **Main at:** `fdd6859b` (v42.7.17 merged 2026-04-28)
 **Prod status:** autoupdater synced; serving v42.7.17.
@@ -75,7 +75,7 @@ For v42.7.14+15+ validation: use held-out-B exclusively. Submit via `scripts/sub
 
 ### Next steps (queued)
 1. Once smokes pass: merge v42.7.7 + v42.7.8 to main.
-2. Run held-out 30-NCT validation against new main (`scripts/holdout_outcome_slice_v42_7_5.json`). First independent measurement of the 18-agent pipeline + override changes.
+2. Run held-out 30-NCT validation against new main (`scripts/holdout_outcome_slice_v42_7_5.json`). First independent measurement of the 19-agent pipeline + override changes.
 3. Decide based on held-out results whether to add a third outcome-Positive override (the GLP-1/biomarker class still under-calls; may need a "biomarker primary endpoint" pattern, but careful design needed to avoid v41-era over-call regression).
 
 ### Test suite
