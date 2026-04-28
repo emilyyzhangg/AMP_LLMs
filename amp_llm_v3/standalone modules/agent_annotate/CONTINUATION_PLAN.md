@@ -1,14 +1,23 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-27 (v42.7 cycle complete + v42.7.5/6 merged + v42.7.7/8 on dev)
-**Current state:** v42.7 cycle delivered. 18 research agents (15 prior + bioRxiv + SEC EDGAR + FDA Drugs + NIH RePORTER). Code-sync diagnostic ships; held-out 30-NCT slice ready for next-cycle validation. Two new outcome-Positive overrides on dev (vaccine-immunogenicity + FDA-approved drug) await held-out validation.
+**Last updated:** 2026-04-28 (v42.7.17 PASS on held-out-C; pivot to sequence under-extraction with v42.7.18)
+**Current state:** Job #97 confirmed v42.7.17 design-complete on outcome (17/25 = 68%, +32pp vs over-corrected #96, +8pp vs #92). Pipeline now shifts to **field 2 (sequence) under-extraction** — Job #97 had 8/10 peptide=True trials emit `sequence=N/A` despite GT carrying sequences. v42.7.18 adds 5 entries to `_KNOWN_SEQUENCES` (solnatide/ap301/tip-peptide → CGQRETPEGAEAKPWYC; io103 alias for the existing pd-l1 peptide entry → FMTYWHLLNAFTVTVPKDL; apraglutide backbone → HGDGSFSDELSTILDLLAARDFINWLIQTKITD). Sequences-only — `_KNOWN_PEPTIDE_DRUGS` stays frozen per `feedback_frozen_drug_lists.md`. 19 research agents stable.
 
-**Main at:** `f574536f` (v42.7.6 merged 2026-04-27 03:04 PT)
-**Dev at:** `d605a702` (v42.7.8 + compare_jobs.py + docs)
-**Prod status:** autoupdater synced; 18-agent pipeline serving v42.7.6.
+**Main at:** `fdd6859b` (v42.7.17). v42.7.18 staged on dev, ready to ship after this regression sweep.
+**Prod status:** autoupdater synced; serving v42.7.17.
+
+### Per-cycle held-out separation (active discipline)
+| Slice | NCTs | Seed | Status | Used by jobs |
+|---|---|---|---|---|
+| held-out-A | 30 | 4242 | RETIRED | #92 (v42.7.11), #95 (v42.7.13 over-call fixes) |
+| held-out-B | 25 | 5252 | RETIRED | #96 (v42.7.16 baseline → revealed over-correction) |
+| held-out-C | 25 | 6262 | RETIRED | #97 (v42.7.17 validation — PASS @ 68%) |
+| held-out-D | 20 | 7373 | ACTIVE  | #98 (v42.7.18 sequence-dict validation, pending submit) |
+
+`scripts/submit_holdout_validation.sh --check-sync` defaults to slice-D.
 
 ### Active iteration line (post-Phase-6 cycles)
-v42.6.10–.19 (recovery + audit-driven narrow fixes) → v42.7.0 (SEC EDGAR + FDA Drugs) → v42.7.1 (5-tier evidence_grade) → v42.7.2 (commit_accuracy + pub-classifier expansion) → v42.7.3 (per-field DB grading) → v42.7.4 (two-tier source weighting) → **v42.7.5** (code-sync diagnostic, on main) → **v42.7.6** (NIH RePORTER 18th agent, on main) → **v42.7.7** (vaccine-immunogenicity override, dev) → **v42.7.8** (wire FDA Drugs / SEC EDGAR into outcome dossier, dev) → **v42.7.9** (FDA Drugs query extension to `products.*`, dev) → **v42.7.10** (CRITICAL: orchestrator preserves intervention `type`; fixes silent v42.7.0 regression where SEC EDGAR / FDA Drugs / NIH RePORTER had been receiving empty interventions for 2 days, dev).
+v42.6.10–.19 → v42.7.0 (SEC EDGAR + FDA Drugs) → v42.7.1 (5-tier evidence_grade) → v42.7.2 (pub-classifier expansion + commit_accuracy report) → v42.7.3 (per-field DB grading) → v42.7.4 (two-tier source weighting) → v42.7.5 (code-sync diagnostic) → v42.7.6 (NIH RePORTER) → v42.7.7 (vaccine-immunogenicity Positive override) → v42.7.8 (wire FDA Drugs/SEC EDGAR signals into dossier) → v42.7.9 (FDA Drugs `products.*` query) → v42.7.10 (CRITICAL: orchestrator preserves intervention `type`) → v42.7.11 (surface intervention names) → v42.7.12 (FDA label indications + CT.gov registered-pubs gate) → v42.7.13 (LLM hallucination fix — explicit "0" line + Rule 7 restructure) → v42.7.14 (Failed override status-gating) → v42.7.15 (_NEGATIVE_KW tightening) → v42.7.16 (sequence chemistry-suffix canonicalization) → v42.7.17 (Rule 7 over-correction fix — accept pub-title-pattern as alternative trial-specificity) → **v42.7.18 (`_KNOWN_SEQUENCES` expansion: solnatide/io103/apraglutide — addresses Job #97 sequence-N/A misses; sequence-only fix, no peptide.py changes)**.
 
 ### Dev smoke validation (v42.7.7+8 prototype, 2026-04-27)
 Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Positive, matching GT:**
@@ -27,7 +36,13 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-*(none — Job #95 complete)*
+- **None.** Job #97 closed at 17/25=68% outcome (PASS). v42.7.18 staged on dev; Job #98 (held-out-D) queued for submit after merge.
+
+### Cycle close-out narrative
+The v42.7.7-13 cycle aimed to fix the Job #92 over-call class (drug FDA-approved for indication X, trial tested indication Y). v42.7.12+13 succeeded on the over-calls (Job #93/#94 confirmed) but v42.7.13's strict FALLBACK ("default to Unknown if Registered Trial Publications: 0") was too literal — Job #96 on held-out-B revealed the LLM rigidly applied it even when pub titles were unambiguous trial reports. Outcome dropped from 60% (held-out-A) to 36% (held-out-B). v42.7.17 softened Rule 7 with an alternative path: pub TITLE explicitly describes THIS trial (drug name + phase/first-in-human/clinical-trial descriptor in title; field reviews still excluded). **Job #97 (held-out-C) closed at 17/25 = 68% — PASS, +32pp vs #96, +8pp vs #92. v42.7 cycle now design-complete on outcome.**
+
+### Next focus area: sequence under-extraction (v42.7.18+)
+Job #97 surfaced the next clear gap: 8/10 peptide=True trials emitted `sequence=N/A` despite GT carrying canonical sequences. Three of those (NCT03567577 Solnatide, NCT04964986 Apraglutide, NCT05898763 IO103-style) have public sequences addable to `_KNOWN_SEQUENCES` — the deterministic, no-LLM-cost path. v42.7.18 adds those entries (sequences-only; peptide.py untouched per `feedback_frozen_drug_lists.md`). Held-out-D will measure whether the dict expansion improves sequence accuracy without affecting other fields. After v42.7.18 validates, remaining sequence misses go to LLM-reasoning prompt improvements (no further dict expansion expected on the held-out frontier).
 
 ### Job #95 result (held-out-A retirement run)
 - Outcome 18/30 = 60.0% (IDENTICAL to Job #92, but different per-trial mistakes)
@@ -61,7 +76,7 @@ For v42.7.14+15+ validation: use held-out-B exclusively. Submit via `scripts/sub
 
 ### Next steps (queued)
 1. Once smokes pass: merge v42.7.7 + v42.7.8 to main.
-2. Run held-out 30-NCT validation against new main (`scripts/holdout_outcome_slice_v42_7_5.json`). First independent measurement of the 18-agent pipeline + override changes.
+2. Run held-out 30-NCT validation against new main (`scripts/holdout_outcome_slice_v42_7_5.json`). First independent measurement of the 19-agent pipeline + override changes.
 3. Decide based on held-out results whether to add a third outcome-Positive override (the GLP-1/biomarker class still under-calls; may need a "biomarker primary endpoint" pattern, but careful design needed to avoid v41-era over-call regression).
 
 ### Test suite

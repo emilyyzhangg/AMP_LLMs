@@ -8,29 +8,33 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 ---
 
-## 1. Current state (last refreshed 2026-04-27)
+## 1. Current state (last refreshed 2026-04-28)
 
 - **Authoritative pipelines:** legacy for every field.
 - **Shadow pipelines:** `classification_atomic`, `failure_reason_atomic`, `outcome_atomic` all run and write `<field>_atomic` for audit — never in the critical path.
-- **Commit:** `26345b9f` on main (v42.7.14 — Failed override status-gating). All v42.7.5–v42.7.14 shipped:
-  - v42.7.5: code-sync diagnostic (memory-vs-disk fix)
-  - v42.7.6: NIH RePORTER (18th research agent)
-  - v42.7.7: vaccine-immunogenicity Positive override
-  - v42.7.8: FDA Drugs / SEC EDGAR raw_data → outcome dossier
-  - v42.7.9: FDA Drugs query covers `products.*` fields (pre-2010 drugs)
-  - v42.7.10: orchestrator preserves intervention `type` — CRITICAL silent regression fix (SEC EDGAR / FDA Drugs / NIH RePORTER had been receiving empty interventions for 2 days)
-  - v42.7.11: surface "Trial Drugs: X, Y, Z" in dossier
+- **Commit:** `fdd6859b` on main (v42.7.17 — Rule 7 softening). Full v42.7.5–v42.7.17 shipped:
+  - v42.7.5–v42.7.11: code-sync, NIH RePORTER (19th agent), vaccine override, FDA/SEC wiring, query extension, intervention type preservation, drug-name surfacing
   - v42.7.12: FDA label indications + CT.gov registered-pubs gate (Job #92 over-call fix)
-  - v42.7.13: explicit "Registered Trial Publications: 0" line + Rule 7 hallucination fix (Job #93 LLM hallucination fix)
-  - v42.7.14: Failed override gated on terminal registry status (Job #92 NCT03018665 fix)
-- **Research agents:** 18 total — 15 prior + bioRxiv (v42) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
+  - v42.7.13: explicit "Registered Trial Publications: 0" line + Rule 7 hallucination fix
+  - v42.7.14: Failed override gated on terminal registry status
+  - v42.7.15: _NEGATIVE_KW tightening (remove bare "failed" / "negative")
+  - v42.7.16: sequence canonicalizer strips terminal -OH / -NH2 chemistry suffix
+  - v42.7.17: Rule 7 over-correction fix — accept pub-title-pattern as alternative trial-specificity (drug name + phase/first-in-human/clinical-trial descriptor in title; generic field reviews excluded). Triggered by Job #96 held-out-B revealing v42.7.13's strict FALLBACK was too literal.
+
+- **Held-out slices:** A (30, retired post-#95), B (25, retired post-#96 — surfaced over-correction), C (25, active, Job #97 in flight).
+- **Job validation history (recent):**
+  - Job #92 (held-out-A, v42.7.11): outcome 60.0%, classification 100%, sequence 50%
+  - Job #95 (held-out-A re-run, v42.7.13): outcome 60.0% (same accuracy, 4 over-calls fixed but 4 noise-floor losses)
+  - Job #96 (held-out-B, v42.7.16): outcome 36% — revealed v42.7.13 over-correction
+  - Job #97 (held-out-C, v42.7.17): in flight, target outcome ≥55%
+- **Research agents:** 19 total — 15 pre-v42 + bioRxiv (v42 Phase 6) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
 - **Validation baselines (47-NCT clean slice, GT/registry-aligned):**
   - **Job #83 (v42.6.15)** — peptide 81.1%, classification 90.7%, delivery 91.7%, outcome 61.7%, RfF 83.3%, sequence 75.0%.
   - **Job #88 (v42.7.3)** — same five fields essentially flat with **RfF +7.6pp** (90.9%) and **outcome -2.1pp** (59.6%). Pub expansion 281 → 809 cites (4.7x).
   - **Job #89 (v42.7.4, current)** — peptide 81.1%, classification 90.7%, **delivery 94.4% (+2.8)**, **outcome 61.7% (recovered)**, **RfF 91.7% (+8.3)**, sequence 75.0%. Pubs 838.
   - 0–2 warnings per run (down from 59 pre-v42.6.13).
 - **Active iteration line:** v42.6.10 → .11 → .12 → .13 → .14 → .15 → .16 → .17 → .18 → .19 → v42.7.0 → .1 → .2 → .3 → .4. Each commit is one or two narrow fixes with smoke validation; full re-baselines reserved for cycle close-out (Jobs #83, #88, #89 are the v42.7 re-baseline trio).
-- **Test suite:** 116+ unit tests across 17+ files (`scripts/test_v42_*.py`). Run `for s in scripts/test_v42_*.py; do python3 "$s"; done` for full regression.
+- **Test suite:** 167+ unit tests across 23+ files (`scripts/test_v42_*.py`) + 15 trip-wires (`scripts/test_v42_trip_wires.py`) + live-API integration (`scripts/test_*_live.py`). Run `bash scripts/run_full_regression.sh` for the 3-tier sweep (source / trip-wires / live).
 
 ---
 
@@ -275,7 +279,7 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
    + FDA Drugs commit-accuracy is measured, we'll know the threshold.
 3. **classification_atomic shadow re-validation** — 500 NCTs to test
    whether Phase 5's 93% beat-legacy was real or noise. Now realistic
-   given the 18-agent pipeline is stable.
+   given the 19-agent pipeline is stable.
 4. **Phase 1 outcome reasoning push.** Job #83's confusion matrix shows
    Positive-class recall 46% (the under-call, biggest single bucket).
    Targeted prompt + dossier work on positives. Independent of new APIs.
@@ -295,7 +299,7 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
 - ~~drug_cache validation run~~ — Jobs #87s + #87t confirmed cache stats wired and populated; hit_rate is currently low (7–15%) on drug-diverse slices but works as designed.
 - ~~Memory-vs-disk pitfall — structural fix~~ — shipped v42.7.5 (BOOT_COMMIT_* + `/api/diagnostics/code_sync` + `scripts/check_code_sync.sh`).
 - ~~Held-out 30-NCT outcome test set~~ — shipped as `scripts/holdout_outcome_slice_v42_7_5.json` (30 NCTs: 7 terminated + 14 positive-heavy + 9 unknown). Use for next code-cycle validation.
-- ~~NIH RePORTER research agent~~ — shipped v42.7.6 as the 18th agent. Discovery: documented `clinical_trial_ids` criterion silently no-ops; only `advanced_text_search` actually filters.
+- ~~NIH RePORTER research agent~~ — shipped v42.7.6 as the 19th agent. Discovery: documented `clinical_trial_ids` criterion silently no-ops; only `advanced_text_search` actually filters.
 
 ### Free data sources surveyed (2026-04-25)
 
@@ -478,6 +482,7 @@ Record what was decided and why. Future-you needs to read this.
 | 2026-04-25 | When fixing a substring/disambiguation issue in a helper, grep the whole file for OTHER places that iterate the same data structure directly. The first v42.6.18 commit fixed `resolve_known_sequence()` but missed a parallel loop at sequence.py:595 that uses the same `_KNOWN_SEQUENCES` dict; only the second commit (v42.6.18 part 2) caught it. | Smoke 86s passed Gates 1+2 but failed Gate 3 (GLP-1 still resolved to glucagon) because the second iteration site bypassed the helper. Now both call sites use longest-first iteration. | N/A — permanent code-review discipline. |
 | 2026-04-26 | Active-learning loop is OUT of the calibrated-decline design. INCONCLUSIVE is a final state for downstream filtering, NOT a hand-off to humans. Downstream consumers filter by evidence_grade and accept lower coverage in exchange for higher commit-accuracy. | User direction: "no human will come in an correct any indecision by the llms." The pipeline must self-resolve every NCT to a final committed value plus an evidence grade; the grade IS the indecision signal. | User reverses on human-in-the-loop. Unlikely. |
 | 2026-04-26 | Two-tier publication source weighting is the right pattern: broad set for LLM-visible context, peer-reviewed-only set for deterministic keyword overrides. Preprints and aggregators (biorxiv, semantic_scholar, crossref) add useful breadth in the LLM dossier but introduce noise when their titles are scanned for strong-efficacy keywords. | Job #88's pub-classifier expansion to all 5 agents lost -2.1pp outcome (4 new under-calls, 3 new gains) while gaining +7.6pp RfF. Job #89's restriction of the keyword-scan branch to `_PUB_AGENTS_HIGH_QUALITY = (literature, openalex)` recovered outcome to baseline while keeping the +8.3pp RfF gain. Two-tier source weighting is now a documented design pattern for any future expansion of dossier sources. | A future expansion adds a sixth pub agent that is BOTH peer-reviewed AND noisy on keyword scan — would need a third tier or per-keyword tier. Not currently anticipated. |
+| 2026-04-28 | Prompt FALLBACK clauses with "default to Unknown" wording must NEVER be the strongest part of a rule — the LLM follows them too literally. Job #96 on held-out-B revealed v42.7.13's "If 'Registered Trial Publications: 0' appears, default to Unknown" caused 12 GT=positive trials to be under-called even when pub titles like "Randomized phase I/II clinical trial of [drug]" were unambiguously the trial report. Outcome dropped 60% → 36% on a positive-heavy slice. Fix at v42.7.17: replace strict FALLBACK with an EQUIVALENT alternative path (pub title contains drug name + phase/first-in-human/clinical-trial descriptor; generic field reviews still excluded). The LLM gets explicit permission, not just a denial-default. | Future prompt-rule design: prefer "Mark X when ALL of (i)-(iv) hold; otherwise consider Y" over "Mark X only if Z; default Unknown otherwise." The asymmetric "default Unknown" form discounts the LLM's own judgment on the evidence it actually sees. | If a future rule rewrite reintroduces a strict FALLBACK and accuracy drops on the held-out, soften it back. |
 | 2026-04-27 | Standard tune-set / held-out separation: each held-out NCT slice is used **at most twice** before retirement. Held-out-A (30 NCTs, `holdout_outcome_slice_v42_7_5.json`) was used as Job #92 (v42.7.11) and Job #95 (v42.7.13) — it is now retired. Held-out-B (`holdout_outcome_slice_b_v42_7_14.json`, 25 NCTs, seed 5252) is the slice for v42.7.14+ validation. | The original held-out was built to validate v42.7.7-11. Job #92 surfaced 12 errors that we then categorized (4 over-calls, 3 hard under-calls, GT category boundaries, etc.) — that categorization is "training" against the slice. Re-running held-out-A after applying gates derived from those categorizations is overfitting in the strict ML sense; the LLM noise floor (~8.5% per-trial) is bigger than the marginal effect of v42.7.14/15 on this slice anyway. Per-cycle fresh held-out is the discipline. | Active. The picker is parameterized — generate held-out-C/D/etc. for future cycles by changing the seed and extending the exclusion list. |
 | 2026-04-27 | The orchestrator must preserve intervention `type` when building the metadata dict passed to research agents. SEC EDGAR / FDA Drugs / NIH RePORTER all filter by `type in ("DRUG", "BIOLOGICAL")`; if `type` is absent, the dict is silently dropped. Fix at orchestrator.py:1183. | v42.7.0 (2026-04-25) introduced the new agents but only built `{"name": name}` dicts. Discovered while validating v42.7.7+8 on dev smoke `e46797571504`: NCT00002228 (Enfuvirtide DRUG) and NCT03199872 (RV001V BIOLOGICAL) both reported "No interventions to search" from all 3 new agents despite having clear interventions. Every prod job since v42.7.0 (jobs #87s/87t/88/89/90) ran with these 3 agents silently no-op-ing on drug-name search — they returned only NCT-based hits at best. Trip-wire added to lock the fix. | A future research agent has different filter rules — just add a new path in `_extract_intervention_names`. The orchestrator's broader contract (preserve type) is now a hard rule. |
 | 2026-04-27 | Vaccine/immunotherapy Phase I trials have immunogenicity AS the primary endpoint, not clinical efficacy. The outcome agent's prompt and override now treat ≥2 trial-specific publications reporting immunogenicity (induces immune response / antibody titers / T-cell response / seroconversion) as "primary endpoint met" — but only when the trial is detected as a vaccine/immunotherapy trial (intervention name OR brief title match). | Job #83 confusion matrix: Positive recall 6/13 = 46%; ~5 of the 7 under-calls are vaccine/immunotherapy trials (NCT03199872 RhoC vaccine, NCT03272269 peptide immunotherapy, NCT03645148 pancreatic vaccine, NCT03380871 lung cancer vaccine, NCT00002228 HIV/T-20). Loosening the gate for non-vaccine trials would recreate the v41 over-call regression that v42.6.11 fixed; gating tightly on `is_vaccine_trial` keeps non-vaccine behaviour unchanged. | Held-out validation shows the gate firing on non-vaccine trials (would mean the heuristic is mis-detecting trial type) — would tighten the detector. |

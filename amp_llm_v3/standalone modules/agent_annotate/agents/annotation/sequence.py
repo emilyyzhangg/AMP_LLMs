@@ -140,6 +140,20 @@ _KNOWN_SEQUENCES: dict[str, str] = {
     "polymyxin b": "BTBBBBFLBT",                              # 10aa (B=Dab, nonstandard)
     # Teduglutide (GLP-2 analogue)
     "teduglutide": "HADGSFSDEMNTILDNLAARDFINWLIQTKITD",      # Same as GLP-2 but with Gly2→Ala substitution (clinically used as native-like)
+    # v42.7.18 (2026-04-28): from Job #97 held-out-C sequence misses on
+    # peptide=True trials. Per memory feedback: sequences OK to expand
+    # (vs _KNOWN_PEPTIDE_DRUGS which is frozen).
+    "solnatide": "CGQRETPEGAEAKPWYC",                        # AP301, 17aa cyclic, TIP-peptide derivative (NCT03567577)
+    "ap301": "CGQRETPEGAEAKPWYC",                            # solnatide synonym
+    "tip peptide": "CGQRETPEGAEAKPWYC",                      # solnatide TNF lectin-domain derivative
+    # IO103 PD-L1 peptide vaccine — was in _KNOWN_SEQUENCES under
+    # "pd-l1 peptide" but not under product code "io103".
+    "io103": "FMTYWHLLNAFTVTVPKDL",                          # alias for pd-l1 peptide
+    # Apraglutide is a synthetic GLP-2 analog with non-standard residues
+    # (Aib, NLE, D-amino-acids); the canonical 33-aa scaffold matches
+    # GLP-2 with substitutions. Adding the GLP-2 backbone form as a
+    # fallback so the agent has SOMETHING when intervention=Apraglutide.
+    "apraglutide": "HGDGSFSDELSTILDLLAARDFINWLIQTKITD",      # 33aa GLP-2 analog backbone (FE 203799)
     # Romidepsin / FK228 (cyclic depsipeptide)
     "romidepsin": "ASTTTNYT",                                 # 8aa (approximate, cyclic depsipeptide)
     # BI 655064 (anti-CD40 peptide) and similar

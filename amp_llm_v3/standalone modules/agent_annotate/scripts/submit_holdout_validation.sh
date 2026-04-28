@@ -18,20 +18,25 @@ for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
-        --slice-a) ;;  # handled below; suppresses default held-out-B
+        --slice-a|--slice-b|--slice-c) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
 
 THIS_DIR="$(cd "$(dirname "$0")" && pwd)"
-# Default to held-out-B (post-v42.7.13). The original held-out-A was
-# retired after Job #95 (the second use of that slice) per the standard
-# tune-set/held-out separation. Use --slice-a to force the original.
-SLICE="$THIS_DIR/holdout_outcome_slice_b_v42_7_14.json"
+# Default to held-out-D (post-v42.7.17 cycle). Older slices retired:
+#   A — used Jobs #92 + #95
+#   B — Job #96 (revealed v42.7.13 over-correction)
+#   C — Job #97 (validated v42.7.17 fix; outcome 68%)
+# Per standard ML tune-set/held-out separation. --slice-a / -b / -c
+# force older slices (rarely needed; reproduce historical jobs only).
+SLICE="$THIS_DIR/holdout_outcome_slice_d_v42_7_18.json"
 for arg in "$@"; do
-    if [ "$arg" = "--slice-a" ]; then
-        SLICE="$THIS_DIR/holdout_outcome_slice_v42_7_5.json"
-    fi
+    case "$arg" in
+        --slice-a) SLICE="$THIS_DIR/holdout_outcome_slice_v42_7_5.json" ;;
+        --slice-b) SLICE="$THIS_DIR/holdout_outcome_slice_b_v42_7_14.json" ;;
+        --slice-c) SLICE="$THIS_DIR/holdout_outcome_slice_c_v42_7_17.json" ;;
+    esac
 done
 if [ ! -f "$SLICE" ]; then
     echo "slice file not found: $SLICE" >&2
