@@ -8,21 +8,25 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 ---
 
-## 1. Current state (last refreshed 2026-04-27)
+## 1. Current state (last refreshed 2026-04-28)
 
 - **Authoritative pipelines:** legacy for every field.
 - **Shadow pipelines:** `classification_atomic`, `failure_reason_atomic`, `outcome_atomic` all run and write `<field>_atomic` for audit — never in the critical path.
-- **Commit:** `26345b9f` on main (v42.7.14 — Failed override status-gating). All v42.7.5–v42.7.14 shipped:
-  - v42.7.5: code-sync diagnostic (memory-vs-disk fix)
-  - v42.7.6: NIH RePORTER (18th research agent)
-  - v42.7.7: vaccine-immunogenicity Positive override
-  - v42.7.8: FDA Drugs / SEC EDGAR raw_data → outcome dossier
-  - v42.7.9: FDA Drugs query covers `products.*` fields (pre-2010 drugs)
-  - v42.7.10: orchestrator preserves intervention `type` — CRITICAL silent regression fix (SEC EDGAR / FDA Drugs / NIH RePORTER had been receiving empty interventions for 2 days)
-  - v42.7.11: surface "Trial Drugs: X, Y, Z" in dossier
+- **Commit:** `fdd6859b` on main (v42.7.17 — Rule 7 softening). Full v42.7.5–v42.7.17 shipped:
+  - v42.7.5–v42.7.11: code-sync, NIH RePORTER (18th agent), vaccine override, FDA/SEC wiring, query extension, intervention type preservation, drug-name surfacing
   - v42.7.12: FDA label indications + CT.gov registered-pubs gate (Job #92 over-call fix)
-  - v42.7.13: explicit "Registered Trial Publications: 0" line + Rule 7 hallucination fix (Job #93 LLM hallucination fix)
-  - v42.7.14: Failed override gated on terminal registry status (Job #92 NCT03018665 fix)
+  - v42.7.13: explicit "Registered Trial Publications: 0" line + Rule 7 hallucination fix
+  - v42.7.14: Failed override gated on terminal registry status
+  - v42.7.15: _NEGATIVE_KW tightening (remove bare "failed" / "negative")
+  - v42.7.16: sequence canonicalizer strips terminal -OH / -NH2 chemistry suffix
+  - v42.7.17: Rule 7 over-correction fix — accept pub-title-pattern as alternative trial-specificity (drug name + phase/first-in-human/clinical-trial descriptor in title; generic field reviews excluded). Triggered by Job #96 held-out-B revealing v42.7.13's strict FALLBACK was too literal.
+
+- **Held-out slices:** A (30, retired post-#95), B (25, retired post-#96 — surfaced over-correction), C (25, active, Job #97 in flight).
+- **Job validation history (recent):**
+  - Job #92 (held-out-A, v42.7.11): outcome 60.0%, classification 100%, sequence 50%
+  - Job #95 (held-out-A re-run, v42.7.13): outcome 60.0% (same accuracy, 4 over-calls fixed but 4 noise-floor losses)
+  - Job #96 (held-out-B, v42.7.16): outcome 36% — revealed v42.7.13 over-correction
+  - Job #97 (held-out-C, v42.7.17): in flight, target outcome ≥55%
 - **Research agents:** 18 total — 15 prior + bioRxiv (v42) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
 - **Validation baselines (47-NCT clean slice, GT/registry-aligned):**
   - **Job #83 (v42.6.15)** — peptide 81.1%, classification 90.7%, delivery 91.7%, outcome 61.7%, RfF 83.3%, sequence 75.0%.
