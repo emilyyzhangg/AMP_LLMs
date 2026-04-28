@@ -27,7 +27,14 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **Job #95 (v42.7.13 held-out re-run)** (`6810225e0993`, prod, ~5h eta) — second and FINAL use of held-out-A. After this, the slice is retired (overfitting risk: Job #92 → Job #95 means we've already used these 30 NCTs to tune the v42.7.12+13 gates).
+*(none — Job #95 complete)*
+
+### Job #95 result (held-out-A retirement run)
+- Outcome 18/30 = 60.0% (IDENTICAL to Job #92, but different per-trial mistakes)
+- 4/4 over-calls flipped to Unknown as designed (v42.7.12+13 working)
+- 4 new losses: 3 noise/research-variability + 1 intentional design trade (vaccine without registered pubs no longer auto-Positive)
+- Peptide +3.7pp (88.9%), classification 100% (perfect), sequence 50%, delivery 89.3%
+- **Confirms held-out-A retirement** — the LLM noise floor on this slice (~8.5%) exceeds the marginal effect of v42.7.12-13 prompt tightening. Re-runs can't distinguish design wins from per-trial jitter.
 
 ### Held-out evaluation policy (effective 2026-04-27)
 The 30-NCT held-out-A (`scripts/holdout_outcome_slice_v42_7_5.json`) is **retired** after Job #95. Subsequent cycles validate against held-out-B (`scripts/holdout_outcome_slice_b_v42_7_14.json`, 25 NCTs, seed 5252, exclusion list = held-out-A + #83-slice + prior jobs + test-batch). This is the standard ML tune-set/held-out separation.
