@@ -63,9 +63,9 @@ Recorded from Job #97 miss analysis (do not act on these while Job #98 in flight
 - **Confirms held-out-A retirement** — the LLM noise floor on this slice (~8.5%) exceeds the marginal effect of v42.7.12-13 prompt tightening. Re-runs can't distinguish design wins from per-trial jitter.
 
 ### Held-out evaluation policy (effective 2026-04-27)
-The 30-NCT held-out-A (`scripts/holdout_outcome_slice_v42_7_5.json`) is **retired** after Job #95. Subsequent cycles validate against held-out-B (`scripts/holdout_outcome_slice_b_v42_7_14.json`, 25 NCTs, seed 5252, exclusion list = held-out-A + #83-slice + prior jobs + test-batch). This is the standard ML tune-set/held-out separation.
+Each held-out slice is single-use per cycle. After a slice is used to score the cycle that produced it, it's retired (see slice table at top). Subsequent cycles validate against the next-numbered slice. This is the standard ML tune-set/held-out separation.
 
-For v42.7.14+15+ validation: use held-out-B exclusively. Submit via `scripts/submit_holdout_validation.sh --check-sync` (defaults to slice-B).
+Slice progression so far: A (30, seed 4242, retired post-#95) → B (25, seed 5252, retired post-#96) → C (25, seed 6262, retired post-#97) → D (20, seed 7373, active for Job #98). Future: E (seed 8484), etc. Build with `scripts/pick_holdout_*_outcome_slice.py`. Submit via `scripts/submit_holdout_validation.sh --check-sync`.
 
 ### Job #92 results (2026-04-27, 4h 37m, commit 401806ab)
 - **classification 27/27 = 100%** ⭐
@@ -74,24 +74,17 @@ For v42.7.14+15+ validation: use held-out-B exclusively. Submit via `scripts/sub
 - outcome 60.0% — **within ~3pp noise floor of Job #83's 61.7% baseline**
 - v42.7.10 fix VALIDATED: NIH RePORTER 67%, FDA Drugs 40%, SEC EDGAR 50% (vs 0/0/4.3% pre-fix)
 
-**Pattern surfaced:** outcome is flat because 4 over-calls (Positive when GT=Unknown) canceled the v42.7.7+8 gains. The over-calls share a pattern: drug is FDA-approved for indication X, trial tested it for indication Y. Examples: calcitonin (approved for osteoporosis, trial tested thyroid); exenatide (approved for diabetes, trial tested Parkinson's). The current FDA-approved override + Rule 7 vaccine exception don't disambiguate indications — they fire on "any approved" + "any pub mentions efficacy."
-
-**Next cycle target (v42.7.12+):**
-- Tighten FDA-approved override with indication-matching: require trial title/condition to overlap with FDA label indication, OR require strong-efficacy keywords ALSO present (FDA-approved as a multiplier, not sole signal).
-- Investigate whether the GT annotators are correct on the 4 over-call cases — these may be "humans had out-of-band knowledge" cases similar to the GT/registry divergence we found in Job #78-83.
-
-### Validated this morning
-- **Smoke #91** (`5a3ff88bcbb2`, 10 NCTs, 1h 41m): 0 errors. Empirically confirmed v42.7.10 silent regression existed (0 citations from SEC EDGAR/FDA Drugs/NIH RePORTER on all 10 trials).
-- **Dev smoke** (`e46797571504`, 2 NCTs): NCT03199872 (RhoC vaccine) + NCT00002228 (Enfuvirtide) both flipped Job #83 Unknown → Positive matching GT, with v42.7.7 vaccine exception explicitly cited in LLM reasoning.
-- **v42.7.10 live in prod**: Job #92 research phase (first 5 trials) shows SEC EDGAR 5+ / FDA Drugs 3 / NIH RePORTER 3-6 citations per trial — vs smoke #91's uniform 0/0/0. Fix is empirically working.
+**Pattern surfaced:** outcome was flat because 4 over-calls (Positive when GT=Unknown) canceled the v42.7.7+8 gains. The over-calls shared a pattern: drug is FDA-approved for indication X, trial tested it for indication Y. Examples: calcitonin (approved for osteoporosis, trial tested thyroid); exenatide (approved for diabetes, trial tested Parkinson's). **Resolved by v42.7.12** (FDA label indications + CT.gov registered-pubs gate) and v42.7.13 (LLM hallucination fix); over-correction caught + fixed by v42.7.17.
 
 ### Next steps (queued)
-1. Once smokes pass: merge v42.7.7 + v42.7.8 to main.
-2. Run held-out 30-NCT validation against new main (`scripts/holdout_outcome_slice_v42_7_5.json`). First independent measurement of the 19-agent pipeline + override changes.
-3. Decide based on held-out results whether to add a third outcome-Positive override (the GLP-1/biomarker class still under-calls; may need a "biomarker primary endpoint" pattern, but careful design needed to avoid v41-era over-call regression).
+1. Wait for Job #98 to complete (currently 50% done, ETA ~16:00 local).
+2. Score Job #98 with `scripts/heldout_analysis.sh 29cd761c1bce 51a6c2a308f8` and `scripts/cross_job_miss_patterns.py` (new).
+3. Merge v42.7.19 (delivery-mode relevance gate, dev only) to main. Build held-out-E (seed 8484) for the next cycle.
+4. Re-evaluate v42.7.20 (outcome positive recall) based on Job #98 signal — defer if risk of Rule 7 over-correction redux is still unclear.
+5. If Job #98 surfaces additional sequence=N/A on peptide=True trials with public canonical sequences, queue v42.7.21 dict expansion.
 
 ### Test suite
-18 test files under `scripts/test_v42_*.py` + `scripts/test_v42_trip_wires.py`, 123 tests — full sweep clean. Trip-wire suite (9 source-level assertions) protects the most expensive past-bug fixes from refactor regression.
+25 test files under `scripts/test_v42_*.py` + `scripts/test_v42_trip_wires.py`, 177 tests + 17 trip-wires + 9 live-API integrations — full sweep clean. Trip-wire suite (17 source-level assertions) protects the most expensive past-bug fixes from refactor regression. Run `bash scripts/run_full_regression.sh` for the 3-tier sweep.
 
 ---
 
