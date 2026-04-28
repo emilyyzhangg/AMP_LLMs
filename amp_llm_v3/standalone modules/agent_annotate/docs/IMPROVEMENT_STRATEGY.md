@@ -745,7 +745,7 @@ Issues from concordance analysis (CONTINUATION_PLAN.md) resolved in v25:
 
 ---
 
-## 17. v25 → v42.7.17 (2026-04-01 → 2026-04-28) — Atomic Era + v42.7 Cycle
+## 17. v25 → v42.7.18 (2026-04-01 → 2026-04-28) — Atomic Era + v42.7 Cycle
 
 After v25, the project went through a substantial overhaul. This file is no longer the canonical source for v26+ work — see:
 - `LEARNING_RUN_PLAN.md` — full job registry through Job #97
@@ -765,7 +765,9 @@ After v25, the project went through a substantial overhaul. This file is no long
 
 **Diagnostics:** v42.7.5 captures BOOT_COMMIT_FULL at module load + new `/api/diagnostics/code_sync` endpoint, closing the memory-vs-disk smoke-pitfall that bit us 3 times in v42.6/v42.7. v42.7.1 introduced a 5-tier `evidence_grade` (db_confirmed > deterministic > pub_trial_specific > llm > inconclusive); v42.7.2's `commit_accuracy_report.py` reports coverage × commit_accuracy stratified by grade.
 
-**Discipline established:** per-cycle held-out separation. Held-out-A (30 NCTs, seed 4242) used as Jobs #92+#95 then retired. Held-out-B (25 NCTs, seed 5252) used as Job #96 (which surfaced v42.7.13's over-correction) then retired. Held-out-C (25 NCTs, seed 6262) is the v42.7.17 validation slice (Job #97 in flight).
+**Discipline established:** per-cycle held-out separation. Held-out-A (30 NCTs, seed 4242) used as Jobs #92+#95 then retired. Held-out-B (25 NCTs, seed 5252) used as Job #96 (which surfaced v42.7.13's over-correction) then retired. Held-out-C (25 NCTs, seed 6262) used as Job #97 then retired. Held-out-D (20 NCTs, seed 7373) is now active for Job #98.
+
+**v42.7.18 (sequence-dict expansion):** added 5 entries to `_KNOWN_SEQUENCES` (solnatide / ap301 / tip-peptide → CGQRETPEGAEAKPWYC; io103 alias for the existing pd-l1 peptide entry → FMTYWHLLNAFTVTVPKDL; apraglutide backbone → HGDGSFSDELSTILDLLAARDFINWLIQTKITD). Sourced from Job #97's 8/10 sequence-N/A misses on peptide=True trials. Sequences-only — `_KNOWN_PEPTIDE_DRUGS` deliberately untouched per `feedback_frozen_drug_lists.md`.
 
 ### Validation summary (47-NCT clean slice)
 
@@ -783,11 +785,17 @@ After v25, the project went through a substantial overhaul. This file is no long
 | #92 | A (30) | v42.7.11 | 60.0% | 4 over-call class |
 | #95 | A (30) | v42.7.13 | 60.0% | Over-calls fixed; noise re-distributed |
 | #96 | B (25) | v42.7.16 | 36.0% | Revealed v42.7.13 over-correction |
-| #97 | C (25) | v42.7.17 | running | First post-fix independent measurement |
+| #97 | C (25) | v42.7.17 | 68.0% | First post-fix measurement; v42.7 outcome cycle design-complete |
+| #98 | D (20) | v42.7.18 | running | Sequence-dict expansion + outcome regression check |
 
-### What's next (post-Job #97)
+### What's next (post-Job #98)
 
-Triage based on Job #97 outcome:
-- If outcome ≥55%: v42.7 cycle is design-complete on outcome; shift focus to other fields (sequence agent under-extraction; delivery_mode multi-route handling) or to the calibrated-decline phase 3 (INCONCLUSIVE first-class for outcome).
-- If outcome <50%: v42.7.17 still under-tightened; look for additional pub-title patterns to allow.
-- Either way: build held-out-D for the next cycle (single-use-per-cycle discipline).
+**On outcome:** the v42.7 cycle is design-complete on outcome. Job #97's 68% on a fresh slice is a +32pp recovery from #96's 36% over-correction and +8pp over Job #92's #97-equivalent baseline. Future cycles should expect ±8.5% jitter on small (≤25 NCT) slices.
+
+**On sequence (Job #97 surfaced gap):** 8 of 10 peptide=True trials emitted sequence=N/A. v42.7.18 addresses 3 (solnatide / io103 / apraglutide). The remaining 5 NCTs need a different fix path — likely LLM-reasoning extraction from intervention text rather than dict expansion. Held-out-D analysis (pre-Job #98) shows none of v42.7.18's 3 target drugs appear in slice-D, so Job #98 is primarily a regression check + fresh sequence baseline (13/20 GT-sequence trials).
+
+**v42.7.19 candidate areas (from held-out-D pre-analysis):**
+- D-amino-acid notation (`fCYwKTCT` for NCT04440956): canonicaliser strips case; agent extraction may need to preserve and recognize lowercase as D-isomers in known-drug lookup.
+- Very short peptides (`RGD` 3-aa for NCT05518071): below current minimum-length guards; consider known-3-mer table for canonical motifs (RGD, KKK, etc.).
+- Multi-domain N-terminal modifications (e.g. `(H)RR...(NH2)` for NCT05137314): chemistry-suffix regex covers terminus only; a leading `(H)` or `(Ac)` motif may need symmetric handling.
+- Non-peptide-named drugs whose canonical sequence is in UniProt/DRAMP/DBAASP databases but not in `_KNOWN_SEQUENCES`: research-agent path, not annotation-agent path.
