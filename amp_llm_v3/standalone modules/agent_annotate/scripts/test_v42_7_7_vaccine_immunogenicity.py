@@ -96,7 +96,9 @@ def test_prompt_rule_7_has_vaccine_exception():
     # Find Rule 7
     idx = src.find("7. Phase I:")
     assert idx > 0, "Rule 7 not found in DOSSIER_PROMPT"
-    rule7 = src[idx:idx + 800]
+    # Window enlarged in v42.7.17 — Rule 7 grew with the alternative
+    # trial-title-pattern criterion.
+    rule7 = src[idx:idx + 2200]
     assert "EXCEPTION" in rule7, "Rule 7 must include the vaccine EXCEPTION"
     assert "vaccine" in rule7.lower() or "immunotherapy" in rule7.lower()
     assert "immunogenicity" in rule7.lower()

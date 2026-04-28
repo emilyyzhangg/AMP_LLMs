@@ -126,21 +126,25 @@ def test_prompt_rule_3c_indication_match():
 
 
 def test_prompt_rule_7_requires_registered_pubs():
-    """Rule 7 vaccine exception now requires ≥1 CT.gov-registered publication."""
+    """Rule 7 vaccine exception emphasizes CT.gov-registered publications.
+    v42.7.17 softened to also accept pubs whose TITLE explicitly describes
+    THIS trial (Phase I/II of [drug] / first-in-human study of [drug])."""
     src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
     idx = src.find("EXCEPTION (vaccine")
     assert idx > 0
     block = src[idx:idx + 2200]
     block_lower = block.lower()
-    assert "ct.gov-registered" in block_lower
+    # Registered pubs must still be mentioned as STRONGEST evidence
+    assert "registered" in block_lower
     assert "registered trial publications" in block_lower
-    # v42.7.13: explicit fallback when registered count is 0
+    # v42.7.17: alternate path — pub title pattern qualifies
+    assert "title" in block_lower and (
+        "phase" in block_lower or "first-in-human" in block_lower
+    ), "Rule 7 must allow pub-title-based trial-specificity (v42.7.17)"
+    # Default-to-Unknown clause still present for the no-evidence case
     assert ("default to" in block_lower and "unknown" in block_lower), \
-        "Rule 7 must explicitly fall back to Unknown for trials with no registered pubs"
-    # v42.7.13: explicitly distinguish heuristic [TRIAL-SPECIFIC] from registered
-    assert "heuristic" in block_lower, \
-        "Rule 7 must call out that [TRIAL-SPECIFIC] is heuristic ≠ registered"
-    print("  ✓ Rule 7 vaccine exception requires CT.gov-registered + heuristic-distinction")
+        "Rule 7 must still default to Unknown when no qualifying pub evidence"
+    print("  ✓ Rule 7 vaccine exception: registered or pub-title-pattern (v42.7.17)")
 
 
 def test_runtime_fda_approved_alone_no_longer_fires():

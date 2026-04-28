@@ -778,12 +778,12 @@ RULES (follow in order):
 5. TERMINATED with no publications and no results posted → "Terminated"
 6. COMPLETED with no trial-specific publications and no results posted → "Unknown"
 7. Phase I: only mark Positive with an explicit primary-endpoint-met statement. Safety + biological activity without that statement → "Unknown".
-   EXCEPTION (vaccine / immunotherapy trials only): mark Positive ONLY when ALL of the following hold:
-     (i) The dossier indicates a VACCINE or IMMUNOTHERAPY trial.
-     (ii) The "Registered Trial Publications" line in the dossier shows count ≥ 1 — these are CT.gov-registered PMIDs (sponsor-registered, proven trial-specific). The [TRIAL-SPECIFIC] tag on individual publications is a HEURISTIC and is NOT the same thing — heuristic [TRIAL-SPECIFIC] does NOT satisfy this requirement.
-     (iii) ≥2 publications report immunogenicity outcomes (induces immune response, antibody titers, T-cell response, seroconversion, sustained immune response).
+   EXCEPTION (vaccine / immunotherapy trials only): mark Positive when:
+     (i) The dossier indicates a VACCINE or IMMUNOTHERAPY trial; AND
+     (ii) The trial has clear trial-specific publications. STRONGEST evidence: "Registered Trial Publications" count ≥ 1 (sponsor-registered PMIDs are proven trial-specific). EQUIVALENT acceptable evidence: ≥1 publication whose TITLE explicitly describes THIS trial's design — e.g., "Randomized phase I/II clinical trial of [drug]", "First-in-human study of [drug]", "Phase 1b trial of [drug] in [population]", "Results of [drug] in [indication]". The pub TITLE must contain BOTH the trial's drug/vaccine name AND a clinical-trial descriptor (phase / first-in-human / clinical trial / results). Generic field reviews ("Advances in cancer vaccination", "Epigenetic Regulation of Immune Responses", "Modern Methods in Peptide Vaccination") do NOT qualify under this branch — they describe the field, not the trial.
+     (iii) ≥2 publications report immunogenicity outcomes (induces immune response, antibody titers, T-cell response, seroconversion, sustained immune response); AND
      (iv) No failure/adverse signals.
-   FALLBACK: If "Registered Trial Publications: 0" appears in the dossier, this exception does NOT apply, regardless of how many [TRIAL-SPECIFIC] heuristic-tagged pubs mention immune responses. Default to "Unknown" — those may be drug-class review articles mis-classified by the heuristic.
+   When "Registered Trial Publications: 0" appears in the dossier AND no pub title meets the (ii)-equivalent description, the exception does NOT apply — default to "Unknown".
 8. Default when evidence is inconclusive → "Unknown" (not "Positive").
 
 CRITICAL: "Positive" REQUIRES a specific primary-endpoint-met / p<0.05 / approval / phase-advancement signal. Vague "efficacy" or "benefit" language is NOT sufficient.
