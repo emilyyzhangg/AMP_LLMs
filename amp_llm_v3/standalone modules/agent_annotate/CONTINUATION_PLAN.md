@@ -1,10 +1,10 @@
 # Agent Annotate — Continuation Plan
 
 **Last updated:** 2026-04-28 (v42.7.18 sequence-dict expansion in flight as Job #98; v42.7.19 delivery-mode relevance gate staged on dev)
-**Current state:** Job #97 confirmed v42.7.17 design-complete on outcome (17/25 = 68%, +32pp vs over-corrected #96, +8pp vs #92). Pipeline now shifts to **field 2 (sequence) under-extraction** — Job #97 had 8/10 peptide=True trials emit `sequence=N/A` despite GT carrying sequences. v42.7.18 adds 5 entries to `_KNOWN_SEQUENCES` (solnatide/ap301/tip-peptide → CGQRETPEGAEAKPWYC; io103 alias for the existing pd-l1 peptide entry → FMTYWHLLNAFTVTVPKDL; apraglutide backbone → HGDGSFSDELSTILDLLAARDFINWLIQTKITD). Sequences-only — `_KNOWN_PEPTIDE_DRUGS` stays frozen per `feedback_frozen_drug_lists.md`. 19 research agents stable.
+**Current state:** Job #97 confirmed v42.7.17 design-complete on outcome (17/25 = 68%, +32pp vs over-corrected #96, +8pp vs #92). v42.7.18 (sequence-dict: solnatide/ap301/tip-peptide/io103/apraglutide) merged to main; Job #98 in flight for held-out-D validation. v42.7.19 (delivery_mode ambiguous-keyword relevance gate) staged on dev — addresses 6 distinct NCTs across Jobs #92/#95/#96/#97 with spurious-oral pattern. 19 research agents stable.
 
-**Main at:** `fdd6859b` (v42.7.17). v42.7.18 staged on dev, ready to ship after this regression sweep.
-**Prod status:** autoupdater synced; serving v42.7.17.
+**Main at:** `5875b4a8` (v42.7.18 merge). v42.7.19 + held-out-E + cross_job_miss_patterns tool staged on dev for next cycle.
+**Prod status:** autoupdater synced; serving v42.7.18 (Job #98 pinned to commit 5875b4a8).
 
 ### Per-cycle held-out separation (active discipline)
 | Slice | NCTs | Seed | Status | Used by jobs |
