@@ -14,6 +14,14 @@ Publication-grade clinical trial annotation powered by a network of specialized 
 
 Annotation outputs may include `<field>_atomic` keys alongside the standard fields (for example, `outcome` and `outcome_atomic`). The `_atomic` values come from the v42 atomic evidence-decomposition pipeline running in parallel with the legacy agent. They are observability/A-B data — the legacy field remains authoritative for downstream consumers — until the per-field `prefer_atomic_*` config flag is flipped. See `METHODOLOGY.md §5.4.1` for the full semantics.
 
+## v42.7 era (current, 2026-04-28)
+
+- **18 research agents** = 15 prior + bioRxiv (v42 Phase 6) + SEC EDGAR sponsor disclosures (v42.7.0) + openFDA Drugs@FDA approvals (v42.7.0) + NIH RePORTER federal grants (v42.7.6). Each fires per-trial, contributes citations to the LLM-visible dossier, and may trigger structural overrides.
+- **Outcome agent overrides:** vaccine-immunogenicity Positive override (v42.7.7) with pub-title-pattern alternative (v42.7.17); FDA-approved drug override gated on strong-efficacy keywords (v42.7.12); Failed override gated on terminal registry status (v42.7.14).
+- **Evidence grading:** every annotation carries an `evidence_grade` ∈ {db_confirmed, deterministic, pub_trial_specific, llm, inconclusive} (v42.7.1). Used by `scripts/commit_accuracy_report.py` for coverage × commit-accuracy stratification.
+- **Code-sync diagnostic:** `/api/diagnostics/code_sync` returns boot vs disk commit + active-job count (v42.7.5). `scripts/check_code_sync.sh` is the smoke-harness gate.
+- **Held-out evaluation:** per-cycle held-out rotation. See `CONTINUATION_PLAN.md` for active slice + retired slices. `scripts/submit_holdout_validation.sh --check-sync` defaults to the active slice.
+
 ---
 
 ## Table of Contents
