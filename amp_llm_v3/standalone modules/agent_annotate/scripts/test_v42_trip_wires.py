@@ -291,6 +291,31 @@ def test_v42_7_6_nih_reporter_uses_advanced_text_search():
     print("  ✓ v42.7.6: advanced_text_search criterion (no-op key avoided)")
 
 
+def test_v42_7_18_known_sequences_expanded():
+    """v42.7.18 (2026-04-28): _KNOWN_SEQUENCES expanded to fill Job #97
+    held-out-C peptide=True / sequence=N/A misses. Solnatide (AP301 /
+    TIP peptide, NCT03567577), IO103 product-code alias for the existing
+    'pd-l1 peptide' entry, and apraglutide backbone (NCT04964986) must
+    all remain in _KNOWN_SEQUENCES. Removing them recreates the Job #97
+    sequence-extraction gap.
+
+    NOTE: this trip-wire only covers sequences additions. _KNOWN_PEPTIDE_DRUGS
+    is frozen per `feedback_frozen_drug_lists.md` — never expand it.
+    """
+    src = (PKG_ROOT / "agents" / "annotation" / "sequence.py").read_text()
+    assert '"solnatide": "CGQRETPEGAEAKPWYC"' in src, \
+        "v42.7.18 trip-wire: solnatide entry missing (NCT03567577)"
+    assert '"ap301": "CGQRETPEGAEAKPWYC"' in src, \
+        "v42.7.18 trip-wire: ap301 alias missing"
+    assert '"tip peptide": "CGQRETPEGAEAKPWYC"' in src, \
+        "v42.7.18 trip-wire: tip peptide alias missing"
+    assert '"io103": "FMTYWHLLNAFTVTVPKDL"' in src, \
+        "v42.7.18 trip-wire: io103 alias missing"
+    assert '"apraglutide":' in src and "HGDGSFSDE" in src, \
+        "v42.7.18 trip-wire: apraglutide backbone missing"
+    print("  ✓ v42.7.18: _KNOWN_SEQUENCES holds solnatide/ap301/tip-peptide/io103/apraglutide")
+
+
 def test_dbaasp_word_boundary_preserved():
     """v25 DBAASP word-boundary fix: 'NS' (normal saline) and short
     drug-name prefixes were matching DBAASP entries by substring, not
@@ -329,6 +354,7 @@ def main() -> int:
         test_v42_7_14_failed_override_status_gated,
         test_v42_7_15_negative_keyword_tightened,
         test_v42_7_16_sequence_canonicaliser_strips_chemistry_suffix,
+        test_v42_7_18_known_sequences_expanded,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
