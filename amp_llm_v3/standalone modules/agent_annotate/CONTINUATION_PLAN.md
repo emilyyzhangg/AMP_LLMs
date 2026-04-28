@@ -1,14 +1,22 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-27 (v42.7 cycle complete + v42.7.5/6 merged + v42.7.7/8 on dev)
-**Current state:** v42.7 cycle delivered. 18 research agents (15 prior + bioRxiv + SEC EDGAR + FDA Drugs + NIH RePORTER). Code-sync diagnostic ships; held-out 30-NCT slice ready for next-cycle validation. Two new outcome-Positive overrides on dev (vaccine-immunogenicity + FDA-approved drug) await held-out validation.
+**Last updated:** 2026-04-28 (v42.7.17 cycle close-out, held-out-C in flight)
+**Current state:** Three full held-out cycles complete (Jobs #92/#95 on slice A, #96 on slice B); v42.7.13 over-correction caught and fixed by v42.7.17 (alternative pub-title-pattern path in Rule 7 EXCEPTION). 18 research agents stable. Held-out-C (Job #97) running on prod for v42.7.17 first independent validation.
 
-**Main at:** `f574536f` (v42.7.6 merged 2026-04-27 03:04 PT)
-**Dev at:** `d605a702` (v42.7.8 + compare_jobs.py + docs)
-**Prod status:** autoupdater synced; 18-agent pipeline serving v42.7.6.
+**Main at:** `fdd6859b` (v42.7.17 merged 2026-04-28)
+**Prod status:** autoupdater synced; serving v42.7.17.
+
+### Per-cycle held-out separation (active discipline)
+| Slice | NCTs | Seed | Status | Used by jobs |
+|---|---|---|---|---|
+| held-out-A | 30 | 4242 | RETIRED | #92 (v42.7.11), #95 (v42.7.13 over-call fixes) |
+| held-out-B | 25 | 5252 | RETIRED | #96 (v42.7.16 baseline → revealed over-correction) |
+| held-out-C | 25 | 6262 | ACTIVE | #97 (v42.7.17 validation, in flight) |
+
+`scripts/submit_holdout_validation.sh --check-sync` defaults to the active slice.
 
 ### Active iteration line (post-Phase-6 cycles)
-v42.6.10–.19 (recovery + audit-driven narrow fixes) → v42.7.0 (SEC EDGAR + FDA Drugs) → v42.7.1 (5-tier evidence_grade) → v42.7.2 (commit_accuracy + pub-classifier expansion) → v42.7.3 (per-field DB grading) → v42.7.4 (two-tier source weighting) → **v42.7.5** (code-sync diagnostic, on main) → **v42.7.6** (NIH RePORTER 18th agent, on main) → **v42.7.7** (vaccine-immunogenicity override, dev) → **v42.7.8** (wire FDA Drugs / SEC EDGAR into outcome dossier, dev) → **v42.7.9** (FDA Drugs query extension to `products.*`, dev) → **v42.7.10** (CRITICAL: orchestrator preserves intervention `type`; fixes silent v42.7.0 regression where SEC EDGAR / FDA Drugs / NIH RePORTER had been receiving empty interventions for 2 days, dev).
+v42.6.10–.19 → v42.7.0 (SEC EDGAR + FDA Drugs) → v42.7.1 (5-tier evidence_grade) → v42.7.2 (pub-classifier expansion + commit_accuracy report) → v42.7.3 (per-field DB grading) → v42.7.4 (two-tier source weighting) → v42.7.5 (code-sync diagnostic) → v42.7.6 (NIH RePORTER) → v42.7.7 (vaccine-immunogenicity Positive override) → v42.7.8 (wire FDA Drugs/SEC EDGAR signals into dossier) → v42.7.9 (FDA Drugs `products.*` query) → v42.7.10 (CRITICAL: orchestrator preserves intervention `type`) → v42.7.11 (surface intervention names) → v42.7.12 (FDA label indications + CT.gov registered-pubs gate) → v42.7.13 (LLM hallucination fix — explicit "0" line + Rule 7 restructure) → v42.7.14 (Failed override status-gating) → v42.7.15 (_NEGATIVE_KW tightening) → v42.7.16 (sequence chemistry-suffix canonicalization) → **v42.7.17 (Rule 7 over-correction fix — accept pub-title-pattern as alternative trial-specificity)**.
 
 ### Dev smoke validation (v42.7.7+8 prototype, 2026-04-27)
 Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Positive, matching GT:**
@@ -27,7 +35,13 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-*(none — Job #95 complete)*
+- **Job #97** (`c9da523f4913`, prod) — v42.7.17 validation on held-out-C (25 NCTs, 16 positive + 9 unknown). First fully fresh measurement of the Rule 7 fix. Eta ~4-5h.
+
+### Cycle close-out narrative
+The v42.7.7-13 cycle aimed to fix the Job #92 over-call class (drug FDA-approved for indication X, trial tested indication Y). v42.7.12+13 succeeded on the over-calls (Job #93/#94 confirmed) but v42.7.13's strict FALLBACK ("default to Unknown if Registered Trial Publications: 0") was too literal — Job #96 on held-out-B revealed the LLM rigidly applied it even when pub titles were unambiguous trial reports. Outcome dropped from 60% (held-out-A) to 36% (held-out-B). v42.7.17 softened Rule 7 with an alternative path: pub TITLE explicitly describes THIS trial (drug name + phase/first-in-human/clinical-trial descriptor in title; field reviews still excluded). Job #97 measures the corrected balance.
+
+If Job #97 outcome ≥55%: cycle is design-correct, ready for next chapter.
+If outcome regresses below 50%: more work needed on Rule 7 wording.
 
 ### Job #95 result (held-out-A retirement run)
 - Outcome 18/30 = 60.0% (IDENTICAL to Job #92, but different per-trial mistakes)
