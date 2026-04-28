@@ -2,7 +2,7 @@
 
 Strategy to surpass human annotation accuracy by fixing agent errors, exploiting the agent's structural advantages, and addressing the gaps revealed by a quality audit of both agent output and human annotations.
 
-> **Last updated:** 2026-03-17
+> **Last updated:** 2026-04-28 (canonical sources for v26+ are LEARNING_RUN_PLAN, CONTINUATION_PLAN, AGENT_STRATEGY_ROADMAP — see §17)
 
 > **IMPORTANT DESIGN PRINCIPLE:** Human annotations (`docs/clinical_trials-with-sequences.xlsx`) are used **only for development-time evaluation and prompt refinement** — measuring agent accuracy, identifying error patterns, and tuning prompts. Human annotations are **never used at runtime**. The agents must produce correct annotations independently, relying solely on live data from external APIs (ClinicalTrials.gov, PubMed, UniProt, etc.). The goal is to build agents that don't need a human counterpart.
 
@@ -742,3 +742,52 @@ Issues from concordance analysis (CONTINUATION_PLAN.md) resolved in v25:
 | Sequence DRVYIHP over-matching (angiotensin matching ACE inhibitor trials) | **Fixed in v25** | Short drug names (<=4 chars) require exact match in `_KNOWN_SEQUENCES`; longer names use word-boundary regex. |
 | Outcome Unknown defaults for trials with published results | **Addressed in v25** | Post-LLM `_publication_priority_override()` checks for published results when LLM returns Unknown/Active/Terminated. Evidence priority ladder: publications > CT.gov results > status > phase. |
 | Peptide false negatives (agent=False, human=True) | **Partially addressed in v25** | 15 new peptide drugs added to `_KNOWN_PEPTIDE_DRUGS` (peptide vaccines, novel therapeutics from error analysis). 9 new verified sequences added to `_KNOWN_SEQUENCES`. Remaining false negatives require LLM reasoning improvements. |
+
+---
+
+## 17. v25 → v42.7.17 (2026-04-01 → 2026-04-28) — Atomic Era + v42.7 Cycle
+
+After v25, the project went through a substantial overhaul. This file is no longer the canonical source for v26+ work — see:
+- `LEARNING_RUN_PLAN.md` — full job registry through Job #97
+- `CONTINUATION_PLAN.md` — current state + held-out evaluation policy
+- `docs/AGENT_STRATEGY_ROADMAP.md` — design rules + decision log + future targets
+- `docs/ATOMIC_EVIDENCE_DECOMPOSITION.md` — v42 atomic-decomposition design
+
+### Headlines from the v42.7 cycle (≈2 weeks of work, 17 sub-versions)
+
+**Research pipeline expansion:** 3 new free agents (SEC EDGAR sponsor disclosures, openFDA Drugs@FDA approvals, NIH RePORTER federal grants). 18 research agents total. v42.7.10 fixed a CRITICAL silent regression where the orchestrator was dropping the intervention `type` field, causing all 3 new agents to receive empty interventions for 2 days post-deployment.
+
+**Outcome agent overrides (over-call control):** v42.7.7 vaccine-immunogenicity Positive override; v42.7.8 wired FDA-approved drug + SEC EDGAR signals into the dossier; v42.7.12 added FDA label indications + CT.gov registered-pubs gate to prevent off-label over-calls; v42.7.14 status-gated Failed override; v42.7.15 tightened _NEGATIVE_KW.
+
+**Outcome agent overrides (under-call recovery):** v42.7.13 fixed an LLM hallucination by surfacing "Registered Trial Publications: 0" explicitly. v42.7.17 fixed v42.7.13's over-correction by allowing pub-title-pattern as alternative trial-specificity (drug name + phase descriptor in title; field reviews still excluded).
+
+**Scoring/normalization:** v42.7.16 made the sequence canonicalizer strip terminal -OH / -NH2 chemistry suffixes (a scoring-side fix; agent output unchanged). compare_jobs / commit_accuracy_report use sequences_match for set-containment.
+
+**Diagnostics:** v42.7.5 captures BOOT_COMMIT_FULL at module load + new `/api/diagnostics/code_sync` endpoint, closing the memory-vs-disk smoke-pitfall that bit us 3 times in v42.6/v42.7. v42.7.1 introduced a 5-tier `evidence_grade` (db_confirmed > deterministic > pub_trial_specific > llm > inconclusive); v42.7.2's `commit_accuracy_report.py` reports coverage × commit_accuracy stratified by grade.
+
+**Discipline established:** per-cycle held-out separation. Held-out-A (30 NCTs, seed 4242) used as Jobs #92+#95 then retired. Held-out-B (25 NCTs, seed 5252) used as Job #96 (which surfaced v42.7.13's over-correction) then retired. Held-out-C (25 NCTs, seed 6262) is the v42.7.17 validation slice (Job #97 in flight).
+
+### Validation summary (47-NCT clean slice)
+
+| Job | Code | outcome | classification | sequence | Notes |
+|---|---|---|---|---|---|
+| #83 | v42.6.15 | 61.7% | 90.7% | 35.3% | Baseline |
+| #88 | v42.7.3 | 59.6% | 90.7% | — | RfF +7.6pp; outcome -2.1pp (within noise) |
+| #89 | v42.7.4 | 61.7% | 90.7% | — | Recovered |
+| #90 | v42.7.4 stability | 61.7% | 90.7% | — | Same code; 4 outcome flips → 8.5% noise floor |
+
+### Validation summary (held-out slices)
+
+| Job | Slice | Code | outcome | Notes |
+|---|---|---|---|---|
+| #92 | A (30) | v42.7.11 | 60.0% | 4 over-call class |
+| #95 | A (30) | v42.7.13 | 60.0% | Over-calls fixed; noise re-distributed |
+| #96 | B (25) | v42.7.16 | 36.0% | Revealed v42.7.13 over-correction |
+| #97 | C (25) | v42.7.17 | running | First post-fix independent measurement |
+
+### What's next (post-Job #97)
+
+Triage based on Job #97 outcome:
+- If outcome ≥55%: v42.7 cycle is design-complete on outcome; shift focus to other fields (sequence agent under-extraction; delivery_mode multi-route handling) or to the calibrated-decline phase 3 (INCONCLUSIVE first-class for outcome).
+- If outcome <50%: v42.7.17 still under-tightened; look for additional pub-title patterns to allow.
+- Either way: build held-out-D for the next cycle (single-use-per-cycle discipline).
