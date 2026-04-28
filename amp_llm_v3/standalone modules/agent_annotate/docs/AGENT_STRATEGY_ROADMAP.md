@@ -12,7 +12,7 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 - **Authoritative pipelines:** legacy for every field.
 - **Shadow pipelines:** `classification_atomic`, `failure_reason_atomic`, `outcome_atomic` all run and write `<field>_atomic` for audit — never in the critical path.
-- **Commit:** `fdd6859b` on main (v42.7.17 — Rule 7 softening). Full v42.7.5–v42.7.17 shipped:
+- **Commit:** `5875b4a8` on main (v42.7.18 merge — sequence-dict expansion). Full v42.7.5–v42.7.18 shipped:
   - v42.7.5–v42.7.11: code-sync, NIH RePORTER (19th agent), vaccine override, FDA/SEC wiring, query extension, intervention type preservation, drug-name surfacing
   - v42.7.12: FDA label indications + CT.gov registered-pubs gate (Job #92 over-call fix)
   - v42.7.13: explicit "Registered Trial Publications: 0" line + Rule 7 hallucination fix
@@ -20,13 +20,15 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
   - v42.7.15: _NEGATIVE_KW tightening (remove bare "failed" / "negative")
   - v42.7.16: sequence canonicalizer strips terminal -OH / -NH2 chemistry suffix
   - v42.7.17: Rule 7 over-correction fix — accept pub-title-pattern as alternative trial-specificity (drug name + phase/first-in-human/clinical-trial descriptor in title; generic field reviews excluded). Triggered by Job #96 held-out-B revealing v42.7.13's strict FALLBACK was too literal.
+  - v42.7.18: `_KNOWN_SEQUENCES` expansion — solnatide / ap301 / tip-peptide → CGQRETPEGAEAKPWYC; io103 → FMTYWHLLNAFTVTVPKDL (alias for existing pd-l1 peptide entry); apraglutide backbone → HGDGSFSDELSTILDLLAARDFINWLIQTKITD. Sources: Job #97's 8/10 sequence-N/A misses on peptide=True trials. Sequences-only — `_KNOWN_PEPTIDE_DRUGS` deliberately untouched per `feedback_frozen_drug_lists.md`.
 
-- **Held-out slices:** A (30, retired post-#95), B (25, retired post-#96 — surfaced over-correction), C (25, active, Job #97 in flight).
+- **Held-out slices:** A (30, retired post-#95), B (25, retired post-#96 — surfaced over-correction), C (25, retired post-#97 — outcome cycle PASS), D (20, active, Job #98 in flight).
 - **Job validation history (recent):**
   - Job #92 (held-out-A, v42.7.11): outcome 60.0%, classification 100%, sequence 50%
   - Job #95 (held-out-A re-run, v42.7.13): outcome 60.0% (same accuracy, 4 over-calls fixed but 4 noise-floor losses)
   - Job #96 (held-out-B, v42.7.16): outcome 36% — revealed v42.7.13 over-correction
-  - Job #97 (held-out-C, v42.7.17): in flight, target outcome ≥55%
+  - Job #97 (held-out-C, v42.7.17): outcome 17/25 = 68% — PASS, +32pp vs #96, +8pp vs #92; v42.7 outcome cycle design-complete
+  - Job #98 (held-out-D, v42.7.18): in flight; pre-analysis shows 0/20 trials directly target v42.7.18's 3 new dict entries — primarily a regression check + fresh sequence baseline (13/20 GT-sequence trials)
 - **Research agents:** 19 total — 15 pre-v42 + bioRxiv (v42 Phase 6) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
 - **Validation baselines (47-NCT clean slice, GT/registry-aligned):**
   - **Job #83 (v42.6.15)** — peptide 81.1%, classification 90.7%, delivery 91.7%, outcome 61.7%, RfF 83.3%, sequence 75.0%.
@@ -204,7 +206,9 @@ Step 8 — Ship
 ### 5.6 Sequence
 
 **Status:** legacy authoritative. Already structured (DB lookup + `_KNOWN_SEQUENCES`). No atomic.
-**Known issue:** formatting drift (multi-sequence `|`-separated output vs GT single canonical). Fix inside the legacy formatter.
+**Known issues:**
+- Formatting drift (multi-sequence `|`-separated output vs GT single canonical). Scoring side fixed by `sequences_match` set-containment in v42.6.15; canonicaliser now strips terminal -OH / -NH2 chemistry suffixes per v42.7.16.
+- Under-extraction on peptide=True trials with no DBAASP/APD/UniProt/ChEMBL hit. Job #97 had 8/10 sequence=N/A despite GT carrying canonical sequences. v42.7.18 (`_KNOWN_SEQUENCES` expansion: solnatide / io103 / apraglutide) addresses 3 of those. Remaining 5 NCTs probably need either further dict expansion (manual curation cost) OR a new structured database addition (research-side, not annotation-side). LLM extraction from intervention text is **explicitly avoided** to prevent hallucinated sequences.
 
 ---
 
@@ -246,7 +250,7 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
 116+ unit tests pass.
 
 ### Currently in flight
-*(none — v42.7 cycle closed; planning next cycle)*
+- **Job #98** (`29cd761c1bce`, prod) — v42.7.18 validation on held-out-D (20 NCTs, seed 7373). Code-sync gate PASSED at submit (boot=disk=5875b4a8). Eta ~3-4h. Pre-analysis: 0/20 trials directly target v42.7.18's 3 new dict entries, so this run primarily checks for regressions and takes a fresh sequence baseline (13/20 GT-sequence trials).
 
 ### v42.7 cycle close-out (what shipped)
 | Sub-version | Commit | What it did | Validated by |
@@ -256,6 +260,8 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
 | v42.7.2 | ed380774 | `commit_accuracy_report.py` + pub classifier expansion (5 agents in deterministic outcome override) | Job #88 |
 | v42.7.3 | 5e548125 | Per-field `_DB_KEYWORDS_BY_FIELD` dispatch (fixes commit-accuracy inversion) | Job #88 |
 | v42.7.4 | 0c0a7471 | Two-tier source weighting (`_PUB_AGENTS_HIGH_QUALITY` for keyword scan) | Job #89 |
+| v42.7.17 | fdd6859b | Rule 7 over-correction fix (pub-title-pattern alternative) | Job #97 PASS @ 68% |
+| v42.7.18 | 9d5ec33d | `_KNOWN_SEQUENCES` expansion (solnatide/io103/apraglutide) | Job #98 in flight |
 
 ### Recurring discipline (not jobs — process)
 1. Every code change ships with a unit test in `scripts/test_v42_*_*.py`.
