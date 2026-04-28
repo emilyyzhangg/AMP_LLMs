@@ -44,6 +44,17 @@ The v42.7.7-13 cycle aimed to fix the Job #92 over-call class (drug FDA-approved
 ### Next focus area: sequence under-extraction (v42.7.18+)
 Job #97 surfaced the next clear gap: 8/10 peptide=True trials emitted `sequence=N/A` despite GT carrying canonical sequences. Three of those (NCT03567577 Solnatide, NCT04964986 Apraglutide, NCT05898763 IO103-style) have public sequences addable to `_KNOWN_SEQUENCES` — the deterministic, no-LLM-cost path. v42.7.18 adds those entries (sequences-only; peptide.py untouched per `feedback_frozen_drug_lists.md`). Held-out-D will measure whether the dict expansion improves sequence accuracy without affecting other fields. After v42.7.18 validates, remaining sequence misses go to LLM-reasoning prompt improvements (no further dict expansion expected on the held-out frontier).
 
+### v42.7.19 candidate backlog (post-Job #98)
+Recorded from Job #97 miss analysis (do not act on these while Job #98 in flight; risk of over-fitting to retired slice):
+
+1. **Outcome positive recall** — 9 of 10 outcome misses on Job #97 are pattern `positive → unknown` on Phase 1 vaccine/peptide trials with multiple registered publications. The v42.7.17 alternative pub-title-pattern path didn't catch them. Hypotheses: pub titles may not include explicit phase descriptors, or trial-specific publications are emitting [GENERAL] tags incorrectly. Risk of tightening: Job #96-style over-correction redux. **Investigate dossier formatter and Rule 7 conditions before any code change.**
+
+2. **Delivery_mode multi-route over-collection** — 2 of 4 delivery misses on Job #97 are the agent emitting `"injection/infusion, oral"` when GT is single-route `"injection/infusion"`. The deterministic collector aggregates routes across citations indiscriminately; when a citation mentions oral administration of a comparator or food restriction, "oral" gets attributed to the experimental arm. **Fix candidate:** rank routes by intervention-arm specificity before composing the multi-route string; emit only the dominant route when secondary route appears in <30% of citations.
+
+3. **Sequence dict expansion (further)** — wait for Job #98 to see whether held-out-D's 13 GT-sequence trials surface additional N/A patterns. New entries should only land if a public canonical sequence exists.
+
+**Discipline:** all three candidates are notable patterns from a now-retired slice. Confirm pattern recurrence on Job #98's fresh slice before scoping any of them. Per memory `feedback_no_cheat_sheets.md` / `feedback_no_verifier_cheatsheet.md`, fixes must be reasoning/logic improvements, not specific drug-name shortcuts.
+
 ### Job #95 result (held-out-A retirement run)
 - Outcome 18/30 = 60.0% (IDENTICAL to Job #92, but different per-trial mistakes)
 - 4/4 over-calls flipped to Unknown as designed (v42.7.12+13 working)
