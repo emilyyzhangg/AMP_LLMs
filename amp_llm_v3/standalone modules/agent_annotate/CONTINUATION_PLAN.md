@@ -53,6 +53,8 @@ Recorded from Job #97 miss analysis (do not act on these while Job #98 in flight
 
 3. **Sequence dict expansion (further)** — wait for Job #98 to see whether held-out-D's 13 GT-sequence trials surface additional N/A patterns. New entries should only land if a public canonical sequence exists.
 
+4. **Vaccine-without-explicit-route default** — Job #96 had 4 cases of `injection/infusion → other`. Two were radiotracers (by-design `_RADIOTRACER_PATTERNS` rule, NOT a fix candidate). The other two (NCT00005779 C4-V3 HIV vaccine, NCT03300817 MUC1 antibody vaccine) had `BIOLOGICAL` intervention type but no explicit route in protocol, intervention description, OpenFDA, or citations — Pass 1 LLM emitted "route not specified" → Pass 2 picked "Other". GT says Injection/Infusion (humans inferred vaccines are injected by default). **Fix candidate (risky):** when intervention type is BIOLOGICAL AND drug-class keywords match vaccine/vaccination/antibody AND no route found via any other path, default to Injection/Infusion. Risk: not all biologics are injected (oral polio, intranasal flu) — over-default would create new misses. Defer until cross-job confirmation across multiple slices.
+
 **Discipline:** all three candidates are notable patterns from a now-retired slice. Confirm pattern recurrence on Job #98's fresh slice before scoping any of them. Per memory `feedback_no_cheat_sheets.md` / `feedback_no_verifier_cheatsheet.md`, fixes must be reasoning/logic improvements, not specific drug-name shortcuts.
 
 ### Job #95 result (held-out-A retirement run)
