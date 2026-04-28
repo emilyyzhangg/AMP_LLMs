@@ -13,7 +13,11 @@
 #   2. Per-NCT outcome breakdown (gain / loss / unchanged)
 #   3. Research-agent firing counts (NIH RePORTER / FDA Drugs / SEC EDGAR
 #      citations per trial — confirms v42.7.10 fix is actually working)
-#   4. Evidence_grade distribution (calibrated-decline coverage stratification)
+#   4. v42.7.7-11 path firing diagnostics
+#   5. Evidence_grade distribution (calibrated-decline coverage stratification)
+#   6. Outcome miss-pattern tally + delivery_mode miss-pattern tally
+#      (uses cross_job_miss_patterns.py — see also that script for
+#      cross-cycle pattern hunting against ≥2 historical jobs)
 
 set -euo pipefail
 
@@ -158,3 +162,9 @@ echo
 
 echo "── 5. Evidence_grade distribution (commit-accuracy) ────"
 $PY "$THIS_DIR/commit_accuracy_report.py" "$HELDOUT_JOB" 2>&1 | head -80
+echo
+
+echo "── 6. Outcome + delivery miss-pattern tally ────────────"
+$PY "$THIS_DIR/cross_job_miss_patterns.py" "$HELDOUT_JOB" --field outcome 2>&1 | tail -25
+echo
+$PY "$THIS_DIR/cross_job_miss_patterns.py" "$HELDOUT_JOB" --field delivery_mode 2>&1 | tail -15
