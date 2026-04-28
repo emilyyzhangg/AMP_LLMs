@@ -316,6 +316,29 @@ def test_v42_7_18_known_sequences_expanded():
     print("  ✓ v42.7.18: _KNOWN_SEQUENCES holds solnatide/ap301/tip-peptide/io103/apraglutide")
 
 
+def test_v42_7_19_delivery_ambiguous_keyword_relevance_gate():
+    """v42.7.19 (2026-04-28): the delivery_mode protocol-keyword scan
+    must skip ambiguous keywords (tablet/capsule from `_AMBIGUOUS_KEYWORDS`)
+    when the citation snippet doesn't mention any experimental intervention
+    name. Job #92/#95/#96/#97 surfaced 6 distinct NCTs (NCT01673217,
+    NCT01704781, NCT03018665, NCT05096481, NCT05965908, NCT05995704)
+    where FDA Drugs / OpenAlex citations on similarly-named approved
+    drugs (INQOVI, TEMOZOLOMIDE, Metformin) or unrelated publications
+    added a spurious 'Oral' route to vaccine/peptide/biologic trials.
+    Removing this gate recreates the regression.
+    """
+    src = (PKG_ROOT / "agents" / "annotation" / "delivery_mode.py").read_text()
+    assert "v42.7.19" in src, \
+        "v42.7.19 trip-wire: marker missing in delivery_mode.py"
+    idx = src.find("v42.7.19")
+    block = src[idx:idx + 2500]
+    assert "citation_mentions_experimental" in block, \
+        "v42.7.19 trip-wire: citation_mentions_experimental flag missing"
+    assert "_AMBIGUOUS_KEYWORDS" in block, \
+        "v42.7.19 trip-wire: gate must restrict to _AMBIGUOUS_KEYWORDS members"
+    print("  ✓ v42.7.19: delivery_mode ambiguous-keyword relevance gate present")
+
+
 def test_dbaasp_word_boundary_preserved():
     """v25 DBAASP word-boundary fix: 'NS' (normal saline) and short
     drug-name prefixes were matching DBAASP entries by substring, not
@@ -355,6 +378,7 @@ def main() -> int:
         test_v42_7_15_negative_keyword_tightened,
         test_v42_7_16_sequence_canonicaliser_strips_chemistry_suffix,
         test_v42_7_18_known_sequences_expanded,
+        test_v42_7_19_delivery_ambiguous_keyword_relevance_gate,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
