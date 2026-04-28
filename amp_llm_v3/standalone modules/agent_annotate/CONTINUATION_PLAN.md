@@ -36,7 +36,7 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **None.** Job #97 closed at 17/25=68% outcome (PASS). v42.7.18 staged on dev; Job #98 (held-out-D) queued for submit after merge.
+- **Job #98** (`29cd761c1bce`, prod) — v42.7.18 validation on held-out-D (20 NCTs, seed 7373). First independent measurement of `_KNOWN_SEQUENCES` expansion (solnatide/io103/apraglutide). Code-sync gate PASSED at submit (boot=disk=5875b4a8). Eta ~3-4h based on 20 NCTs × ~600s/trial.
 
 ### Cycle close-out narrative
 The v42.7.7-13 cycle aimed to fix the Job #92 over-call class (drug FDA-approved for indication X, trial tested indication Y). v42.7.12+13 succeeded on the over-calls (Job #93/#94 confirmed) but v42.7.13's strict FALLBACK ("default to Unknown if Registered Trial Publications: 0") was too literal — Job #96 on held-out-B revealed the LLM rigidly applied it even when pub titles were unambiguous trial reports. Outcome dropped from 60% (held-out-A) to 36% (held-out-B). v42.7.17 softened Rule 7 with an alternative path: pub TITLE explicitly describes THIS trial (drug name + phase/first-in-human/clinical-trial descriptor in title; field reviews still excluded). **Job #97 (held-out-C) closed at 17/25 = 68% — PASS, +32pp vs #96, +8pp vs #92. v42.7 cycle now design-complete on outcome.**
