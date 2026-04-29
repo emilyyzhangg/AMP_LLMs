@@ -154,6 +154,30 @@ _KNOWN_SEQUENCES: dict[str, str] = {
     # GLP-2 with substitutions. Adding the GLP-2 backbone form as a
     # fallback so the agent has SOMETHING when intervention=Apraglutide.
     "apraglutide": "HGDGSFSDELSTILDLLAARDFINWLIQTKITD",      # 33aa GLP-2 analog backbone (FE 203799)
+    # v42.7.21 (2026-04-28): from Job #98 held-out-D sequence misses.
+    # CBX129801 IS Long-Acting C-Peptide (Cebix Inc.) — the canonical
+    # 31-aa proinsulin C-peptide cleaved during insulin maturation.
+    # NCT01681290 (Type 1 Diabetes neuropathy trial) emitted N/A despite
+    # the published "Long-Acting C-Peptide" 12-month clinical trial paper.
+    "cbx129801": "EAEDLQVGQVELGGGPGAGSLQPLALEGSLQ",          # 31aa, proinsulin C-peptide (NCT01681290)
+    "long-acting c-peptide": "EAEDLQVGQVELGGGPGAGSLQPLALEGSLQ",  # CBX129801 alias
+    # SARTATE = (Sar)0,Tyr3-octreotate, an octreotide/octreotate analog
+    # used in 64Cu-SARTATE PET imaging and 67Cu-SARTATE radiotherapy
+    # for SSTR2-positive neuroendocrine tumors. Sequence is the
+    # canonical TATE octapeptide with D-Phe1, D-Trp4 (lowercase = D-isomer):
+    # D-Phe-Cys-Tyr-D-Trp-Lys-Thr-Cys-Thr (8aa, disulfide-bonded).
+    "sartate": "fCYwKTCT",                                    # octreotate analog (NCT04440956 64Cu-SARTATE)
+    "octreotate": "fCYwKTCT",                                 # canonical name alias
+    # v42.7.22 (2026-04-28): from Job #98 NCT03481400 sequence false-match.
+    # The CGRP migraine trial intervention is "Calcitonin Gene-Related
+    # Peptide" — a 37-aa peptide hormone DIFFERENT from calcitonin
+    # (32-aa). The shorter "calcitonin" key was matching via word
+    # boundary at "calcitonin " followed by " gene-related peptide".
+    # Adding the longer key + cgrp alias; longest-first iteration
+    # ensures the more specific key is preferred (same v42.6.18 pattern
+    # as the glucagon/GLP-1 fix).
+    "calcitonin gene-related peptide": "ACDTATCVTHRLAGLLSRSGGVVKNNFVPTNVGSKAF",  # 37aa alpha-CGRP (NCT03481400)
+    "cgrp": "ACDTATCVTHRLAGLLSRSGGVVKNNFVPTNVGSKAF",          # CGRP product-code alias
     # Romidepsin / FK228 (cyclic depsipeptide)
     "romidepsin": "ASTTTNYT",                                 # 8aa (approximate, cyclic depsipeptide)
     # BI 655064 (anti-CD40 peptide) and similar

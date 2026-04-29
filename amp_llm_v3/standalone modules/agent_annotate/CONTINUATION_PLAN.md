@@ -1,10 +1,10 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-28 (v42.7.18 sequence-dict expansion in flight as Job #98; v42.7.19 delivery-mode relevance gate staged on dev)
-**Current state:** Job #97 confirmed v42.7.17 design-complete on outcome (17/25 = 68%, +32pp vs over-corrected #96, +8pp vs #92). v42.7.18 (sequence-dict: solnatide/ap301/tip-peptide/io103/apraglutide) merged to main; Job #98 in flight for held-out-D validation. v42.7.19 (delivery_mode ambiguous-keyword relevance gate) staged on dev — addresses 6 distinct NCTs across Jobs #92/#95/#96/#97 with spurious-oral pattern. 19 research agents stable.
+**Last updated:** 2026-04-28 (Job #98 done — v42.7.18 no regressions; v42.7.19 merged to main; v42.7.20+v42.7.21+v42.7.22 staged on dev for next held-out cycle)
+**Current state:** Job #98 (v42.7.18, held-out-D, 20 NCTs) closed at 7/20 = 35.0% outcome — much lower than Job #97's 68% on a similarly positive-heavy slice, but no regressions: peptide 17/18 = 94.4% (+13pp vs #83), classification 19/19 = 100%. Outcome miss pattern is consistent: 12 of 13 misses are `positive → unknown` (LLM correctly discounting heuristic [TRIAL-SPECIFIC] tags on field-review pubs). v42.7.18 sequence-dict didn't fire on slice-D (predicted: 0 target NCTs). v42.7.19 (delivery_mode relevance gate) merged to main as 0795788e — protects against 6-NCT spurious-oral pattern. v42.7.20 (`_classify_publication` default → general) + v42.7.21 (CBX129801 + SARTATE sequences) + v42.7.22 (CGRP / calcitonin disambiguation) staged on dev for next held-out cycle. 19 research agents stable.
 
-**Main at:** `5875b4a8` (v42.7.18 merge). v42.7.19 + held-out-E + cross_job_miss_patterns tool staged on dev for next cycle.
-**Prod status:** autoupdater synced; serving v42.7.18 (Job #98 pinned to commit 5875b4a8).
+**Main at:** `0795788e` (v42.7.19 merge). v42.7.20 + v42.7.21 + v42.7.22 staged on dev.
+**Prod status:** autoupdater synced; serving v42.7.19.
 
 ### Per-cycle held-out separation (active discipline)
 | Slice | NCTs | Seed | Status | Used by jobs |
@@ -12,12 +12,13 @@
 | held-out-A | 30 | 4242 | RETIRED | #92 (v42.7.11), #95 (v42.7.13 over-call fixes) |
 | held-out-B | 25 | 5252 | RETIRED | #96 (v42.7.16 baseline → revealed over-correction) |
 | held-out-C | 25 | 6262 | RETIRED | #97 (v42.7.17 validation — PASS @ 68%) |
-| held-out-D | 20 | 7373 | ACTIVE  | #98 (v42.7.18 sequence-dict validation, pending submit) |
+| held-out-D | 20 | 7373 | RETIRED | #98 (v42.7.18 — outcome 35%, peptide 94.4%, classification 100%, no regressions) |
+| held-out-E | 20 | 8484 | ACTIVE  | #99 (v42.7.20+v42.7.21+v42.7.22 validation, pending submit after merge) |
 
-`scripts/submit_holdout_validation.sh --check-sync` defaults to slice-D.
+`scripts/submit_holdout_validation.sh --check-sync` defaults to slice-E.
 
 ### Active iteration line (post-Phase-6 cycles)
-v42.6.10–.19 → v42.7.0 (SEC EDGAR + FDA Drugs) → v42.7.1 (5-tier evidence_grade) → v42.7.2 (pub-classifier expansion + commit_accuracy report) → v42.7.3 (per-field DB grading) → v42.7.4 (two-tier source weighting) → v42.7.5 (code-sync diagnostic) → v42.7.6 (NIH RePORTER) → v42.7.7 (vaccine-immunogenicity Positive override) → v42.7.8 (wire FDA Drugs/SEC EDGAR signals into dossier) → v42.7.9 (FDA Drugs `products.*` query) → v42.7.10 (CRITICAL: orchestrator preserves intervention `type`) → v42.7.11 (surface intervention names) → v42.7.12 (FDA label indications + CT.gov registered-pubs gate) → v42.7.13 (LLM hallucination fix — explicit "0" line + Rule 7 restructure) → v42.7.14 (Failed override status-gating) → v42.7.15 (_NEGATIVE_KW tightening) → v42.7.16 (sequence chemistry-suffix canonicalization) → v42.7.17 (Rule 7 over-correction fix — accept pub-title-pattern as alternative trial-specificity) → v42.7.18 (`_KNOWN_SEQUENCES` expansion: solnatide/io103/apraglutide) → **v42.7.19 (delivery_mode ambiguous-keyword relevance gate — `_AMBIGUOUS_KEYWORDS` matches require experimental-intervention mention; addresses 6 NCTs spurious-oral pattern across Jobs #92/#95/#96/#97)**.
+v42.6.10–.19 → v42.7.0 (SEC EDGAR + FDA Drugs) → v42.7.1 (5-tier evidence_grade) → v42.7.2 (pub-classifier expansion + commit_accuracy report) → v42.7.3 (per-field DB grading) → v42.7.4 (two-tier source weighting) → v42.7.5 (code-sync diagnostic) → v42.7.6 (NIH RePORTER) → v42.7.7 (vaccine-immunogenicity Positive override) → v42.7.8 (wire FDA Drugs/SEC EDGAR signals into dossier) → v42.7.9 (FDA Drugs `products.*` query) → v42.7.10 (CRITICAL: orchestrator preserves intervention `type`) → v42.7.11 (surface intervention names) → v42.7.12 (FDA label indications + CT.gov registered-pubs gate) → v42.7.13 (LLM hallucination fix — explicit "0" line + Rule 7 restructure) → v42.7.14 (Failed override status-gating) → v42.7.15 (_NEGATIVE_KW tightening) → v42.7.16 (sequence chemistry-suffix canonicalization) → v42.7.17 (Rule 7 over-correction fix — accept pub-title-pattern as alternative trial-specificity) → v42.7.18 (`_KNOWN_SEQUENCES` expansion: solnatide/io103/apraglutide) → v42.7.19 (delivery_mode ambiguous-keyword relevance gate — addresses 6 NCTs spurious-oral pattern across Jobs #92/#95/#96/#97) → v42.7.20 (`_classify_publication` default flipped to 'general' — addresses Job #95-#98 over-tagging that was confusing the LLM) → v42.7.21 (sequences: CBX129801 + SARTATE) → **v42.7.22 (CGRP / calcitonin disambiguation — fixes NCT03481400 wrong-sequence emission via longest-first iteration on the longer key)**.
 
 ### Dev smoke validation (v42.7.7+8 prototype, 2026-04-27)
 Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Positive, matching GT:**
@@ -36,7 +37,17 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **Job #98** (`29cd761c1bce`, prod) — v42.7.18 validation on held-out-D (20 NCTs, seed 7373). First independent measurement of `_KNOWN_SEQUENCES` expansion (solnatide/io103/apraglutide). Code-sync gate PASSED at submit (boot=disk=5875b4a8). Eta ~3-4h based on 20 NCTs × ~600s/trial.
+- **None.** Job #98 closed 2026-04-28 16:09 PDT. v42.7.20+v42.7.21+v42.7.22 ready for next-cycle merge to main + Job #99 against held-out-E.
+
+### Job #98 result (held-out-D, v42.7.18)
+- 20/20 trials, 0 errors, 1 warning (atomic-fr empty value, non-fatal)
+- peptide 17/18 = 94.4% (+13pp vs Job #83) ⭐
+- classification 19/19 = 100% (perfect again)
+- delivery_mode 14/18 = 77.8% (-14pp; 5 misses across 5 distinct patterns — not the v42.7.19 spurious-oral class, which means v42.7.19's catchment is genuinely a different distribution than Job #98)
+- outcome 7/20 = 35.0% (slice-specific positive recall variance; #97 was 68% on a similarly positive-heavy slice — confirms outcome accuracy is highly slice-dependent and the under-recall is systemic across positive-class trials)
+- sequence 2/11 = 18.2% (v42.7.18 dict didn't fire as predicted — none of solnatide/io103/apraglutide in slice-D)
+- v42.7.18 NO REGRESSIONS — peptide and classification strong; outcome variance reflects slice composition not code change
+- 12 of 13 outcome misses follow `positive → unknown` pattern; LLM consistently rejects field-review pubs even when tagged [TRIAL-SPECIFIC] — directly motivates v42.7.20 classifier tightening
 
 ### Cycle close-out narrative
 The v42.7.7-13 cycle aimed to fix the Job #92 over-call class (drug FDA-approved for indication X, trial tested indication Y). v42.7.12+13 succeeded on the over-calls (Job #93/#94 confirmed) but v42.7.13's strict FALLBACK ("default to Unknown if Registered Trial Publications: 0") was too literal — Job #96 on held-out-B revealed the LLM rigidly applied it even when pub titles were unambiguous trial reports. Outcome dropped from 60% (held-out-A) to 36% (held-out-B). v42.7.17 softened Rule 7 with an alternative path: pub TITLE explicitly describes THIS trial (drug name + phase/first-in-human/clinical-trial descriptor in title; field reviews still excluded). **Job #97 (held-out-C) closed at 17/25 = 68% — PASS, +32pp vs #96, +8pp vs #92. v42.7 cycle now design-complete on outcome.**

@@ -316,6 +316,44 @@ def test_v42_7_18_known_sequences_expanded():
     print("  ✓ v42.7.18: _KNOWN_SEQUENCES holds solnatide/ap301/tip-peptide/io103/apraglutide")
 
 
+def test_v42_7_21_known_sequences_expanded():
+    """v42.7.21 (2026-04-28): _KNOWN_SEQUENCES expanded to fill Job #98
+    held-out-D peptide=True / sequence=N/A misses. CBX129801 (Long-Acting
+    C-Peptide, NCT01681290 Type 1 Diabetes neuropathy trial) and SARTATE
+    (octreotate analog used in 64Cu-SARTATE, NCT04440956) must both be
+    present. Removing them recreates the Job #98 sequence-extraction gap.
+    """
+    src = (PKG_ROOT / "agents" / "annotation" / "sequence.py").read_text()
+    assert '"cbx129801": "EAEDLQVGQVELGGGPGAGSLQPLALEGSLQ"' in src, \
+        "v42.7.21 trip-wire: cbx129801 entry missing (NCT01681290)"
+    assert '"long-acting c-peptide":' in src, \
+        "v42.7.21 trip-wire: long-acting c-peptide alias missing"
+    assert '"sartate": "fCYwKTCT"' in src, \
+        "v42.7.21 trip-wire: sartate entry missing (NCT04440956)"
+    assert '"octreotate":' in src, \
+        "v42.7.21 trip-wire: octreotate alias missing"
+    print("  ✓ v42.7.21: _KNOWN_SEQUENCES holds cbx129801 + sartate + octreotate aliases")
+
+
+def test_v42_7_22_cgrp_disambiguation():
+    """v42.7.22 (2026-04-28): NCT03481400 CGRP migraine trial had its
+    intervention name 'Calcitonin Gene-Related Peptide' (37aa peptide
+    hormone) shadowed by the shorter 'calcitonin' key (32aa, different
+    drug). Same v42.6.18 pattern — longest-first iteration is in place,
+    but the longer key wasn't in the dict. Adding it disambiguates.
+    Reverting recreates the wrong-sequence emission.
+    """
+    from agents.annotation.sequence import resolve_known_sequence
+    result = resolve_known_sequence("calcitonin gene-related peptide")
+    assert result is not None, "v42.7.22 trip-wire: CGRP entry missing"
+    drug, seq = result
+    assert drug == "calcitonin gene-related peptide", \
+        f"v42.7.22 trip-wire: longest-first must return CGRP key, got {drug!r}"
+    assert seq == "ACDTATCVTHRLAGLLSRSGGVVKNNFVPTNVGSKAF", \
+        f"v42.7.22 trip-wire: must return 37aa alpha-CGRP, got {seq!r}"
+    print("  ✓ v42.7.22: CGRP / calcitonin disambiguation via longest-first iteration")
+
+
 def test_v42_7_20_pub_classifier_default_general():
     """v42.7.20 (2026-04-28): _classify_publication default flipped from
     `trial_specific` (v41b) to `general`. Cross-job analysis of Jobs
@@ -414,6 +452,8 @@ def main() -> int:
         test_v42_7_18_known_sequences_expanded,
         test_v42_7_19_delivery_ambiguous_keyword_relevance_gate,
         test_v42_7_20_pub_classifier_default_general,
+        test_v42_7_21_known_sequences_expanded,
+        test_v42_7_22_cgrp_disambiguation,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
