@@ -150,7 +150,41 @@ Recorded from Job #97 miss analysis (do not act on these while Job #98 in flight
 
 3. **Sequence dict expansion (further)** — wait for Job #98 to see whether held-out-D's 13 GT-sequence trials surface additional N/A patterns. New entries should only land if a public canonical sequence exists.
 
-7. **OpenFDA multi-formulation route aggregation** (v42.7.23 candidate). Job #99 STILL had 2× spurious-oral on delivery_mode (NCT02635386 exenatide, NCT05788965 semaglutide) despite v42.7.19's relevance gate — because v42.7.19 only fixed the protocol-keyword-scan path. The OpenFDA structured-route path (delivery_mode.py:357-377) aggregates routes from ALL FDA-approved formulations of the same active ingredient. Semaglutide → adds SUBCUTANEOUS (Ozempic) AND ORAL (Rybelsus). Exenatide → adds SC (Bydureon) AND ORAL (rare/research formulations). The trial uses ONE formulation but the dossier shows both. **Fix candidate**: when OpenFDA returns multiple route values for the same drug, prefer the route that matches the protocol's intervention description (e.g. "subcutaneous injection" → SC; ignore ORAL even if FDA returns it). Restrict to applications whose brand_name appears in the protocol intervention text. Risk: false negatives on truly multi-route drug trials. Need cross-job confirmation before scoping.
+7. **OpenFDA multi-formulation route aggregation** (v42.7.23 candidate, design-ready). Job #99 STILL had 2× spurious-oral on delivery_mode (NCT02635386 exenatide, NCT05788965 semaglutide) despite v42.7.19's relevance gate — because v42.7.19 only fixed the protocol-keyword-scan path. The OpenFDA structured-route path (`agents/annotation/delivery_mode.py:357-377`) aggregates routes from ALL FDA-approved formulations of the same active ingredient. Semaglutide → adds SUBCUTANEOUS (Ozempic) AND ORAL (Rybelsus). Exenatide → adds SC (Bydureon) AND ORAL.
+
+   **v42.7.23 fix design (pre-coded, ready to implement post-Job-#100):**
+   ```python
+   # Before the OpenFDA raw_data loop (after intervention_descs is built):
+   protocol_routes_explicit: set[str] = set()
+   for desc in intervention_descs:
+       if any(kw in desc for kw in ("subcutaneous", "intravenous", "intradermal",
+                                     "intramuscular", "subcut", "iv ", "im ")):
+           protocol_routes_explicit.add("Injection/Infusion")
+       if any(kw in desc for kw in ("oral", "tablet", "capsule", "by mouth", "orally")):
+           protocol_routes_explicit.add("Oral")
+       # ... (Other, Topical similarly)
+
+   # Inside the loop, gate the route addition:
+   for route_str in routes:
+       route_lower = route_str.lower().strip()
+       if route_lower in _OPENFDA_ROUTE_MAP:
+           delivery_value = _OPENFDA_ROUTE_MAP[route_lower]
+           # v42.7.23: when protocol explicitly states route(s), restrict
+           # OpenFDA results to that set. Skips spurious formulations
+           # (e.g. Rybelsus oral when trial uses Ozempic SC).
+           if (protocol_routes_explicit
+                   and delivery_value not in protocol_routes_explicit):
+               logger.debug(
+                   f"  delivery_mode: skipping OpenFDA '{route_str}' — "
+                   f"protocol doesn't mention this route ({protocol_routes_explicit})"
+               )
+               continue
+           # ... (existing add logic)
+   ```
+
+   **Risks**: (a) true multi-route trials where protocol mentions one route but drug genuinely uses both — would lose the second. Conservative; under-call risk. (b) Misclassifying "oral cavity" or "oral hygiene" context as oral route — handled by v32 ambiguous-keyword logic upstream. **Trip-wire**: assert NCT05788965-style cases (semaglutide SC trial) emit only "Injection/Infusion", not "Injection/Infusion, Oral".
+
+   **When to ship**: after Job #100 lands. If milestone outcome ≥65% AND delivery_mode ≥80%, ship as part of v42.7.23 alongside any other backlog items that surfaced. If milestone reveals delivery_mode regressed, prioritize this.
 
 6. **Drug-code → UniProt resolution gap** (v42.8 candidate, structural). On all 16 of Job #98's sequence=N/A peptide=True trials, the `peptide_identity` agent (UniProt + DRAMP) returned "no_structured_match" because the intervention names are pharma drug codes (CBX129801, PLG0206, GT-001, "64Cu-SARTATE", etc.) and UniProt indexes biological protein names. For NCT05585658 (Erythropoietin alpha), UniProt incorrectly returned "Erythropoietin RECEPTOR" P19235 (similar name match) instead of erythropoietin P01588. **Root cause**: no drug-code → biological-name resolution layer between intervention extraction and UniProt query. **Fix candidates (multi-week scope)**: (a) RxNorm / DrugBank API as resolver — public API, query "PLG0206" → biological aliases → UniProt; (b) ChEMBL drug→target lookup — already integrated, may have richer mapping than UniProt; (c) explicit alias map maintained as code (high curation cost; conflicts with frozen-drug-list discipline if applied to peptides). **Why this is v42.8 not v42.7.X**: requires architectural addition (new agent or reframing peptide_identity), not a narrow fix.
 
