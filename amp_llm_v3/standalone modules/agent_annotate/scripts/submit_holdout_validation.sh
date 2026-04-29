@@ -18,7 +18,7 @@ for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -47,6 +47,13 @@ for arg in "$@"; do
         # show outcome+sequence stable across 2+ slices. See
         # CONTINUATION_PLAN's "Production Goals" section.
         --milestone) SLICE="$THIS_DIR/milestone_validation_v42_7_22.json" ;;
+        # Production gate: 250-NCT FINAL accuracy certification.
+        # Combines milestone (147) + slice-E (20) + slice-F (20) + 63
+        # additional GT-scoreable NCTs from the residual + test-batch
+        # reservation. Triggered ONLY when 147-NCT milestone confirms
+        # outcome ≥65% AND no field regresses below per-field target.
+        # 95% CI half-width ±6.2pp at p=0.5, ±5.7pp at p=0.7. Cost: ~41h.
+        --production-gate) SLICE="$THIS_DIR/production_gate_v42_7_22.json" ;;
     esac
 done
 if [ ! -f "$SLICE" ]; then
