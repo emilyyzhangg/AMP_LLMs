@@ -26,14 +26,15 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
   - v42.7.21: `_KNOWN_SEQUENCES` expansion from Job #98 misses — `cbx129801` → 31aa proinsulin C-peptide (CBX129801 = Long-Acting C-Peptide; NCT01681290), `sartate` → fCYwKTCT octreotate analog with D-Phe1/D-Trp4 (NCT04440956 64Cu-SARTATE). Includes "long-acting c-peptide" and "octreotate" aliases.
   - v42.7.22: CGRP / calcitonin disambiguation. NCT03481400 (CGRP migraine trial) had its intervention "Calcitonin Gene-Related Peptide" (37aa alpha-CGRP) shadowed by the shorter "calcitonin" key (32aa, different drug). Same v42.6.18 root cause — longest-first iteration was already in place; the longer key was just missing. Added "calcitonin gene-related peptide" + "cgrp" aliases → ACDTATCVTHRLAGLLSRSGGVVKNNFVPTNVGSKAF.
 
-- **Held-out slices:** A (30, retired post-#95), B (25, retired post-#96 — surfaced over-correction), C (25, retired post-#97 — outcome cycle PASS), D (20, retired post-#98 — surfaced v42.7.20+v42.7.21+v42.7.22 candidates), E (20, active, Job #99 in flight), F (20, prebuilt for next cycle).
+- **Held-out slices:** A (30, retired post-#95), B (25, retired post-#96 — surfaced over-correction), C (25, retired post-#97 — outcome cycle PASS), D (20, retired post-#98 — surfaced v42.7.20+v42.7.21+v42.7.22 candidates), E (20, retired post-#99 PASS at 55%), F (20, reserved for next iteration cycle), milestone (147 NCTs combined retired slices, active for Job #100 production-grade validation).
 - **Job validation history (recent):**
   - Job #92 (held-out-A, v42.7.11): outcome 60.0%, classification 100%, sequence 50%
   - Job #95 (held-out-A re-run, v42.7.13): outcome 60.0% (same accuracy, 4 over-calls fixed but 4 noise-floor losses)
   - Job #96 (held-out-B, v42.7.16): outcome 36% — revealed v42.7.13 over-correction
   - Job #97 (held-out-C, v42.7.17): outcome 17/25 = 68% — PASS, +32pp vs #96, +8pp vs #92; v42.7 outcome cycle design-complete
   - Job #98 (held-out-D, v42.7.18): outcome 7/20 = 35.0% (slice-specific positive recall variance — same conservative pattern as #97 on a more positive-skewed slice); peptide 17/18 = 94.4% (+13pp) ⭐; classification 19/19 = 100% ⭐; v42.7.18 NO REGRESSIONS; surfaced v42.7.20/.21/.22 candidates
-  - Job #99 (held-out-E, v42.7.22): in flight, validates combined v42.7.19/.20/.21/.22 stack
+  - Job #99 (held-out-E, v42.7.22): outcome 11/20 = 55.0% PASS — hits the ≥55% production threshold; peptide 94.4% / classification 94.7% / delivery 88.9%; v42.7.20 enabled 2× unknown→positive flips on clean pub-title evidence (first since #96, no Job #92-style over-call regression). Triggered Job #100 milestone validation.
+  - Job #100 (147-NCT milestone, v42.7.22): in flight, ~24h overnight, ±8pp CI half-width — first production-grade accuracy certification.
 - **Research agents:** 19 total — 15 pre-v42 + bioRxiv (v42 Phase 6) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
 - **Validation baselines (47-NCT clean slice, GT/registry-aligned):**
   - **Job #83 (v42.6.15)** — peptide 81.1%, classification 90.7%, delivery 91.7%, outcome 61.7%, RfF 83.3%, sequence 75.0%.
@@ -255,7 +256,7 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
 116+ unit tests pass.
 
 ### Currently in flight
-- **Job #99** (`87aece73b9ef`, prod) — combined v42.7.19/.20/.21/.22 validation on held-out-E (20 NCTs, seed 8484). Code-sync gate PASSED at submit (boot=disk=096edcd3). First independent measurement of the classifier-tightening + sequence-expansion + CGRP-disambiguation stack. ETA ~3-4h.
+- **Job #100** (`f58ee94d315c`, prod) — 147-NCT milestone validation of v42.7.22 stack. Code-sync gate PASSED at submit (boot=disk=096edcd3). First production-grade accuracy certification with ±8pp CI half-width. ETA ~24h overnight. Triggered by Job #99's outcome 55% hitting the ≥55% production threshold per CONTINUATION_PLAN's path-to-production.
 
 ### v42.7 cycle close-out (what shipped)
 | Sub-version | Commit | What it did | Validated by |
@@ -268,9 +269,9 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
 | v42.7.17 | fdd6859b | Rule 7 over-correction fix (pub-title-pattern alternative) | Job #97 PASS @ 68% |
 | v42.7.18 | 9d5ec33d | `_KNOWN_SEQUENCES` expansion (solnatide/io103/apraglutide) | Job #98 NO REGRESSIONS (target NCTs absent from slice-D) |
 | v42.7.19 | 2d3c0b28 | `delivery_mode` ambiguous-keyword relevance gate (6 NCTs cross-job) | merged 0795788e |
-| v42.7.20 | cb984ba7 | `_classify_publication` default flipped to 'general' | Job #99 in flight |
-| v42.7.21 | 59c0be20 | _KNOWN_SEQUENCES: cbx129801 + sartate + aliases | Job #99 in flight |
-| v42.7.22 | 59c0be20 | CGRP / calcitonin disambiguation (NCT03481400 fix) | Job #99 in flight |
+| v42.7.20 | cb984ba7 | `_classify_publication` default flipped to 'general' | Job #99 PASS @ 55% (+20pp vs #98) — enabled 2× unknown→positive flips on clean pub evidence |
+| v42.7.21 | 59c0be20 | _KNOWN_SEQUENCES: cbx129801 + sartate + aliases | Job #99 — no slice-E trials matched these drugs (predicted) |
+| v42.7.22 | 59c0be20 | CGRP / calcitonin disambiguation (NCT03481400 fix) | Job #99 — no CGRP trials in slice-E; tested in unit tests |
 
 ### Recurring discipline (not jobs — process)
 1. Every code change ships with a unit test in `scripts/test_v42_*_*.py`.
