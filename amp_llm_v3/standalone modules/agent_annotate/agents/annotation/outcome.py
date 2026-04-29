@@ -90,6 +90,14 @@ def _classify_publication(title_or_snippet: str, nct_id: str) -> str:
         nct_lower,
         "randomized", "randomised",
         "phase i ", "phase ii ", "phase iii ", "phase 1 ", "phase 2 ", "phase 3 ",
+        # v42.7.20: phase markers without trailing space (e.g. "phase 2/3 study")
+        "phase i/ii", "phase ii/iii", "phase 1/2", "phase 2/3", "phase 1b", "phase 2a",
+        "phase i:", "phase ii:", "phase 1:", "phase 2:",
+        # v42.7.20: explicit trial-report markers — "Clinical Trial" alone
+        # is a strong signal even without phase number (e.g. "A 12-Month
+        # Clinical Trial of CBX129801"). NCT01681290 missed under earlier
+        # _TRIAL_SIGNALS that required phase markers.
+        "clinical trial", "clinical study",
         "primary endpoint", "primary outcome", "secondary endpoint",
         "placebo-controlled", "placebo controlled",
         "open-label", "open label", "double-blind", "double blind",
@@ -145,9 +153,36 @@ def _classify_publication(title_or_snippet: str, nct_id: str) -> str:
         if signal in text:
             return "general"
 
-    # v41b: Default to trial_specific — only explicit review signals → general.
-    # Literature agent searches by NCT ID, so most results ARE about the trial.
-    return "trial_specific"
+    # v42.7.20 (2026-04-28): default flipped to "general". Cross-job
+    # analysis of Jobs #95/#96/#97/#98 showed `positive → unknown` is
+    # the dominant outcome miss class (~9-12 misses per slice). Spot
+    # inspection (NCT01677676 FP-01.1 / NCT05137314 PLG0206 / etc.)
+    # revealed pubs whose titles describe the drug CLASS or MECHANISM
+    # but contain no explicit trial signal — these were defaulting to
+    # `trial_specific` under v41b's rule, leading the LLM to see many
+    # [TRIAL-SPECIFIC] tags and correctly discount them all (because
+    # their titles obviously aren't trial-specific).
+    #
+    # The fix: require an explicit trial signal (NCT match, "phase X",
+    # "randomized", "first-in-human", "dose-escalation", "primary
+    # endpoint", etc. — see _TRIAL_SIGNALS above) for trial_specific.
+    # Otherwise default to `general`. This makes [TRIAL-SPECIFIC] tags
+    # in the dossier reliable so the LLM can trust them when applying
+    # Rule 7 condition (ii).
+    #
+    # Trade-off: if a real trial publication's title lacks any explicit
+    # signal (e.g. "[Drug] in [Disease]: A Single-Center Study") the
+    # tag becomes general. We accept this — the over-tagging pattern
+    # was systematically confusing the LLM (Job #98: 13 of 13 outcome
+    # misses had the LLM cite "[TRIAL-SPECIFIC] tag is heuristic" as
+    # part of its rejection reasoning).
+    #
+    # The earlier comment claimed "Literature agent searches by NCT ID,
+    # so most results ARE about the trial" — empirically false. The
+    # literature agent + openalex broaden to keyword search after the
+    # NCT search, returning field reviews and class summaries that
+    # happen to mention the indication.
+    return "general"
 
 
 # --------------------------------------------------------------------------- #
