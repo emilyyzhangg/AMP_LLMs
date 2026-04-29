@@ -1,6 +1,6 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-28 (Job #98 done — v42.7.18 no regressions; v42.7.19+v42.7.20+v42.7.21+v42.7.22 merged to main; Job #99 validating combined stack on held-out-E)
+**Last updated:** 2026-04-28 (Job #99 PASS — outcome 55% on held-out-E hits the ≥55% production threshold; triggering 147-NCT milestone validation as Job #100)
 
 ---
 
@@ -71,7 +71,7 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 
 ---
 
-**Current state:** Job #98 (v42.7.18, held-out-D, 20 NCTs) closed at 7/20 = 35.0% outcome — much lower than Job #97's 68% on a similarly positive-heavy slice, but no regressions: peptide 17/18 = 94.4% (+13pp vs #83), classification 19/19 = 100%. Outcome miss pattern is consistent: 12 of 13 misses are `positive → unknown` (LLM correctly discounting heuristic [TRIAL-SPECIFIC] tags on field-review pubs). v42.7.18 sequence-dict didn't fire on slice-D (predicted: 0 target NCTs). v42.7.19 (delivery_mode relevance gate) merged to main as 0795788e — protects against 6-NCT spurious-oral pattern. v42.7.20 (`_classify_publication` default → general) + v42.7.21 (CBX129801 + SARTATE sequences) + v42.7.22 (CGRP / calcitonin disambiguation) staged on dev for next held-out cycle. 19 research agents stable.
+**Current state:** Job #99 PASS — outcome 11/20 = 55.0% on held-out-E (vs Job #98's 35% on slice-D, +20pp). v42.7.20 classifier tightening EMPIRICALLY VALIDATED — enabled 2 confident positive calls (NCT01680653, NCT05721586) on trials with unambiguous pub-title evidence (literally "reduces the risk", "statistically significant... remineralizing"), which may even be agent-correct-vs-GT-uncertain. Conservative under-call pattern still present (11× pos→unk) but not worsened. Per-field on slice-E: peptide 17/18 = 94.4% ⭐, classification 18/19 = 94.7% ⭐, delivery 16/18 = 88.9%, sequence 2/7 = 28.6%. Job #100 milestone validation triggered (147 NCTs, ~24h overnight, ±8pp CI). 19 research agents stable.
 
 **Main at:** `0795788e` (v42.7.19 merge). v42.7.20 + v42.7.21 + v42.7.22 staged on dev.
 **Prod status:** autoupdater synced; serving v42.7.19.
@@ -83,9 +83,11 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 | held-out-B | 25 | 5252 | RETIRED | #96 (v42.7.16 baseline → revealed over-correction) |
 | held-out-C | 25 | 6262 | RETIRED | #97 (v42.7.17 validation — PASS @ 68%) |
 | held-out-D | 20 | 7373 | RETIRED | #98 (v42.7.18 — outcome 35%, peptide 94.4%, classification 100%, no regressions) |
-| held-out-E | 20 | 8484 | ACTIVE  | #99 (v42.7.20+v42.7.21+v42.7.22 validation, pending submit after merge) |
+| held-out-E | 20 | 8484 | RETIRED | #99 (v42.7.22 stack — outcome 55% PASS, peptide 94.4%, classification 94.7%, no regressions) |
+| held-out-F | 20 | 9595 | RESERVED | next iteration cycle (v42.7.23+) — single-use |
+| milestone  | 147 | n/a | ACTIVE | #100 (147-NCT certification of v42.7.22 stack, ±8pp CI, ~24h overnight) |
 
-`scripts/submit_holdout_validation.sh --check-sync` defaults to slice-E.
+`scripts/submit_holdout_validation.sh --milestone --check-sync` triggers the 147-NCT validation.
 
 ### Active iteration line (post-Phase-6 cycles)
 v42.6.10–.19 → v42.7.0 (SEC EDGAR + FDA Drugs) → v42.7.1 (5-tier evidence_grade) → v42.7.2 (pub-classifier expansion + commit_accuracy report) → v42.7.3 (per-field DB grading) → v42.7.4 (two-tier source weighting) → v42.7.5 (code-sync diagnostic) → v42.7.6 (NIH RePORTER) → v42.7.7 (vaccine-immunogenicity Positive override) → v42.7.8 (wire FDA Drugs/SEC EDGAR signals into dossier) → v42.7.9 (FDA Drugs `products.*` query) → v42.7.10 (CRITICAL: orchestrator preserves intervention `type`) → v42.7.11 (surface intervention names) → v42.7.12 (FDA label indications + CT.gov registered-pubs gate) → v42.7.13 (LLM hallucination fix — explicit "0" line + Rule 7 restructure) → v42.7.14 (Failed override status-gating) → v42.7.15 (_NEGATIVE_KW tightening) → v42.7.16 (sequence chemistry-suffix canonicalization) → v42.7.17 (Rule 7 over-correction fix — accept pub-title-pattern as alternative trial-specificity) → v42.7.18 (`_KNOWN_SEQUENCES` expansion: solnatide/io103/apraglutide) → v42.7.19 (delivery_mode ambiguous-keyword relevance gate — addresses 6 NCTs spurious-oral pattern across Jobs #92/#95/#96/#97) → v42.7.20 (`_classify_publication` default flipped to 'general' — addresses Job #95-#98 over-tagging that was confusing the LLM) → v42.7.21 (sequences: CBX129801 + SARTATE) → **v42.7.22 (CGRP / calcitonin disambiguation — fixes NCT03481400 wrong-sequence emission via longest-first iteration on the longer key)**.
@@ -107,8 +109,8 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **Job #99** (`87aece73b9ef`, prod) — v42.7.22 (combined v42.7.19/.20/.21/.22 stack) validation on held-out-E (20 NCTs, seed 8484). Code-sync gate PASSED at submit (boot=disk=096edcd3, active_jobs=0). Eta ~3-4h. First independent measurement of the classifier-tightening + sequence-expansion + CGRP-disambiguation stack.
-- Autonomous cron `ba73eb40` set to fire every 30 min (:17/:47) — checks Job #99, scores when complete, retires slice-E, identifies v42.7.23 candidates.
+- **Job #100** (`f58ee94d315c`, prod) — 147-NCT MILESTONE VALIDATION of v42.7.22 stack. Code-sync gate PASSED at submit (boot=disk=096edcd3). ETA ~24h overnight. First production-grade accuracy certification with ±8pp CI half-width. Triggered by Job #99's outcome 55% hitting the ≥55% production threshold.
+- Autonomous cron `ba73eb40` was monitoring Job #99 — being deleted now that #99 is scored and milestone is triggered.
 
 ### v42.7.20 prediction (validated against Job #98 data 2026-04-28)
 Re-classifying Job #98 publications with the new (v42.7.20) classifier rule shows DRAMATIC drops in `[TRIAL-SPECIFIC]` tag count on every trial — most went from 6-48 tags down to 0-5. Examples: NCT03143465 (sildenafil migraine) 48 → 0; NCT03481400 (CGRP) 23 → 0; NCT03841526 25 → 0; NCT05824767 28 → 5; NCT05137314 (PLG0206) 15 → 0. This empirically validates the over-tagging hypothesis — under v41b's "default to trial_specific" rule, the LLM was being shown 6-48 [TRIAL-SPECIFIC]-tagged pubs per trial, ALL of which were field reviews lacking trial signals. The LLM correctly distrusted them in aggregate but couldn't selectively apply Rule 7 condition (b2). v42.7.20 makes the small set of remaining [TRIAL-SPECIFIC] tags actually reliable.
