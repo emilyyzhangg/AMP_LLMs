@@ -745,15 +745,15 @@ Issues from concordance analysis (CONTINUATION_PLAN.md) resolved in v25:
 
 ---
 
-## 17. v25 → v42.7.18 (2026-04-01 → 2026-04-28) — Atomic Era + v42.7 Cycle
+## 17. v25 → v42.7.22 (2026-04-01 → 2026-04-28) — Atomic Era + v42.7 Cycle
 
 After v25, the project went through a substantial overhaul. This file is no longer the canonical source for v26+ work — see:
-- `LEARNING_RUN_PLAN.md` — full job registry through Job #97
-- `CONTINUATION_PLAN.md` — current state + held-out evaluation policy
+- `LEARNING_RUN_PLAN.md` — full job registry through Job #99
+- `CONTINUATION_PLAN.md` — current state + production goals + held-out evaluation policy
 - `docs/AGENT_STRATEGY_ROADMAP.md` — design rules + decision log + future targets
 - `docs/ATOMIC_EVIDENCE_DECOMPOSITION.md` — v42 atomic-decomposition design
 
-### Headlines from the v42.7 cycle (≈2 weeks of work, 17 sub-versions)
+### Headlines from the v42.7 cycle (≈2 weeks of work, 22 sub-versions)
 
 **Research pipeline expansion:** 3 new free agents (SEC EDGAR sponsor disclosures, openFDA Drugs@FDA approvals, NIH RePORTER federal grants). 19 research agents total. v42.7.10 fixed a CRITICAL silent regression where the orchestrator was dropping the intervention `type` field, causing all 3 new agents to receive empty interventions for 2 days post-deployment.
 
@@ -767,7 +767,17 @@ After v25, the project went through a substantial overhaul. This file is no long
 
 **Discipline established:** per-cycle held-out separation. Held-out-A (30 NCTs, seed 4242) used as Jobs #92+#95 then retired. Held-out-B (25 NCTs, seed 5252) used as Job #96 (which surfaced v42.7.13's over-correction) then retired. Held-out-C (25 NCTs, seed 6262) used as Job #97 then retired. Held-out-D (20 NCTs, seed 7373) is now active for Job #98.
 
-**v42.7.18 (sequence-dict expansion):** added 5 entries to `_KNOWN_SEQUENCES` (solnatide / ap301 / tip-peptide → CGQRETPEGAEAKPWYC; io103 alias for the existing pd-l1 peptide entry → FMTYWHLLNAFTVTVPKDL; apraglutide backbone → HGDGSFSDELSTILDLLAARDFINWLIQTKITD). Sourced from Job #97's 8/10 sequence-N/A misses on peptide=True trials. Sequences-only — `_KNOWN_PEPTIDE_DRUGS` deliberately untouched per `feedback_frozen_drug_lists.md`.
+**v42.7.18 (sequence-dict expansion):** 5 entries to `_KNOWN_SEQUENCES` (solnatide/ap301/tip-peptide; io103; apraglutide backbone). Sourced from Job #97's 8/10 sequence-N/A misses on peptide=True trials.
+
+**v42.7.19 (delivery_mode ambiguous-keyword relevance gate):** Cross-job analysis (Jobs #92/#95/#96/#97) surfaced 6 distinct NCTs where ambiguous keywords (tablet/capsule) matched on FDA Drugs / OpenAlex / placebo-comparator citations not describing the experimental arm — added `citation_mentions_experimental` flag.
+
+**v42.7.20 (`_classify_publication` default → `general`):** Cross-job analysis showed `positive → unknown` was the dominant outcome miss class (9-12 misses per slice). Empirical: re-classifying Job #98 pubs under the new rule shows trial_specific count drops 6-48 → 0-5 per trial. Over-tagging was systematically confusing the LLM. v42.7.20 requires an explicit trial signal for `trial_specific` tagging.
+
+**v42.7.21 (sequences: CBX129801 + SARTATE):** From Job #98 misses. CBX129801 = Long-Acting C-Peptide → 31aa proinsulin C-peptide; SARTATE = octreotate analog → fCYwKTCT (D-Phe1, D-Trp4 lowercase preserved).
+
+**v42.7.22 (CGRP / calcitonin disambiguation):** NCT03481400 emitted wrong sequence (32aa calcitonin instead of 37aa alpha-CGRP) because the longer "calcitonin gene-related peptide" key was missing. Same v42.6.18 root cause (longest-first iteration was already in place; missing key).
+
+**Tooling:** `scripts/cross_job_miss_patterns.py` (per-job pattern tally + cross-job NCT recurrence); `scripts/evidence_grade_miss_analysis.py` (group misses by evidence_grade + show LLM reasoning); `scripts/pick_milestone_validation_100.py` + `scripts/milestone_validation_v42_7_22.json` (147-NCT validation tier with ±8pp CI half-width); held-out-E + held-out-F preemptively built.
 
 ### Validation summary (47-NCT clean slice)
 
@@ -786,16 +796,23 @@ After v25, the project went through a substantial overhaul. This file is no long
 | #95 | A (30) | v42.7.13 | 60.0% | Over-calls fixed; noise re-distributed |
 | #96 | B (25) | v42.7.16 | 36.0% | Revealed v42.7.13 over-correction |
 | #97 | C (25) | v42.7.17 | 68.0% | First post-fix measurement; v42.7 outcome cycle design-complete |
-| #98 | D (20) | v42.7.18 | running | Sequence-dict expansion + outcome regression check |
+| #98 | D (20) | v42.7.18 | 35.0% | Slice-specific positive recall variance vs #97; peptide 94.4% / classification 100% — no regressions |
+| #99 | E (20) | v42.7.22 | running | First validation of v42.7.20 classifier tightening + v42.7.21+22 sequences |
 
-### What's next (post-Job #98)
+### What's next (post-Job #99)
 
-**On outcome:** the v42.7 cycle is design-complete on outcome. Job #97's 68% on a fresh slice is a +32pp recovery from #96's 36% over-correction and +8pp over Job #92's #97-equivalent baseline. Future cycles should expect ±8.5% jitter on small (≤25 NCT) slices.
+**Production goals defined in CONTINUATION_PLAN:** beat human inter-rater agreement by ≥5pp on each field, validated on a 100+ NCT slice with 95% CI half-width <10pp. Per-field targets calibrated to inter-rater data: outcome ≥65% (vs 55.6%), peptide ≥85% (vs 48.4%), delivery ≥80% (vs 68.2%), classification ≥95% (vs 91.6%), RfF ≥95% (vs 91.3%), sequence ≥50%.
 
-**On sequence (Job #97 surfaced gap):** 8 of 10 peptide=True trials emitted sequence=N/A. v42.7.18 addresses 3 (solnatide / io103 / apraglutide). The remaining 5 NCTs need a different fix path — likely LLM-reasoning extraction from intervention text rather than dict expansion. Held-out-D analysis (pre-Job #98) shows none of v42.7.18's 3 target drugs appear in slice-D, so Job #98 is primarily a regression check + fresh sequence baseline (13/20 GT-sequence trials).
+**Validation tiers**: 20-25 NCT iteration cycles (regression detection, ±22pp CI), 147-NCT milestone validation (accuracy certification, ±8pp CI), 250-NCT production gate (final certification, ±6pp CI).
 
-**v42.7.19 candidate areas (from held-out-D pre-analysis):**
-- D-amino-acid notation (`fCYwKTCT` for NCT04440956): canonicaliser strips case; agent extraction may need to preserve and recognize lowercase as D-isomers in known-drug lookup.
-- Very short peptides (`RGD` 3-aa for NCT05518071): below current minimum-length guards; consider known-3-mer table for canonical motifs (RGD, KKK, etc.).
-- Multi-domain N-terminal modifications (e.g. `(H)RR...(NH2)` for NCT05137314): chemistry-suffix regex covers terminus only; a leading `(H)` or `(Ac)` motif may need symmetric handling.
-- Non-peptide-named drugs whose canonical sequence is in UniProt/DRAMP/DBAASP databases but not in `_KNOWN_SEQUENCES`: research-agent path, not annotation-agent path.
+**Path to production**: 1) outcome stabilization (current bottleneck — Job #99 = first signal post-v42.7.20); 2) sequence under-extraction (continue dict expansion + research-side widening — see v42.8 candidate #6); 3) delivery + RfF certification on milestone slice; 4) 250-NCT production gate.
+
+**v42.7.23 candidate backlog** (in CONTINUATION_PLAN):
+1. Outcome positive recall — DEFER, Rule 7 area is over-correction risk
+2. Delivery_mode multi-route over-collection — SHIPPED as v42.7.19
+3. Further sequence dict expansion — pending Job #99 misses
+4. Vaccine-without-explicit-route default — defer, cross-slice confirmation
+5. Topical-detection under-call — defer, narrow class
+6. Drug-code → UniProt resolution gap (v42.8 architectural) — defer
+
+**Data discipline**: only NCTs from the 680-NCT training CSV (`docs/human_ground_truth_train_df.csv`) for any cycle. Pool budget: ~290 GT-scoreable for outcome, 287 used so far, 58 residual.
