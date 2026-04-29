@@ -108,6 +108,16 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 
 ### Currently in flight
 - **Job #99** (`87aece73b9ef`, prod) — v42.7.22 (combined v42.7.19/.20/.21/.22 stack) validation on held-out-E (20 NCTs, seed 8484). Code-sync gate PASSED at submit (boot=disk=096edcd3, active_jobs=0). Eta ~3-4h. First independent measurement of the classifier-tightening + sequence-expansion + CGRP-disambiguation stack.
+- Autonomous cron `ba73eb40` set to fire every 30 min (:17/:47) — checks Job #99, scores when complete, retires slice-E, identifies v42.7.23 candidates.
+
+### v42.7.20 prediction (validated against Job #98 data 2026-04-28)
+Re-classifying Job #98 publications with the new (v42.7.20) classifier rule shows DRAMATIC drops in `[TRIAL-SPECIFIC]` tag count on every trial — most went from 6-48 tags down to 0-5. Examples: NCT03143465 (sildenafil migraine) 48 → 0; NCT03481400 (CGRP) 23 → 0; NCT03841526 25 → 0; NCT05824767 28 → 5; NCT05137314 (PLG0206) 15 → 0. This empirically validates the over-tagging hypothesis — under v41b's "default to trial_specific" rule, the LLM was being shown 6-48 [TRIAL-SPECIFIC]-tagged pubs per trial, ALL of which were field reviews lacking trial signals. The LLM correctly distrusted them in aggregate but couldn't selectively apply Rule 7 condition (b2). v42.7.20 makes the small set of remaining [TRIAL-SPECIFIC] tags actually reliable.
+
+**Predicted Job #99 effects:**
+- Trials with REAL trial-design pubs (drug name + phase descriptor in title) → LLM confidently applies Rule 7 EXCEPTION (b2) → MORE Positive recall expected
+- Trials with only field reviews → LLM correctly defaults to Unknown (same outcome; cleaner reasoning)
+- Vaccine override (requires trial_specific ≥ 2) fires LESS often — design trade-off (more conservative override; LLM-driven path takes over)
+- Failed override (requires trial_specific > 0) fires LESS often — same trade-off
 
 ### Job #98 result (held-out-D, v42.7.18)
 - 20/20 trials, 0 errors, 1 warning (atomic-fr empty value, non-fatal)
