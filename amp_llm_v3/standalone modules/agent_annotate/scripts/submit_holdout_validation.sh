@@ -18,7 +18,7 @@ for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -40,6 +40,7 @@ for arg in "$@"; do
         --slice-c) SLICE="$THIS_DIR/holdout_outcome_slice_c_v42_7_17.json" ;;
         --slice-d) SLICE="$THIS_DIR/holdout_outcome_slice_d_v42_7_18.json" ;;
         --slice-e) SLICE="$THIS_DIR/holdout_outcome_slice_e_v42_7_19.json" ;;
+        --slice-f) SLICE="$THIS_DIR/holdout_outcome_slice_f_v42_7_23.json" ;;
     esac
 done
 if [ ! -f "$SLICE" ]; then
