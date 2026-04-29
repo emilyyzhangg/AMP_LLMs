@@ -110,7 +110,7 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 
 ### Currently in flight
 - **Job #100** (`f58ee94d315c`, prod) — 147-NCT MILESTONE VALIDATION of v42.7.22 stack. Code-sync gate PASSED at submit (boot=disk=096edcd3). ETA ~24h overnight. First production-grade accuracy certification with ±8pp CI half-width. Triggered by Job #99's outcome 55% hitting the ≥55% production threshold.
-- Autonomous cron `ba73eb40` was monitoring Job #99 — being deleted now that #99 is scored and milestone is triggered.
+- Autonomous cron `32ddc648` (every :23) monitors Job #100 — when complete, scores against Job #83 baseline, decides production-gate trigger based on per-field targets. (Old cron `ba73eb40` was deleted post-Job-#99 scoring.)
 
 ### v42.7.20 prediction (validated against Job #98 data 2026-04-28)
 Re-classifying Job #98 publications with the new (v42.7.20) classifier rule shows DRAMATIC drops in `[TRIAL-SPECIFIC]` tag count on every trial — most went from 6-48 tags down to 0-5. Examples: NCT03143465 (sildenafil migraine) 48 → 0; NCT03481400 (CGRP) 23 → 0; NCT03841526 25 → 0; NCT05824767 28 → 5; NCT05137314 (PLG0206) 15 → 0. This empirically validates the over-tagging hypothesis — under v41b's "default to trial_specific" rule, the LLM was being shown 6-48 [TRIAL-SPECIFIC]-tagged pubs per trial, ALL of which were field reviews lacking trial signals. The LLM correctly distrusted them in aggregate but couldn't selectively apply Rule 7 condition (b2). v42.7.20 makes the small set of remaining [TRIAL-SPECIFIC] tags actually reliable.
