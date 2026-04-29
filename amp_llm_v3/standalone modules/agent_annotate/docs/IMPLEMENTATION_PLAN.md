@@ -1,10 +1,21 @@
 # Agent Annotate — Implementation Plan
 
+> **⚠️ Staleness note (2026-04-29):** This document is the original implementation roadmap (≈v0–v25) and predates the v42.X redesign. The figures below ("4 research agents", "5 annotation fields") are historical. Current state: 19 research agents, 6 annotation fields (sequence added), 19+ free databases queried, structural overrides for outcome (vaccine, FDA-approved, Failed status-gated, etc.), `evidence_grade` taxonomy, per-cycle held-out separation. For canonical current state see:
+> - `CONTINUATION_PLAN.md` (state, slice table, production goals, Path-to-Production)
+> - `LEARNING_RUN_PLAN.md` (job registry + version changelog)
+> - `docs/AGENT_STRATEGY_ROADMAP.md` (governing design doc — read this before any agent change)
+> - `docs/USER_GUIDE.md` §17 "v42.7 era"
+> - `docs/IMPROVEMENT_STRATEGY.md` §17 (v25 → v42.7.22 summary)
+>
+> The architectural concepts below (research → annotation → verification three-phase pipeline; evidence thresholds; multi-model blind verification; full citation traceability) remain ACCURATE in v42.7.X — the changes are agent-set expansion + outcome structural overrides, not architectural shifts.
+
 ## Context
 
 AMP LLM currently annotates clinical trials using a single monolithic LLM call that handles all 5 annotation fields simultaneously. This produces results that are not rigorous enough for scientific publication — there's no independent verification, no evidence thresholds, and no source citations.
 
 Agent Annotate replaces this with a network of specialized AI agents: 4 research agents gather data in parallel, 5 annotation agents each handle one field with mandatory evidence thresholds, and a multi-model blind verification pipeline ensures publication-grade accuracy. Every claim is traceable to specific sources with identifiers.
+
+> _Historical numbers, kept for original-context preservation. Current: 19 research agents, 6 annotation fields. See staleness note above._
 
 **Service:** Standalone FastAPI + React/TypeScript on port 9005 (dev) / 8005 (prod)
 **Location:** `dev-llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/`
