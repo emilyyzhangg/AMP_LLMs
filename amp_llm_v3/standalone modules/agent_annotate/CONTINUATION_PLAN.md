@@ -44,25 +44,27 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 ### Path to production (sequenced)
 
 1. **Outcome stabilization** (current bottleneck)
-   - Bring outcome to ≥55% across 2 consecutive 20-25 NCT slices (i.e., #99 + #100/#101)
-   - If achieved: queue 100-NCT validation (Job #102 or later) to certify outcome ≥65%
-   - If not: continue iteration (v42.7.23+) on outcome paths
+   - Bring outcome to ≥55% across 2 consecutive 20-25 NCT slices (Job #97 68%, #98 35%, #99 55% — pattern still slice-variant)
+   - If milestone (#100, 147 NCTs, ±8pp CI) confirms outcome ≥65%: trigger 250-NCT production gate
+   - If milestone outcome 55-64.9%: outcome is "near-target" — continue iteration on slice-F (Job #101 in this scenario), then re-evaluate (NOT immediately fire production gate; the milestone CI still spans the target)
+   - If milestone outcome <55%: investigate misses for v42.7.23 candidate; do NOT modify Rule 7 wording (over-correction risk per v42.7.13/v42.7.17 history)
 
 2. **Sequence under-extraction**
    - Mechanical: continue `_KNOWN_SEQUENCES` expansion as new drugs surface (v42.7.18, .21, .22 pattern; ~2 entries per cycle)
-   - Structural: examine whether DBAASP/APD/UniProt research-agent queries can be widened
+   - Structural: examine whether DBAASP/APD/UniProt research-agent queries can be widened (v42.8 candidate #6: drug-code → biological-name resolution layer)
    - Target: 50% set-containment hit rate across 2 consecutive slices, then 100-NCT validation
 
 3. **Delivery + RfF certification**
-   - Already meeting target on most slices; queue 100-NCT validation when next major code change ships
-   - Specific: confirm v42.7.19's delivery relevance gate doesn't introduce new misses on the 100-NCT set
+   - Already meeting target on most slices; the 147-NCT milestone certifies these alongside outcome
+   - Specific: confirm v42.7.19's delivery relevance gate doesn't introduce new misses on the milestone set
 
-4. **Production gate**
-   - Trigger: all 6 fields hit per-field target on the 147-NCT milestone validation
-   - Run: 250-NCT certification — methodologically sound to draw from the full training CSV's GT-scoreable pool (this is accuracy certification, not generalization testing; we already established generalization via the per-cycle held-out separation)
-   - Composition: combine the 147-NCT milestone slice + any remaining residual + selectively re-use earlier slices to reach 250 unique NCTs (all from the 680-NCT training CSV)
-   - Document: per-field accuracy + CI + comparison to human inter-rater + per-NCT result table
-   - Sign-off: this becomes the "production-ready" marker; outcomes can then be republished as the canonical benchmark
+4. **Production gate** (250-NCT certification)
+   - Trigger: 147-NCT milestone confirms outcome ≥65% AND no field regresses below target
+   - Slice composition (PREBUILT in `scripts/production_gate_v42_7_22.json`): 147 milestone + 20 slice-E + 20 slice-F + 63 residual/test-batch = 250 unique NCTs from 680-NCT training universe. Outcome distribution: 120 positive / 77 unknown / 30 terminated / 13 failed / 10 withdrawn — full GT category coverage (terminated/failed/withdrawn untested since v42.7 cycle started).
+   - Cost: ~41h overnight on Mac Mini.
+   - 95% CI half-width: ±6.2pp at p=0.5, ±5.7pp at p=0.7 — production-grade.
+   - Document: per-field accuracy + CI + per-outcome-class breakdown + comparison to human inter-rater + per-NCT result table
+   - Sign-off: this becomes the "production-ready" marker; outcomes republish as the canonical benchmark for the system.
 
 ### Constraints + open questions
 - **Pool depletion**: ~38 GT-scoreable candidates remain after slice-F (within the 680-NCT training CSV; per-cycle exclusion discipline). Iteration cycles will shift to 15-NCT slices once the pool drops below 40, OR accept slice re-use (with the caveat that any re-used slice must NOT be the slice that motivated the most recent code change — same overfitting concern as before).
