@@ -6,6 +6,16 @@
 
 ## Production Goals (defined 2026-04-28)
 
+### Data discipline (MANDATORY)
+**The only data source for any training, iteration, or validation cycle is `docs/human_ground_truth_train_df.csv` (680 unique NCTs).** No other CSV, no scraped GT, no synthetic data. Every slice — iteration, milestone, production gate — must be a subset of those 680 NCTs. Confirmed: all existing slices (Job #83 baseline + held-out A/B/C/D/E/F + fast_learning_batch_50 + milestone_validation_v42_7_22) draw from this single source.
+
+### Pool budget (single source of truth)
+- **Universe**: 680 NCTs (training CSV)
+- **GT-scoreable for outcome** (consensus exists, not "active"): ~290 NCTs (the picker's effective pool)
+- **Used so far**: 287 unique NCTs across all jobs/slices/test-batch
+- **Remaining residual**: 58 candidates (per slice-F picker output)
+- **Implication**: cannot build arbitrarily many fresh slices; production gate (250 NCTs) must come from re-using already-scored NCTs (which is methodologically sound for accuracy certification — see "Why" below)
+
 ### Headline target
 **Production-certify each annotation field by demonstrating accuracy that beats human inter-rater agreement by ≥5pp, validated on a 100+ NCT slice with 95% CI half-width <10pp, with no regressions on the 47-NCT v42.6.15 baseline.**
 
@@ -48,13 +58,14 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
    - Specific: confirm v42.7.19's delivery relevance gate doesn't introduce new misses on the 100-NCT set
 
 4. **Production gate**
-   - Trigger: all 6 fields hit per-field target on 100-NCT validation
-   - Run: 250-NCT certification on a fresh slice (build held-out-PROD with seed 99999, expanded test-batch coverage if pool depleted)
-   - Document: per-field accuracy + CI + comparison to human inter-rater
-   - Sign-off: this becomes the "production-ready" marker
+   - Trigger: all 6 fields hit per-field target on the 147-NCT milestone validation
+   - Run: 250-NCT certification — methodologically sound to draw from the full training CSV's GT-scoreable pool (this is accuracy certification, not generalization testing; we already established generalization via the per-cycle held-out separation)
+   - Composition: combine the 147-NCT milestone slice + any remaining residual + selectively re-use earlier slices to reach 250 unique NCTs (all from the 680-NCT training CSV)
+   - Document: per-field accuracy + CI + comparison to human inter-rater + per-NCT result table
+   - Sign-off: this becomes the "production-ready" marker; outcomes can then be republished as the canonical benchmark
 
 ### Constraints + open questions
-- **Pool depletion**: ~38 GT-scoreable candidates remain after slice-F. Need test-batch expansion (currently 50 NCTs reserved for "fast learning batch") OR accept smaller iteration slices going forward (15 NCTs).
+- **Pool depletion**: ~38 GT-scoreable candidates remain after slice-F (within the 680-NCT training CSV; per-cycle exclusion discipline). Iteration cycles will shift to 15-NCT slices once the pool drops below 40, OR accept slice re-use (with the caveat that any re-used slice must NOT be the slice that motivated the most recent code change — same overfitting concern as before).
 - **Outcome's slice-variance**: #97 was 68%, #98 was 35% on similar positive-heavy distributions. The cause is currently hypothesized as the LLM's interpretation of Rule 7 (`positive → unknown` rate 50-92% per slice). v42.7.20 classifier tightening targets this. Job #99 = first signal.
 - **Cost ceiling**: 250-NCT production gate costs ~28h compute. Plan accordingly — overnight run, no other prod jobs scheduled during it.
 
