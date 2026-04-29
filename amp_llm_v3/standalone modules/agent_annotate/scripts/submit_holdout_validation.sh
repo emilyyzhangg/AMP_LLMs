@@ -18,7 +18,7 @@ for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -41,6 +41,12 @@ for arg in "$@"; do
         --slice-d) SLICE="$THIS_DIR/holdout_outcome_slice_d_v42_7_18.json" ;;
         --slice-e) SLICE="$THIS_DIR/holdout_outcome_slice_e_v42_7_19.json" ;;
         --slice-f) SLICE="$THIS_DIR/holdout_outcome_slice_f_v42_7_23.json" ;;
+        # Milestone validation: 147-NCT combined slice (Job #83 baseline +
+        # held-out A/B/C/D). Used to certify accuracy with ±8pp CI
+        # half-width, ~24h overnight run. Triggered when iteration cycles
+        # show outcome+sequence stable across 2+ slices. See
+        # CONTINUATION_PLAN's "Production Goals" section.
+        --milestone) SLICE="$THIS_DIR/milestone_validation_v42_7_22.json" ;;
     esac
 done
 if [ ! -f "$SLICE" ]; then
