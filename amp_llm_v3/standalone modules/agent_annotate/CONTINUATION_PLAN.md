@@ -37,7 +37,7 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **None.** Job #98 closed 2026-04-28 16:09 PDT. v42.7.20+v42.7.21+v42.7.22 ready for next-cycle merge to main + Job #99 against held-out-E.
+- **Job #99** (`87aece73b9ef`, prod) — v42.7.22 (combined v42.7.19/.20/.21/.22 stack) validation on held-out-E (20 NCTs, seed 8484). Code-sync gate PASSED at submit (boot=disk=096edcd3, active_jobs=0). Eta ~3-4h. First independent measurement of the classifier-tightening + sequence-expansion + CGRP-disambiguation stack.
 
 ### Job #98 result (held-out-D, v42.7.18)
 - 20/20 trials, 0 errors, 1 warning (atomic-fr empty value, non-fatal)
