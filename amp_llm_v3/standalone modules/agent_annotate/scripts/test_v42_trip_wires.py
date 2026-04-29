@@ -316,6 +316,40 @@ def test_v42_7_18_known_sequences_expanded():
     print("  ✓ v42.7.18: _KNOWN_SEQUENCES holds solnatide/ap301/tip-peptide/io103/apraglutide")
 
 
+def test_v42_7_20_pub_classifier_default_general():
+    """v42.7.20 (2026-04-28): _classify_publication default flipped from
+    `trial_specific` (v41b) to `general`. Cross-job analysis of Jobs
+    #95/#96/#97/#98 showed `positive → unknown` is the dominant outcome
+    miss class; spot inspection (NCT01677676 / NCT05137314 / NCT05898763)
+    revealed the heuristic was over-tagging field-review pubs as
+    [TRIAL-SPECIFIC], systematically confusing the LLM. Tightening to
+    require explicit trial signals (phase X, randomized, first-in-human,
+    clinical trial, NCT match, etc.) makes [TRIAL-SPECIFIC] tags
+    reliable. Reverting recreates the over-tagging confusion class.
+    """
+    from agents.annotation.outcome import _classify_publication
+    # Generic field-review title without explicit trial signal must be
+    # tagged general (the v42.7.20 default).
+    r = _classify_publication(
+        "Computational Approaches to Universal Influenza Vaccines",
+        "NCT99999999",
+    )
+    assert r == "general", \
+        f"v42.7.20 trip-wire: ambiguous title must default to 'general' (got {r!r})"
+    # Explicit trial signal (phase + first-in-human) must still be trial_specific.
+    r = _classify_publication(
+        "First-in-human phase I/II dose-escalation study of XYZ",
+        "NCT99999999",
+    )
+    assert r == "trial_specific", \
+        f"v42.7.20 trip-wire: explicit-trial-signal title must remain trial_specific (got {r!r})"
+    # NCT match always trial_specific.
+    r = _classify_publication("Review covering NCT12345678 results", "NCT12345678")
+    assert r == "trial_specific", \
+        f"v42.7.20 trip-wire: NCT match must override review keyword (got {r!r})"
+    print("  ✓ v42.7.20: classifier default flipped to 'general' + NCT/phase signals preserved")
+
+
 def test_v42_7_19_delivery_ambiguous_keyword_relevance_gate():
     """v42.7.19 (2026-04-28): the delivery_mode protocol-keyword scan
     must skip ambiguous keywords (tablet/capsule from `_AMBIGUOUS_KEYWORDS`)
@@ -379,6 +413,7 @@ def main() -> int:
         test_v42_7_16_sequence_canonicaliser_strips_chemistry_suffix,
         test_v42_7_18_known_sequences_expanded,
         test_v42_7_19_delivery_ambiguous_keyword_relevance_gate,
+        test_v42_7_20_pub_classifier_default_general,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
