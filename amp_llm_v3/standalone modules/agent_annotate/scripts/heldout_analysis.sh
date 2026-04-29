@@ -18,6 +18,10 @@
 #   6. Outcome miss-pattern tally + delivery_mode miss-pattern tally
 #      (uses cross_job_miss_patterns.py — see also that script for
 #      cross-cycle pattern hunting against ≥2 historical jobs)
+#   7. Outcome misses stratified by evidence_grade + LLM reasoning
+#      (uses evidence_grade_miss_analysis.py — surfaces WHICH layer
+#      is failing: db_confirmed / deterministic / pub_trial_specific
+#      / llm. Run on every job to direct next iteration.)
 
 set -euo pipefail
 
@@ -168,3 +172,11 @@ echo "── 6. Outcome + delivery miss-pattern tally ────────�
 $PY "$THIS_DIR/cross_job_miss_patterns.py" "$HELDOUT_JOB" --field outcome 2>&1 | tail -25
 echo
 $PY "$THIS_DIR/cross_job_miss_patterns.py" "$HELDOUT_JOB" --field delivery_mode 2>&1 | tail -15
+echo
+
+echo "── 7. Outcome misses by evidence_grade + LLM reasoning ─"
+# Surfaces which agent layer is responsible for misses (db_confirmed
+# override, deterministic rule, pub_trial_specific LLM, bare llm).
+# This is what root-caused v42.7.20 — Job #98's pub_trial_specific
+# misses uniformly rejected over-tagged [TRIAL-SPECIFIC] pubs.
+$PY "$THIS_DIR/evidence_grade_miss_analysis.py" "$HELDOUT_JOB" --field outcome 2>&1 | tail -50
