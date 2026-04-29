@@ -1,6 +1,65 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-28 (Job #98 done — v42.7.18 no regressions; v42.7.19 merged to main; v42.7.20+v42.7.21+v42.7.22 staged on dev for next held-out cycle)
+**Last updated:** 2026-04-28 (Job #98 done — v42.7.18 no regressions; v42.7.19+v42.7.20+v42.7.21+v42.7.22 merged to main; Job #99 validating combined stack on held-out-E)
+
+---
+
+## Production Goals (defined 2026-04-28)
+
+### Headline target
+**Production-certify each annotation field by demonstrating accuracy that beats human inter-rater agreement by ≥5pp, validated on a 100+ NCT slice with 95% CI half-width <10pp, with no regressions on the 47-NCT v42.6.15 baseline.**
+
+### Why "beat human inter-rater" rather than "match GT exactly"
+Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human disagreement: outcome 55.6%, peptide 48.4%, delivery 68.2%, classification 91.6%, RfF 91.3%. The agent cannot exceed the noise ceiling of GT-as-gold-standard — that ceiling IS the inter-rater agreement. The right bar is "as accurate as a typical second human annotator, plus a margin." This is a defensible production claim and aligns with the IMPROVEMENT_STRATEGY thesis ("build agents that don't need a human counterpart").
+
+### Per-field production targets
+
+| Field | Human inter-rater | Production target | Current best | Status |
+|---|---|---|---|---|
+| Classification | 91.6% | ≥95% | 100% (#97/#98) | ✅ MEETING |
+| Peptide        | 48.4% | ≥85% | 100% (#97), 94.4% (#98) | ✅ MEETING |
+| Delivery_mode  | 68.2% | ≥80% | 91.7% (#83), 85% (#97), 77.8% (#98) | ⚠️ BORDERLINE |
+| Reason for failure | 91.3% | ≥95% | 91.7% (#89) | ⚠️ NEEDS LARGER N (data sparse) |
+| Outcome        | 55.6% | ≥65% | 68% (#97), 35% (#98) | ❌ HIGH SLICE-VARIANCE |
+| Sequence       | n/a (no inter-rater data) | ≥50% (set-containment) | 50% (#92), 18-20% (#97/#98) | ❌ UNDER-EXTRACTION |
+
+### Validation methodology (calibrated by purpose)
+
+| Purpose | Slice size | Frequency | Cost | What it answers |
+|---|---|---|---|---|
+| **Iteration cycles** | 20-25 NCTs | Per-version | 3-4h | "Did this code change break anything?" — regression detection only |
+| **Milestone validation** | 100 NCTs | When a field stabilizes near target across 2+ iteration slices | 8-12h | "Is field X actually at target accuracy with reasonable CI?" |
+| **Production gate** | 250 NCTs | Once, when all fields meet targets | 24-30h (overnight) | "Can we ship to production?" — ±6pp CI half-width on each field |
+
+### Path to production (sequenced)
+
+1. **Outcome stabilization** (current bottleneck)
+   - Bring outcome to ≥55% across 2 consecutive 20-25 NCT slices (i.e., #99 + #100/#101)
+   - If achieved: queue 100-NCT validation (Job #102 or later) to certify outcome ≥65%
+   - If not: continue iteration (v42.7.23+) on outcome paths
+
+2. **Sequence under-extraction**
+   - Mechanical: continue `_KNOWN_SEQUENCES` expansion as new drugs surface (v42.7.18, .21, .22 pattern; ~2 entries per cycle)
+   - Structural: examine whether DBAASP/APD/UniProt research-agent queries can be widened
+   - Target: 50% set-containment hit rate across 2 consecutive slices, then 100-NCT validation
+
+3. **Delivery + RfF certification**
+   - Already meeting target on most slices; queue 100-NCT validation when next major code change ships
+   - Specific: confirm v42.7.19's delivery relevance gate doesn't introduce new misses on the 100-NCT set
+
+4. **Production gate**
+   - Trigger: all 6 fields hit per-field target on 100-NCT validation
+   - Run: 250-NCT certification on a fresh slice (build held-out-PROD with seed 99999, expanded test-batch coverage if pool depleted)
+   - Document: per-field accuracy + CI + comparison to human inter-rater
+   - Sign-off: this becomes the "production-ready" marker
+
+### Constraints + open questions
+- **Pool depletion**: ~38 GT-scoreable candidates remain after slice-F. Need test-batch expansion (currently 50 NCTs reserved for "fast learning batch") OR accept smaller iteration slices going forward (15 NCTs).
+- **Outcome's slice-variance**: #97 was 68%, #98 was 35% on similar positive-heavy distributions. The cause is currently hypothesized as the LLM's interpretation of Rule 7 (`positive → unknown` rate 50-92% per slice). v42.7.20 classifier tightening targets this. Job #99 = first signal.
+- **Cost ceiling**: 250-NCT production gate costs ~28h compute. Plan accordingly — overnight run, no other prod jobs scheduled during it.
+
+---
+
 **Current state:** Job #98 (v42.7.18, held-out-D, 20 NCTs) closed at 7/20 = 35.0% outcome — much lower than Job #97's 68% on a similarly positive-heavy slice, but no regressions: peptide 17/18 = 94.4% (+13pp vs #83), classification 19/19 = 100%. Outcome miss pattern is consistent: 12 of 13 misses are `positive → unknown` (LLM correctly discounting heuristic [TRIAL-SPECIFIC] tags on field-review pubs). v42.7.18 sequence-dict didn't fire on slice-D (predicted: 0 target NCTs). v42.7.19 (delivery_mode relevance gate) merged to main as 0795788e — protects against 6-NCT spurious-oral pattern. v42.7.20 (`_classify_publication` default → general) + v42.7.21 (CBX129801 + SARTATE sequences) + v42.7.22 (CGRP / calcitonin disambiguation) staged on dev for next held-out cycle. 19 research agents stable.
 
 **Main at:** `0795788e` (v42.7.19 merge). v42.7.20 + v42.7.21 + v42.7.22 staged on dev.
