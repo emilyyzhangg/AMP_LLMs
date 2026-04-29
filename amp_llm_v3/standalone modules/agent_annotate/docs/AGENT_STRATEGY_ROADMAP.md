@@ -12,7 +12,7 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 - **Authoritative pipelines:** legacy for every field.
 - **Shadow pipelines:** `classification_atomic`, `failure_reason_atomic`, `outcome_atomic` all run and write `<field>_atomic` for audit — never in the critical path.
-- **Commit:** `5875b4a8` on main (v42.7.18 merge — sequence-dict expansion). Full v42.7.5–v42.7.18 shipped:
+- **Commit:** `096edcd3` on main (v42.7.22 merge — CGRP disambiguation). Full v42.7.5–v42.7.22 shipped:
   - v42.7.5–v42.7.11: code-sync, NIH RePORTER (19th agent), vaccine override, FDA/SEC wiring, query extension, intervention type preservation, drug-name surfacing
   - v42.7.12: FDA label indications + CT.gov registered-pubs gate (Job #92 over-call fix)
   - v42.7.13: explicit "Registered Trial Publications: 0" line + Rule 7 hallucination fix
@@ -21,14 +21,19 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
   - v42.7.16: sequence canonicalizer strips terminal -OH / -NH2 chemistry suffix
   - v42.7.17: Rule 7 over-correction fix — accept pub-title-pattern as alternative trial-specificity (drug name + phase/first-in-human/clinical-trial descriptor in title; generic field reviews excluded). Triggered by Job #96 held-out-B revealing v42.7.13's strict FALLBACK was too literal.
   - v42.7.18: `_KNOWN_SEQUENCES` expansion — solnatide / ap301 / tip-peptide → CGQRETPEGAEAKPWYC; io103 → FMTYWHLLNAFTVTVPKDL (alias for existing pd-l1 peptide entry); apraglutide backbone → HGDGSFSDELSTILDLLAARDFINWLIQTKITD. Sources: Job #97's 8/10 sequence-N/A misses on peptide=True trials. Sequences-only — `_KNOWN_PEPTIDE_DRUGS` deliberately untouched per `feedback_frozen_drug_lists.md`.
+  - v42.7.19: `delivery_mode` ambiguous-keyword relevance gate. Cross-job analysis of Jobs #92/#95/#96/#97 showed 6 distinct NCTs with spurious-oral pattern from FDA Drugs / OpenAlex / placebo-comparator citations. `_AMBIGUOUS_KEYWORDS` (tablet/capsule) matches now require the citation to mention an experimental intervention name. Non-ambiguous keywords unaffected.
+  - v42.7.20: `_classify_publication` default flipped from `trial_specific` to `general`. Cross-job analysis (Jobs #95-#98) showed `positive → unknown` is the dominant outcome miss class (9-12 misses per slice). Spot inspection of Job #98 misses revealed 7-9 pubs per trial defaulting to [TRIAL-SPECIFIC] under v41b's "default to trial_specific" rule, leading the LLM to systematically discount them. v42.7.20 requires an explicit trial signal (NCT match, "phase X", "first-in-human", "clinical trial", etc.) for the trial_specific tag. _TRIAL_SIGNALS extended with combined-phase markers ("phase 1/2", "phase 1b") and "clinical trial"/"clinical study".
+  - v42.7.21: `_KNOWN_SEQUENCES` expansion from Job #98 misses — `cbx129801` → 31aa proinsulin C-peptide (CBX129801 = Long-Acting C-Peptide; NCT01681290), `sartate` → fCYwKTCT octreotate analog with D-Phe1/D-Trp4 (NCT04440956 64Cu-SARTATE). Includes "long-acting c-peptide" and "octreotate" aliases.
+  - v42.7.22: CGRP / calcitonin disambiguation. NCT03481400 (CGRP migraine trial) had its intervention "Calcitonin Gene-Related Peptide" (37aa alpha-CGRP) shadowed by the shorter "calcitonin" key (32aa, different drug). Same v42.6.18 root cause — longest-first iteration was already in place; the longer key was just missing. Added "calcitonin gene-related peptide" + "cgrp" aliases → ACDTATCVTHRLAGLLSRSGGVVKNNFVPTNVGSKAF.
 
-- **Held-out slices:** A (30, retired post-#95), B (25, retired post-#96 — surfaced over-correction), C (25, retired post-#97 — outcome cycle PASS), D (20, active, Job #98 in flight).
+- **Held-out slices:** A (30, retired post-#95), B (25, retired post-#96 — surfaced over-correction), C (25, retired post-#97 — outcome cycle PASS), D (20, retired post-#98 — surfaced v42.7.20+v42.7.21+v42.7.22 candidates), E (20, active, Job #99 in flight), F (20, prebuilt for next cycle).
 - **Job validation history (recent):**
   - Job #92 (held-out-A, v42.7.11): outcome 60.0%, classification 100%, sequence 50%
   - Job #95 (held-out-A re-run, v42.7.13): outcome 60.0% (same accuracy, 4 over-calls fixed but 4 noise-floor losses)
   - Job #96 (held-out-B, v42.7.16): outcome 36% — revealed v42.7.13 over-correction
   - Job #97 (held-out-C, v42.7.17): outcome 17/25 = 68% — PASS, +32pp vs #96, +8pp vs #92; v42.7 outcome cycle design-complete
-  - Job #98 (held-out-D, v42.7.18): in flight; pre-analysis shows 0/20 trials directly target v42.7.18's 3 new dict entries — primarily a regression check + fresh sequence baseline (13/20 GT-sequence trials)
+  - Job #98 (held-out-D, v42.7.18): outcome 7/20 = 35.0% (slice-specific positive recall variance — same conservative pattern as #97 on a more positive-skewed slice); peptide 17/18 = 94.4% (+13pp) ⭐; classification 19/19 = 100% ⭐; v42.7.18 NO REGRESSIONS; surfaced v42.7.20/.21/.22 candidates
+  - Job #99 (held-out-E, v42.7.22): in flight, validates combined v42.7.19/.20/.21/.22 stack
 - **Research agents:** 19 total — 15 pre-v42 + bioRxiv (v42 Phase 6) + SEC EDGAR + FDA Drugs (v42.7.0) + NIH RePORTER (v42.7.6).
 - **Validation baselines (47-NCT clean slice, GT/registry-aligned):**
   - **Job #83 (v42.6.15)** — peptide 81.1%, classification 90.7%, delivery 91.7%, outcome 61.7%, RfF 83.3%, sequence 75.0%.
@@ -250,7 +255,7 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
 116+ unit tests pass.
 
 ### Currently in flight
-- **Job #98** (`29cd761c1bce`, prod) — v42.7.18 validation on held-out-D (20 NCTs, seed 7373). Code-sync gate PASSED at submit (boot=disk=5875b4a8). Eta ~3-4h. Pre-analysis: 0/20 trials directly target v42.7.18's 3 new dict entries, so this run primarily checks for regressions and takes a fresh sequence baseline (13/20 GT-sequence trials).
+- **Job #99** (`87aece73b9ef`, prod) — combined v42.7.19/.20/.21/.22 validation on held-out-E (20 NCTs, seed 8484). Code-sync gate PASSED at submit (boot=disk=096edcd3). First independent measurement of the classifier-tightening + sequence-expansion + CGRP-disambiguation stack. ETA ~3-4h.
 
 ### v42.7 cycle close-out (what shipped)
 | Sub-version | Commit | What it did | Validated by |
@@ -261,7 +266,11 @@ Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
 | v42.7.3 | 5e548125 | Per-field `_DB_KEYWORDS_BY_FIELD` dispatch (fixes commit-accuracy inversion) | Job #88 |
 | v42.7.4 | 0c0a7471 | Two-tier source weighting (`_PUB_AGENTS_HIGH_QUALITY` for keyword scan) | Job #89 |
 | v42.7.17 | fdd6859b | Rule 7 over-correction fix (pub-title-pattern alternative) | Job #97 PASS @ 68% |
-| v42.7.18 | 9d5ec33d | `_KNOWN_SEQUENCES` expansion (solnatide/io103/apraglutide) | Job #98 in flight |
+| v42.7.18 | 9d5ec33d | `_KNOWN_SEQUENCES` expansion (solnatide/io103/apraglutide) | Job #98 NO REGRESSIONS (target NCTs absent from slice-D) |
+| v42.7.19 | 2d3c0b28 | `delivery_mode` ambiguous-keyword relevance gate (6 NCTs cross-job) | merged 0795788e |
+| v42.7.20 | cb984ba7 | `_classify_publication` default flipped to 'general' | Job #99 in flight |
+| v42.7.21 | 59c0be20 | _KNOWN_SEQUENCES: cbx129801 + sartate + aliases | Job #99 in flight |
+| v42.7.22 | 59c0be20 | CGRP / calcitonin disambiguation (NCT03481400 fix) | Job #99 in flight |
 
 ### Recurring discipline (not jobs — process)
 1. Every code change ships with a unit test in `scripts/test_v42_*_*.py`.
