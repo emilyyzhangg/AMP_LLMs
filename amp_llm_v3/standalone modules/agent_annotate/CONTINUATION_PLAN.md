@@ -160,14 +160,19 @@ Slice progression so far: A (30, seed 4242, retired post-#95) → B (25, seed 52
 **Pattern surfaced:** outcome was flat because 4 over-calls (Positive when GT=Unknown) canceled the v42.7.7+8 gains. The over-calls shared a pattern: drug is FDA-approved for indication X, trial tested it for indication Y. Examples: calcitonin (approved for osteoporosis, trial tested thyroid); exenatide (approved for diabetes, trial tested Parkinson's). **Resolved by v42.7.12** (FDA label indications + CT.gov registered-pubs gate) and v42.7.13 (LLM hallucination fix); over-correction caught + fixed by v42.7.17.
 
 ### Next steps (queued)
-1. Wait for Job #98 to complete (currently 50% done, ETA ~16:00 local).
-2. Score Job #98 with `scripts/heldout_analysis.sh 29cd761c1bce 51a6c2a308f8` and `scripts/cross_job_miss_patterns.py` (new).
-3. Merge v42.7.19 (delivery-mode relevance gate, dev only) to main. Build held-out-E (seed 8484) for the next cycle.
-4. Re-evaluate v42.7.20 (outcome positive recall) based on Job #98 signal — defer if risk of Rule 7 over-correction redux is still unclear.
-5. If Job #98 surfaces additional sequence=N/A on peptide=True trials with public canonical sequences, queue v42.7.21 dict expansion.
+1. Wait for Job #99 to complete (held-out-E, ETA ~16:00-17:00 PT, autonomous cron `ba73eb40` checks every 30 min).
+2. Score Job #99 with `bash scripts/heldout_analysis.sh 87aece73b9ef 51a6c2a308f8`, `scripts/cross_job_miss_patterns.py`, and `scripts/evidence_grade_miss_analysis.py 87aece73b9ef` (new — see Diagnostics tooling).
+3. If outcome ≥55% on slice-E AND a 2nd slice corroborates: trigger 147-NCT milestone validation against `scripts/milestone_validation_v42_7_22.json` — overnight ~24h.
+4. If outcome <50% on slice-E: investigate misses for v42.7.23 candidates. **Do NOT modify Rule 7 wording** — that's the over-correction risk (v42.7.13 → v42.7.17 history). Look for upstream fixes: classifier signal additions, structural overrides for narrow well-gated patterns.
+5. Sequence dict expansion (v42.7.23): research deferred Job #98 candidates (FP-01.1, GT-001, PLG0206, EPO alpha, P11-4) with verified public sequences.
+
+### Diagnostics tooling
+- `scripts/heldout_analysis.sh JOB BASELINE` — 6-section job analysis (per-field accuracy, per-NCT outcome, research-agent firing, v42.7.7-11 paths, evidence_grade distribution, miss-pattern tally)
+- `scripts/cross_job_miss_patterns.py JOB1 [JOB2...] [--field outcome]` — per-job pattern tally + cross-job NCT recurrence (the analysis that scoped v42.7.19 by surfacing 6 NCTs across 4 slices)
+- `scripts/evidence_grade_miss_analysis.py JOB [--field outcome]` — group misses by evidence_grade + show LLM reasoning. Surfaces WHICH layer is failing (db_confirmed override / deterministic rule / pub_trial_specific LLM / bare llm). The analysis that root-caused v42.7.20 — Job #98's pub_trial_specific misses uniformly rejected over-tagged [TRIAL-SPECIFIC] pubs.
 
 ### Test suite
-25 test files under `scripts/test_v42_*.py` + `scripts/test_v42_trip_wires.py`, 177 tests + 17 trip-wires + 9 live-API integrations — full sweep clean. Trip-wire suite (17 source-level assertions) protects the most expensive past-bug fixes from refactor regression. Run `bash scripts/run_full_regression.sh` for the 3-tier sweep.
+27 test files under `scripts/test_v42_*.py` + `scripts/test_v42_trip_wires.py`, 199 tests + 20 trip-wires + 9 live-API integrations — full sweep clean. Trip-wire suite (20 source-level assertions) protects the most expensive past-bug fixes from refactor regression. Run `bash scripts/run_full_regression.sh` for the 3-tier sweep.
 
 ---
 
