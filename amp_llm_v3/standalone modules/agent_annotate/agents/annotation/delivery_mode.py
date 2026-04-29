@@ -389,11 +389,40 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
         for citation in result.citations:
             snippet_lower = citation.snippet.lower()
             is_title = _is_title_citation(citation)
+            # v42.7.19 (2026-04-28): ambiguous-keyword relevance gate.
+            # Job #92/#95/#96/#97 surfaced 6 distinct NCTs where the
+            # protocol-keyword scan added a spurious "Oral" route because
+            # ambiguous keywords (tablet/capsule) matched on citations
+            # that didn't describe the experimental arm — typically FDA
+            # Drugs returning oral formulations of similarly-named approved
+            # drugs (INQOVI / TEMOZOLOMIDE / Metformin), or OpenAlex pubs
+            # about tangentially-related topics. The OpenFDA citation path
+            # (lines 343-356) already requires intervention-name presence
+            # in the snippet; this extends the same gate to the broader
+            # keyword scan but only for the small set of ambiguous keywords
+            # where false-positive risk is highest. Non-ambiguous keywords
+            # (subcutaneous, intravenous, intradermal) remain unaffected.
+            citation_mentions_experimental = (
+                not intervention_names
+                or any(iname in snippet_lower for iname in intervention_names if iname)
+            )
             for keyword, delivery_value in _PROTOCOL_ROUTE_KEYWORDS.items():
                 if keyword in snippet_lower:
                     # v17: Skip ambiguous abbreviation keywords in title text
                     if is_title and keyword in _AMBIGUOUS_KEYWORDS:
                         logger.debug(f"  delivery_mode: skipping '{keyword}' in title (false-positive risk)")
+                        continue
+                    # v42.7.19 ambiguous-keyword relevance gate: ambiguous
+                    # keywords only fire on citations that mention the
+                    # experimental intervention. See header comment above.
+                    if (keyword in _AMBIGUOUS_KEYWORDS
+                            and not citation_mentions_experimental):
+                        logger.debug(
+                            f"  delivery_mode: skipping ambiguous '{keyword}' "
+                            f"in {citation.source_name} (no experimental "
+                            f"intervention name in snippet — likely a "
+                            f"comparator or unrelated drug)"
+                        )
                         continue
                     if delivery_value not in found_routes:
                         is_structured = citation.source_name in ("clinicaltrials_gov", "openfda")

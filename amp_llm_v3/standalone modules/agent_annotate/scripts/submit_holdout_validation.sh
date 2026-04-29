@@ -18,24 +18,28 @@ for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
-        --slice-a|--slice-b|--slice-c) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
 
 THIS_DIR="$(cd "$(dirname "$0")" && pwd)"
-# Default to held-out-D (post-v42.7.17 cycle). Older slices retired:
-#   A — used Jobs #92 + #95
+# Default to held-out-E (post-v42.7.18 cycle, ready for v42.7.19+ validation).
+# Older slices retired:
+#   A — Jobs #92 + #95 (v42.7.11 / v42.7.13)
 #   B — Job #96 (revealed v42.7.13 over-correction)
 #   C — Job #97 (validated v42.7.17 fix; outcome 68%)
-# Per standard ML tune-set/held-out separation. --slice-a / -b / -c
+#   D — Job #98 (v42.7.18 sequence-dict expansion)
+# Per standard ML tune-set/held-out separation. --slice-a / -b / -c / -d
 # force older slices (rarely needed; reproduce historical jobs only).
-SLICE="$THIS_DIR/holdout_outcome_slice_d_v42_7_18.json"
+SLICE="$THIS_DIR/holdout_outcome_slice_e_v42_7_19.json"
 for arg in "$@"; do
     case "$arg" in
         --slice-a) SLICE="$THIS_DIR/holdout_outcome_slice_v42_7_5.json" ;;
         --slice-b) SLICE="$THIS_DIR/holdout_outcome_slice_b_v42_7_14.json" ;;
         --slice-c) SLICE="$THIS_DIR/holdout_outcome_slice_c_v42_7_17.json" ;;
+        --slice-d) SLICE="$THIS_DIR/holdout_outcome_slice_d_v42_7_18.json" ;;
+        --slice-e) SLICE="$THIS_DIR/holdout_outcome_slice_e_v42_7_19.json" ;;
     esac
 done
 if [ ! -f "$SLICE" ]; then
