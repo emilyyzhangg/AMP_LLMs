@@ -1,6 +1,6 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-29 (Job #100 milestone DECISION: continue iteration. Outcome 57.8% in 55-64.9% gray zone — production gate deferred. Classification 97.1% / peptide 89.0% production-ready; delivery -6.7pp regression + RfF -8pp surprise → v42.7.23 priorities)
+**Last updated:** 2026-04-30 (v42.7.23 SHIPPED — radiotracer rule split by isotope class, PET/SPECT always-IV by physics, therapeutic explicit-signal-or-Other. Prod smoke `fb963de0db44`: 5/5 PASS. Main at `2172018e`.)
 
 ---
 
