@@ -1,6 +1,6 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-28 (Job #99 PASS — outcome 55% on held-out-E hits the ≥55% production threshold; triggering 147-NCT milestone validation as Job #100)
+**Last updated:** 2026-04-29 (Job #100 milestone DECISION: continue iteration. Outcome 57.8% in 55-64.9% gray zone — production gate deferred. Classification 97.1% / peptide 89.0% production-ready; delivery -6.7pp regression + RfF -8pp surprise → v42.7.23 priorities)
 
 ---
 
@@ -87,7 +87,7 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 | held-out-D | 20 | 7373 | RETIRED | #98 (v42.7.18 — outcome 35%, peptide 94.4%, classification 100%, no regressions) |
 | held-out-E | 20 | 8484 | RETIRED | #99 (v42.7.22 stack — outcome 55% PASS, peptide 94.4%, classification 94.7%, no regressions) |
 | held-out-F | 20 | 9595 | RESERVED | next iteration cycle (v42.7.23+) — single-use |
-| milestone  | 147 | n/a | ACTIVE | #100 (147-NCT certification of v42.7.22 stack, ±8pp CI, ~24h overnight) |
+| milestone  | 147 | n/a | RETIRED | #100 (peptide 89.0%, classification 97.1%, delivery 84.9% [-6.7pp regression], outcome 57.8% [gray zone], RfF 54.5% [-8pp drop], sequence 39.0%) |
 | production-gate | 250 | 99999 | PREBUILT | #101 (post-#100, IF outcome ≥65%; ±6.2pp CI, ~41h overnight; outcome composition: 120 positive / 77 unknown / 30 terminated / 13 failed / 10 withdrawn — full GT category coverage) |
 
 `scripts/submit_holdout_validation.sh --milestone --check-sync` triggers the 147-NCT validation.
@@ -113,8 +113,26 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **Job #100** (`f58ee94d315c`, prod) — 147-NCT MILESTONE VALIDATION of v42.7.22 stack. Code-sync gate PASSED at submit (boot=disk=096edcd3). ETA ~24h overnight. First production-grade accuracy certification with ±8pp CI half-width. Triggered by Job #99's outcome 55% hitting the ≥55% production threshold.
-- Autonomous cron `32ddc648` (every :23) monitors Job #100 — when complete, scores against Job #83 baseline, decides production-gate trigger based on per-field targets. (Old cron `ba73eb40` was deleted post-Job-#99 scoring.)
+- **None.** Job #100 milestone validation closed 2026-04-29 with outcome in 55-64.9% gray zone — continue iteration on slice-F (Job #101) before triggering 250-NCT production gate.
+- Cron `32ddc648` deleted (milestone is the milestone).
+
+### Job #100 milestone result (147 NCTs, ±8pp CI half-width)
+| Field | Result | vs #83 baseline | vs target | Status |
+|---|---|---|---|---|
+| classification | 133/137 = 97.1% | +6.4pp | ≥95% | ✅ PRODUCTION-READY |
+| peptide | 113/127 = 89.0% | +7.9pp | ≥85% | ✅ PRODUCTION-READY |
+| delivery_mode | 107/126 = 84.9% | -6.7pp | ≥80% | ⚠️ at target but REGRESSED |
+| outcome | 85/147 = 57.8% | -3.9pp | ≥65% | ⚠️ GRAY ZONE (55-64.9%) |
+| sequence | 23/59 = 39.0% | +3.7pp | ≥50% | ❌ improving but below target |
+| reason_for_failure | 12/22 = 54.5% | -8.0pp | ≥95% | ❌ surprise drop, investigate |
+
+**Outcome miss tally** (across 62 misses): db_confirmed 5, deterministic 11, pub_trial_specific 52. Same dominant pos→unk Phase-I-no-clear-endpoint pattern (the GT-quality ceiling per cross-job analysis).
+
+### v42.7.23 priorities (post-Job-#100)
+1. **Investigate delivery -6.7pp regression** — likely v42.7.19's relevance gate over-filtering on the 100 new milestone NCTs OR backlog #7 (OpenFDA multi-formulation aggregation, design pre-coded). Run evidence_grade_miss_analysis on delivery_mode for Job #100.
+2. **Investigate RfF -8pp drop** — was 91.7% on Job #89 with 12 NCTs, now 54.5% on 22. Sample-size variance + per-NCT investigation needed.
+3. **Continue outcome iteration** on slice-F (Job #101) targeting ≥65% on a 20-NCT slice to bracket the milestone's gray-zone CI. 4. **Sequence dict expansion** (mechanical) for any new drug codes Job #100 surfaced.
+5. **Production gate REMAINS PREBUILT** — `scripts/production_gate_v42_7_22.json` ready to fire when outcome gets clearer.
 
 ### v42.7.20 prediction (validated against Job #98 data 2026-04-28)
 Re-classifying Job #98 publications with the new (v42.7.20) classifier rule shows DRAMATIC drops in `[TRIAL-SPECIFIC]` tag count on every trial — most went from 6-48 tags down to 0-5. Examples: NCT03143465 (sildenafil migraine) 48 → 0; NCT03481400 (CGRP) 23 → 0; NCT03841526 25 → 0; NCT05824767 28 → 5; NCT05137314 (PLG0206) 15 → 0. This empirically validates the over-tagging hypothesis — under v41b's "default to trial_specific" rule, the LLM was being shown 6-48 [TRIAL-SPECIFIC]-tagged pubs per trial, ALL of which were field reviews lacking trial signals. The LLM correctly distrusted them in aggregate but couldn't selectively apply Rule 7 condition (b2). v42.7.20 makes the small set of remaining [TRIAL-SPECIFIC] tags actually reliable.
