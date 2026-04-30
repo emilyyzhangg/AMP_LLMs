@@ -58,13 +58,20 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
    - Already meeting target on most slices; the 147-NCT milestone certifies these alongside outcome
    - Specific: confirm v42.7.19's delivery relevance gate doesn't introduce new misses on the milestone set
 
-4. **Production gate** (250-NCT certification)
-   - Trigger: 147-NCT milestone confirms outcome ≥65% AND no field regresses below target
-   - Slice composition (PREBUILT in `scripts/production_gate_v42_7_22.json`): 147 milestone + 20 slice-E + 20 slice-F + 63 residual/test-batch = 250 unique NCTs from 680-NCT training universe. Outcome distribution: 120 positive / 77 unknown / 30 terminated / 13 failed / 10 withdrawn — full GT category coverage (terminated/failed/withdrawn untested since v42.7 cycle started).
-   - Cost: ~41h overnight on Mac Mini.
-   - 95% CI half-width: ±6.2pp at p=0.5, ±5.7pp at p=0.7 — production-grade.
-   - Document: per-field accuracy + CI + per-outcome-class breakdown + comparison to human inter-rater + per-NCT result table
+4. **Production gate** (239-NCT certification, IN FLIGHT as Job #101)
+   - Slice (`scripts/production_gate_v42_7_22.json`): 239 NCTs from training_csv − test_batch (50 reserved by API). Outcome distribution: 120 positive / 77 unknown / 30 terminated / 13 failed / 10 withdrawn — full GT category coverage (terminated/failed/withdrawn untested since v42.7 cycle started). Reduced from 250 target after API rejected test_batch overlap; CI essentially unchanged.
+   - Cost: ~42h overnight on Mac Mini (~12 min/trial × 239).
+   - 95% CI half-width: ±6.3pp at p=0.5, ±5.8pp at p=0.7 — production-grade.
+   - Document on completion: per-field accuracy + CI + per-outcome-class breakdown + comparison to human inter-rater + per-NCT result table.
    - Sign-off: this becomes the "production-ready" marker; outcomes republish as the canonical benchmark for the system.
+
+5. **Full-corpus annotation** (POST-production-gate, infrastructure READY)
+   - Goal: annotate the full 630-NCT training universe with the validated agent.
+   - Slices (PREBUILT): `scripts/full_corpus_batch_1.json` (315 NCTs, NCT00001703→NCT05021016) + `scripts/full_corpus_batch_2.json` (315 NCTs, NCT05025267→NCT07012330).
+   - Submit: `bash scripts/submit_holdout_validation.sh --full-corpus-1 --check-sync` (then `--full-corpus-2` after batch 1 completes).
+   - Cost: ~50-80h per batch on prod (sequential, only one job at a time). Total ~4-7 days.
+   - Output: combined annotation dataset across all 630 NCTs, ready to publish + use downstream.
+   - Triggered ONLY when production gate certification signs off. Until then, infrastructure waits.
 
 ### Constraints + open questions
 - **Pool depletion**: ~38 GT-scoreable candidates remain after slice-F (within the 680-NCT training CSV; per-cycle exclusion discipline). Iteration cycles will shift to 15-NCT slices once the pool drops below 40, OR accept slice re-use (with the caveat that any re-used slice must NOT be the slice that motivated the most recent code change — same overfitting concern as before).
