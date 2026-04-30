@@ -18,7 +18,7 @@ for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate|--smoke-v23) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -60,6 +60,13 @@ for arg in "$@"; do
         # Validates the radiotracer-with-explicit-injection override.
         # Cost: ~50 min on dev. Success = all 5 emit Injection/Infusion.
         --smoke-v23) SLICE="$THIS_DIR/smoke_v42_7_23_radiotracer.json" ;;
+        # Full-corpus annotation (post-production-gate). 315 NCTs each;
+        # the full 630-NCT training_csv-minus-test_batch universe split
+        # to fit under the API's 500-NCT MAX_BATCH_SIZE limit. Cost
+        # estimate per batch: ~50-80 hours on prod (~10-16 min/trial).
+        # Submit batch 1, wait for completion, then submit batch 2.
+        --full-corpus-1) SLICE="$THIS_DIR/full_corpus_batch_1.json" ;;
+        --full-corpus-2) SLICE="$THIS_DIR/full_corpus_batch_2.json" ;;
     esac
 done
 if [ ! -f "$SLICE" ]; then
