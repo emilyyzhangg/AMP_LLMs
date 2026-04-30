@@ -18,7 +18,7 @@ for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate|--smoke-v23) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -54,6 +54,12 @@ for arg in "$@"; do
         # outcome ≥65% AND no field regresses below per-field target.
         # 95% CI half-width ±6.2pp at p=0.5, ±5.7pp at p=0.7. Cost: ~41h.
         --production-gate) SLICE="$THIS_DIR/production_gate_v42_7_22.json" ;;
+        # v42.7.23 targeted smoke: 5 NCTs from Job #100 milestone where
+        # the v31 radiotracer rule emitted Other but GT says Injection
+        # (NCT03069989, NCT03164486, NCT05940298, NCT05968846, NCT06443762).
+        # Validates the radiotracer-with-explicit-injection override.
+        # Cost: ~50 min on dev. Success = all 5 emit Injection/Infusion.
+        --smoke-v23) SLICE="$THIS_DIR/smoke_v42_7_23_radiotracer.json" ;;
     esac
 done
 if [ ! -f "$SLICE" ]; then

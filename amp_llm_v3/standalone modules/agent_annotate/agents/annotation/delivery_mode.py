@@ -277,8 +277,52 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
     # because they're diagnostic, not therapeutic drug delivery.
     _RADIOTRACER_PATTERNS = ["[68ga]", "[18f]", "[99mtc]", "[111in]", "[64cu]",
                              "[90y]", "[177lu]", "68ga-", "18f-", "99mtc-"]
-    for name in intervention_names:
+    # v42.7.23 (2026-04-29): when the radiotracer's intervention name OR
+    # description explicitly mentions injection, emit Injection/Infusion
+    # instead of Other. Job #100 milestone surfaced 5+ NCTs (NCT05940298
+    # 'intravenous injection of [99mTc]Tc-DB8', NCT03069989, NCT03164486,
+    # NCT06443762, NCT05968846) where the v31 design rule overruled
+    # explicit injection text. The rule's original premise — that R1
+    # annotators classified diagnostic radiotracers as Other — held
+    # for the small Job #83 baseline but breaks at scale on the 147-NCT
+    # milestone. Defer to explicit injection signal when present;
+    # preserve v31 fallback when only the radiotracer name is given.
+    _RADIOTRACER_INJ_KEYWORDS = ("intravenous injection", "iv injection",
+                                  "intramuscular injection", "im injection",
+                                  "subcutaneous injection", "sc injection",
+                                  "intra-arterial injection",
+                                  "administered intravenously",
+                                  "injected intravenously",
+                                  "injected intramuscularly",
+                                  "injected subcutaneously",
+                                  "intravenous bolus",
+                                  "iv infusion", "intravenous infusion")
+    for idx, name in enumerate(intervention_names):
         if any(pat in name for pat in _RADIOTRACER_PATTERNS):
+            # v42.7.23 explicit-injection check: scan the radiotracer's
+            # OWN intervention name + the description at the same index
+            # (intervention_descs is built in the same order as
+            # intervention_names — see line 271-272).
+            desc = intervention_descs[idx] if idx < len(intervention_descs) else ""
+            has_inj_in_name = any(kw in name for kw in _RADIOTRACER_INJ_KEYWORDS)
+            has_inj_in_desc = any(kw in desc for kw in _RADIOTRACER_INJ_KEYWORDS)
+            if has_inj_in_name or has_inj_in_desc:
+                logger.info(
+                    f"  delivery_mode: radiotracer with explicit injection "
+                    f"('{name}') → Injection/Infusion (v42.7.23)"
+                )
+                return FieldAnnotation(
+                    field_name="delivery_mode",
+                    value="Injection/Infusion",
+                    confidence=0.92,
+                    reasoning=(
+                        f"[Deterministic v42.7.23] Radiotracer with explicit "
+                        f"injection signal in intervention name/description: "
+                        f"'{name}'"
+                    ),
+                    evidence=[], model_name="deterministic",
+                    skip_verification=True,
+                )
             logger.info(f"  delivery_mode: radiotracer detected ('{name}') → Other (skip_verification=True)")
             return FieldAnnotation(
                 field_name="delivery_mode", value="Other", confidence=0.90,
