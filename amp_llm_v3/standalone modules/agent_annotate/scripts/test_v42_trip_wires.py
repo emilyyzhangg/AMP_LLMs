@@ -335,26 +335,31 @@ def test_v42_7_21_known_sequences_expanded():
     print("  ✓ v42.7.21: _KNOWN_SEQUENCES holds cbx129801 + sartate + octreotate aliases")
 
 
-def test_v42_7_23_radiotracer_injection_override():
-    """v42.7.23 (2026-04-29): radiotracer rule must defer to explicit
-    injection text in intervention name OR description. Job #100
-    surfaced 5+ NCTs (NCT05940298, NCT03069989, NCT03164486, NCT06443762,
-    NCT05968846) where the v31 _RADIOTRACER_PATTERNS match emitted Other
-    even though the protocol literally says 'intravenous injection of
-    [99mTc]Tc-DB8' or similar. Removing this override recreates the
-    regression. v31 fallback (no injection signal → Other) preserved.
+def test_v42_7_23_radiotracer_isotope_class_split():
+    """v42.7.23 (2026-04-30): radiotracer rule split by isotope class.
+    PET (positron-emitting [68Ga], [18F], [124I], etc.) and SPECT
+    (gamma-emitting [99mTc], [111In], etc.) are administered IV by
+    physics — always Injection/Infusion. Therapeutic isotopes (90Y,
+    177Lu, 131I, 225Ac, 211At) CAN be oral (131I capsules for thyroid)
+    — defer to explicit injection signal, fall back to v31 'Other'
+    for unspecified context. Job #100 surfaced 5 NCTs validating this
+    split.
     """
     src = (PKG_ROOT / "agents" / "annotation" / "delivery_mode.py").read_text()
     assert "v42.7.23" in src, "v42.7.23 marker missing in delivery_mode.py"
-    assert "_RADIOTRACER_INJ_KEYWORDS" in src, \
-        "v42.7.23 trip-wire: _RADIOTRACER_INJ_KEYWORDS tuple missing"
-    # Sentinel for the override branch (radiotracer + inj signal → Inj/Inf)
-    assert 'value="Injection/Infusion"' in src and "Radiotracer with explicit" in src, \
-        "v42.7.23 trip-wire: radiotracer-with-injection override branch missing"
-    # Sentinel for the v31 fallback (no signal → Other) being preserved
-    assert "Radiotracer/imaging agent detected" in src, \
-        "v42.7.23 trip-wire: v31 fallback (radiotracer w/o inj signal → Other) must be preserved"
-    print("  ✓ v42.7.23: radiotracer-with-injection override + v31 fallback both intact")
+    assert "_PET_ISOTOPE_PATTERNS" in src, \
+        "v42.7.23 trip-wire: _PET_ISOTOPE_PATTERNS tuple missing"
+    assert "_SPECT_ISOTOPE_PATTERNS" in src, \
+        "v42.7.23 trip-wire: _SPECT_ISOTOPE_PATTERNS tuple missing"
+    assert "_THERAPEUTIC_ISOTOPE_PATTERNS" in src, \
+        "v42.7.23 trip-wire: _THERAPEUTIC_ISOTOPE_PATTERNS tuple missing"
+    # Sentinel for PET/SPECT always-IV behavior
+    assert "PET/SPECT radiotracer" in src and 'value="Injection/Infusion"' in src, \
+        "v42.7.23 trip-wire: PET/SPECT always-IV branch missing"
+    # Sentinel that therapeutic isotope branch still has the v31 Other fallback
+    assert "Therapeutic radioisotope" in src, \
+        "v42.7.23 trip-wire: therapeutic-isotope branch missing"
+    print("  ✓ v42.7.23: PET/SPECT always-Inj + therapeutic isotope explicit-injection check")
 
 
 def test_v42_7_22_cgrp_disambiguation():
@@ -476,7 +481,7 @@ def main() -> int:
         test_v42_7_20_pub_classifier_default_general,
         test_v42_7_21_known_sequences_expanded,
         test_v42_7_22_cgrp_disambiguation,
-        test_v42_7_23_radiotracer_injection_override,
+        test_v42_7_23_radiotracer_isotope_class_split,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0

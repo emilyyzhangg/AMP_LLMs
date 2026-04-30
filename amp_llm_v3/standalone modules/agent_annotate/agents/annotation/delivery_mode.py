@@ -273,60 +273,99 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
                     intervention_types.append(interv.get("type", "").upper())
 
     # v31: Radiotracer / imaging agent detection.
-    # PET/SPECT tracers are injected IV but humans classify delivery as "Other"
-    # because they're diagnostic, not therapeutic drug delivery.
-    _RADIOTRACER_PATTERNS = ["[68ga]", "[18f]", "[99mtc]", "[111in]", "[64cu]",
-                             "[90y]", "[177lu]", "68ga-", "18f-", "99mtc-"]
-    # v42.7.23 (2026-04-29): when the radiotracer's intervention name OR
-    # description explicitly mentions injection, emit Injection/Infusion
-    # instead of Other. Job #100 milestone surfaced 5+ NCTs (NCT05940298
-    # 'intravenous injection of [99mTc]Tc-DB8', NCT03069989, NCT03164486,
-    # NCT06443762, NCT05968846) where the v31 design rule overruled
-    # explicit injection text. The rule's original premise — that R1
-    # annotators classified diagnostic radiotracers as Other — held
-    # for the small Job #83 baseline but breaks at scale on the 147-NCT
-    # milestone. Defer to explicit injection signal when present;
-    # preserve v31 fallback when only the radiotracer name is given.
-    _RADIOTRACER_INJ_KEYWORDS = ("intravenous injection", "iv injection",
-                                  "intramuscular injection", "im injection",
-                                  "subcutaneous injection", "sc injection",
-                                  "intra-arterial injection",
-                                  "administered intravenously",
-                                  "injected intravenously",
-                                  "injected intramuscularly",
-                                  "injected subcutaneously",
-                                  "intravenous bolus",
-                                  "iv infusion", "intravenous infusion")
+    # v42.7.23 (2026-04-29 + refined 2026-04-30): split radiotracer
+    # patterns by isotope class — PET/SPECT tracers are administered
+    # IV by physics (no oral PET tracer exists); therapeutic isotopes
+    # CAN be oral (e.g. 131I capsules for thyroid). Job #100 milestone
+    # surfaced 5+ cases where the v31 'always Other' rule mis-classified
+    # PET/SPECT trials. Smoke 3d8407c410df validated the redesign.
+    #
+    # PET isotopes: positron-emitting nuclides, exclusively IV/inj
+    _PET_ISOTOPE_PATTERNS = (
+        "[68ga]", "[18f]", "[64cu]", "[89zr]", "[11c]", "[13n]",
+        "[15o]", "[124i]", "[82rb]",
+        "68ga-", "18f-", "64cu-", "89zr-", "11c-", "124i-",
+        "iodine-124",
+    )
+    # SPECT isotopes: gamma-emitting nuclides, exclusively IV/inj
+    _SPECT_ISOTOPE_PATTERNS = (
+        "[99mtc]", "[111in]", "[123i]", "[67ga]", "[201tl]",
+        "99mtc-", "111in-", "123i-", "67ga-",
+    )
+    # Therapeutic isotopes: can be IV, intra-arterial, or oral (131I)
+    _THERAPEUTIC_ISOTOPE_PATTERNS = (
+        "[90y]", "[177lu]", "[131i]", "[211at]", "[225ac]", "[223ra]",
+        "90y-", "177lu-", "131i-", "iodine-131",
+    )
+    _RADIOTRACER_PATTERNS = (_PET_ISOTOPE_PATTERNS
+                              + _SPECT_ISOTOPE_PATTERNS
+                              + _THERAPEUTIC_ISOTOPE_PATTERNS)
+    # Therapeutic-isotope explicit-injection keywords (defers to text
+    # because oral 131I exists)
+    _RADIOTRACER_INJ_KEYWORDS = (
+        "intravenous", "intramuscular", "subcutaneous",
+        "intra-arterial", "intravitreal",
+        "iv injection", "iv infusion", "iv bolus",
+        "im injection", "sc injection",
+        "injected intravenously", "injected intramuscularly",
+        "injected subcutaneously", "injection of",
+        "administered intravenously", "administered subcutaneously",
+    )
     for idx, name in enumerate(intervention_names):
-        if any(pat in name for pat in _RADIOTRACER_PATTERNS):
-            # v42.7.23 explicit-injection check: scan the radiotracer's
-            # OWN intervention name + the description at the same index
-            # (intervention_descs is built in the same order as
-            # intervention_names — see line 271-272).
+        is_pet_or_spect = any(
+            pat in name
+            for pat in (_PET_ISOTOPE_PATTERNS + _SPECT_ISOTOPE_PATTERNS)
+        )
+        is_therapeutic = any(pat in name for pat in _THERAPEUTIC_ISOTOPE_PATTERNS)
+        if is_pet_or_spect:
+            # PET/SPECT tracers are administered IV by physics — no oral
+            # PET imaging exists. Always Injection/Infusion regardless of
+            # description text.
+            logger.info(
+                f"  delivery_mode: PET/SPECT radiotracer detected "
+                f"('{name}') → Injection/Infusion (v42.7.23)"
+            )
+            return FieldAnnotation(
+                field_name="delivery_mode",
+                value="Injection/Infusion",
+                confidence=0.92,
+                reasoning=(
+                    f"[Deterministic v42.7.23] PET/SPECT radiotracer "
+                    f"(IV by physics): '{name}'"
+                ),
+                evidence=[], model_name="deterministic",
+                skip_verification=True,
+            )
+        if is_therapeutic:
+            # Therapeutic isotopes CAN be oral (131I capsules) — check
+            # description for explicit injection signal; fall back to
+            # v31 'Other' for unspecified context.
             desc = intervention_descs[idx] if idx < len(intervention_descs) else ""
-            has_inj_in_name = any(kw in name for kw in _RADIOTRACER_INJ_KEYWORDS)
-            has_inj_in_desc = any(kw in desc for kw in _RADIOTRACER_INJ_KEYWORDS)
-            if has_inj_in_name or has_inj_in_desc:
+            has_inj = (any(kw in name for kw in _RADIOTRACER_INJ_KEYWORDS)
+                       or any(kw in desc for kw in _RADIOTRACER_INJ_KEYWORDS))
+            if has_inj:
                 logger.info(
-                    f"  delivery_mode: radiotracer with explicit injection "
-                    f"('{name}') → Injection/Infusion (v42.7.23)"
+                    f"  delivery_mode: therapeutic radioisotope with "
+                    f"explicit injection ('{name}') → Injection/Infusion (v42.7.23)"
                 )
                 return FieldAnnotation(
                     field_name="delivery_mode",
                     value="Injection/Infusion",
                     confidence=0.92,
                     reasoning=(
-                        f"[Deterministic v42.7.23] Radiotracer with explicit "
-                        f"injection signal in intervention name/description: "
-                        f"'{name}'"
+                        f"[Deterministic v42.7.23] Therapeutic radioisotope "
+                        f"with explicit injection signal: '{name}'"
                     ),
                     evidence=[], model_name="deterministic",
                     skip_verification=True,
                 )
-            logger.info(f"  delivery_mode: radiotracer detected ('{name}') → Other (skip_verification=True)")
+            logger.info(
+                f"  delivery_mode: therapeutic radioisotope ('{name}') → Other "
+                f"(no injection signal — could be oral, e.g. 131I capsule)"
+            )
             return FieldAnnotation(
                 field_name="delivery_mode", value="Other", confidence=0.90,
-                reasoning=f"[Deterministic v38] Radiotracer/imaging agent detected: '{name}'",
+                reasoning=f"[Deterministic v42.7.23] Therapeutic radioisotope, route unspecified: '{name}'",
                 evidence=[], model_name="deterministic", skip_verification=True,
             )
     # v42.6.17 (2026-04-25): only fire imaging detector when the trial is
