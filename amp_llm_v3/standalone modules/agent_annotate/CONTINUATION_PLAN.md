@@ -168,9 +168,9 @@ Recorded from Job #97 miss analysis (do not act on these while Job #98 in flight
 
 3. **Sequence dict expansion (further)** — wait for Job #98 to see whether held-out-D's 13 GT-sequence trials surface additional N/A patterns. New entries should only land if a public canonical sequence exists.
 
-7. **OpenFDA multi-formulation route aggregation** (v42.7.23 candidate, design-ready). Job #99 STILL had 2× spurious-oral on delivery_mode (NCT02635386 exenatide, NCT05788965 semaglutide) despite v42.7.19's relevance gate — because v42.7.19 only fixed the protocol-keyword-scan path. The OpenFDA structured-route path (`agents/annotation/delivery_mode.py:357-377`) aggregates routes from ALL FDA-approved formulations of the same active ingredient. Semaglutide → adds SUBCUTANEOUS (Ozempic) AND ORAL (Rybelsus). Exenatide → adds SC (Bydureon) AND ORAL.
+7. **OpenFDA multi-formulation route aggregation** (EXPLORED + REJECTED 2026-04-29). Initial diagnosis: Job #99 had 2× spurious-oral, Job #100 milestone had 5× same class — hypothesized as OpenFDA returning multiple formulations of the same drug (Ozempic SC + Rybelsus oral both for "semaglutide"). Implemented v42.7.23.a OpenFDA route gate, ran 5-NCT smoke (`5a6efc1cd0db` on dev). **Result: 0/5 fixed.** Root cause investigation showed the "Oral" routes in these specific NCTs come from the **intervention-description scan** (delivery_mode.py:308-341), not the OpenFDA path. The experimental arms genuinely contain multiple drugs (Vacc-4X intradermal + Lenalidomide oral capsules; PEP-CMV vaccine + oral Temozolomide). The agent reports both routes accurately; GT picks one (the primary biological/vaccine). **Decision: accept as GT-quality / definition limitation** (per user 2026-04-29). Reverted v42.7.23.a code; preserving lesson here. Unit test design + smoke methodology preserved in git history (commit b6ba9162). Future v42.7.X work focuses on cases where the agent is *genuinely wrong* (radiotracer-with-explicit-injection, etc.), not multi-drug-arm cases where humans simplified.
 
-   **v42.7.23 fix design (pre-coded, ready to implement post-Job-#100):**
+   **Original design (preserved for reference, do NOT re-implement):**
    ```python
    # Before the OpenFDA raw_data loop (after intervention_descs is built):
    protocol_routes_explicit: set[str] = set()

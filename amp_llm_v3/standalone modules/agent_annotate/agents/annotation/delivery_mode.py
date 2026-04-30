@@ -354,39 +354,6 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
                             found_routes[delivery_value] = (0.95, True, [citation])
                             logger.info(f"  delivery_mode: found {delivery_value} (OpenFDA: '{openfda_route}')")
 
-        # v42.7.23 (2026-04-29): build a set of "protocol-confirmed
-        # routes" from intervention_descs so the OpenFDA structured-route
-        # path can skip spurious formulations of the same active
-        # ingredient. Job #99/#100 surfaced 5+ NCTs (semaglutide,
-        # exenatide) where OpenFDA returns BOTH SC (Ozempic/Bydureon)
-        # AND ORAL (Rybelsus) for the same generic_name, but the trial
-        # uses only one formulation. Without this gate, the agent emits
-        # spurious 'Injection/Infusion, Oral' multi-route values.
-        protocol_routes_explicit: set[str] = set()
-        for desc in intervention_descs:
-            if any(kw in desc for kw in (
-                "subcutaneous", "intravenous", "intradermal",
-                "intramuscular", "subcut", " iv ", " im ",
-                "iv injection", "iv infusion", "subcut injection",
-                "intravitreal",
-            )):
-                protocol_routes_explicit.add("Injection/Infusion")
-            if any(kw in desc for kw in (
-                "oral tablet", "oral capsule", "oral solution",
-                "oral suspension", "by mouth", "taken orally",
-                "administered orally", "given orally",
-            )):
-                protocol_routes_explicit.add("Oral")
-            if any(kw in desc for kw in (
-                "intranasal", "nasal spray", "inhalation", "nebulizer",
-                "inhaler",
-            )):
-                protocol_routes_explicit.add("Other")
-            if any(kw in desc for kw in (
-                "topical", "applied topically", "topical cream",
-                "topical gel", "transdermal",
-            )):
-                protocol_routes_explicit.add("Topical")
         # Also check raw_data for structured OpenFDA route info
         if result.raw_data:
             openfda_results = result.raw_data.get("openfda_results", [])
@@ -405,24 +372,6 @@ def _extract_deterministic_route(research_results: list) -> FieldAnnotation | No
                                 route_lower = route_str.lower().strip()
                                 if route_lower in _OPENFDA_ROUTE_MAP:
                                     delivery_value = _OPENFDA_ROUTE_MAP[route_lower]
-                                    # v42.7.23 OpenFDA route gate: when
-                                    # the protocol explicitly states a
-                                    # specific route set, restrict
-                                    # OpenFDA results to that set. This
-                                    # skips spurious formulations of the
-                                    # same drug (Ozempic vs Rybelsus).
-                                    # Only fires when protocol_routes_explicit
-                                    # is non-empty (unspecified-route
-                                    # trials still get the OpenFDA fallback).
-                                    if (protocol_routes_explicit
-                                            and delivery_value not in protocol_routes_explicit):
-                                        logger.debug(
-                                            f"  delivery_mode: skipping OpenFDA "
-                                            f"'{route_str}' — protocol routes "
-                                            f"are {protocol_routes_explicit}, "
-                                            f"not {delivery_value}"
-                                        )
-                                        continue
                                     if delivery_value not in found_routes:
                                         found_routes[delivery_value] = (0.95, True, [])
                                         logger.info(f"  delivery_mode: found {delivery_value} (OpenFDA raw_data: '{route_str}')")

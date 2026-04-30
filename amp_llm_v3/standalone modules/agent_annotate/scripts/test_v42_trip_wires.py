@@ -335,32 +335,6 @@ def test_v42_7_21_known_sequences_expanded():
     print("  ✓ v42.7.21: _KNOWN_SEQUENCES holds cbx129801 + sartate + octreotate aliases")
 
 
-def test_v42_7_23_openfda_route_filter():
-    """v42.7.23 (2026-04-29): when the protocol intervention description
-    explicitly states a route, the OpenFDA structured-route path
-    (delivery_mode.py:357-377) restricts results to that set —
-    skipping spurious formulations of the same active ingredient.
-    Job #99 had 2× and Job #100 milestone had 5× spurious-oral cases
-    (NCT01704781/NCT03018665/NCT05096481/NCT05218915/NCT05995704)
-    where OpenFDA returned both Ozempic-style SC and Rybelsus-style
-    oral routes for the same generic_name. Removing this gate
-    recreates the regression.
-    """
-    src = (PKG_ROOT / "agents" / "annotation" / "delivery_mode.py").read_text()
-    assert "v42.7.23" in src, "v42.7.23 marker missing in delivery_mode.py"
-    # The fix spans ~60 lines (intervention_descs scan + OpenFDA gate);
-    # check the file as a whole rather than a narrow window.
-    assert "protocol_routes_explicit" in src, \
-        "v42.7.23 trip-wire: must build protocol_routes_explicit set from intervention_descs"
-    assert "delivery_value not in protocol_routes_explicit" in src, \
-        "v42.7.23 trip-wire: must skip OpenFDA routes not in protocol_routes_explicit"
-    # Sentinel for the OpenFDA-path location (so future refactors that
-    # remove the gate from this path are caught).
-    assert "openfda_results" in src and "protocol_routes_explicit" in src, \
-        "v42.7.23 trip-wire: gate must be in the OpenFDA structured-route path"
-    print("  ✓ v42.7.23: OpenFDA structured-route path gated on protocol_routes_explicit")
-
-
 def test_v42_7_22_cgrp_disambiguation():
     """v42.7.22 (2026-04-28): NCT03481400 CGRP migraine trial had its
     intervention name 'Calcitonin Gene-Related Peptide' (37aa peptide
@@ -480,7 +454,6 @@ def main() -> int:
         test_v42_7_20_pub_classifier_default_general,
         test_v42_7_21_known_sequences_expanded,
         test_v42_7_22_cgrp_disambiguation,
-        test_v42_7_23_openfda_route_filter,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
