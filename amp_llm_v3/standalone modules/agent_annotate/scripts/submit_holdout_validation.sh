@@ -18,7 +18,7 @@ for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate|--smoke-v23) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -54,6 +54,12 @@ for arg in "$@"; do
         # outcome ≥65% AND no field regresses below per-field target.
         # 95% CI half-width ±6.2pp at p=0.5, ±5.7pp at p=0.7. Cost: ~41h.
         --production-gate) SLICE="$THIS_DIR/production_gate_v42_7_22.json" ;;
+        # v42.7.23 targeted smoke: 5 NCTs from Job #100 milestone with
+        # the spurious-oral pattern (NCT01704781, NCT03018665,
+        # NCT05096481, NCT05218915, NCT05995704). Validates the OpenFDA
+        # multi-formulation route gate. Cost: ~50 min (5 trials).
+        # Success = all 5 emit "Injection/Infusion" not "Inj/Inf, Oral".
+        --smoke-v23) SLICE="$THIS_DIR/smoke_v42_7_23_spurious_oral.json" ;;
     esac
 done
 if [ ! -f "$SLICE" ]; then
