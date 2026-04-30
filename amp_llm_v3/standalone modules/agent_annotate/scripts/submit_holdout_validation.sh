@@ -18,7 +18,7 @@ for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate|--smoke-v23) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -40,6 +40,26 @@ for arg in "$@"; do
         --slice-c) SLICE="$THIS_DIR/holdout_outcome_slice_c_v42_7_17.json" ;;
         --slice-d) SLICE="$THIS_DIR/holdout_outcome_slice_d_v42_7_18.json" ;;
         --slice-e) SLICE="$THIS_DIR/holdout_outcome_slice_e_v42_7_19.json" ;;
+        --slice-f) SLICE="$THIS_DIR/holdout_outcome_slice_f_v42_7_23.json" ;;
+        # Milestone validation: 147-NCT combined slice (Job #83 baseline +
+        # held-out A/B/C/D). Used to certify accuracy with ±8pp CI
+        # half-width, ~24h overnight run. Triggered when iteration cycles
+        # show outcome+sequence stable across 2+ slices. See
+        # CONTINUATION_PLAN's "Production Goals" section.
+        --milestone) SLICE="$THIS_DIR/milestone_validation_v42_7_22.json" ;;
+        # Production gate: 250-NCT FINAL accuracy certification.
+        # Combines milestone (147) + slice-E (20) + slice-F (20) + 63
+        # additional GT-scoreable NCTs from the residual + test-batch
+        # reservation. Triggered ONLY when 147-NCT milestone confirms
+        # outcome ≥65% AND no field regresses below per-field target.
+        # 95% CI half-width ±6.2pp at p=0.5, ±5.7pp at p=0.7. Cost: ~41h.
+        --production-gate) SLICE="$THIS_DIR/production_gate_v42_7_22.json" ;;
+        # v42.7.23 targeted smoke: 5 NCTs from Job #100 milestone where
+        # the v31 radiotracer rule emitted Other but GT says Injection
+        # (NCT03069989, NCT03164486, NCT05940298, NCT05968846, NCT06443762).
+        # Validates the radiotracer-with-explicit-injection override.
+        # Cost: ~50 min on dev. Success = all 5 emit Injection/Infusion.
+        --smoke-v23) SLICE="$THIS_DIR/smoke_v42_7_23_radiotracer.json" ;;
     esac
 done
 if [ ! -f "$SLICE" ]; then

@@ -1,13 +1,21 @@
 # Agent Annotate -- Technical Methodology
 
+> **⚠️ Staleness note (2026-04-29):** This document was last comprehensively updated through ≈v25 / v42.6. The pipeline has since evolved through v42.7.0–v42.7.22. Field count is now **6** (sequence added as a per-trial field with `_KNOWN_SEQUENCES` deterministic lookup + canonicalization), research agents are now **19** (+SEC EDGAR / FDA Drugs / NIH RePORTER / bioRxiv from v42.7 cycle). For current canonical state see:
+> - `CONTINUATION_PLAN.md` (state header, slice table, production goals, Path-to-Production decision policy)
+> - `LEARNING_RUN_PLAN.md` (job registry through Job #100 + version changelog with commit hashes)
+> - `docs/AGENT_STRATEGY_ROADMAP.md` (§1 current state, §5 field-by-field plans, §7 cycle close-out)
+> - `docs/USER_GUIDE.md` §17 "v42.7 era" (concise overview of the changes)
+>
+> The §1-§4 architecture below is still substantively correct (three-phase pipeline, blind multi-model verification, evidence traceability) — the changes are within the agent set and within outcome's structural overrides.
+
 ## 1. System Overview
 
-Agent Annotate is a three-phase pipeline for annotating clinical trials involving antimicrobial peptides (AMPs) with publication-grade accuracy. All inference runs locally via Ollama-hosted language models. The pipeline processes trial records from ClinicalTrials.gov and produces structured annotations across five fields.
+Agent Annotate is a three-phase pipeline for annotating clinical trials involving antimicrobial peptides (AMPs) with publication-grade accuracy. All inference runs locally via Ollama-hosted language models. The pipeline processes trial records from ClinicalTrials.gov and produces structured annotations across **six fields** (classification, peptide, delivery_mode, outcome, reason_for_failure, sequence).
 
 The three phases execute sequentially per trial:
 
-1. **Phase 1 -- Research.** Twelve parallel agents gather evidence from 17+ free external databases (registries, literature, protein databases, peptide activity databases, structure databases, pharmacology databases, international trial registries).
-2. **Phase 2 -- Annotation.** Five agents each annotate one field, consuming the research dossier from Phase 1.
+1. **Phase 1 -- Research.** **Nineteen** parallel agents gather evidence from 19+ free external databases (registries, literature, protein databases, peptide activity databases, structure databases, pharmacology databases, international trial registries, SEC EDGAR sponsor disclosures, openFDA Drugs@FDA approvals, NIH RePORTER federal grants, bioRxiv preprints).
+2. **Phase 2 -- Annotation.** Six agents each annotate one field, consuming the research dossier from Phase 1.
 3. **Phase 3 -- Verification.** Three blind verifiers independently review each annotation, followed by consensus checking and reconciliation for disputes.
 
 ### 1.1 Output Traceability

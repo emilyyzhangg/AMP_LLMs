@@ -335,6 +335,33 @@ def test_v42_7_21_known_sequences_expanded():
     print("  ✓ v42.7.21: _KNOWN_SEQUENCES holds cbx129801 + sartate + octreotate aliases")
 
 
+def test_v42_7_23_radiotracer_isotope_class_split():
+    """v42.7.23 (2026-04-30): radiotracer rule split by isotope class.
+    PET (positron-emitting [68Ga], [18F], [124I], etc.) and SPECT
+    (gamma-emitting [99mTc], [111In], etc.) are administered IV by
+    physics — always Injection/Infusion. Therapeutic isotopes (90Y,
+    177Lu, 131I, 225Ac, 211At) CAN be oral (131I capsules for thyroid)
+    — defer to explicit injection signal, fall back to v31 'Other'
+    for unspecified context. Job #100 surfaced 5 NCTs validating this
+    split.
+    """
+    src = (PKG_ROOT / "agents" / "annotation" / "delivery_mode.py").read_text()
+    assert "v42.7.23" in src, "v42.7.23 marker missing in delivery_mode.py"
+    assert "_PET_ISOTOPE_PATTERNS" in src, \
+        "v42.7.23 trip-wire: _PET_ISOTOPE_PATTERNS tuple missing"
+    assert "_SPECT_ISOTOPE_PATTERNS" in src, \
+        "v42.7.23 trip-wire: _SPECT_ISOTOPE_PATTERNS tuple missing"
+    assert "_THERAPEUTIC_ISOTOPE_PATTERNS" in src, \
+        "v42.7.23 trip-wire: _THERAPEUTIC_ISOTOPE_PATTERNS tuple missing"
+    # Sentinel for PET/SPECT always-IV behavior
+    assert "PET/SPECT radiotracer" in src and 'value="Injection/Infusion"' in src, \
+        "v42.7.23 trip-wire: PET/SPECT always-IV branch missing"
+    # Sentinel that therapeutic isotope branch still has the v31 Other fallback
+    assert "Therapeutic radioisotope" in src, \
+        "v42.7.23 trip-wire: therapeutic-isotope branch missing"
+    print("  ✓ v42.7.23: PET/SPECT always-Inj + therapeutic isotope explicit-injection check")
+
+
 def test_v42_7_22_cgrp_disambiguation():
     """v42.7.22 (2026-04-28): NCT03481400 CGRP migraine trial had its
     intervention name 'Calcitonin Gene-Related Peptide' (37aa peptide
@@ -454,6 +481,7 @@ def main() -> int:
         test_v42_7_20_pub_classifier_default_general,
         test_v42_7_21_known_sequences_expanded,
         test_v42_7_22_cgrp_disambiguation,
+        test_v42_7_23_radiotracer_isotope_class_split,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
