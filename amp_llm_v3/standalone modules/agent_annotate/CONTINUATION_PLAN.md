@@ -73,10 +73,14 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
    - Output: combined annotation dataset across all 630 NCTs, ready to publish + use downstream.
    - Triggered ONLY when production gate certification signs off. Until then, infrastructure waits.
 
-### Constraints + open questions
-- **Pool depletion**: ~38 GT-scoreable candidates remain after slice-F (within the 680-NCT training CSV; per-cycle exclusion discipline). Iteration cycles will shift to 15-NCT slices once the pool drops below 40, OR accept slice re-use (with the caveat that any re-used slice must NOT be the slice that motivated the most recent code change — same overfitting concern as before).
-- **Outcome's slice-variance**: #97 was 68%, #98 was 35% on similar positive-heavy distributions. The cause is currently hypothesized as the LLM's interpretation of Rule 7 (`positive → unknown` rate 50-92% per slice). v42.7.20 classifier tightening targets this. Job #99 = first signal.
-- **Cost ceiling**: 250-NCT production gate costs ~28h compute. Plan accordingly — overnight run, no other prod jobs scheduled during it.
+### Constraints + open questions (refreshed 2026-05-01)
+- **Outcome's GT-quality ceiling** — RESOLVED via cross-job analysis (Jobs #92/#95/#96/#97/#98/#99). The `positive → unknown` miss rate is essentially constant (9-12 per slice) independent of v42.7.X version after v42.7.13. This IS the ceiling for our agent's evidence sources (literature + openalex + bioRxiv + crossref + semantic_scholar + 14 other research agents). Beating it requires NEW evidence sources (sponsor press releases, conference abstracts, etc.) — v42.8 architectural work.
+- **Pool depletion** — RESOLVED for the production gate context: API rejected test_batch overlap; gate slice trimmed to 239 NCTs with full GT category coverage (positive 120 / unknown 77 / terminated 30 / failed 13 / withdrawn 10). For future iteration cycles: 38 GT-scoreable candidates remain; switch to 15-NCT iteration slices OR accept slice re-use (with the same overfitting caveat).
+- **Cost ceiling** — empirically observed at ~12 min/trial on Mac Mini (per PERFORMANCE.md "Validation tier costs"). 239-NCT production gate ~42h overnight; 630-NCT full corpus ~52-70h per batch (4-7 days for both batches sequential).
+- **v42.8 architectural candidates** (post-production-gate, not blocking shipping):
+  - Drug-code → biological-name resolver (RxNorm / DrugBank API) — would let UniProt return the right protein for drug codes that currently get "no_structured_match". Same root cause as outcome's positive-recall gap and sequence's drug-code under-extraction.
+  - Sponsor press-release / conference abstract search agent — captures positive-result reporting that doesn't reach peer-reviewed literature within Phase I trial timelines.
+  - Both candidates require new external API integrations (unlike v42.7.X which were all logic refinements within the existing 19-agent pipeline).
 
 ---
 
