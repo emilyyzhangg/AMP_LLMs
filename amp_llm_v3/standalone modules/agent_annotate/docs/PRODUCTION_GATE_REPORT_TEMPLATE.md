@@ -21,7 +21,7 @@ This template defines the exact structure the cron `cb95c3f1` will fill in when 
 
 ## 2. Per-field accuracy (95% CI half-width via Wald approximation)
 
-> **Source of truth:** `bash scripts/heldout_analysis.sh 826f2608ddd8 51a6c2a308f8` §1 (canonical methodology — same fuzzy matching as `compare_jobs.py`). Do NOT use the strict-lower-bound numbers from `score_production_gate.py` §2 here; that script under-counts (e.g. RfF n=1 instead of n=22 because it doesn't credit blank-vs-blank). Use `score_production_gate.py` only for §3 (per-outcome-class breakdown) and Wald CI math.
+> **Source of truth:** either `bash scripts/heldout_analysis.sh 826f2608ddd8 51a6c2a308f8` §1 OR `python3 scripts/score_production_gate.py 826f2608ddd8` §2 — both now use post-verifier `verification.fields[].final_value` (post-fix commit dc39b09d). Cross-validate: the two scorers should agree on classification/peptide/delivery_mode/outcome to within 1pp. Sequence/RfF denominators may differ due to blank-prediction handling (gate-scorer counts only trials where agent emitted any value); when those fields are borderline, prefer heldout's denominator.
 
 | Field | Production target | Result | 95% CI | Status |
 |---|---|---|---|---|
