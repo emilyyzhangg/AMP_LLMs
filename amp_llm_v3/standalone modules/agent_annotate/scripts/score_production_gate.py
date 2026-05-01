@@ -260,8 +260,16 @@ def main() -> int:
             )
     out.append("")
 
-    # Decision
-    out.append("## 5. Production decision\n")
+    # Decision (strict-lower-bound bucketing only — NOT the headline)
+    out.append("## 5. Strict-lower-bound bucketing (informational)\n")
+    out.append(
+        "> ⚠️ **NOT the headline.** This bucketing uses this script's strict "
+        "exact-match scoring, which under-counts (e.g. RfF n=1 instead of n=22 on "
+        "Job #100 because the agent legitimately emits blank for non-failed trials "
+        "and this script doesn't credit blank-vs-blank). For the authoritative ship/accept/investigate "
+        "decision, use `heldout_analysis.sh` numbers — they apply the same fuzzier "
+        "matching as `compare_jobs.py` and are the canonical certification metric.\n"
+    )
     ship = []
     accept = []
     investigate = []
@@ -271,18 +279,15 @@ def main() -> int:
             continue
         p = r["p"]
         if p >= target:
-            ship.append(f"{field} ({p*100:.1f}%)")
+            ship.append(f"{field} ({p*100:.1f}%, n={r['n']})")
         elif field == "outcome" and 0.55 <= p < target:
-            accept.append(f"{field} ({p*100:.1f}%) — within GT-quality gray zone")
+            accept.append(f"{field} ({p*100:.1f}%, n={r['n']}) — within GT-quality gray zone")
         else:
-            investigate.append(f"{field} ({p*100:.1f}%)")
-    out.append(f"- **SHIP** ({len(ship)} fields): {', '.join(ship) or '(none)'}")
-    out.append(f"- **ACCEPT with CI bounds** ({len(accept)} fields): {', '.join(accept) or '(none)'}")
-    out.append(f"- **INVESTIGATE** ({len(investigate)} fields): {', '.join(investigate) or '(none)'}")
-    overall = "SHIP" if not investigate and not accept else (
-        "SHIP-WITH-FLAG" if not investigate else "INVESTIGATE"
-    )
-    out.append(f"\n**Final decision:** {overall}\n")
+            investigate.append(f"{field} ({p*100:.1f}%, n={r['n']})")
+    out.append(f"- Lower-bound SHIP ({len(ship)} fields): {', '.join(ship) or '(none)'}")
+    out.append(f"- Lower-bound ACCEPT-with-CI ({len(accept)} fields): {', '.join(accept) or '(none)'}")
+    out.append(f"- Lower-bound INVESTIGATE ({len(investigate)} fields): {', '.join(investigate) or '(none)'}")
+    out.append("")
 
     # Methodology
     out.append("## 6. Methodology disclosure\n")
