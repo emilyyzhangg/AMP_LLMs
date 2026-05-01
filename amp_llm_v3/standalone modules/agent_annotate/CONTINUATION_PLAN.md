@@ -140,7 +140,12 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Outcome miss tally** (across 62 misses): db_confirmed 5, deterministic 11, pub_trial_specific 52. Same dominant pos→unk Phase-I-no-clear-endpoint pattern (the GT-quality ceiling per cross-job analysis).
 
 ### v42.7.23 priorities (post-Job-#100)
-1. **Investigate delivery -6.7pp regression** — likely v42.7.19's relevance gate over-filtering on the 100 new milestone NCTs OR backlog #7 (OpenFDA multi-formulation aggregation, design pre-coded). Run evidence_grade_miss_analysis on delivery_mode for Job #100.
+1. **Investigate delivery -6.7pp regression** — likely v42.7.19's relevance gate over-filtering on the 100 new milestone NCTs OR backlog #7 (OpenFDA multi-formulation aggregation, design pre-coded). Run evidence_grade_miss_analysis on delivery_mode for Job #100. **Cross-job pattern audit (2026-05-01, milestone n=34 misses):**
+   - 8× `injection/infusion → other` — vaccine/biologic with no explicit route in protocol/description. Examples NCT00005779 (C4-V3 HIV), NCT03069989, NCT03164486, NCT03300817 (MUC1 vaccine), NCT05940298. Recurrence of CONTINUATION_PLAN §222 pattern; cross-slice now (was Job #96 only). Strongest single signal in the audit (24% of misses).
+   - 5× `injection/infusion → injection/infusion, oral` — agent correctly detects injection but spuriously adds oral. NCT01704781, NCT03018665, NCT05096481, NCT05218915, NCT05995704. v42.7.19 ambiguous-keyword gate may need extension to suppress secondary oral mentions when injection is the primary route.
+   - 5× `oral → other` — under-extraction of oral delivery. NCT03285737, NCT03765125, NCT03785951, NCT03994198, NCT06497907.
+   - 3× `other → injection/infusion` (over-extraction); 2× `topical → other` (re-confirms CONTINUATION_PLAN §220 topical-detection gap, now cross-slice).
+   - **v42.7.24 candidate (post-Job-#101):** address the dominant `inj/inf → other` pattern — when intervention type is BIOLOGICAL AND keywords vaccine/vaccination/antibody match AND no route via protocol/OpenFDA/citations, default to Injection/Infusion (still requires CONTINUATION_PLAN §222 risk mitigation: oral polio / intranasal flu false-positives).
 2. **Investigate RfF -8pp drop** — was 91.7% on Job #89 with 12 NCTs, now 54.5% on 22. Sample-size variance + per-NCT investigation needed.
 3. **Continue outcome iteration** on slice-F (Job #101) targeting ≥65% on a 20-NCT slice to bracket the milestone's gray-zone CI. 4. **Sequence dict expansion** (mechanical) for any new drug codes Job #100 surfaced.
 5. **Production gate REMAINS PREBUILT** — `scripts/production_gate_v42_7_22.json` ready to fire when outcome gets clearer.
