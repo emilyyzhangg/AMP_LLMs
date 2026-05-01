@@ -34,6 +34,19 @@ This template defines the exact structure the cron `cb95c3f1` will fill in when 
 
 Note: each field's denominator is the count of NCTs in the slice that had GT consensus for THAT field (different per field; classification consensus is more common than reason_for_failure consensus per IMPROVEMENT_STRATEGY §1.2).
 
+**Pre-flight GT-consensus coverage on the 239-NCT slice** (audited 2026-05-01 mid-Job-#101; bounds the achievable CI half-width regardless of agent accuracy):
+
+| Field | Consensus n | R1≠R2 | Both blank | CI at target p |
+|---|---|---|---|---|
+| classification | 223 | 10 | 6 | ±2.9pp @ 95% |
+| peptide | 208 | 31 | 0 | ±4.9pp @ 85% |
+| delivery_mode | 211 | 19 | 9 | ±5.4pp @ 80% |
+| outcome | 239 | **0** | 0 | ±6.0pp @ 65% |
+| reason_for_failure | 31 | 1 | 207 | ±7.7pp @ 95% |
+| sequence | 97 | 54 | 88 | ±10.0pp @ 50% |
+
+Outcome has perfect inter-rater agreement (0 disagreements) on this slice — full n=239. RfF has only n=31 because 207/239 trials are non-failures (both annotators correctly leave blank). Sequence's n=97 reflects that ~37% of the slice has no GT sequence (88 both-blank).
+
 ## 3. Outcome stratified by GT class
 
 | GT outcome | n | hits | accuracy | notes |
