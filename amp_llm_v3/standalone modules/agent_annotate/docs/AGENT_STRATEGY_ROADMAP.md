@@ -254,16 +254,29 @@ We lose most of the v42.6.8 speedup but we get back to **better accuracy than #7
 
 ## 7. Near-term concrete plan
 
-(Section last refreshed 2026-04-26. Jobs #78–#89 already executed —
+(Section last refreshed 2026-05-01. Jobs #78–#101 already executed —
 see `LEARNING_RUN_PLAN.md` for the full registry.)
 
-The v42.7 cycle just closed with Jobs #88 + #89 on the 47-NCT clean slice.
-Net deltas vs Job #83 baseline: peptide flat, classification flat, delivery
-+2.8pp, outcome flat (recovered after #88's -2.1pp dip), RfF +8.3pp. All
-116+ unit tests pass.
+The v42.7 cycle is design-complete. v42.7.23 (PET/SPECT radiotracer
+isotope-class split) shipped 2026-04-30 with prod smoke 5/5 PASS.
+Job #100 milestone (147 NCTs, ±8pp CI) showed classification and peptide
+production-ready (97% / 89%); outcome in 55-64.9% gray zone (57.8%);
+delivery slightly regressed pre-v42.7.23 (84.9%, expected to recover).
+Job #101 production gate (239 NCTs, ±6.3pp CI) is the FINAL accuracy
+certification — running on v42.7.23 main commit `2172018e` since
+2026-04-30.
 
 ### Currently in flight
-- **Job #100** (`f58ee94d315c`, prod) — 147-NCT milestone validation of v42.7.22 stack. Code-sync gate PASSED at submit (boot=disk=096edcd3). First production-grade accuracy certification with ±8pp CI half-width. ETA ~24h overnight. Triggered by Job #99's outcome 55% hitting the ≥55% production threshold per CONTINUATION_PLAN's path-to-production.
+- **Job #101** (`826f2608ddd8`, prod) — 239-NCT FINAL ACCURACY CERTIFICATION on v42.7.23 (commit `2172018e`). Slice from training_csv − test_batch with full GT category coverage (positive 120 / unknown 77 / terminated 30 / failed 13 / withdrawn 10). 95% CI half-width ±6.3pp at p=0.5. ETA ~36h remaining. When complete, cron `cb95c3f1` fills `docs/PRODUCTION_GATE_REPORT_TEMPLATE.md` and decides ship / accept / investigate per per-field targets.
+
+### Post-Job-#101 path to "annotate everything"
+1. **If gate signs off** (likely path): submit `--full-corpus-1` (315 NCTs, ~52-70h), then `--full-corpus-2` (315 NCTs, same duration). Total ~4-7 days for the full 630-NCT training universe.
+2. **Merge results**: `python3 scripts/merge_full_corpus_results.py JOB_1 JOB_2` — produces canonical JSON + CSV across all 630 NCTs.
+3. **Publication**: per-field accuracy + CI from prod-gate report; per-NCT annotations from full-corpus merge. Methodology disclosed in `docs/PRODUCTION_GATE_REPORT_TEMPLATE.md` §6.
+
+### Future targets (post-v42.7, not blocking shipping)
+- v42.8 architectural: drug-code → biological-name resolver (RxNorm/DrugBank) — addresses both outcome's positive-recall ceiling and sequence's drug-code under-extraction.
+- v42.8 architectural: sponsor press-release / conference abstract search agent — captures positive-result reporting outside peer-reviewed literature.
 
 ### v42.7 cycle close-out (what shipped)
 | Sub-version | Commit | What it did | Validated by |
