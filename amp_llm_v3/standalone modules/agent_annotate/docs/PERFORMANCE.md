@@ -23,6 +23,19 @@ Net research-phase cost ~10–14s additional per trial vs pre-v42.7. Outweighed 
 
 Pub-count bottlenecks: outcome_atomic Tier 1b fires once per trial-specific/ambiguous pub. Capped by `outcome_atomic_max_voting_pubs` (default 20). Most trials have 2–8 candidate pubs after Tier 1a pre-filtering.
 
+**Empirical pace observed (Job #100/#101 production-grade slices):** ~10–12 min/trial on prod (Mac Mini), heterogeneous mix of peptide=True/False. Use ~12 min/trial as the planning constant for slice-cost estimation.
+
+## Validation tier costs
+
+| Tier | Slice size | Wall-clock | 95% CI half-width on accuracy proportion |
+|---|---|---|---|
+| Iteration cycles | 20–25 NCTs | ~3–4 h | ±22pp at p=0.5 — regression detection only |
+| Milestone validation | 147 NCTs | ~24 h overnight | ±8pp at p=0.5, ±7pp at p=0.7 |
+| Production gate | 239 NCTs (training_csv − test_batch) | ~42 h overnight | ±6.3pp at p=0.5, ±5.8pp at p=0.7 |
+| Full-corpus annotation | 2 batches × 315 NCTs (= 630 = full universe) | ~52–70 h per batch (~4–6 days total) | n/a (this is publication output, not validation) |
+
+CI math: Wald 95% half-width = 1.96 × √(p(1−p)/n). The 250-NCT figure was an earlier target before the API's `TRAINING_NCTS = full_csv − test_batch` constraint reduced the production-gate slice to 239.
+
 ## Napkin scaling for a 30k-NCT job
 
 Assuming 60% peptide=False / 40% peptide=True, no efficiency flags:
