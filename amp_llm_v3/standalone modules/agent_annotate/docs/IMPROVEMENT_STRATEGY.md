@@ -745,7 +745,7 @@ Issues from concordance analysis (CONTINUATION_PLAN.md) resolved in v25:
 
 ---
 
-## 17. v25 → v42.7.22 (2026-04-01 → 2026-04-28) — Atomic Era + v42.7 Cycle
+## 17. v25 → v42.7.23 (2026-04-01 → 2026-05-01) — Atomic Era + v42.7 Cycle + Production Gate
 
 After v25, the project went through a substantial overhaul. This file is no longer the canonical source for v26+ work — see:
 - `LEARNING_RUN_PLAN.md` — full job registry through Job #99
@@ -777,6 +777,10 @@ After v25, the project went through a substantial overhaul. This file is no long
 
 **v42.7.22 (CGRP / calcitonin disambiguation):** NCT03481400 emitted wrong sequence (32aa calcitonin instead of 37aa alpha-CGRP) because the longer "calcitonin gene-related peptide" key was missing. Same v42.6.18 root cause (longest-first iteration was already in place; missing key).
 
+**v42.7.23 (radiotracer rule split by isotope class):** v31's `_RADIOTRACER_PATTERNS` rule emitted "Other" for all radiotracers as a diagnostic-not-therapeutic distinction, but the 147-NCT milestone surfaced 5 NCTs (NCT03069989, NCT03164486, NCT05940298, NCT05968846, NCT06443762) where humans annotated injected radiotracers as Injection/Infusion. v42.7.23 splits patterns into PET (positron-emitting), SPECT (gamma-emitting), and Therapeutic (90Y, 177Lu, 131I, 225Ac, 211At). PET/SPECT → always Injection/Infusion (no oral PET tracer exists by physics). Therapeutic → defer to explicit injection signal in name/desc, fall back to v31 'Other' (preserves [131I] oral capsule case). First v42.7.23.a attempt (OpenFDA multi-formulation gate) was rejected after 0/5 smoke targeted wrong code path; redesign passed prod smoke 5/5.
+
+**Production gate (Job #101, in flight):** 239-NCT FINAL accuracy certification on v42.7.23 main commit `2172018e`. Slice from training_csv − test_batch with full GT category coverage (positive 120 / unknown 77 / terminated 30 / failed 13 / withdrawn 10). 95% CI half-width ±6.3pp at p=0.5. ETA ~24h remaining as of 2026-05-01. Decision rule: ship if all fields meet target; accept-with-CI-bound if outcome 55-65% (GT-quality ceiling per cross-job analysis); investigate if surprise regression.
+
 **Tooling:** `scripts/cross_job_miss_patterns.py` (per-job pattern tally + cross-job NCT recurrence); `scripts/evidence_grade_miss_analysis.py` (group misses by evidence_grade + show LLM reasoning); `scripts/pick_milestone_validation_100.py` + `scripts/milestone_validation_v42_7_22.json` (147-NCT validation tier with ±8pp CI half-width); held-out-E + held-out-F preemptively built.
 
 ### Validation summary (47-NCT clean slice)
@@ -797,13 +801,29 @@ After v25, the project went through a substantial overhaul. This file is no long
 | #96 | B (25) | v42.7.16 | 36.0% | Revealed v42.7.13 over-correction |
 | #97 | C (25) | v42.7.17 | 68.0% | First post-fix measurement; v42.7 outcome cycle design-complete |
 | #98 | D (20) | v42.7.18 | 35.0% | Slice-specific positive recall variance vs #97; peptide 94.4% / classification 100% — no regressions |
-| #99 | E (20) | v42.7.22 | running | First validation of v42.7.20 classifier tightening + v42.7.21+22 sequences |
+| #99 | E (20) | v42.7.22 | 55.0% | PASS — outcome ≥55% threshold met; v42.7.20 enabled 2 unknown→positive flips on clean pub evidence |
+| #100 | milestone (147) | v42.7.22 | 57.8% | DECISION: continue iteration (gray zone) — peptide 89.0% / classification 97.1% production-ready, delivery 84.9% (-6.7pp regression), RfF 54.5% (small-N variance), sequence 39.0% |
+| #101 | production-gate (239) | v42.7.23 | running | FINAL accuracy certification with full GT category coverage; cron `cb95c3f1` filling `docs/PRODUCTION_GATE_REPORT_TEMPLATE.md` on completion |
 
-### What's next (post-Job #99)
+### What's next (post-Job #101)
 
 **Production goals defined in CONTINUATION_PLAN:** beat human inter-rater agreement by ≥5pp on each field, validated on a 100+ NCT slice with 95% CI half-width <10pp. Per-field targets calibrated to inter-rater data: outcome ≥65% (vs 55.6%), peptide ≥85% (vs 48.4%), delivery ≥80% (vs 68.2%), classification ≥95% (vs 91.6%), RfF ≥95% (vs 91.3%), sequence ≥50%.
 
-**Validation tiers**: 20-25 NCT iteration cycles (regression detection, ±22pp CI), 147-NCT milestone validation (accuracy certification, ±8pp CI), 250-NCT production gate (final certification, ±6pp CI).
+**Validation tiers (empirical):**
+- 20-25 NCT iteration cycles (regression detection, ±22pp CI), ~3-4h
+- 147-NCT milestone validation (accuracy certification, ±8pp CI), ~24h overnight
+- 239-NCT production gate (final certification, ±6.3pp CI), ~42h overnight (Job #101)
+- 630-NCT full-corpus annotation (publication output, no validation), ~52-70h per batch × 2 batches = 4-7 days total
+
+**Path to "annotate everything":**
+1. Job #101 production gate signs off (current step, ETA tomorrow)
+2. Submit `--full-corpus-1` and `--full-corpus-2` (2 batches × 315 NCTs)
+3. Merge with `scripts/merge_full_corpus_results.py JOB_1 JOB_2` → canonical JSON+CSV
+4. Publish per-field accuracy + per-NCT annotations using methodology in `docs/PRODUCTION_GATE_REPORT_TEMPLATE.md` §6
+
+**v42.8 architectural candidates (post-shipping, not blocking):**
+- Drug-code → biological-name resolver (RxNorm / DrugBank API) addresses both outcome's GT-quality ceiling and sequence's drug-code under-extraction
+- Sponsor press-release / conference abstract search agent — captures positive-result reporting outside peer-reviewed literature
 
 **Path to production**: 1) outcome stabilization (current bottleneck — Job #99 = first signal post-v42.7.20); 2) sequence under-extraction (continue dict expansion + research-side widening — see v42.8 candidate #6); 3) delivery + RfF certification on milestone slice; 4) 250-NCT production gate.
 
