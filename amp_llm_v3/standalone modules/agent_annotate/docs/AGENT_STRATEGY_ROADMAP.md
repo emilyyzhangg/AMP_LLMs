@@ -186,15 +186,11 @@ Step 8 — Ship
 ### 5.3 Outcome
 
 **Status:** legacy authoritative. Atomic in shadow as permanent diagnostic signal.
-**Plan:** **Never promote.** Outcome requires integrative synthesis over fuzzy signals; narrow Y/N questions cannot deliver that.
-
-**Use of atomic shadow:**
-- Flag cases where atomic and legacy disagree with high confidence on both sides. These are worth human review — usually one of the two agents is wrong.
-- Track atomic accuracy over time. If a future architectural change (e.g. better Tier 1b assessor model) lifts atomic past 70%, revisit.
-
-**Only legacy-side improvements allowed:**
-- Better publication-priority override (v41b's regression is the current ceiling; revisit after more shadow data shows where legacy over/under-calls).
-- Better Tier 0 deterministic status mapping (e.g. withdrawn + no results → Terminated, not Unknown).
+**Empirical ceiling (cross-job analysis through Job #100):** outcome 55-65% on positive-heavy held-out slices is the GT-quality ceiling, not a fixable v42.7 bug. The dominant `positive→unknown` miss class (9-12 per slice independent of v42.7.X version after v42.7.13) reflects Phase I trials with no explicit "primary endpoint met" statement — agent correctly says Unknown; humans use out-of-band knowledge to call them Positive. Beating this rate requires NEW evidence sources beyond literature/openalex.
+**Plan:** **Do not iterate further on Rule 7 wording or override gates** — v42.7.13/v42.7.17 history shows over-correction risk dominates. Future improvement requires v42.8 architectural work:
+- v42.8 candidate: drug-code → biological-name resolution layer (RxNorm / DrugBank API) — would let UniProt return the right protein for drug codes that currently get "no_structured_match".
+- v42.8 candidate: sponsor press-release / conference abstract search agent — captures positive-result reporting that doesn't reach peer-reviewed literature within Phase I trial completion timelines.
+- Atomic shadow continues to flag legacy-vs-atomic disagreements for diagnostic use.
 
 ### 5.4 Failure_reason
 
@@ -207,14 +203,25 @@ Step 8 — Ship
 ### 5.5 Delivery_mode
 
 **Status:** legacy authoritative. No atomic built. Do not build one.
-**Current known issue:** multi-intervention route-list handling — e.g. "injection/infusion, oral" collapses to "N/A". This is legacy-side and should be fixed inside the legacy path, not via atomic.
+**Recent fixes:**
+- v42.7.19 (delivery_mode ambiguous-keyword relevance gate): protocol-keyword-scan path skips ambiguous keywords (tablet/capsule) when citation snippet doesn't mention experimental intervention. Addresses 6-NCT spurious-oral pattern from FDA Drugs / OpenAlex citations on similarly-named approved drugs (cross-job confirmed across Jobs #92/#95/#96/#97).
+- v42.7.23 (radiotracer rule isotope-class split): PET ([18F], [68Ga], [11C], [124I], etc.) and SPECT ([99mTc], [111In], etc.) isotopes are administered IV by physics — always Injection/Infusion. Therapeutic isotopes (90Y, 177Lu, 131I, 225Ac, 211At) defer to explicit injection signal (preserves [131I] oral capsule case). Job #100 milestone surfaced 5 cases; prod smoke 5/5 PASS.
+
+**Remaining gaps (acceptable):**
+- Multi-drug experimental arms where each drug uses a different route (e.g. Vacc-4X intradermal + Lenalidomide oral Capsules) → agent reports both routes; GT picks one. This is GT-quality / definition limitation, not a fixable bug. Documented in CONTINUATION_PLAN backlog #7 (EXPLORED + REJECTED).
+- OpenFDA multi-formulation aggregation (Ozempic SC + Rybelsus oral both for "semaglutide") theoretically possible but Job #100 cases were dominated by multi-drug-arm above — not the OpenFDA cause.
 
 ### 5.6 Sequence
 
 **Status:** legacy authoritative. Already structured (DB lookup + `_KNOWN_SEQUENCES`). No atomic.
-**Known issues:**
-- Formatting drift (multi-sequence `|`-separated output vs GT single canonical). Scoring side fixed by `sequences_match` set-containment in v42.6.15; canonicaliser now strips terminal -OH / -NH2 chemistry suffixes per v42.7.16.
-- Under-extraction on peptide=True trials with no DBAASP/APD/UniProt/ChEMBL hit. Job #97 had 8/10 sequence=N/A despite GT carrying canonical sequences. v42.7.18 (`_KNOWN_SEQUENCES` expansion: solnatide / io103 / apraglutide) addresses 3 of those. Remaining 5 NCTs probably need either further dict expansion (manual curation cost) OR a new structured database addition (research-side, not annotation-side). LLM extraction from intervention text is **explicitly avoided** to prevent hallucinated sequences.
+**Recent fixes:**
+- v42.7.16: scoring canonicaliser strips terminal -OH / -NH2 / -NH₂ chemistry suffixes
+- v42.7.18: solnatide / ap301 / tip-peptide / io103 / apraglutide aliases
+- v42.7.21: cbx129801 (Long-Acting C-Peptide) + sartate (octreotate analog) + aliases
+- v42.7.22: CGRP / calcitonin disambiguation via longest-first iteration on the longer key
+**Known issues (remaining):**
+- Drug-code → biological-name resolution gap (v42.8 candidate, architectural). UniProt and DRAMP queries via `peptide_identity` agent fail on drug codes (CBX129801, PLG0206, GT-001) because those databases index biological protein names, not pharma drug codes. Same root cause as outcome's positive-recall gap — needs RxNorm/DrugBank resolver layer.
+- LLM extraction from intervention text is **explicitly avoided** to prevent hallucinated sequences (per memory `feedback_no_cheat_sheets.md`).
 
 ---
 
