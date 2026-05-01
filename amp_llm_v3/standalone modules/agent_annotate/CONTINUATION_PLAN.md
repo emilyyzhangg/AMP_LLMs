@@ -252,12 +252,20 @@ Slice progression so far: A (30, seed 4242, retired post-#95) → B (25, seed 52
 5. Sequence dict expansion (v42.7.23): research deferred Job #98 candidates (FP-01.1, GT-001, PLG0206, EPO alpha, P11-4) with verified public sequences.
 
 ### Diagnostics tooling
-- `scripts/heldout_analysis.sh JOB BASELINE` — 6-section job analysis (per-field accuracy, per-NCT outcome, research-agent firing, v42.7.7-11 paths, evidence_grade distribution, miss-pattern tally)
+- `scripts/heldout_analysis.sh JOB BASELINE` — 7-section job analysis (per-field accuracy, per-NCT outcome, research-agent firing, v42.7.7-11 paths, evidence_grade distribution, miss-pattern tally, evidence-grade stratified outcome misses with LLM reasoning)
 - `scripts/cross_job_miss_patterns.py JOB1 [JOB2...] [--field outcome]` — per-job pattern tally + cross-job NCT recurrence (the analysis that scoped v42.7.19 by surfacing 6 NCTs across 4 slices)
-- `scripts/evidence_grade_miss_analysis.py JOB [--field outcome]` — group misses by evidence_grade + show LLM reasoning. Surfaces WHICH layer is failing (db_confirmed override / deterministic rule / pub_trial_specific LLM / bare llm). The analysis that root-caused v42.7.20 — Job #98's pub_trial_specific misses uniformly rejected over-tagged [TRIAL-SPECIFIC] pubs.
+- `scripts/evidence_grade_miss_analysis.py JOB [--field outcome]` — group misses by evidence_grade + show LLM reasoning. Surfaces WHICH layer is failing (db_confirmed override / deterministic rule / pub_trial_specific LLM / bare llm). The analysis that root-caused v42.7.20.
+- `scripts/score_production_gate.py JOB [--write]` — supplementary report generator with per-outcome-class stratification (positive/unknown/terminated/failed/withdrawn) + Wald 95% CI half-widths + ship/accept decision template. Pair with `heldout_analysis.sh` (authoritative headline numbers) for full production-gate report.
+
+### Production-gate / full-corpus pipeline
+- `scripts/pick_production_gate_250.py` — builds 239-NCT production-gate slice from training_csv − test_batch (full GT category coverage). Output: `scripts/production_gate_v42_7_22.json`.
+- `scripts/build_full_corpus_slices.py` — builds 2 batches × 315 NCTs covering the full 630-NCT training universe (post-production-gate). Output: `scripts/full_corpus_batch_1.json` + `full_corpus_batch_2.json`.
+- `scripts/submit_holdout_validation.sh --production-gate / --full-corpus-1 / --full-corpus-2` — validated submit flags.
+- `scripts/merge_full_corpus_results.py JOB1 JOB2` — combines the 2 full-corpus batch results into one canonical JSON+CSV (sanity-checks commit-hash agreement + de-duplicates).
+- `docs/PRODUCTION_GATE_REPORT_TEMPLATE.md` — pre-structured report skeleton; cron's job is to fill in numbers post-Job-#101.
 
 ### Test suite
-27 test files under `scripts/test_v42_*.py` + `scripts/test_v42_trip_wires.py`, 199 tests + 20 trip-wires + 9 live-API integrations — full sweep clean. Trip-wire suite (20 source-level assertions) protects the most expensive past-bug fixes from refactor regression. Run `bash scripts/run_full_regression.sh` for the 3-tier sweep.
+30 test files under `scripts/test_v42_*.py` + `scripts/test_v42_trip_wires.py`, 209 tests + 21 trip-wires + 9 live-API integrations — full sweep clean. Trip-wire suite (21 source-level assertions) protects the most expensive past-bug fixes from refactor regression. Run `bash scripts/run_full_regression.sh` for the 3-tier sweep.
 
 ---
 
