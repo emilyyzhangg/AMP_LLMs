@@ -21,6 +21,8 @@ This template defines the exact structure the cron `cb95c3f1` will fill in when 
 
 ## 2. Per-field accuracy (95% CI half-width via Wald approximation)
 
+> **Source of truth:** `bash scripts/heldout_analysis.sh 826f2608ddd8 51a6c2a308f8` §1 (canonical methodology — same fuzzy matching as `compare_jobs.py`). Do NOT use the strict-lower-bound numbers from `score_production_gate.py` §2 here; that script under-counts (e.g. RfF n=1 instead of n=22 because it doesn't credit blank-vs-blank). Use `score_production_gate.py` only for §3 (per-outcome-class breakdown) and Wald CI math.
+
 | Field | Production target | Result | 95% CI | Status |
 |---|---|---|---|---|
 | classification | ≥95% | _N/N = X.X%_ | ±_X.X_pp | ✅ / ⚠️ / ❌ |
@@ -57,7 +59,7 @@ Note: each field's denominator is the count of NCTs in the slice that had GT con
 
 ## 5. Production decision
 
-Per CONTINUATION_PLAN's per-field targets:
+> Bucket based on §2's heldout_analysis numbers (canonical), NOT score_production_gate's strict-lower-bound numbers. Per CONTINUATION_PLAN's per-field targets:
 
 - **SHIP** (recommend full-corpus annotation): _list of fields meeting target_
 - **ACCEPT with CI bounds** (GT-quality ceiling): _list of fields in 55-65% gray zone_
