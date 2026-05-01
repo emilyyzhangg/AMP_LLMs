@@ -2,7 +2,7 @@
 
 Strategy to surpass human annotation accuracy by fixing agent errors, exploiting the agent's structural advantages, and addressing the gaps revealed by a quality audit of both agent output and human annotations.
 
-> **Last updated:** 2026-04-28 (canonical sources for v26+ are LEARNING_RUN_PLAN, CONTINUATION_PLAN, AGENT_STRATEGY_ROADMAP — see §17)
+> **Last updated:** 2026-05-01 — v42.7.23 shipped + Job #101 production gate in flight. Canonical sources for v26+ are LEARNING_RUN_PLAN, CONTINUATION_PLAN, AGENT_STRATEGY_ROADMAP (see §17 below)
 
 > **IMPORTANT DESIGN PRINCIPLE:** Human annotations (`docs/clinical_trials-with-sequences.xlsx`) are used **only for development-time evaluation and prompt refinement** — measuring agent accuracy, identifying error patterns, and tuning prompts. Human annotations are **never used at runtime**. The agents must produce correct annotations independently, relying solely on live data from external APIs (ClinicalTrials.gov, PubMed, UniProt, etc.). The goal is to build agents that don't need a human counterpart.
 
