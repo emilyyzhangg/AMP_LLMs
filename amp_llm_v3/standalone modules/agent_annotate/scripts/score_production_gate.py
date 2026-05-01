@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
 """Score a completed production-gate job and emit a publication-grade report.
 
-**Methodology note:** this script uses a strict R1==R2 (or only-one-filled)
-GT consensus rule and exact string matching. Numbers will be LOWER than
-the authoritative `compare_jobs.py` / `heldout_analysis.sh` output, which
-uses fuzzier matching (e.g. variant tolerance). For the canonical
-production-gate certification, run BOTH:
-  1. `bash scripts/heldout_analysis.sh JOB_ID 51a6c2a308f8` — authoritative
-     per-field accuracy + miss patterns
-  2. `python3 scripts/score_production_gate.py JOB_ID` — per-outcome-class
-     breakdown + Wald 95% CI half-widths + ship/accept decision template
+**Methodology** (matches `compare_jobs.py` / `heldout_analysis.sh`):
+- Reads post-verifier `verification.fields[].final_value` (with annotation
+  fallback) — the 3-pass verifier can flip outcomes (e.g. NCT03081676
+  milestone: annotation=Unknown → final=Positive on db_confirmed grade).
+- GT consensus rule: R1==R2 (or only one annotator filled in).
+- Exact string matching after normalisation; sequence uses set-containment
+  via `app.services.concordance_service.sequences_match`.
 
-This script's value is the per-outcome-class stratification (critical
-because the production-gate slice is the FIRST scale measurement covering
-terminated/failed/withdrawn) + Wald CI math. Treat per-field numbers
-here as a stricter lower-bound sanity check, not the headline.
+The two scorers (this + heldout_analysis) should agree on classification,
+peptide, delivery_mode, outcome. Sequence and RfF may differ by denominator
+handling (this script counts trials where agent value is non-blank;
+heldout's denom is fuzzier). Numbers should NOT diverge by value source.
+
+Companion to `bash scripts/heldout_analysis.sh JOB_ID 51a6c2a308f8` (which
+adds: per-NCT flip table, miss-pattern tally, evidence_grade analysis).
+This script's unique value is per-outcome-class stratification + Wald CI.
 
 Math: 95% CI half-width via Wald approximation
   hw = 1.96 * sqrt(p*(1-p) / n)
@@ -102,11 +104,21 @@ def load_gt() -> dict[str, dict[str, str]]:
     return gt
 
 
-def get_field(trial: dict, name: str) -> dict | None:
+def get_pred(trial: dict, name: str) -> str:
+    """Return the post-verifier final_value for `name`, falling back to the
+    pre-verifier annotation value. Matches `scripts/compare_jobs.py:get_pred`
+    (the canonical scorer) — the 3-pass verifier can flip outcomes
+    (e.g. NCT03081676 milestone: annotation=Unknown → final=Positive)."""
+    pipeline_fld = "failure_reason" if name == "reason_for_failure" else name
+    for f in (trial.get("verification") or {}).get("fields", []) or []:
+        if isinstance(f, dict) and f.get("field_name") in (pipeline_fld, name):
+            v = f.get("final_value")
+            if v:
+                return str(v)
     for a in trial.get("annotations", []) or []:
-        if isinstance(a, dict) and a.get("field_name") == name:
-            return a
-    return None
+        if isinstance(a, dict) and a.get("field_name") in (pipeline_fld, name):
+            return str(a.get("value") or "")
+    return ""
 
 
 def score_field(trials: list[dict], gt: dict, field: str) -> dict:
@@ -115,8 +127,7 @@ def score_field(trials: list[dict], gt: dict, field: str) -> dict:
     miss_pairs: Counter = Counter()
     for t in trials:
         nct = (t.get("nct_id") or "").upper()
-        ann = get_field(t, field) or {}
-        pred = norm(ann.get("value", ""))
+        pred = norm(get_pred(t, field))
         if not pred:
             continue
         gt_v = (gt.get(nct, {}) or {}).get(field)
@@ -139,8 +150,7 @@ def score_sequence(trials: list[dict], gt: dict) -> dict:
     misses = 0
     for t in trials:
         nct = (t.get("nct_id") or "").upper()
-        ann = get_field(t, "sequence") or {}
-        pred = (ann.get("value") or "").strip()
+        pred = get_pred(t, "sequence").strip()
         gt_entry = gt.get(nct, {})
         gt_seq = gt_entry.get("_raw_seq_r1") or gt_entry.get("_raw_seq_r2")
         if not gt_seq or gt_seq.lower() in ("n/a", "na"):
@@ -160,8 +170,7 @@ def score_outcome_by_class(trials: list[dict], gt: dict) -> dict[str, dict]:
     by_class: dict[str, dict[str, int]] = {}
     for t in trials:
         nct = (t.get("nct_id") or "").upper()
-        ann = get_field(t, "outcome") or {}
-        pred = norm(ann.get("value", ""))
+        pred = norm(get_pred(t, "outcome"))
         gt_v = (gt.get(nct, {}) or {}).get("outcome")
         if not gt_v or not pred:
             continue
@@ -260,15 +269,14 @@ def main() -> int:
             )
     out.append("")
 
-    # Decision (strict-lower-bound bucketing only — NOT the headline)
-    out.append("## 5. Strict-lower-bound bucketing (informational)\n")
+    # Decision bucketing (now uses post-verifier values, matches compare_jobs.py)
+    out.append("## 5. Production decision\n")
     out.append(
-        "> ⚠️ **NOT the headline.** This bucketing uses this script's strict "
-        "exact-match scoring, which under-counts (e.g. RfF n=1 instead of n=22 on "
-        "Job #100 because the agent legitimately emits blank for non-failed trials "
-        "and this script doesn't credit blank-vs-blank). For the authoritative ship/accept/investigate "
-        "decision, use `heldout_analysis.sh` numbers — they apply the same fuzzier "
-        "matching as `compare_jobs.py` and are the canonical certification metric.\n"
+        "> Numbers in this section come from this script's post-verifier scoring "
+        "(matches `compare_jobs.py` for classification/peptide/delivery_mode/outcome). "
+        "Sequence and RfF denominators may differ from `heldout_analysis.sh` due to "
+        "blank-prediction handling — verify with heldout if those fields are "
+        "borderline.\n"
     )
     ship = []
     accept = []
@@ -284,10 +292,13 @@ def main() -> int:
             accept.append(f"{field} ({p*100:.1f}%, n={r['n']}) — within GT-quality gray zone")
         else:
             investigate.append(f"{field} ({p*100:.1f}%, n={r['n']})")
-    out.append(f"- Lower-bound SHIP ({len(ship)} fields): {', '.join(ship) or '(none)'}")
-    out.append(f"- Lower-bound ACCEPT-with-CI ({len(accept)} fields): {', '.join(accept) or '(none)'}")
-    out.append(f"- Lower-bound INVESTIGATE ({len(investigate)} fields): {', '.join(investigate) or '(none)'}")
-    out.append("")
+    out.append(f"- **SHIP** ({len(ship)} fields): {', '.join(ship) or '(none)'}")
+    out.append(f"- **ACCEPT with CI bounds** ({len(accept)} fields): {', '.join(accept) or '(none)'}")
+    out.append(f"- **INVESTIGATE** ({len(investigate)} fields): {', '.join(investigate) or '(none)'}")
+    overall = "SHIP" if not investigate and not accept else (
+        "SHIP-WITH-FLAG" if not investigate else "INVESTIGATE"
+    )
+    out.append(f"\n**Decision:** {overall}\n")
 
     # Methodology
     out.append("## 6. Methodology disclosure\n")

@@ -82,11 +82,21 @@ def wald_hw(p: float, n: int) -> float:
     return 1.96 * math.sqrt(p * (1 - p) / n)
 
 
-def get_field(trial: dict, name: str) -> dict | None:
+def get_pred(trial: dict, name: str) -> str:
+    """Return the post-verifier final_value for `name`, falling back to the
+    pre-verifier annotation value. Matches `scripts/compare_jobs.py:get_pred`
+    (the canonical scorer) — the 3-pass verifier can flip outcomes
+    (e.g. annotation=Unknown → final=Positive on db_confirmed grade)."""
+    pipeline_fld = "failure_reason" if name == "reason_for_failure" else name
+    for f in (trial.get("verification") or {}).get("fields", []) or []:
+        if isinstance(f, dict) and f.get("field_name") in (pipeline_fld, name):
+            v = f.get("final_value")
+            if v:
+                return str(v)
     for a in trial.get("annotations", []) or []:
-        if isinstance(a, dict) and a.get("field_name") == name:
-            return a
-    return None
+        if isinstance(a, dict) and a.get("field_name") in (pipeline_fld, name):
+            return str(a.get("value") or "")
+    return ""
 
 
 def load_gt() -> dict[str, dict]:
@@ -159,8 +169,7 @@ def main() -> int:
         n = 0
         for t in trials:
             nct = (t.get("nct_id") or "").upper()
-            ann = get_field(t, field) or {}
-            pred = (ann.get("value") or "").strip()
+            pred = get_pred(t, field).strip()
             if not pred:
                 continue
             if field == "sequence":
@@ -193,8 +202,7 @@ def main() -> int:
     by_class: dict[str, dict] = {}
     for t in trials:
         nct = (t.get("nct_id") or "").upper()
-        ann = get_field(t, "outcome") or {}
-        pred = norm(ann.get("value", ""))
+        pred = norm(get_pred(t, "outcome"))
         gt_v = (gt.get(nct, {}) or {}).get("outcome")
         if not gt_v or not pred:
             continue
