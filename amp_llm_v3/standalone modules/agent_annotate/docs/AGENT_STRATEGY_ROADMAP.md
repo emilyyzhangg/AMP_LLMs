@@ -242,13 +242,19 @@ Step 8 — Ship
 | `outcome_atomic_max_voting_pubs: 20` | bounds tail-latency on 45-pub trials | 0% | done |
 | HTTP response cache for idempotent GETs (second-order) | 5–15% | 0% | deferred — do only if drug_cache isn't enough |
 
-### 6.3 Concrete efficiency loss recovery
+### 6.3 Concrete efficiency loss recovery (HISTORICAL — superseded by v42.7.X measurements)
 
 Compared to the (broken) v42.6.8 run at 134 s/trial:
 - Pure legacy with no caching: ~320 s/trial. **2.4x slower** than broken-but-fast.
 - Pure legacy + drug_cache: expected ~220–250 s/trial. **~30% faster** than pure legacy.
 
-We lose most of the v42.6.8 speedup but we get back to **better accuracy than #71 at ~70% of #77's speed**, which is a clean win.
+### 6.4 Empirical pace (2026-05-01, post-v42.7.23)
+
+Per Job #100 / Job #101 measurements (PERFORMANCE.md):
+- **Production runs:** ~720 s/trial (~12 min) on Mac Mini with full v42.7.X stack including 19 research agents + 3-verifier consensus.
+- This is ~3x slower than §6.3's "+drug_cache" target of ~220-250 s/trial — drug_cache work was rolled back / never fully shipped per the v42.6 efficiency-pack rollback decision (see §1 commit `257810da` 2026-04-23).
+- The accuracy gains from v42.7.X (classification 90.5% → 97.1%, peptide 81.1% → 89%, +19 research agents) are being prioritized over efficiency. Efficiency is a v42.8+ concern.
+- For full-corpus annotation (630 NCTs total): ~52-70h per 315-NCT batch, sequential = 4-7 days end-to-end.
 
 ---
 
