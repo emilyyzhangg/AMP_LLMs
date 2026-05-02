@@ -438,6 +438,58 @@ def test_v42_7_19_delivery_ambiguous_keyword_relevance_gate():
     print("  ✓ v42.7.19: delivery_mode ambiguous-keyword relevance gate present")
 
 
+def test_v42_7_24_reasoning_caps_raised():
+    """v42.7.24 (2026-05-02): Job #101 production-gate audit found 43-73%
+    of stored reasoning fields were truncated mid-thought because of
+    legacy 500-char `_parse_reasoning` caps + 400-char pass-text excerpts.
+    Decisions unaffected, but publication-grade auditability suffered.
+    Caps raised consistently across 5 agents — this trip-wire prevents
+    accidental revert to the v25-era 500/400 values.
+    """
+    targets = [
+        ("agents/annotation/outcome.py", [":2000]", ":1200]"]),
+        ("agents/annotation/peptide.py", [":2000]", ":1500]"]),
+        ("agents/annotation/delivery_mode.py", [":2000]", ":1500]"]),
+        ("agents/annotation/classification.py", [":1500]"]),
+        ("agents/annotation/failure_reason.py", [":2000]", ":1500]"]),
+    ]
+    for rel, must_have in targets:
+        src = (PKG_ROOT / rel).read_text()
+        for token in must_have:
+            assert token in src, (
+                f"v42.7.24 trip-wire: {rel} missing cap '{token}'. The cap "
+                "was probably reverted to 500/400 — revisit Job #101 audit."
+            )
+        # Also assert the OLD caps are not present in _parse_reasoning context
+        if "_parse_reasoning" in src:
+            # Find the function and check it doesn't use [:500]
+            idx = src.index("_parse_reasoning")
+            window = src[idx:idx+800]
+            assert "[:500]" not in window, (
+                f"v42.7.24 trip-wire: {rel}::_parse_reasoning still caps at 500 chars. "
+                "Should be 2000 per Job #101 audit."
+            )
+    print("  ✓ v42.7.24: reasoning caps 500→2000 / 400→1500 preserved across 5 agents")
+
+
+def test_v42_7_24_failure_reason_early_return_gated():
+    """v42.7.24 (2026-05-02): NCT00001827 on Job #101 had agent
+    outcome=Terminated but RfF=blank because Pass 1 read CT.gov "Trial
+    Status: COMPLETED" → "no failure detected" → early-return at
+    failure_reason.py:198 bypassed the v26 Terminated/Withdrawn safety
+    net at line ~238. Fix: gate the early-return on outcome NOT being
+    a failure category.
+    """
+    src = (PKG_ROOT / "agents" / "annotation" / "failure_reason.py").read_text()
+    # Must check outcome_result alongside _pass1_says_no_failure to gate the early return
+    assert "_pass1_says_no_failure(pass1_output) and outcome_result not in" in src, (
+        "v42.7.24 trip-wire: failure_reason.py early-return at _pass1_says_no_failure "
+        "no longer gates on outcome_result — v26 safety net (Terminated/Withdrawn → "
+        "Business Reason default) will be silently bypassed."
+    )
+    print("  ✓ v42.7.24: failure_reason early-return gated on outcome_result")
+
+
 def test_dbaasp_word_boundary_preserved():
     """v25 DBAASP word-boundary fix: 'NS' (normal saline) and short
     drug-name prefixes were matching DBAASP entries by substring, not
@@ -482,6 +534,8 @@ def main() -> int:
         test_v42_7_21_known_sequences_expanded,
         test_v42_7_22_cgrp_disambiguation,
         test_v42_7_23_radiotracer_isotope_class_split,
+        test_v42_7_24_reasoning_caps_raised,
+        test_v42_7_24_failure_reason_early_return_gated,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
