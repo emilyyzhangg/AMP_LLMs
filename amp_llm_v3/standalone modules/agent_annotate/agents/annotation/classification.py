@@ -538,7 +538,8 @@ class ClassificationAgent(BaseAnnotationAgent):
                 value = "AMP"
 
         # Combine both passes in reasoning for audit trail
-        reasoning = f"[Pass 1 extraction] {pass1_text[:400]}\n[Pass 2 decision] {pass2_text[:400]}"
+        # v42.7.24: pass-text caps raised 400 → 1500 each (Job #101: 55% trunc).
+        reasoning = f"[Pass 1 extraction] {pass1_text[:1500]}\n[Pass 2 decision] {pass2_text[:1500]}"
 
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 
