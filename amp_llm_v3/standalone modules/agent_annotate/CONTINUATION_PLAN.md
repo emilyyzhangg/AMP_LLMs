@@ -80,7 +80,13 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 - **v42.8 architectural candidates** (post-production-gate, not blocking shipping):
   - Drug-code → biological-name resolver (RxNorm / DrugBank API) — would let UniProt return the right protein for drug codes that currently get "no_structured_match". Same root cause as outcome's positive-recall gap and sequence's drug-code under-extraction.
   - Sponsor press-release / conference abstract search agent — captures positive-result reporting that doesn't reach peer-reviewed literature within Phase I trial timelines.
-  - Both candidates require new external API integrations (unlike v42.7.X which were all logic refinements within the existing 19-agent pipeline).
+  - **Failed-completed-trial recall (NEW from Job #101 production-gate analysis 2026-05-02):** GT=failed-completed-trial scored 0/11 = 0.0% at scale. Miss anatomy from 11 NCTs:
+    - 5× agent → `unknown` (45%) — same GT-ceiling as pos→unk: agent reads pub, can't deterministically extract "did not meet primary endpoint" signal, defaults to unknown. NCTs: NCT01651715, NCT02603614, NCT03285737, NCT04524442, NCT04747002.
+    - 2× agent → `terminated` (18%) — failed-completed (trial ran fully, missed endpoint) collapsed onto terminated (stopped early). NCTs: NCT05142228, NCT05162027.
+    - 2× agent → `positive` (18%) — over-call. NCTs: NCT00052026, NCT03734718.
+    - 2× agent → `recruiting` (18%) — agent reading current CT.gov status; trials reactivated/re-listed. NCTs: NCT05243862, NCT05269381.
+    - **Fix candidates:** (a) explicit "did not meet primary endpoint" pub-classifier signal (similar to v42.7.20 trial-specificity work); (b) registry-status-vs-publication-evidence override (when pub says trial completed-and-failed but CT.gov says recruiting, trust pub); (c) failed-completed vs terminated disambiguation rule (failed-completed implies trial reached planned completion date — distinct from early termination).
+  - All candidates require new external API integrations or substantial classifier work (unlike v42.7.X which were all logic refinements within the existing 19-agent pipeline).
 
 ---
 
