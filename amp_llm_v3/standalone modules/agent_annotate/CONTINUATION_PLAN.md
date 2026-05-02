@@ -1,6 +1,6 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-30 (v42.7.23 SHIPPED — radiotracer rule split by isotope class, PET/SPECT always-IV by physics, therapeutic explicit-signal-or-Other. Prod smoke `fb963de0db44`: 5/5 PASS. Main at `2172018e`.)
+**Last updated:** 2026-05-02 (Job #101 PRODUCTION GATE CERTIFIED — SHIP-WITH-FLAG. 239 NCTs, ±6.3pp CI. classification 95.1% ✅, peptide 89.4% ✅, delivery 88.6% ✅ (regression closed), outcome 60.7% ⚠️ ACCEPT (gray-zone GT-ceiling), RfF 86.4%/61.3% ❌, sequence 31-37% ❌. Per-class: positive 46.2%, unknown 79.5%, terminated 90.0%, **failed 0/11=0%** (systematic failed→terminated miss), **withdrawn 6/6=100% ⭐**. Agent BEATS human IRA on classification/peptide/delivery/outcome. Full-corpus annotation cleared. Main at `2172018e`. Report: `docs/PRODUCTION_GATE_REPORT.md`.)
 
 ---
 
