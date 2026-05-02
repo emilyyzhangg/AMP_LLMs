@@ -72,20 +72,30 @@ def main() -> int:
     slice_e = load_slice(SLICE_E)
     slice_f = load_slice(SLICE_F)
 
-    # Start with the union of milestone + E + F
-    base = milestone | slice_e | slice_f
-    print(f"Base composition (milestone + E + F): {len(base)} unique NCTs", file=sys.stderr)
-    print(f"  milestone: {len(milestone)}  slice-E: {len(slice_e)}  slice-F: {len(slice_f)}", file=sys.stderr)
+    # API contract: TRAINING_NCTS = full_csv MINUS test_batch (50 NCTs
+    # reserved for concordance measurement). Any slice containing
+    # test_batch NCTs will be rejected at submit time. Exclude from
+    # BOTH base and candidates.
+    test_batch = set()
+    if TEST_BATCH.exists():
+        test_batch = {l.strip().upper() for l in TEST_BATCH.open() if l.strip()}
+
+    # Start with the union of milestone + E + F, then drop any test_batch
+    base = (milestone | slice_e | slice_f) - test_batch
+    base_pre_filter = milestone | slice_e | slice_f
+    if base != base_pre_filter:
+        dropped = base_pre_filter - base
+        print(
+            f"WARN: dropped {len(dropped)} test_batch NCTs from base "
+            f"(milestone or slice-E/F included them)",
+            file=sys.stderr,
+        )
+    print(f"Base composition (milestone + E + F, filtered): {len(base)} unique NCTs", file=sys.stderr)
+    print(f"  milestone: {len(milestone)}  slice-E: {len(slice_e)}  slice-F: {len(slice_f)}  (test_batch removed)", file=sys.stderr)
 
     target = 250
     needed = max(0, target - len(base))
     print(f"\nNeed {needed} more NCTs to reach {target}", file=sys.stderr)
-
-    # Build candidate pool: GT-scoreable NCTs from training CSV NOT in base
-    # AND NOT in PRIOR_JOBS test_batch (those are training-side reservations)
-    test_batch = set()
-    if TEST_BATCH.exists():
-        test_batch = {l.strip().upper() for l in TEST_BATCH.open() if l.strip()}
 
     candidates: list[str] = []
     with CSV_PATH.open() as f:
@@ -93,12 +103,13 @@ def main() -> int:
             nct = (row["nct_id"] or "").upper().strip()
             if not nct or nct in base:
                 continue
-            # ALLOW test_batch and PRIOR_JOBS — for production gate we draw
-            # from the entire 680-NCT training universe (per data-discipline
-            # rule). The per-cycle held-out separation that excluded these
-            # in iteration cycles doesn't apply to the production gate
-            # (which is accuracy certification on a fixed test set, not
-            # generalization testing).
+            # IMPORTANT: exclude test_batch (50 NCTs reserved for
+            # concordance measurement). The API's TRAINING_NCTS check
+            # subtracts test_batch from the valid universe, so any
+            # production-gate slice that includes test_batch NCTs will
+            # be rejected at submit time. PRIOR_JOBS NCTs are still OK.
+            if nct in test_batch:
+                continue
             o = consensus(row.get("Outcome_ann1", ""), row.get("Outcome_ann2", ""))
             if not o or o == "active":
                 continue

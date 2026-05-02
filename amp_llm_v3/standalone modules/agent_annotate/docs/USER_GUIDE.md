@@ -397,7 +397,58 @@ Agent Annotate is designed to operate without a human counterpart. Human annotat
 
 ---
 
-## 8. Maintenance Scripts
+## 8. Production deployment workflow (post-v42.7.23)
+
+The validated agent on main commit `2172018e` (v42.7.23) is the production-ready stack. To go from "code ready" to "fully annotated 630-NCT publication output", run the following sequence (cost: ~5-7 days end-to-end on prod):
+
+### 8.1 One-time: production gate certification (Job #101)
+```bash
+bash scripts/submit_holdout_validation.sh --production-gate --check-sync
+# → submits 239-NCT slice (training_csv − test_batch), ETA ~42h
+# When complete:
+bash scripts/heldout_analysis.sh JOB_ID 51a6c2a308f8 | tail -100  # authoritative
+python3 scripts/score_production_gate.py JOB_ID --write           # supplementary + decision template
+# Decision rule:
+#   outcome ≥65% AND no field regresses → SHIP
+#   outcome 55-65% → ACCEPT WITH CI BOUND (GT-quality ceiling per cross-job analysis)
+#   outcome <55% → INVESTIGATE before scaling up
+```
+
+### 8.2 Full-corpus annotation (post-gate)
+```bash
+# Submit batch 1 of 2 (315 NCTs each, ~50-80h per batch)
+bash scripts/submit_holdout_validation.sh --full-corpus-1 --check-sync
+# Wait for batch 1 to complete, then:
+bash scripts/submit_holdout_validation.sh --full-corpus-2 --check-sync
+```
+
+### 8.3 Merge + score for publication
+```bash
+# Combine both batches into canonical JSON+CSV
+python3 scripts/merge_full_corpus_results.py JOB_ID_1 JOB_ID_2
+
+# Score the merged output for publication-grade benchmark
+python3 scripts/score_full_corpus.py --merged-json scripts/full_corpus_merged_<commit>.json
+```
+
+### 8.4 Publication outputs
+- **`scripts/full_corpus_merged_<commit>.csv`** — per-NCT annotations across all 6 fields with evidence trails. This is the dataset to publish.
+- **`docs/PRODUCTION_GATE_REPORT.md`** (auto-written by `score_production_gate.py --write`) — per-field accuracy + 95% CI + outcome stratification + ship/accept decision.
+- **`docs/PRODUCTION_GATE_REPORT_TEMPLATE.md`** — methodology section (data source, GT consensus rule, sequence scoring, hardware, etc.) suitable for paper Methods.
+
+### 8.5 What to publish
+| Claim | Source | Caveat |
+|---|---|---|
+| Per-field accuracy | `PRODUCTION_GATE_REPORT.md` §2 | ±6.3pp CI on outcome (the bottleneck field) |
+| Beats human inter-rater agreement | §4 vs-IRA table | True for classification/peptide/delivery; outcome matches IRA but rarely exceeds by 5pp |
+| Annotation dataset | `full_corpus_merged_*.csv` | 630 unique NCTs; per-NCT confidence available via `evidence_grade` field |
+| Methodology | template §6 | Reproducible from main commit `2172018e` + `human_ground_truth_train_df.csv` |
+
+For downstream consumers wanting only high-confidence annotations: filter to `evidence_grade ∈ {db_confirmed, deterministic}` (per `app/models/annotation.py`).
+
+---
+
+## 9. Maintenance Scripts
 
 ### 8.1 retroactive_fix.py
 

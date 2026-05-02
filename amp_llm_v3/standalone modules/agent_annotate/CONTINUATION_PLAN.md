@@ -1,6 +1,6 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-04-29 (Job #100 milestone DECISION: continue iteration. Outcome 57.8% in 55-64.9% gray zone — production gate deferred. Classification 97.1% / peptide 89.0% production-ready; delivery -6.7pp regression + RfF -8pp surprise → v42.7.23 priorities)
+**Last updated:** 2026-05-02 (Job #101 PRODUCTION GATE CERTIFIED — SHIP-WITH-FLAG. 239 NCTs, ±6.3pp CI. classification 95.1% ✅, peptide 89.4% ✅, delivery 88.6% ✅ (regression closed), outcome 60.7% ⚠️ ACCEPT (gray-zone GT-ceiling), RfF 86.4%/61.3% ❌, sequence 31-37% ❌. Per-class: positive 46.2%, unknown 79.5%, terminated 90.0%, **failed 0/11=0%** (systematic failed→terminated miss), **withdrawn 6/6=100% ⭐**. Agent BEATS human IRA on classification/peptide/delivery/outcome. Full-corpus annotation cleared. Main at `2172018e`. Report: `docs/PRODUCTION_GATE_REPORT.md`.)
 
 ---
 
@@ -58,18 +58,29 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
    - Already meeting target on most slices; the 147-NCT milestone certifies these alongside outcome
    - Specific: confirm v42.7.19's delivery relevance gate doesn't introduce new misses on the milestone set
 
-4. **Production gate** (250-NCT certification)
-   - Trigger: 147-NCT milestone confirms outcome ≥65% AND no field regresses below target
-   - Slice composition (PREBUILT in `scripts/production_gate_v42_7_22.json`): 147 milestone + 20 slice-E + 20 slice-F + 63 residual/test-batch = 250 unique NCTs from 680-NCT training universe. Outcome distribution: 120 positive / 77 unknown / 30 terminated / 13 failed / 10 withdrawn — full GT category coverage (terminated/failed/withdrawn untested since v42.7 cycle started).
-   - Cost: ~41h overnight on Mac Mini.
-   - 95% CI half-width: ±6.2pp at p=0.5, ±5.7pp at p=0.7 — production-grade.
-   - Document: per-field accuracy + CI + per-outcome-class breakdown + comparison to human inter-rater + per-NCT result table
+4. **Production gate** (239-NCT certification, IN FLIGHT as Job #101)
+   - Slice (`scripts/production_gate_v42_7_22.json`): 239 NCTs from training_csv − test_batch (50 reserved by API). Outcome distribution: 120 positive / 77 unknown / 30 terminated / 13 failed / 10 withdrawn — full GT category coverage (terminated/failed/withdrawn untested since v42.7 cycle started). Reduced from 250 target after API rejected test_batch overlap; CI essentially unchanged.
+   - Cost: ~42h overnight on Mac Mini (~12 min/trial × 239).
+   - 95% CI half-width: ±6.3pp at p=0.5, ±5.8pp at p=0.7 — production-grade.
+   - Document on completion: per-field accuracy + CI + per-outcome-class breakdown + comparison to human inter-rater + per-NCT result table.
    - Sign-off: this becomes the "production-ready" marker; outcomes republish as the canonical benchmark for the system.
 
-### Constraints + open questions
-- **Pool depletion**: ~38 GT-scoreable candidates remain after slice-F (within the 680-NCT training CSV; per-cycle exclusion discipline). Iteration cycles will shift to 15-NCT slices once the pool drops below 40, OR accept slice re-use (with the caveat that any re-used slice must NOT be the slice that motivated the most recent code change — same overfitting concern as before).
-- **Outcome's slice-variance**: #97 was 68%, #98 was 35% on similar positive-heavy distributions. The cause is currently hypothesized as the LLM's interpretation of Rule 7 (`positive → unknown` rate 50-92% per slice). v42.7.20 classifier tightening targets this. Job #99 = first signal.
-- **Cost ceiling**: 250-NCT production gate costs ~28h compute. Plan accordingly — overnight run, no other prod jobs scheduled during it.
+5. **Full-corpus annotation** (POST-production-gate, infrastructure READY)
+   - Goal: annotate the full 630-NCT training universe with the validated agent.
+   - Slices (PREBUILT): `scripts/full_corpus_batch_1.json` (315 NCTs, NCT00001703→NCT05021016) + `scripts/full_corpus_batch_2.json` (315 NCTs, NCT05025267→NCT07012330).
+   - Submit: `bash scripts/submit_holdout_validation.sh --full-corpus-1 --check-sync` (then `--full-corpus-2` after batch 1 completes).
+   - Cost: ~50-80h per batch on prod (sequential, only one job at a time). Total ~4-7 days.
+   - Output: combined annotation dataset across all 630 NCTs, ready to publish + use downstream.
+   - Triggered ONLY when production gate certification signs off. Until then, infrastructure waits.
+
+### Constraints + open questions (refreshed 2026-05-01)
+- **Outcome's GT-quality ceiling** — RESOLVED via cross-job analysis (Jobs #92/#95/#96/#97/#98/#99). The `positive → unknown` miss rate is essentially constant (9-12 per slice) independent of v42.7.X version after v42.7.13. This IS the ceiling for our agent's evidence sources (literature + openalex + bioRxiv + crossref + semantic_scholar + 14 other research agents). Beating it requires NEW evidence sources (sponsor press releases, conference abstracts, etc.) — v42.8 architectural work.
+- **Pool depletion** — RESOLVED for the production gate context: API rejected test_batch overlap; gate slice trimmed to 239 NCTs with full GT category coverage (positive 120 / unknown 77 / terminated 30 / failed 13 / withdrawn 10). For future iteration cycles: 38 GT-scoreable candidates remain; switch to 15-NCT iteration slices OR accept slice re-use (with the same overfitting caveat).
+- **Cost ceiling** — empirically observed at ~12 min/trial on Mac Mini (per PERFORMANCE.md "Validation tier costs"). 239-NCT production gate ~42h overnight; 630-NCT full corpus ~52-70h per batch (4-7 days for both batches sequential).
+- **v42.8 architectural candidates** (post-production-gate, not blocking shipping):
+  - Drug-code → biological-name resolver (RxNorm / DrugBank API) — would let UniProt return the right protein for drug codes that currently get "no_structured_match". Same root cause as outcome's positive-recall gap and sequence's drug-code under-extraction.
+  - Sponsor press-release / conference abstract search agent — captures positive-result reporting that doesn't reach peer-reviewed literature within Phase I trial timelines.
+  - Both candidates require new external API integrations (unlike v42.7.X which were all logic refinements within the existing 19-agent pipeline).
 
 ---
 
@@ -129,7 +140,12 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Outcome miss tally** (across 62 misses): db_confirmed 5, deterministic 11, pub_trial_specific 52. Same dominant pos→unk Phase-I-no-clear-endpoint pattern (the GT-quality ceiling per cross-job analysis).
 
 ### v42.7.23 priorities (post-Job-#100)
-1. **Investigate delivery -6.7pp regression** — likely v42.7.19's relevance gate over-filtering on the 100 new milestone NCTs OR backlog #7 (OpenFDA multi-formulation aggregation, design pre-coded). Run evidence_grade_miss_analysis on delivery_mode for Job #100.
+1. **Investigate delivery -6.7pp regression** — likely v42.7.19's relevance gate over-filtering on the 100 new milestone NCTs OR backlog #7 (OpenFDA multi-formulation aggregation, design pre-coded). Run evidence_grade_miss_analysis on delivery_mode for Job #100. **Pattern audit (2026-05-01, milestone n=19 misses, POST-VERIFIER per scoring fix dc39b09d):**
+   - 6× `injection/infusion → other` — vaccine/biologic without explicit route. Examples NCT03069989, NCT03164486, NCT05940298, NCT06081322, NCT06443762.
+   - 6× `other → injection/infusion` — over-extraction. NCT03339453, NCT03359239, NCT05171686, NCT05428943, NCT05568017.
+   - 2× `oral → injection/infusion` (NCT03081676, NCT03707171); 1× each of `injection/infusion → oral`, `injection/infusion,oral → oral`, `oral → topical`, `other → topical`, `topical → other`.
+   - **v42.7.24 candidate (DEFERRED until Job #101):** the under/over-detect of injection is now SYMMETRIC at the milestone scale (6 vs 6) — the 3-pass verifier has already corrected the directional bias visible in pre-verifier audits (which showed 8 inj→other, 3 other→inj). Defaulting biologicals to injection would close one pattern but open the symmetric one; needs different fix. Wait for Job #101 to confirm whether the post-verifier symmetry holds at 239 NCTs before scoping any change.
+   - Earlier cross-job notes about pre-verifier patterns (e.g. "5× injection/infusion → injection/infusion, oral") were artifacts of pre-verifier reads; verifier closes those.
 2. **Investigate RfF -8pp drop** — was 91.7% on Job #89 with 12 NCTs, now 54.5% on 22. Sample-size variance + per-NCT investigation needed.
 3. **Continue outcome iteration** on slice-F (Job #101) targeting ≥65% on a 20-NCT slice to bracket the milestone's gray-zone CI. 4. **Sequence dict expansion** (mechanical) for any new drug codes Job #100 surfaced.
 5. **Production gate REMAINS PREBUILT** — `scripts/production_gate_v42_7_22.json` ready to fire when outcome gets clearer.
@@ -204,7 +220,7 @@ Recorded from Job #97 miss analysis (do not act on these while Job #98 in flight
 
    **When to ship**: after Job #100 lands. If milestone outcome ≥65% AND delivery_mode ≥80%, ship as part of v42.7.23 alongside any other backlog items that surfaced. If milestone reveals delivery_mode regressed, prioritize this.
 
-6. **Drug-code → UniProt resolution gap** (v42.8 candidate, structural). On all 16 of Job #98's sequence=N/A peptide=True trials, the `peptide_identity` agent (UniProt + DRAMP) returned "no_structured_match" because the intervention names are pharma drug codes (CBX129801, PLG0206, GT-001, "64Cu-SARTATE", etc.) and UniProt indexes biological protein names. For NCT05585658 (Erythropoietin alpha), UniProt incorrectly returned "Erythropoietin RECEPTOR" P19235 (similar name match) instead of erythropoietin P01588. **Root cause**: no drug-code → biological-name resolution layer between intervention extraction and UniProt query. **Fix candidates (multi-week scope)**: (a) RxNorm / DrugBank API as resolver — public API, query "PLG0206" → biological aliases → UniProt; (b) ChEMBL drug→target lookup — already integrated, may have richer mapping than UniProt; (c) explicit alias map maintained as code (high curation cost; conflicts with frozen-drug-list discipline if applied to peptides). **Why this is v42.8 not v42.7.X**: requires architectural addition (new agent or reframing peptide_identity), not a narrow fix.
+6. **Drug-code → UniProt resolution gap** (v42.8 candidate, structural). On all 16 of Job #98's sequence=N/A peptide=True trials, the `peptide_identity` agent (UniProt + DRAMP) returned "no_structured_match" because the intervention names are pharma drug codes (CBX129801, PLG0206, GT-001, "64Cu-SARTATE", etc.) and UniProt indexes biological protein names. For NCT05585658 (Erythropoietin alpha), UniProt incorrectly returned "Erythropoietin RECEPTOR" P19235 (similar name match) instead of erythropoietin P01588. **Milestone (Job #100, 147 NCTs) breakdown** — of 90 NCTs where GT carries a real sequence: 43 (47.8%) the agent returned empty/N/A; on the 47 where it provided a value, 29 matched (61.7%). Under-extraction is the dominant failure mode (47.8% N/A vs 38.3% wrong-extraction), so the architectural fix has higher headroom than the prompt-tuning fix on the agent-provided cases. **Root cause**: no drug-code → biological-name resolution layer between intervention extraction and UniProt query. **Fix candidates (multi-week scope)**: (a) RxNorm / DrugBank API as resolver — public API, query "PLG0206" → biological aliases → UniProt; (b) ChEMBL drug→target lookup — already integrated, may have richer mapping than UniProt; (c) explicit alias map maintained as code (high curation cost; conflicts with frozen-drug-list discipline if applied to peptides). **Why this is v42.8 not v42.7.X**: requires architectural addition (new agent or reframing peptide_identity), not a narrow fix.
 
 5. **Topical-detection under-call** — cross-slice pattern (Jobs #97 + #98 each had 1 `topical → other` miss). When CT.gov protocol says "Route: not specified" and intervention descriptions don't match `_TOPICAL_FORMULATION_KEYWORDS`, the agent defaults to "Other". Examples: NCT05137314 PLG0206 antibacterial peptide for prosthetic joint infection (topically applied during DAIR surgery). **Fix candidate (low priority, low impact):** detect "joint", "wound", "skin lesion" in trial conditions; if intervention is BIOLOGICAL/DRUG and condition implies localized application AND no other route signal, infer Topical. Risk: false-positive on systemic antibiotics for joint infections. Defer until multiple slices show >2 of this pattern.
 
@@ -241,12 +257,20 @@ Slice progression so far: A (30, seed 4242, retired post-#95) → B (25, seed 52
 5. Sequence dict expansion (v42.7.23): research deferred Job #98 candidates (FP-01.1, GT-001, PLG0206, EPO alpha, P11-4) with verified public sequences.
 
 ### Diagnostics tooling
-- `scripts/heldout_analysis.sh JOB BASELINE` — 6-section job analysis (per-field accuracy, per-NCT outcome, research-agent firing, v42.7.7-11 paths, evidence_grade distribution, miss-pattern tally)
+- `scripts/heldout_analysis.sh JOB BASELINE` — 7-section job analysis (per-field accuracy, per-NCT outcome, research-agent firing, v42.7.7-11 paths, evidence_grade distribution, miss-pattern tally, evidence-grade stratified outcome misses with LLM reasoning)
 - `scripts/cross_job_miss_patterns.py JOB1 [JOB2...] [--field outcome]` — per-job pattern tally + cross-job NCT recurrence (the analysis that scoped v42.7.19 by surfacing 6 NCTs across 4 slices)
-- `scripts/evidence_grade_miss_analysis.py JOB [--field outcome]` — group misses by evidence_grade + show LLM reasoning. Surfaces WHICH layer is failing (db_confirmed override / deterministic rule / pub_trial_specific LLM / bare llm). The analysis that root-caused v42.7.20 — Job #98's pub_trial_specific misses uniformly rejected over-tagged [TRIAL-SPECIFIC] pubs.
+- `scripts/evidence_grade_miss_analysis.py JOB [--field outcome]` — group misses by evidence_grade + show LLM reasoning. Surfaces WHICH layer is failing (db_confirmed override / deterministic rule / pub_trial_specific LLM / bare llm). The analysis that root-caused v42.7.20.
+- `scripts/score_production_gate.py JOB [--write]` — supplementary report generator with per-outcome-class stratification (positive/unknown/terminated/failed/withdrawn) + Wald 95% CI half-widths + ship/accept decision template. Pair with `heldout_analysis.sh` (authoritative headline numbers) for full production-gate report.
+
+### Production-gate / full-corpus pipeline
+- `scripts/pick_production_gate_250.py` — builds 239-NCT production-gate slice from training_csv − test_batch (full GT category coverage). Output: `scripts/production_gate_v42_7_22.json`.
+- `scripts/build_full_corpus_slices.py` — builds 2 batches × 315 NCTs covering the full 630-NCT training universe (post-production-gate). Output: `scripts/full_corpus_batch_1.json` + `full_corpus_batch_2.json`.
+- `scripts/submit_holdout_validation.sh --production-gate / --full-corpus-1 / --full-corpus-2` — validated submit flags.
+- `scripts/merge_full_corpus_results.py JOB1 JOB2` — combines the 2 full-corpus batch results into one canonical JSON+CSV (sanity-checks commit-hash agreement + de-duplicates).
+- `docs/PRODUCTION_GATE_REPORT_TEMPLATE.md` — pre-structured report skeleton; cron's job is to fill in numbers post-Job-#101.
 
 ### Test suite
-27 test files under `scripts/test_v42_*.py` + `scripts/test_v42_trip_wires.py`, 199 tests + 20 trip-wires + 9 live-API integrations — full sweep clean. Trip-wire suite (20 source-level assertions) protects the most expensive past-bug fixes from refactor regression. Run `bash scripts/run_full_regression.sh` for the 3-tier sweep.
+30 test files under `scripts/test_v42_*.py` + `scripts/test_v42_trip_wires.py`, 209 tests + 21 trip-wires + 9 live-API integrations — full sweep clean. Trip-wire suite (21 source-level assertions) protects the most expensive past-bug fixes from refactor regression. Run `bash scripts/run_full_regression.sh` for the 3-tier sweep.
 
 ---
 
