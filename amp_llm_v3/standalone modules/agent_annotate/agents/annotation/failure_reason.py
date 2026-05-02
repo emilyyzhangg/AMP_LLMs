@@ -195,7 +195,12 @@ class FailureReasonAgent(BaseAnnotationAgent):
             )
 
         # Quick check: if pass 1 says "not a failure", skip pass 2
-        if self._pass1_says_no_failure(pass1_output):
+        # v42.7.24: don't early-return when outcome IS a failure category —
+        # otherwise we bypass the v26 safety net (line ~238). Job #101 hit
+        # this on NCT00001827: agent outcome=Terminated, but Pass 1 read
+        # "Trial Status: COMPLETED" and said "no failure detected" → empty
+        # RfF emission. Falling through to Pass 2 + v26 default catches it.
+        if self._pass1_says_no_failure(pass1_output) and outcome_result not in ("Terminated", "Withdrawn", "Failed - completed trial"):
             return FieldAnnotation(
                 field_name=self.field_name,
                 value="",
