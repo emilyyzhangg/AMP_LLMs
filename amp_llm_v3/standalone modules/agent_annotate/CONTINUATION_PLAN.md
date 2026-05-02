@@ -145,6 +145,30 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 
 **Outcome miss tally** (across 62 misses): db_confirmed 5, deterministic 11, pub_trial_specific 52. Same dominant pos→unk Phase-I-no-clear-endpoint pattern (the GT-quality ceiling per cross-job analysis).
 
+### v42.7.24 (post-Job-#101) — reasoning storage caps for publication auditability
+
+**Status:** dev only (commits `5942f8ae` outcome, `e9aa336f` peptide/delivery_mode/classification/failure_reason). Will merge to main after full-corpus annotation (Jobs #102 + #103) completes — current main `771ecb10` is commit-pinned for Job #102.
+
+**Finding (Job #101 audit 2026-05-02):** Reasoning fields stored on each annotation are truncated mid-thought because of legacy 500-char `_parse_reasoning` caps + 400-char pass-text excerpts (introduced in v25 era). Truncation rates per field on the 239-NCT slice:
+
+| Field | Truncated mid-thought | Median len | Max len |
+|---|---|---|---|
+| classification | 132/239 = 55% | 702 | 905 |
+| peptide | 174/239 = 73% | 839 | 928 |
+| delivery_mode | 194/239 = 81% (mostly short emissions, not cap) | 59 | 751 |
+| outcome | 104/239 = 44% | 877 | 1036 |
+| reason_for_failure | 152/239 = 64% | 330 | 1133 |
+| sequence | 13/239 = 5% (naturally short) | 63 | 514 |
+
+**Decisions are unaffected** — Job #101 audit showed 60.6% accuracy on truncated-reasoning trials vs 60.7% on complete (essentially identical). The LLM's value emission is independent of stored reasoning; truncation is a logging-side artifact only. **Publication-grade auditability suffers**: post-hoc miss analysis runs into reasoning ending mid-sentence (e.g. NCT03734718's reasoning ended `"...not posted on CT.go"` in the middle of `"CT.gov"`).
+
+**Fix:** raise caps consistently across all 5 annotation agents:
+- `_parse_reasoning` 500 → 2000 chars
+- pass-1 / pass-2 text excerpts 400 → 1500 chars
+- outcome's dossier excerpt 400 → 1200 chars
+
+No agent decision logic changed. All 5 agents import OK. Trip-wire / unit test for cap values is a backlog candidate.
+
 ### v42.7.23 priorities (post-Job-#100)
 1. **Investigate delivery -6.7pp regression** — likely v42.7.19's relevance gate over-filtering on the 100 new milestone NCTs OR backlog #7 (OpenFDA multi-formulation aggregation, design pre-coded). Run evidence_grade_miss_analysis on delivery_mode for Job #100. **Pattern audit (2026-05-01, milestone n=19 misses, POST-VERIFIER per scoring fix dc39b09d):**
    - 6× `injection/infusion → other` — vaccine/biologic without explicit route. Examples NCT03069989, NCT03164486, NCT05940298, NCT06081322, NCT06443762.
