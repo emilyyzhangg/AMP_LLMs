@@ -86,6 +86,15 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
     - 2× agent → `positive` (18%) — over-call. NCTs: NCT00052026, NCT03734718.
     - 2× agent → `recruiting` (18%) — agent reading current CT.gov status; trials reactivated/re-listed. NCTs: NCT05243862, NCT05269381.
     - **Fix candidates:** (a) explicit "did not meet primary endpoint" pub-classifier signal (similar to v42.7.20 trial-specificity work); (b) registry-status-vs-publication-evidence override (when pub says trial completed-and-failed but CT.gov says recruiting, trust pub); (c) failed-completed vs terminated disambiguation rule (failed-completed implies trial reached planned completion date — distinct from early termination).
+  - **Reason-for-failure recall (NEW from Job #101 audit 2026-05-02):** RfF scored 19/31 = 61.3% on heldout methodology (and 86.4% on gate-scorer's blank-skipping methodology — the gate-scorer hides under-emission). Anatomy of the 12 RfF misses on the 31-NCT GT-consensus pool: **9/12 are agent-blank when GT had a reason** (75% of misses). Pattern breakdown:
+    - 3× GT=`business reason` → agent=blank (NCT00001827, NCT04524442, NCT05269381)
+    - 2× GT=`ineffective for purpose` → agent=blank (NCT00052026, NCT03285737)
+    - 2× GT=`recruitment issues` → agent=blank (NCT04590872, NCT04747002)
+    - 1× GT=`toxic/unsafe` → agent=blank (NCT01651715)
+    - 1× GT=`due to covid` → agent=blank (NCT03567577)
+    - 2× GT=`business reason` → agent=`recruitment issues` (close-but-wrong: NCT03912337, NCT05284019)
+    - 1× GT=`business reason` → agent=`no reason for failure` (NCT03069989)
+    - **Fix candidates:** (a) RfF agent should emit a reason for any trial in `outcome ∈ {terminated, failed-completed-trial, withdrawn}` even if low-confidence (currently can default to blank); (b) "business reason" cluster (6/12 misses) suggests adding signals for slow-enrollment / sponsor-pivot / funding-cut from CT.gov `why_stopped` field; (c) the close-but-wrong "business→recruitment" pair shows the categories overlap by definition — possible that GT itself has 50/50 cases where annotators picked different valid labels.
   - All candidates require new external API integrations or substantial classifier work (unlike v42.7.X which were all logic refinements within the existing 19-agent pipeline).
 
 ---
