@@ -1,6 +1,8 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-05-02 (Job #101 PRODUCTION GATE CERTIFIED — SHIP-WITH-FLAG. 239 NCTs, ±6.3pp CI. classification 95.1% ✅, peptide 89.4% ✅, delivery 88.6% ✅ (regression closed), outcome 60.7% ⚠️ ACCEPT (gray-zone GT-ceiling), RfF 86.4%/61.3% ❌, sequence 31-37% ❌. Per-class: positive 46.2%, unknown 79.5%, terminated 90.0%, **failed 0/11=0%** (systematic failed→terminated miss), **withdrawn 6/6=100% ⭐**. Agent BEATS human IRA on classification/peptide/delivery/outcome. Full-corpus annotation cleared. Main at `2172018e`. Report: `docs/PRODUCTION_GATE_REPORT.md`.)
+**Last updated:** 2026-05-04 (Job #102 COMPLETE — full-corpus batch 1, 315 NCTs, commit `771ecb10`, 49.7h, finished 05:08 PT. classification 271/277=97.8% ✅, peptide 230/267=86.1% ✅, delivery 232/260=89.2% ✅, outcome 103/209=49.3% ❌ (GT-ceiling pos→unk + 0/7 failed-completed), sequence 54/200=27.0% ❌, RfF 18/20=90.0% ⚠️ (n too small). Per-class outcome: positive 41/84=48.8%, unknown 44/53=83.0%, terminated 13/14=92.9%, **failed 0/7=0%**, withdrawn 5/5=100%. Pattern matches Job #101 production gate. Job #103 (full-corpus batch 2, 315 NCTs) submitted to prod 2026-05-04 as `a3138340e531`, ETA ~50-80h.)
+
+**Last updated (prior):** 2026-05-02 (Job #101 PRODUCTION GATE CERTIFIED — SHIP-WITH-FLAG. 239 NCTs, ±6.3pp CI. classification 95.1% ✅, peptide 89.4% ✅, delivery 88.6% ✅ (regression closed), outcome 60.7% ⚠️ ACCEPT (gray-zone GT-ceiling), RfF 86.4%/61.3% ❌, sequence 31-37% ❌. Per-class: positive 46.2%, unknown 79.5%, terminated 90.0%, **failed 0/11=0%** (systematic failed→terminated miss), **withdrawn 6/6=100% ⭐**. Agent BEATS human IRA on classification/peptide/delivery/outcome. Full-corpus annotation cleared. Main at `2172018e`. Report: `docs/PRODUCTION_GATE_REPORT.md`.)
 
 ---
 
@@ -114,7 +116,9 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 | held-out-E | 20 | 8484 | RETIRED | #99 (v42.7.22 stack — outcome 55% PASS, peptide 94.4%, classification 94.7%, no regressions) |
 | held-out-F | 20 | 9595 | RESERVED | next iteration cycle (v42.7.23+) — single-use |
 | milestone  | 147 | n/a | RETIRED | #100 (peptide 89.0%, classification 97.1%, delivery 84.9% [-6.7pp regression], outcome 57.8% [gray zone], RfF 54.5% [-8pp drop], sequence 39.0%) |
-| production-gate | 250 | 99999 | PREBUILT | #101 (post-#100, IF outcome ≥65%; ±6.2pp CI, ~41h overnight; outcome composition: 120 positive / 77 unknown / 30 terminated / 13 failed / 10 withdrawn — full GT category coverage) |
+| production-gate | 250 | 99999 | RETIRED | #101 (239 NCTs scored, ±6.3pp CI, certified SHIP-WITH-FLAG 2026-05-02) |
+| full-corpus-1 | 315 | n/a | RETIRED | #102 = `88a03e590e0e` (49.7h, commit 771ecb10, 2026-05-04 — class 97.8% / pept 86.1% / deliv 89.2% / outcome 49.3% / seq 27.0% / RfF 90.0%) |
+| full-corpus-2 | 315 | n/a | IN FLIGHT | #103 = `a3138340e531` submitted 2026-05-04 (commit 771ecb10) |
 
 `scripts/submit_holdout_validation.sh --milestone --check-sync` triggers the 147-NCT validation.
 `scripts/submit_holdout_validation.sh --production-gate --check-sync` triggers the 250-NCT certification (only after #100 PASS).
@@ -139,8 +143,8 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **None.** Job #100 milestone validation closed 2026-04-29 with outcome in 55-64.9% gray zone — continue iteration on slice-F (Job #101) before triggering 250-NCT production gate.
-- Cron `32ddc648` deleted (milestone is the milestone).
+- **Job #103** = `a3138340e531` on prod (commit `771ecb10`), full-corpus batch 2, 315 NCTs (NCT05025267 → NCT07012330). Submitted 2026-05-04. ETA ~50-80h.
+- After completion: run `scripts/merge_full_corpus_results.py 88a03e590e0e a3138340e531` then `scripts/score_full_corpus.py --merged-json ...` for the canonical 630-NCT publication-grade benchmark.
 
 ### Job #100 milestone result (147 NCTs, ±8pp CI half-width)
 | Field | Result | vs #83 baseline | vs target | Status |
