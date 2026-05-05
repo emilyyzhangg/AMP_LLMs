@@ -75,6 +75,15 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
    - Output: combined annotation dataset across all 630 NCTs, ready to publish + use downstream.
    - Triggered ONLY when production gate certification signs off. Until then, infrastructure waits.
 
+6. **Held-out test-set certification (Job #104)** — POST full-corpus, POST agent freeze.
+   - Goal: unbiased final accuracy measurement on the 50-NCT test_batch (`scripts/fast_learning_batch_50.txt` → `scripts/test_batch_50.json`). These NCTs were excluded by API contract from every training, iteration, gate, and full-corpus run, so they are the only truly unseen slice in the 680-NCT GT universe.
+   - **Sequencing constraint (user-mandated 2026-05-05): agent must be development-complete before this run.** "Complete" means: (a) Job #103 lands and full-corpus is published, AND (b) v42.7.24 reasoning-cap commits (`5942f8ae`, `e9aa336f`) merged to main. NO further agent decision-logic changes after that point. Test-batch run uses the final main commit and is single-shot.
+   - Submit: `bash scripts/submit_holdout_validation.sh --test-batch-50 --check-sync`. The `--test-batch-50` slice flag implicitly enables `allow_test_batch: true` in the POST body, which widens the router's NCT validator to the full 680-NCT GT universe. EDAM gating in the orchestrator still uses TRAINING_NCTS, so test-batch annotations DO NOT contaminate memory_store / stability_tracker.
+   - Cost: ~8h on prod (50 NCTs × ~10 min/trial), single overnight run.
+   - Score: `python3 scripts/score_full_corpus.py <JOB_104_ID>` produces per-field accuracy + per-outcome-class breakdown. Compare each field to Job #101's certified accuracy ± 6.3pp CI; if within CI, the production-gate claim is **certified on truly unseen data** — the strongest publication-grade statement the system can make.
+   - Decision rule: any field falling >2σ outside the gate's CI is a CI violation and warrants investigation before publication. Sample size is small (n=50) so individual field CIs are wider (~±14pp) — interpret with that in mind.
+   - Code support: `app/routers/jobs.py` accepts `allow_test_batch: bool = False` field on POST `/api/jobs`. Default behavior unchanged (training-only). `app/services/memory/edam_config.py` exposes `ALL_GT_NCTS` (full 680) and `TEST_BATCH_NCTS` (50) for the widened validator.
+
 ### Constraints + open questions (refreshed 2026-05-01)
 - **Outcome's GT-quality ceiling** — RESOLVED via cross-job analysis (Jobs #92/#95/#96/#97/#98/#99). The `positive → unknown` miss rate is essentially constant (9-12 per slice) independent of v42.7.X version after v42.7.13. This IS the ceiling for our agent's evidence sources (literature + openalex + bioRxiv + crossref + semantic_scholar + 14 other research agents). Beating it requires NEW evidence sources (sponsor press releases, conference abstracts, etc.) — v42.8 architectural work.
 - **Pool depletion** — RESOLVED for the production gate context: API rejected test_batch overlap; gate slice trimmed to 239 NCTs with full GT category coverage (positive 120 / unknown 77 / terminated 30 / failed 13 / withdrawn 10). For future iteration cycles: 38 GT-scoreable candidates remain; switch to 15-NCT iteration slices OR accept slice re-use (with the same overfitting caveat).
@@ -119,6 +128,7 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 | production-gate | 250 | 99999 | RETIRED | #101 (239 NCTs scored, ±6.3pp CI, certified SHIP-WITH-FLAG 2026-05-02) |
 | full-corpus-1 | 315 | n/a | RETIRED | #102 = `88a03e590e0e` (49.7h, commit 771ecb10, 2026-05-04 — class 97.8% / pept 86.1% / deliv 89.2% / outcome 49.3% / seq 27.0% / RfF 90.0%) |
 | full-corpus-2 | 315 | n/a | IN FLIGHT | #103 = `a3138340e531` submitted 2026-05-04 (commit 771ecb10) |
+| test-batch    | 50  | n/a | RESERVED  | #104 (post Job #103 + v42.7.24 merge — unbiased held-out certification, ~8h) |
 
 `scripts/submit_holdout_validation.sh --milestone --check-sync` triggers the 147-NCT validation.
 `scripts/submit_holdout_validation.sh --production-gate --check-sync` triggers the 250-NCT certification (only after #100 PASS).
