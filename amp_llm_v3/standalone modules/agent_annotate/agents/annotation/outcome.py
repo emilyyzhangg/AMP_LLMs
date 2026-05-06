@@ -325,6 +325,19 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         "inferior", "not effective",
         "unacceptable", "not tolerated", "dose-limiting", "safety concern",
         "serious adverse event", "discontinued due to",
+        # v42.8.2 (2026-05-06): strong-failure phrases for the failed-completed
+        # publication override. Mirror of _STRONG_EFFICACY discipline; require
+        # explicit primary-endpoint anchor. Some overlap with earlier entries
+        # ("did not meet" / "failed to meet") is acceptable — the multi-token
+        # phrase only fires when the longer match exists.
+        "did not meet the primary", "did not meet primary",
+        "failed to meet the primary", "failed to meet primary",
+        "primary endpoint was not achieved", "primary endpoint not achieved",
+        "primary outcome was not met",
+        "did not achieve the primary", "did not achieve primary",
+        "failed primary endpoint", "missed the primary endpoint",
+        "missed primary endpoint", "failed to demonstrate efficacy",
+        "did not demonstrate efficacy",
     ]
     # v42.7.7 (2026-04-27): immunogenicity primary-endpoint signals.
     # For vaccine/immunotherapy trials, these phrases — when reported in a
@@ -1072,6 +1085,42 @@ class OutcomeAgent(BaseAnnotationAgent):
         joined = " ; ".join(str(k).lower() for k in efficacy_keywords)
         return any(kw in joined for kw in cls._STRONG_EFFICACY)
 
+    # v42.8.2 (2026-05-06): mirror of _STRONG_EFFICACY for the negative
+    # case. Job #101 + full-corpus audit found GT=Failed-completed-trial
+    # scoring 0/11 = 0% — 5/11 misses were agent → Unknown because the
+    # existing v42.7.14 publication override was gated on "not efficacy",
+    # which killed it on any stray review-language efficacy mention. These
+    # strong-failure phrases are primary-endpoint-anchored and don't fire
+    # on review or comparator language, so they justify firing the
+    # override even when weak efficacy keywords are present. Mirror the
+    # _STRONG_EFFICACY discipline: require an explicit primary-endpoint
+    # reference, not bare "failed" / "negative" (which v42.7.15 already
+    # excluded from _NEGATIVE_KW).
+    _STRONG_FAILURE = [
+        "did not meet the primary", "did not meet primary",
+        "failed to meet the primary", "failed to meet primary",
+        "primary endpoint was not met", "primary endpoint not met",
+        "primary outcome was not met", "primary outcome not met",
+        "primary endpoint was not achieved", "primary endpoint not achieved",
+        "did not achieve the primary", "did not achieve primary",
+        "failed primary endpoint", "missed the primary endpoint",
+        "missed primary endpoint", "failed to demonstrate efficacy",
+        "did not demonstrate efficacy",
+    ]
+
+    @classmethod
+    def _has_strong_failure(cls, negative_keywords: list[str]) -> bool:
+        """Strong = explicit primary-endpoint-not-met signal in trial-specific pubs.
+
+        Used by v42.8.2 publication override to flip Unknown → Failed when
+        a peer-reviewed trial-specific publication unambiguously reports
+        primary-endpoint failure, regardless of stray efficacy keywords.
+        """
+        if not negative_keywords:
+            return False
+        joined = " ; ".join(str(k).lower() for k in negative_keywords)
+        return any(kw in joined for kw in cls._STRONG_FAILURE)
+
     @classmethod
     def _dossier_publication_override(cls, dossier: dict, current_value: str) -> str | None:
         """v42.6.11: Override Unknown/Active only with STRONG publication evidence.
@@ -1138,6 +1187,23 @@ class OutcomeAgent(BaseAnnotationAgent):
                 and dossier.get("immunogenicity_keywords")
                 and not neg):
             return "Positive"
+
+        # v42.8.2 (2026-05-06): strong-failure publication override. When a
+        # trial-specific publication explicitly reports primary-endpoint
+        # failure (e.g. "did not meet the primary endpoint", "primary
+        # endpoint was not achieved"), emit Failed - completed trial even
+        # when stray efficacy keywords are present in other pubs (review
+        # language frequently contains "well-tolerated" or "promising"
+        # boilerplate). Mirrors the _STRONG_EFFICACY discipline; gated on
+        # CT.gov status confirming the trial has ended (avoids over-call
+        # on status=UNKNOWN trials per the v42.7.14 lesson).
+        # Job #101 audit: this closes 5/11 of the failed-completed-trial
+        # 0% miss class (agent → Unknown when pub clearly says endpoint
+        # was missed); estimated +1.5pp on full-corpus outcome accuracy.
+        if (status in ("COMPLETED", "TERMINATED")
+                and trial_specific > 0
+                and cls._has_strong_failure(neg)):
+            return "Failed - completed trial"
 
         # v42.7.14 (2026-04-27): Trial-specific publications with negative
         # signals → Failed, BUT only when CT.gov status confirms the trial
