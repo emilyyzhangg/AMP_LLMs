@@ -1,6 +1,8 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-05-04 (Job #102 COMPLETE — full-corpus batch 1, 315 NCTs, commit `771ecb10`, 49.7h, finished 05:08 PT. classification 271/277=97.8% ✅, peptide 230/267=86.1% ✅, delivery 232/260=89.2% ✅, outcome 103/209=49.3% ❌ (GT-ceiling pos→unk + 0/7 failed-completed), sequence 54/200=27.0% ❌, RfF 18/20=90.0% ⚠️ (n too small). Per-class outcome: positive 41/84=48.8%, unknown 44/53=83.0%, terminated 13/14=92.9%, **failed 0/7=0%**, withdrawn 5/5=100%. Pattern matches Job #101 production gate. Job #103 (full-corpus batch 2, 315 NCTs) submitted to prod 2026-05-04 as `a3138340e531`, ETA ~50-80h.)
+**Last updated:** 2026-05-06 (FULL-CORPUS CANONICAL RESULT — Jobs #102+#103 merged, 630 NCTs, commit `771ecb10`. classification 513/530=96.8% ✅ ±1.5pp (beats human IRA 91.6% by +5.2pp), peptide 466/537=86.8% ✅ ±2.9pp (beats human 48.4% by +38.4pp), delivery 448/511=87.7% ✅ ±2.9pp (beats human 68.2% by +19.5pp), **RfF 25/29=86.2% ❌ ±12.6pp (LOSES to human 91.3% by −5.1pp; n too small)**, **outcome 143/338=42.3% ❌ ±5.3pp (LOSES to human 55.6% by −13.3pp; gate certification at 60.7% does NOT generalize to recent trials)**, sequence 94/364=25.8% ❌ ±4.5pp. Per-class outcome: positive 54/119=45.4%, unknown 65/83=78.3%, terminated 18/20=90.0%, **failed 0/11=0%**, withdrawn 6/6=100%. Recency stratification: Job #102 (older NCTs ≤NCT05021016) outcome 49.3%; Job #103 (NCT05+, all 2021+) outcome ~31% — recency is the dominant outcome accuracy axis at full scale. v42.7.24 reasoning caps merged to main; agent dev-complete; Job #104 test-batch certification next.)
+
+**Last updated (prior):** 2026-05-04 (Job #102 COMPLETE — full-corpus batch 1, 315 NCTs, commit `771ecb10`, 49.7h, finished 05:08 PT. classification 271/277=97.8% ✅, peptide 230/267=86.1% ✅, delivery 232/260=89.2% ✅, outcome 103/209=49.3% ❌ (GT-ceiling pos→unk + 0/7 failed-completed), sequence 54/200=27.0% ❌, RfF 18/20=90.0% ⚠️ (n too small). Per-class outcome: positive 41/84=48.8%, unknown 44/53=83.0%, terminated 13/14=92.9%, **failed 0/7=0%**, withdrawn 5/5=100%. Pattern matches Job #101 production gate. Job #103 (full-corpus batch 2, 315 NCTs) submitted to prod 2026-05-04 as `a3138340e531`, ETA ~50-80h.)
 
 **Last updated (prior):** 2026-05-02 (Job #101 PRODUCTION GATE CERTIFIED — SHIP-WITH-FLAG. 239 NCTs, ±6.3pp CI. classification 95.1% ✅, peptide 89.4% ✅, delivery 88.6% ✅ (regression closed), outcome 60.7% ⚠️ ACCEPT (gray-zone GT-ceiling), RfF 86.4%/61.3% ❌, sequence 31-37% ❌. Per-class: positive 46.2%, unknown 79.5%, terminated 90.0%, **failed 0/11=0%** (systematic failed→terminated miss), **withdrawn 6/6=100% ⭐**. Agent BEATS human IRA on classification/peptide/delivery/outcome. Full-corpus annotation cleared. Main at `2172018e`. Report: `docs/PRODUCTION_GATE_REPORT.md`.)
 
@@ -127,7 +129,7 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 | milestone  | 147 | n/a | RETIRED | #100 (peptide 89.0%, classification 97.1%, delivery 84.9% [-6.7pp regression], outcome 57.8% [gray zone], RfF 54.5% [-8pp drop], sequence 39.0%) |
 | production-gate | 250 | 99999 | RETIRED | #101 (239 NCTs scored, ±6.3pp CI, certified SHIP-WITH-FLAG 2026-05-02) |
 | full-corpus-1 | 315 | n/a | RETIRED | #102 = `88a03e590e0e` (49.7h, commit 771ecb10, 2026-05-04 — class 97.8% / pept 86.1% / deliv 89.2% / outcome 49.3% / seq 27.0% / RfF 90.0%) |
-| full-corpus-2 | 315 | n/a | IN FLIGHT | #103 = `a3138340e531` submitted 2026-05-04 (commit 771ecb10) |
+| full-corpus-2 | 315 | n/a | RETIRED | #103 = `a3138340e531` (315 NCTs, commit 771ecb10, finished 2026-05-06 02:02 PT) |
 | test-batch    | 50  | n/a | RESERVED  | #104 (post Job #103 + v42.7.24 merge — unbiased held-out certification, ~8h) |
 
 `scripts/submit_holdout_validation.sh --milestone --check-sync` triggers the 147-NCT validation.
@@ -153,8 +155,7 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **Job #103** = `a3138340e531` on prod (commit `771ecb10`), full-corpus batch 2, 315 NCTs (NCT05025267 → NCT07012330). Submitted 2026-05-04. ETA ~50-80h.
-- After completion: run `scripts/merge_full_corpus_results.py 88a03e590e0e a3138340e531` then `scripts/score_full_corpus.py --merged-json ...` for the canonical 630-NCT publication-grade benchmark.
+- **None.** Job #103 landed 2026-05-06 02:02 PT (315 NCTs, commit 771ecb10). Merged + scored — see "Full-corpus canonical result" header above. Next: merge v42.7.24 reasoning caps to main, then Job #104 (test-batch certification).
 
 ### Job #100 milestone result (147 NCTs, ±8pp CI half-width)
 | Field | Result | vs #83 baseline | vs target | Status |
