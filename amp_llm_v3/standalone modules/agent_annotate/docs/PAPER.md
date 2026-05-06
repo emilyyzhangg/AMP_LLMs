@@ -2,6 +2,8 @@
 
 **Amphoraxe Research Team**
 
+> **⚠️ Staleness note (2026-05-06):** The abstract and results sections below describe v9–v10 architecture with 70-trial evaluation and 25-trial concordance numbers. The current pipeline is v42.7.22 (publication baseline frozen at commit `82a88146`) with **6 annotation fields** and **19 research agents**, evaluated on the **630-NCT full corpus** (Jobs #102+#103, 2026-05-06). Canonical headline numbers and per-field human-IRA deltas: see `docs/PRODUCTION_GATE_REPORT.md`. Recency-stratification narrative (outcome 49.3% on pre-2021 trials vs ~31% on 2021+ trials) and v42.8 architectural cycle (levers 1+2 landed; levers 3-5 spec'd in `docs/V42_8_IMPLEMENTATION_PLAN.md`): see `docs/AGENT_STRATEGY_ROADMAP.md §1`. **Defer publication-side rewrite of this file until the v42.8 stack closes (post-Jobs #105+#106 + Job #104 single-shot test-batch certification) — avoids reworking the abstract twice.**
+
 ---
 
 ## Abstract

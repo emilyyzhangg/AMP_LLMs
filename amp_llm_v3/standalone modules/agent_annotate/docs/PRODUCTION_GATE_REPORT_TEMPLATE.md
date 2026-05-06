@@ -1,9 +1,12 @@
 # Production Gate Certification Report — Template
 
-**Status:** AWAITING JOB #101 RESULT (production gate in flight on prod, commit `2172018e`).
-**Filled-in version posted:** `docs/PRODUCTION_GATE_REPORT.md` (created when Job #101 completes).
+**Status:** SUPERSEDED 2026-05-06. Job #101 completed 2026-05-02 and was certified SHIP-WITH-FLAG. Full-corpus 630-NCT scoring (Jobs #102+#103) replaced the gate-only headline as canonical on 2026-05-06.
 
-This template defines the exact structure the cron `cb95c3f1` will fill in when Job #101 (`826f2608ddd8`) completes. Pre-structuring here makes the post-gate write-up mechanical and avoids ad-hoc reporting that varies between cycles.
+**Current canonical report:** `docs/PRODUCTION_GATE_REPORT.md` (full-corpus numbers + recency narrative; Job #101 gate retained in §7 for traceability).
+
+**Reusing this template:** the v42.8 cycle will produce a fresh full-corpus run (Jobs #105+#106) at the end. Use this template's structure for the new report; replace "Job #101" with "Jobs #105+#106 merged" and rewrite §1 with the new commit + slice. Job #104 (50-NCT held-out test_batch) will be added as a new §8 once it lands at the very end of the cycle.
+
+This template defines the exact structure for production-gate-style certification reports. Pre-structuring here makes the post-gate write-up mechanical and avoids ad-hoc reporting that varies between cycles.
 
 ---
 

@@ -1,6 +1,26 @@
 # Agent Annotate — Performance & Scale
 
-Operational guide for running Agent Annotate at scale (hundreds to tens of thousands of NCTs). Written 2026-04-21 as part of the v42.6 efficiency pack; updated 2026-04-28 with v42.7 research-pipeline expansion.
+Operational guide for running Agent Annotate at scale (hundreds to tens of thousands of NCTs). Written 2026-04-21 as part of the v42.6 efficiency pack; updated 2026-04-28 with v42.7 research-pipeline expansion; refreshed 2026-05-06 with empirical full-corpus + production-gate timings.
+
+## Empirical timings (Jobs #101, #102, #103 — measured 2026-05-02 to 2026-05-06)
+
+| Run | NCTs | Wall-clock | Avg per trial | Hardware |
+|---|---|---|---|---|
+| Job #101 (production gate, 239 NCTs) | 239 | ~42h | ~10.5 min | Mac Mini M-series |
+| Job #102 (full-corpus batch 1, 315 NCTs) | 315 | 49.7h | ~568s = 9.5 min | Mac Mini M-series |
+| Job #103 (full-corpus batch 2, 315 NCTs) | 315 | ~48h | ~9.1 min | Mac Mini M-series |
+| Test-batch certification (Job #104, 50 NCTs, projected) | 50 | ~8h | ~10 min | Mac Mini M-series |
+| Slice-G validation (20 NCTs, dev) | 20 | ~3-4h | ~10 min | Mac Mini (dev port 9005) |
+
+**Implication for v42.8 levers:** each lever validation slice (~20 NCTs) is one overnight on dev. Each fresh full-corpus batch is ~48h. The full v42.8 closing sequence (Jobs #105 + #106 + #104) is ~4 days clock time after the last lever lands.
+
+## v42.8 added research cost (estimated, post-implementation)
+
+Lever 3 (pub-to-trial matcher) is in-process, no API cost.
+Lever 4 (drug-code resolver, RxNorm/DrugBank) adds ~2 HTTP calls per intervention with caching; ~3-5s per trial uncached, near-zero cached.
+Lever 5 (press-release / conference-abstract agent) adds the most: per-trial ~5-10 HTTP calls across sponsor newsroom, PR Newswire, conference DBs. Estimated +30-60s per trial, mitigated by 7-day response cache.
+
+Net post-v42.8 estimate: ~12-13 min per trial on cold-cache trials, ~10 min on warm-cache (re-runs, full-corpus replay).
 
 ## v42.7 research-pipeline cost (post-2026-04-25)
 
