@@ -14,11 +14,13 @@ set -euo pipefail
 PORT=8005
 HOST="prod"
 CHECK_SYNC=0
+ALLOW_TEST_BATCH=0
 for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2) ;;  # handled below
+        --test-batch) ALLOW_TEST_BATCH=1 ;;
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -67,6 +69,14 @@ for arg in "$@"; do
         # Submit batch 1, wait for completion, then submit batch 2.
         --full-corpus-1) SLICE="$THIS_DIR/full_corpus_batch_1.json" ;;
         --full-corpus-2) SLICE="$THIS_DIR/full_corpus_batch_2.json" ;;
+        # Held-out test-set certification (Job #104, post full-corpus). 50
+        # NCTs reserved by API contract for unbiased final measurement —
+        # never seen by training/iteration/gate/full-corpus. Requires
+        # --test-batch flag to bypass the router's training-CSV gate.
+        # Cost: ~8h on prod. Compare per-field accuracy to Job #101 gate
+        # — if within ±6.3pp CI, the gate's claim certifies on truly
+        # unseen data.
+        --test-batch-50) SLICE="$THIS_DIR/test_batch_50.json"; ALLOW_TEST_BATCH=1 ;;
     esac
 done
 if [ ! -f "$SLICE" ]; then
@@ -92,8 +102,13 @@ if [ "$CHECK_SYNC" = "1" ]; then
 fi
 
 NCT_LIST=$(cat "$SLICE")
+if [ "$ALLOW_TEST_BATCH" = "1" ]; then
+    BODY="{\"nct_ids\": $NCT_LIST, \"allow_test_batch\": true}"
+else
+    BODY="{\"nct_ids\": $NCT_LIST}"
+fi
 RESP=$(curl -s -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-    -d "{\"nct_ids\": $NCT_LIST}" "http://localhost:${PORT}/api/jobs")
+    -d "$BODY" "http://localhost:${PORT}/api/jobs")
 JOB_ID=$(echo "$RESP" | $PY -c "import sys,json; print(json.load(sys.stdin).get('job_id',''))" 2>/dev/null)
 
 if [ -z "$JOB_ID" ]; then

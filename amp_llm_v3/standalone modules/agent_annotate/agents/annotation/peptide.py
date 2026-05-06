@@ -588,7 +588,8 @@ class PeptideAgent(BaseAnnotationAgent):
             )
 
         value = self._parse_value(pass2_text)
-        reasoning = f"[Pass 1 extraction] {pass1_text[:400]}\n[Pass 2 decision] {pass2_text[:400]}"
+        # v42.7.24: pass-text caps raised 400 → 1500 each for audit trail.
+        reasoning = f"[Pass 1 extraction] {pass1_text[:1500]}\n[Pass 2 decision] {pass2_text[:1500]}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 
         # v12: Post-Pass-2 consistency check — if Pass 1 clearly identified a
@@ -685,10 +686,13 @@ class PeptideAgent(BaseAnnotationAgent):
         return "False"
 
     def _parse_reasoning(self, text: str) -> str:
+        # v42.7.24: cap raised 500 → 2000 chars (Job #101 audit: peptide
+        # reasoning truncated at ~900 char cap, 73% trunc rate). Decisions
+        # unaffected; storage/audit fix only.
         match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)
         if match:
-            return match.group(1).strip()[:500]
-        return text[:500]
+            return match.group(1).strip()[:2000]
+        return text[:2000]
 
     def _parse_pass1(self, pass1_text: str) -> dict:
         """Parse Pass 1 free-text output into a structured dict.

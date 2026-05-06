@@ -755,7 +755,8 @@ class DeliveryModeAgent(BaseAnnotationAgent):
                 value = "Other"
                 not_specified_override = True
 
-        reasoning = f"[Pass 1 route extraction] {pass1_text[:400]}\n[Pass 2 classification] {pass2_text[:300]}"
+        # v42.7.24: pass-text caps raised (400/300 → 1500/1200) for audit trail.
+        reasoning = f"[Pass 1 route extraction] {pass1_text[:1500]}\n[Pass 2 classification] {pass2_text[:1200]}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 
         return FieldAnnotation(
@@ -845,7 +846,8 @@ class DeliveryModeAgent(BaseAnnotationAgent):
         return "Other"
 
     def _parse_reasoning(self, text: str) -> str:
+        # v42.7.24: cap raised 500 → 2000 chars for audit trail.
         match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)
         if match:
-            return match.group(1).strip()[:500]
-        return text[:500]
+            return match.group(1).strip()[:2000]
+        return text[:2000]

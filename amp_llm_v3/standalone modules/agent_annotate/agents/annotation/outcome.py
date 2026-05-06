@@ -989,7 +989,9 @@ class OutcomeAgent(BaseAnnotationAgent):
             skip_verification = True
             logger.info(f"  outcome: v39 publication-anchored Failed — skip_verification=True")
 
-        full_reasoning = f"[Dossier] {dossier_text[:400]}\n[LLM decision] {reasoning}"
+        # v42.7.24: dossier excerpt cap raised 400 → 1200 chars (paired with
+        # _parse_reasoning cap raise to 2000) for publication-grade auditability.
+        full_reasoning = f"[Dossier] {dossier_text[:1200]}\n[LLM decision] {reasoning}"
         citation_quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 
         return FieldAnnotation(
@@ -1195,7 +1197,14 @@ class OutcomeAgent(BaseAnnotationAgent):
         return "Unknown"
 
     def _parse_reasoning(self, text: str) -> str:
+        # v42.7.24: cap raised from 500 → 2000 chars for publication-grade
+        # auditability. Job #101 production-gate analysis showed 43.5% of
+        # outcome reasoning fields were storage-truncated mid-thought (median
+        # 877 chars, 900-999 bucket dominant) — decisions unaffected (60.6%
+        # accuracy in truncated set vs 60.7% complete) but post-hoc miss
+        # analysis was hampered when reasoning ended at "no trial-specific
+        # publication confirms the primary endpoint was met or fa…".
         match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)
         if match:
-            return match.group(1).strip()[:500]
-        return text[:500]
+            return match.group(1).strip()[:2000]
+        return text[:2000]

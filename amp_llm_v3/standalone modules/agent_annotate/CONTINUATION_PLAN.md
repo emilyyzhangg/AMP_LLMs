@@ -1,6 +1,10 @@
 # Agent Annotate — Continuation Plan
 
-**Last updated:** 2026-05-02 (Job #101 PRODUCTION GATE CERTIFIED — SHIP-WITH-FLAG. 239 NCTs, ±6.3pp CI. classification 95.1% ✅, peptide 89.4% ✅, delivery 88.6% ✅ (regression closed), outcome 60.7% ⚠️ ACCEPT (gray-zone GT-ceiling), RfF 86.4%/61.3% ❌, sequence 31-37% ❌. Per-class: positive 46.2%, unknown 79.5%, terminated 90.0%, **failed 0/11=0%** (systematic failed→terminated miss), **withdrawn 6/6=100% ⭐**. Agent BEATS human IRA on classification/peptide/delivery/outcome. Full-corpus annotation cleared. Main at `2172018e`. Report: `docs/PRODUCTION_GATE_REPORT.md`.)
+**Last updated:** 2026-05-06 (FULL-CORPUS CANONICAL RESULT — Jobs #102+#103 merged, 630 NCTs, commit `771ecb10`. classification 513/530=96.8% ✅ ±1.5pp (beats human IRA 91.6% by +5.2pp), peptide 466/537=86.8% ✅ ±2.9pp (beats human 48.4% by +38.4pp), delivery 448/511=87.7% ✅ ±2.9pp (beats human 68.2% by +19.5pp), **RfF 25/29=86.2% ❌ ±12.6pp (LOSES to human 91.3% by −5.1pp; n too small)**, **outcome 143/338=42.3% ❌ ±5.3pp (LOSES to human 55.6% by −13.3pp; gate certification at 60.7% does NOT generalize to recent trials)**, sequence 94/364=25.8% ❌ ±4.5pp. Per-class outcome: positive 54/119=45.4%, unknown 65/83=78.3%, terminated 18/20=90.0%, **failed 0/11=0%**, withdrawn 6/6=100%. Recency stratification: Job #102 (older NCTs ≤NCT05021016) outcome 49.3%; Job #103 (NCT05+, all 2021+) outcome ~31% — recency is the dominant outcome accuracy axis at full scale. v42.7.24 reasoning caps merged to main; agent dev-complete; Job #104 test-batch certification next.)
+
+**Last updated (prior):** 2026-05-04 (Job #102 COMPLETE — full-corpus batch 1, 315 NCTs, commit `771ecb10`, 49.7h, finished 05:08 PT. classification 271/277=97.8% ✅, peptide 230/267=86.1% ✅, delivery 232/260=89.2% ✅, outcome 103/209=49.3% ❌ (GT-ceiling pos→unk + 0/7 failed-completed), sequence 54/200=27.0% ❌, RfF 18/20=90.0% ⚠️ (n too small). Per-class outcome: positive 41/84=48.8%, unknown 44/53=83.0%, terminated 13/14=92.9%, **failed 0/7=0%**, withdrawn 5/5=100%. Pattern matches Job #101 production gate. Job #103 (full-corpus batch 2, 315 NCTs) submitted to prod 2026-05-04 as `a3138340e531`, ETA ~50-80h.)
+
+**Last updated (prior):** 2026-05-02 (Job #101 PRODUCTION GATE CERTIFIED — SHIP-WITH-FLAG. 239 NCTs, ±6.3pp CI. classification 95.1% ✅, peptide 89.4% ✅, delivery 88.6% ✅ (regression closed), outcome 60.7% ⚠️ ACCEPT (gray-zone GT-ceiling), RfF 86.4%/61.3% ❌, sequence 31-37% ❌. Per-class: positive 46.2%, unknown 79.5%, terminated 90.0%, **failed 0/11=0%** (systematic failed→terminated miss), **withdrawn 6/6=100% ⭐**. Agent BEATS human IRA on classification/peptide/delivery/outcome. Full-corpus annotation cleared. Main at `2172018e`. Report: `docs/PRODUCTION_GATE_REPORT.md`.)
 
 ---
 
@@ -73,6 +77,15 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
    - Output: combined annotation dataset across all 630 NCTs, ready to publish + use downstream.
    - Triggered ONLY when production gate certification signs off. Until then, infrastructure waits.
 
+6. **Held-out test-set certification (Job #104)** — POST full-corpus, POST agent freeze.
+   - Goal: unbiased final accuracy measurement on the 50-NCT test_batch (`scripts/fast_learning_batch_50.txt` → `scripts/test_batch_50.json`). These NCTs were excluded by API contract from every training, iteration, gate, and full-corpus run, so they are the only truly unseen slice in the 680-NCT GT universe.
+   - **Sequencing constraint (user-mandated 2026-05-05): agent must be development-complete before this run.** "Complete" means: (a) Job #103 lands and full-corpus is published, AND (b) v42.7.24 reasoning-cap commits (`5942f8ae`, `e9aa336f`) merged to main. NO further agent decision-logic changes after that point. Test-batch run uses the final main commit and is single-shot.
+   - Submit: `bash scripts/submit_holdout_validation.sh --test-batch-50 --check-sync`. The `--test-batch-50` slice flag implicitly enables `allow_test_batch: true` in the POST body, which widens the router's NCT validator to the full 680-NCT GT universe. EDAM gating in the orchestrator still uses TRAINING_NCTS, so test-batch annotations DO NOT contaminate memory_store / stability_tracker.
+   - Cost: ~8h on prod (50 NCTs × ~10 min/trial), single overnight run.
+   - Score: `python3 scripts/score_full_corpus.py <JOB_104_ID>` produces per-field accuracy + per-outcome-class breakdown. Compare each field to Job #101's certified accuracy ± 6.3pp CI; if within CI, the production-gate claim is **certified on truly unseen data** — the strongest publication-grade statement the system can make.
+   - Decision rule: any field falling >2σ outside the gate's CI is a CI violation and warrants investigation before publication. Sample size is small (n=50) so individual field CIs are wider (~±14pp) — interpret with that in mind.
+   - Code support: `app/routers/jobs.py` accepts `allow_test_batch: bool = False` field on POST `/api/jobs`. Default behavior unchanged (training-only). `app/services/memory/edam_config.py` exposes `ALL_GT_NCTS` (full 680) and `TEST_BATCH_NCTS` (50) for the widened validator.
+
 ### Constraints + open questions (refreshed 2026-05-01)
 - **Outcome's GT-quality ceiling** — RESOLVED via cross-job analysis (Jobs #92/#95/#96/#97/#98/#99). The `positive → unknown` miss rate is essentially constant (9-12 per slice) independent of v42.7.X version after v42.7.13. This IS the ceiling for our agent's evidence sources (literature + openalex + bioRxiv + crossref + semantic_scholar + 14 other research agents). Beating it requires NEW evidence sources (sponsor press releases, conference abstracts, etc.) — v42.8 architectural work.
 - **Pool depletion** — RESOLVED for the production gate context: API rejected test_batch overlap; gate slice trimmed to 239 NCTs with full GT category coverage (positive 120 / unknown 77 / terminated 30 / failed 13 / withdrawn 10). For future iteration cycles: 38 GT-scoreable candidates remain; switch to 15-NCT iteration slices OR accept slice re-use (with the same overfitting caveat).
@@ -80,7 +93,22 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 - **v42.8 architectural candidates** (post-production-gate, not blocking shipping):
   - Drug-code → biological-name resolver (RxNorm / DrugBank API) — would let UniProt return the right protein for drug codes that currently get "no_structured_match". Same root cause as outcome's positive-recall gap and sequence's drug-code under-extraction.
   - Sponsor press-release / conference abstract search agent — captures positive-result reporting that doesn't reach peer-reviewed literature within Phase I trial timelines.
-  - Both candidates require new external API integrations (unlike v42.7.X which were all logic refinements within the existing 19-agent pipeline).
+  - **Failed-completed-trial recall (NEW from Job #101 production-gate analysis 2026-05-02):** GT=failed-completed-trial scored 0/11 = 0.0% at scale. Miss anatomy from 11 NCTs:
+    - 5× agent → `unknown` (45%) — same GT-ceiling as pos→unk: agent reads pub, can't deterministically extract "did not meet primary endpoint" signal, defaults to unknown. NCTs: NCT01651715, NCT02603614, NCT03285737, NCT04524442, NCT04747002.
+    - 2× agent → `terminated` (18%) — failed-completed (trial ran fully, missed endpoint) collapsed onto terminated (stopped early). NCTs: NCT05142228, NCT05162027.
+    - 2× agent → `positive` (18%) — over-call. NCTs: NCT00052026, NCT03734718.
+    - 2× agent → `recruiting` (18%) — agent reading current CT.gov status; trials reactivated/re-listed. NCTs: NCT05243862, NCT05269381.
+    - **Fix candidates:** (a) explicit "did not meet primary endpoint" pub-classifier signal (similar to v42.7.20 trial-specificity work); (b) registry-status-vs-publication-evidence override (when pub says trial completed-and-failed but CT.gov says recruiting, trust pub); (c) failed-completed vs terminated disambiguation rule (failed-completed implies trial reached planned completion date — distinct from early termination).
+  - **Reason-for-failure recall (NEW from Job #101 audit 2026-05-02):** RfF scored 19/31 = 61.3% on heldout methodology (and 86.4% on gate-scorer's blank-skipping methodology — the gate-scorer hides under-emission). Anatomy of the 12 RfF misses on the 31-NCT GT-consensus pool: **9/12 are agent-blank when GT had a reason** (75% of misses). Pattern breakdown:
+    - 3× GT=`business reason` → agent=blank (NCT00001827, NCT04524442, NCT05269381)
+    - 2× GT=`ineffective for purpose` → agent=blank (NCT00052026, NCT03285737)
+    - 2× GT=`recruitment issues` → agent=blank (NCT04590872, NCT04747002)
+    - 1× GT=`toxic/unsafe` → agent=blank (NCT01651715)
+    - 1× GT=`due to covid` → agent=blank (NCT03567577)
+    - 2× GT=`business reason` → agent=`recruitment issues` (close-but-wrong: NCT03912337, NCT05284019)
+    - 1× GT=`business reason` → agent=`no reason for failure` (NCT03069989)
+    - **Fix candidates:** (a) RfF agent should emit a reason for any trial in `outcome ∈ {terminated, failed-completed-trial, withdrawn}` even if low-confidence (currently can default to blank); (b) "business reason" cluster (6/12 misses) suggests adding signals for slow-enrollment / sponsor-pivot / funding-cut from CT.gov `why_stopped` field; (c) the close-but-wrong "business→recruitment" pair shows the categories overlap by definition — possible that GT itself has 50/50 cases where annotators picked different valid labels.
+  - All candidates require new external API integrations or substantial classifier work (unlike v42.7.X which were all logic refinements within the existing 19-agent pipeline).
 
 ---
 
@@ -99,7 +127,10 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 | held-out-E | 20 | 8484 | RETIRED | #99 (v42.7.22 stack — outcome 55% PASS, peptide 94.4%, classification 94.7%, no regressions) |
 | held-out-F | 20 | 9595 | RESERVED | next iteration cycle (v42.7.23+) — single-use |
 | milestone  | 147 | n/a | RETIRED | #100 (peptide 89.0%, classification 97.1%, delivery 84.9% [-6.7pp regression], outcome 57.8% [gray zone], RfF 54.5% [-8pp drop], sequence 39.0%) |
-| production-gate | 250 | 99999 | PREBUILT | #101 (post-#100, IF outcome ≥65%; ±6.2pp CI, ~41h overnight; outcome composition: 120 positive / 77 unknown / 30 terminated / 13 failed / 10 withdrawn — full GT category coverage) |
+| production-gate | 250 | 99999 | RETIRED | #101 (239 NCTs scored, ±6.3pp CI, certified SHIP-WITH-FLAG 2026-05-02) |
+| full-corpus-1 | 315 | n/a | RETIRED | #102 = `88a03e590e0e` (49.7h, commit 771ecb10, 2026-05-04 — class 97.8% / pept 86.1% / deliv 89.2% / outcome 49.3% / seq 27.0% / RfF 90.0%) |
+| full-corpus-2 | 315 | n/a | RETIRED | #103 = `a3138340e531` (315 NCTs, commit 771ecb10, finished 2026-05-06 02:02 PT) |
+| test-batch    | 50  | n/a | RESERVED  | #104 (post Job #103 + v42.7.24 merge — unbiased held-out certification, ~8h) |
 
 `scripts/submit_holdout_validation.sh --milestone --check-sync` triggers the 147-NCT validation.
 `scripts/submit_holdout_validation.sh --production-gate --check-sync` triggers the 250-NCT certification (only after #100 PASS).
@@ -124,8 +155,7 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **None.** Job #100 milestone validation closed 2026-04-29 with outcome in 55-64.9% gray zone — continue iteration on slice-F (Job #101) before triggering 250-NCT production gate.
-- Cron `32ddc648` deleted (milestone is the milestone).
+- **None.** Job #103 landed 2026-05-06 02:02 PT (315 NCTs, commit 771ecb10). Merged + scored — see "Full-corpus canonical result" header above. Next: merge v42.7.24 reasoning caps to main, then Job #104 (test-batch certification).
 
 ### Job #100 milestone result (147 NCTs, ±8pp CI half-width)
 | Field | Result | vs #83 baseline | vs target | Status |
@@ -138,6 +168,30 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 | reason_for_failure | 12/22 = 54.5% | -8.0pp | ≥95% | ❌ surprise drop, investigate |
 
 **Outcome miss tally** (across 62 misses): db_confirmed 5, deterministic 11, pub_trial_specific 52. Same dominant pos→unk Phase-I-no-clear-endpoint pattern (the GT-quality ceiling per cross-job analysis).
+
+### v42.7.24 (post-Job-#101) — reasoning storage caps for publication auditability
+
+**Status:** dev only (commits `5942f8ae` outcome, `e9aa336f` peptide/delivery_mode/classification/failure_reason). Will merge to main after full-corpus annotation (Jobs #102 + #103) completes — current main `771ecb10` is commit-pinned for Job #102.
+
+**Finding (Job #101 audit 2026-05-02):** Reasoning fields stored on each annotation are truncated mid-thought because of legacy 500-char `_parse_reasoning` caps + 400-char pass-text excerpts (introduced in v25 era). Truncation rates per field on the 239-NCT slice:
+
+| Field | Truncated mid-thought | Median len | Max len |
+|---|---|---|---|
+| classification | 132/239 = 55% | 702 | 905 |
+| peptide | 174/239 = 73% | 839 | 928 |
+| delivery_mode | 194/239 = 81% (mostly short emissions, not cap) | 59 | 751 |
+| outcome | 104/239 = 44% | 877 | 1036 |
+| reason_for_failure | 152/239 = 64% | 330 | 1133 |
+| sequence | 13/239 = 5% (naturally short) | 63 | 514 |
+
+**Decisions are unaffected** — Job #101 audit showed 60.6% accuracy on truncated-reasoning trials vs 60.7% on complete (essentially identical). The LLM's value emission is independent of stored reasoning; truncation is a logging-side artifact only. **Publication-grade auditability suffers**: post-hoc miss analysis runs into reasoning ending mid-sentence (e.g. NCT03734718's reasoning ended `"...not posted on CT.go"` in the middle of `"CT.gov"`).
+
+**Fix:** raise caps consistently across all 5 annotation agents:
+- `_parse_reasoning` 500 → 2000 chars
+- pass-1 / pass-2 text excerpts 400 → 1500 chars
+- outcome's dossier excerpt 400 → 1200 chars
+
+No agent decision logic changed. All 5 agents import OK. Trip-wire / unit test for cap values is a backlog candidate.
 
 ### v42.7.23 priorities (post-Job-#100)
 1. **Investigate delivery -6.7pp regression** — likely v42.7.19's relevance gate over-filtering on the 100 new milestone NCTs OR backlog #7 (OpenFDA multi-formulation aggregation, design pre-coded). Run evidence_grade_miss_analysis on delivery_mode for Job #100. **Pattern audit (2026-05-01, milestone n=19 misses, POST-VERIFIER per scoring fix dc39b09d):**

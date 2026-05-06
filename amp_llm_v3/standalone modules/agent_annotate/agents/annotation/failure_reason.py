@@ -195,7 +195,12 @@ class FailureReasonAgent(BaseAnnotationAgent):
             )
 
         # Quick check: if pass 1 says "not a failure", skip pass 2
-        if self._pass1_says_no_failure(pass1_output):
+        # v42.7.24: don't early-return when outcome IS a failure category —
+        # otherwise we bypass the v26 safety net (line ~238). Job #101 hit
+        # this on NCT00001827: agent outcome=Terminated, but Pass 1 read
+        # "Trial Status: COMPLETED" and said "no failure detected" → empty
+        # RfF emission. Falling through to Pass 2 + v26 default catches it.
+        if self._pass1_says_no_failure(pass1_output) and outcome_result not in ("Terminated", "Withdrawn", "Failed - completed trial"):
             return FieldAnnotation(
                 field_name=self.field_name,
                 value="",
@@ -242,7 +247,9 @@ class FailureReasonAgent(BaseAnnotationAgent):
             logger.info(f"  failure_reason: v26 default for {outcome_result} → '{value}'")
             reasoning = f"[v26 default: outcome={outcome_result}, Pass 2 returned empty, inferred '{value}'] " + reasoning
 
-        full_reasoning = f"[Pass 1 investigation] {pass1_output[:500]}\n[Pass 2 classification] {reasoning}"
+        # v42.7.24: pass-1 cap raised 500 → 1500 for audit trail (paired with
+        # _parse_reasoning cap raise that bounds the pass-2 reasoning component).
+        full_reasoning = f"[Pass 1 investigation] {pass1_output[:1500]}\n[Pass 2 classification] {reasoning}"
         quality = sum(c.quality_score for c in cited_sources[:10]) / max(len(cited_sources[:10]), 1)
 
         return FieldAnnotation(
@@ -473,7 +480,8 @@ class FailureReasonAgent(BaseAnnotationAgent):
         return ""
 
     def _parse_reasoning(self, text: str) -> str:
+        # v42.7.24: cap raised 500 → 2000 chars for audit trail.
         match = re.search(r"Reasoning:\s*(.+?)(?:\n\n|$)", text, re.DOTALL)
         if match:
-            return match.group(1).strip()[:500]
-        return text[:500]
+            return match.group(1).strip()[:2000]
+        return text[:2000]

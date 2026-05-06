@@ -235,3 +235,10 @@ def _load_test_batch_ncts() -> set[str]:
 
 
 TRAINING_NCTS: set[str] = _load_training_ncts() - _load_test_batch_ncts()
+
+# Full 680-NCT GT universe (training + held-out test_batch). Used by the
+# job-creation router to allow opt-in test-batch submissions for the final
+# unbiased test-set evaluation (Job #104). EDAM gating still uses
+# TRAINING_NCTS, so test-batch annotations never contaminate learning.
+ALL_GT_NCTS: set[str] = _load_training_ncts()
+TEST_BATCH_NCTS: set[str] = _load_test_batch_ncts()
