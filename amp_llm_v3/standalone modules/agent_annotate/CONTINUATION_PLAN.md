@@ -93,8 +93,8 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 
    | # | Lever | Field | Plausible gain | Effort | Notes |
    |---|---|---|---|---|---|
-   | 1 | RfF emission gate (require non-blank when outcome ∈ {failed, terminated, withdrawn}) | RfF recall | closes 9/12 audit misses (+~30pp recall) | few days | low risk, addresses the 75% blank-when-GT-had-reason class from Job #101 audit |
-   | 2 | Failed-completed-trial classifier — pub-text scan for "did not meet primary endpoint" / "primary endpoint was not achieved" / "no statistically significant" | outcome | 0/11 → ~6/11 (+1.5pp at full-corpus scale) | ~1 week | distinct signal; not a drug-name lookup; reasoning-grounded |
+   | 1 | ✅ **LANDED 2026-05-06 as v42.8.1** — RfF emission gate covers Terminated/Withdrawn/Failed-completed. Commit `9b8ed95c` on dev. Trip-wire: `test_v42_8_1_failure_reason_emission_gate`. | RfF recall | closes 9/12 audit misses (+~30pp recall) | few days | low risk, addresses the 75% blank-when-GT-had-reason class from Job #101 audit |
+   | 2 | ✅ **LANDED 2026-05-06 as v42.8.2** — strong-failure publication override (_STRONG_FAILURE keyword class + `_has_strong_failure` + override before v42.7.14 mixed gate). Commit `91e4cbe0` on dev. Trip-wire: `test_v42_8_2_strong_failure_override`. | outcome | 0/11 → ~6/11 (+1.5pp at full-corpus scale) | ~1 week | distinct signal; not a drug-name lookup; reasoning-grounded |
    | 3 | Pub-to-trial matcher — NCT-mention scan + sponsor + drug + year-window matching against the existing literature corpus | outcome | catches 15-25 of 65 pos→unk misses (+4-7pp) | ~1-2 weeks | currently CT.gov is the only path to "is this pub about this trial" — many Phase I pubs aren't formally registered |
    | 4 | RxNorm / DrugBank drug-code resolver | sequence (primary), outcome (secondary) | unblocks UniProt on ~40% of N/A cases (+15-20pp on sequence) | ~1-2 weeks | new external API integration; resolves drug codes (PLG0206, CBX129801, etc.) to biological names |
    | 5 | Sponsor press-release / conference-abstract agent — sponsor newsroom pages, ASH/ASCO/AAD/SfN abstract DBs | outcome | 10-15 more pos→unk recoveries (+3-4pp) | ~2-3 weeks | new external research agent; same evidence sources humans use |
@@ -178,7 +178,8 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **None.** Full-corpus 630-NCT canonical numbers landed (Jobs #102+#103, commit 771ecb10). v42.7.24 + test-batch infrastructure merged to main (commit 8537c540). Per Option B decision (2026-05-06): Job #104 deferred until v42.8 cycle completes. Next: scope + start v42.8 lever 1 (RfF emission gate — quick win, addresses 75% of Job #101's audit RfF misses).
+- **None.** Full-corpus 630-NCT canonical numbers landed (Jobs #102+#103, commit 771ecb10). v42.7.24 + test-batch infrastructure merged to main (commit 8537c540). Per Option B decision (2026-05-06): Job #104 deferred until v42.8 cycle completes.
+- **v42.8 progress (2026-05-06):** Levers 1 (RfF emission gate, `9b8ed95c`) and 2 (strong-failure override, `91e4cbe0`) landed on dev with trip-wires. Levers 3-5 pending (pub-to-trial matcher → drug-code resolver → press-release agent). Held-out validation slice for v42.8.1+v42.8.2 should be built before levers 3-5 land — pull a new 20-NCT slice from the 38-NCT residual + any test-batch-overlap-free additions, biased toward outcomes ∈ {failed-completed-trial, terminated, withdrawn} to exercise both lever 1 & 2.
 
 ### Job #100 milestone result (147 NCTs, ±8pp CI half-width)
 | Field | Result | vs #83 baseline | vs target | Status |
