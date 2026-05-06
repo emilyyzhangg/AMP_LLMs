@@ -236,16 +236,30 @@ class FailureReasonAgent(BaseAnnotationAgent):
         value = self._normalize_failure_value(value)
         reasoning = self._parse_reasoning(pass2_output)
 
-        # v26: Default Business Reason for TERMINATED/WITHDRAWN when LLM returns empty.
-        # Human annotators consistently assign "Business Reason" for terminated/withdrawn
-        # trials without specific cause. The _infer_from_pass1 fallback has this logic
-        # (v18) but only fires on LLM exceptions — this applies it in the normal flow too.
-        if not value and outcome_result in ("Terminated", "Withdrawn"):
+        # v26 / v42.8.1: emission gate — never emit blank when outcome is a
+        # failure-class value. Job #101 audit (n=22): 9/12 RfF misses were
+        # agent-blank when GT had a reason (75%); GT=Failed-completed-trial
+        # scored 0/11 = 0% at scale. Per-outcome defaults match human-annotator
+        # behaviour:
+        #   Failed - completed trial → Ineffective for purpose (trial reached
+        #     planned completion but missed primary endpoint = ineffective by
+        #     definition)
+        #   Terminated / Withdrawn → Business Reason (most common GT label when
+        #     no specific cause is documented)
+        # _infer_from_pass1 is tried first to surface keyword-grounded reasons
+        # (toxicity, recruitment, covid, etc.) before falling back to the
+        # outcome-class default.
+        FAILURE_DEFAULTS = {
+            "Failed - completed trial": "Ineffective for purpose",
+            "Terminated": "Business Reason",
+            "Withdrawn": "Business Reason",
+        }
+        if not value and outcome_result in FAILURE_DEFAULTS:
             value = self._infer_from_pass1(pass1_output)
             if not value:
-                value = "Business Reason"
-            logger.info(f"  failure_reason: v26 default for {outcome_result} → '{value}'")
-            reasoning = f"[v26 default: outcome={outcome_result}, Pass 2 returned empty, inferred '{value}'] " + reasoning
+                value = FAILURE_DEFAULTS[outcome_result]
+            logger.info(f"  failure_reason: v42.8.1 emission gate for {outcome_result} → '{value}'")
+            reasoning = f"[v42.8.1 emission gate: outcome={outcome_result}, Pass 2 returned empty, inferred '{value}'] " + reasoning
 
         # v42.7.24: pass-1 cap raised 500 → 1500 for audit trail (paired with
         # _parse_reasoning cap raise that bounds the pass-2 reasoning component).

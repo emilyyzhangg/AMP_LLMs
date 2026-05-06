@@ -490,6 +490,34 @@ def test_v42_7_24_failure_reason_early_return_gated():
     print("  ✓ v42.7.24: failure_reason early-return gated on outcome_result")
 
 
+def test_v42_8_1_failure_reason_emission_gate():
+    """v42.8.1 (2026-05-06): Job #101 audit found 9/12 RfF misses were
+    agent-blank when GT had a reason (75% of all RfF misses), and
+    GT=Failed-completed-trial scored 0/11 = 0% at full-corpus scale.
+    Fix: extend the v26 safety-net default to cover 'Failed - completed
+    trial' alongside Terminated/Withdrawn, with per-outcome defaults
+    (failed-completed → Ineffective for purpose; terminated/withdrawn
+    → Business Reason). The dict FAILURE_DEFAULTS encodes this; if it
+    regresses to a hardcoded tuple of just Terminated/Withdrawn we
+    silently lose the failed-completed coverage.
+    """
+    src = (PKG_ROOT / "agents" / "annotation" / "failure_reason.py").read_text()
+    assert "FAILURE_DEFAULTS = {" in src, (
+        "v42.8.1 trip-wire: FAILURE_DEFAULTS dict missing from failure_reason.py — "
+        "the per-outcome emission gate has been replaced; failed-completed-trial "
+        "trials will silently emit blank RfF again."
+    )
+    assert '"Failed - completed trial": "Ineffective for purpose"' in src, (
+        "v42.8.1 trip-wire: FAILURE_DEFAULTS missing 'Failed - completed trial' "
+        "key — Job #101's 0/11 = 0% miss class will resurface."
+    )
+    assert '"Terminated": "Business Reason"' in src and '"Withdrawn": "Business Reason"' in src, (
+        "v42.8.1 trip-wire: FAILURE_DEFAULTS missing Terminated/Withdrawn keys — "
+        "v26 default coverage has regressed."
+    )
+    print("  ✓ v42.8.1: failure_reason emission gate covers Terminated/Withdrawn/Failed-completed")
+
+
 def test_dbaasp_word_boundary_preserved():
     """v25 DBAASP word-boundary fix: 'NS' (normal saline) and short
     drug-name prefixes were matching DBAASP entries by substring, not
@@ -536,6 +564,7 @@ def main() -> int:
         test_v42_7_23_radiotracer_isotope_class_split,
         test_v42_7_24_reasoning_caps_raised,
         test_v42_7_24_failure_reason_early_return_gated,
+        test_v42_8_1_failure_reason_emission_gate,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
