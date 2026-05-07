@@ -1,12 +1,14 @@
 # Agent Annotate -- Technical Methodology
 
-> **⚠️ Staleness note (2026-04-29):** This document was last comprehensively updated through ≈v25 / v42.6. The pipeline has since evolved through v42.7.0–v42.7.22. Field count is now **6** (sequence added as a per-trial field with `_KNOWN_SEQUENCES` deterministic lookup + canonicalization), research agents are now **19** (+SEC EDGAR / FDA Drugs / NIH RePORTER / bioRxiv from v42.7 cycle). For current canonical state see:
-> - `CONTINUATION_PLAN.md` (state header, slice table, production goals, Path-to-Production decision policy)
-> - `LEARNING_RUN_PLAN.md` (job registry through Job #100 + version changelog with commit hashes)
-> - `docs/AGENT_STRATEGY_ROADMAP.md` (§1 current state, §5 field-by-field plans, §7 cycle close-out)
-> - `docs/USER_GUIDE.md` §17 "v42.7 era" (concise overview of the changes)
+> **⚠️ Staleness note (refreshed 2026-05-06):** This document was last comprehensively updated through ≈v25 / v42.6. The pipeline has since evolved through v42.7.0–v42.7.22 (publication baseline frozen at commit `82a88146`) and into the v42.8 architectural cycle (levers 1+2 landed on dev as `9b8ed95c` and `91e4cbe0`; levers 3-5 spec'd). Field count is **6** (sequence added with `_KNOWN_SEQUENCES` deterministic lookup + canonicalization), research agents are **19** through v42.7 (levers 4+5 add 2 more in v42.8). For current canonical state see:
+> - `docs/PRODUCTION_GATE_REPORT.md` — full-corpus 630-NCT canonical numbers (2026-05-06)
+> - `docs/AGENT_STRATEGY_ROADMAP.md` §1 — current state, including v42.8 cycle status
+> - `docs/V42_8_IMPLEMENTATION_PLAN.md` — executable spec for levers 3-5
+> - `CONTINUATION_PLAN.md` — state header, slice table, production goals, Path-to-Production decision policy
+> - `LEARNING_RUN_PLAN.md` — job registry through Jobs #101/#102/#103 + slice-G + version changelog
+> - `docs/USER_GUIDE.md` §17 "v42.7 era" — concise overview of v42.7.X changes
 >
-> The §1-§4 architecture below is still substantively correct (three-phase pipeline, blind multi-model verification, evidence traceability) — the changes are within the agent set and within outcome's structural overrides.
+> The §1-§4 architecture below is still substantively correct (three-phase pipeline, blind multi-model verification, evidence traceability) — the changes are within the agent set and within outcome/RfF's structural overrides.
 
 ## 1. System Overview
 

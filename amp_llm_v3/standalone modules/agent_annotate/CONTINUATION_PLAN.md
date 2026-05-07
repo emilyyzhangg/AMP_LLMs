@@ -77,14 +77,37 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
    - Output: combined annotation dataset across all 630 NCTs, ready to publish + use downstream.
    - Triggered ONLY when production gate certification signs off. Until then, infrastructure waits.
 
-6. **Held-out test-set certification (Job #104)** — POST full-corpus, POST agent freeze.
+6. **Held-out test-set certification (Job #104)** — DEFERRED until v42.8 complete.
    - Goal: unbiased final accuracy measurement on the 50-NCT test_batch (`scripts/fast_learning_batch_50.txt` → `scripts/test_batch_50.json`). These NCTs were excluded by API contract from every training, iteration, gate, and full-corpus run, so they are the only truly unseen slice in the 680-NCT GT universe.
-   - **Sequencing constraint (user-mandated 2026-05-05): agent must be development-complete before this run.** "Complete" means: (a) Job #103 lands and full-corpus is published, AND (b) v42.7.24 reasoning-cap commits (`5942f8ae`, `e9aa336f`) merged to main. NO further agent decision-logic changes after that point. Test-batch run uses the final main commit and is single-shot.
-   - Submit: `bash scripts/submit_holdout_validation.sh --test-batch-50 --check-sync`. The `--test-batch-50` slice flag implicitly enables `allow_test_batch: true` in the POST body, which widens the router's NCT validator to the full 680-NCT GT universe. EDAM gating in the orchestrator still uses TRAINING_NCTS, so test-batch annotations DO NOT contaminate memory_store / stability_tracker.
+   - **Decision (user 2026-05-06): Option B — defer test-batch certification until v42.8 architectural work is complete.** Rationale: the test_batch is a single-shot resource. Once measured, future iterations risk being subtly informed by the result; running on v42.7-only would burn the unbiased measurement on a version the project does not intend to publish. Outcome at full corpus = 42.3% (below human IRA 55.6%) makes v42.7-only an unattractive publication target. v42.8 levers (see §7 below) are scoped to lift outcome to ~52-58% (above human IRA) and sequence to ~45-55% (at/near target). Single-shot test-batch run will certify the v42.8 agent.
+   - Sequencing: agent must be development-complete (full v42.8 stack landed, all main commits merged, no pending logic changes) before this run.
+   - Submit (when ready): `bash scripts/submit_holdout_validation.sh --test-batch-50 --check-sync`. The `--test-batch-50` slice flag implicitly enables `allow_test_batch: true` in the POST body, which widens the router's NCT validator to the full 680-NCT GT universe. EDAM gating in the orchestrator still uses TRAINING_NCTS, so test-batch annotations DO NOT contaminate memory_store / stability_tracker.
    - Cost: ~8h on prod (50 NCTs × ~10 min/trial), single overnight run.
-   - Score: `python3 scripts/score_full_corpus.py <JOB_104_ID>` produces per-field accuracy + per-outcome-class breakdown. Compare each field to Job #101's certified accuracy ± 6.3pp CI; if within CI, the production-gate claim is **certified on truly unseen data** — the strongest publication-grade statement the system can make.
-   - Decision rule: any field falling >2σ outside the gate's CI is a CI violation and warrants investigation before publication. Sample size is small (n=50) so individual field CIs are wider (~±14pp) — interpret with that in mind.
+   - Score: `python3 scripts/score_full_corpus.py <JOB_104_ID>` produces per-field accuracy + per-outcome-class breakdown. Compare each field to v42.8 full-corpus accuracy ± CI; if within CI, the publication-grade claim is **certified on truly unseen data** — the strongest statement the system can make.
+   - Decision rule: any field falling >2σ outside full-corpus CI is a CI violation and warrants investigation before publication. Sample size is small (n=50) so individual field CIs are wider (~±14pp) — interpret with that in mind.
    - Code support: `app/routers/jobs.py` accepts `allow_test_batch: bool = False` field on POST `/api/jobs`. Default behavior unchanged (training-only). `app/services/memory/edam_config.py` exposes `ALL_GT_NCTS` (full 680) and `TEST_BATCH_NCTS` (50) for the widened validator.
+
+7. **v42.8 architectural cycle** — IN PLANNING (decision 2026-05-06).
+
+   v42.7.X iteration line is exhausted; further v42.7.25+ would hill-climb without changing outcome/sequence ceilings. v42.8 introduces new evidence sources and structural classifiers, addressing the gaps quantified at full-corpus scale. Levers in priority order (highest expected lift / lowest scope first):
+
+   | # | Lever | Field | Plausible gain | Effort | Notes |
+   |---|---|---|---|---|---|
+   | 1 | ✅ **LANDED 2026-05-06 as v42.8.1** — RfF emission gate covers Terminated/Withdrawn/Failed-completed. Commit `9b8ed95c` on dev. Trip-wire: `test_v42_8_1_failure_reason_emission_gate`. | RfF recall | closes 9/12 audit misses (+~30pp recall) | few days | low risk, addresses the 75% blank-when-GT-had-reason class from Job #101 audit |
+   | 2 | ✅ **LANDED 2026-05-06 as v42.8.2** — strong-failure publication override (_STRONG_FAILURE keyword class + `_has_strong_failure` + override before v42.7.14 mixed gate). Commit `91e4cbe0` on dev. Trip-wire: `test_v42_8_2_strong_failure_override`. | outcome | 0/11 → ~6/11 (+1.5pp at full-corpus scale) | ~1 week | distinct signal; not a drug-name lookup; reasoning-grounded |
+   | 3 | Pub-to-trial matcher — NCT-mention scan + sponsor + drug + year-window matching against the existing literature corpus | outcome | catches 15-25 of 65 pos→unk misses (+4-7pp) | ~1-2 weeks | currently CT.gov is the only path to "is this pub about this trial" — many Phase I pubs aren't formally registered |
+   | 4 | RxNorm / DrugBank drug-code resolver | sequence (primary), outcome (secondary) | unblocks UniProt on ~40% of N/A cases (+15-20pp on sequence) | ~1-2 weeks | new external API integration; resolves drug codes (PLG0206, CBX129801, etc.) to biological names |
+   | 5 | Sponsor press-release / conference-abstract agent — sponsor newsroom pages, ASH/ASCO/AAD/SfN abstract DBs | outcome | 10-15 more pos→unk recoveries (+3-4pp) | ~2-3 weeks | new external research agent; same evidence sources humans use |
+
+   **Combined plausible end-state:** outcome 52-58% (above human IRA 55.6%), sequence 45-55% (at/near 50% target), RfF recall pulled up.
+
+   **Discipline:** every lever must be reasoning-grounded, not a drug-name shortcut. No additions to `_KNOWN_PEPTIDE_DRUGS` or hardcoded NCT lookups (per `feedback_frozen_drug_lists.md`, `feedback_no_cheat_sheets.md`, `feedback_no_verifier_cheatsheet.md`). Each lever validated on a single-use held-out slice (build new `holdout_outcome_slice_g_v42_8_X.json` etc.) before merging to main.
+
+   **Pool budget:** 38 GT-scoreable NCTs remain in the residual after the v42.7 iteration pool was exhausted. Switch to 15-NCT iteration slices OR accept controlled slice re-use with the overfitting caveat documented. The test_batch (50 NCTs) MUST stay locked through this cycle.
+
+   **Test-set discipline:** Job #104 fires ONCE, after the entire v42.8 stack is merged and a fresh full-corpus run (Jobs #105+#106) confirms the new accuracy floor. No partial v42.8 measurements against test_batch.
+
+   **Timeline estimate:** 4-8 weeks total (sequenced; lever 1 first as a quick win, levers 2-5 in priority order with held-out validation between each). Final test-batch certification (~8h) at the end.
 
 ### Constraints + open questions (refreshed 2026-05-01)
 - **Outcome's GT-quality ceiling** — RESOLVED via cross-job analysis (Jobs #92/#95/#96/#97/#98/#99). The `positive → unknown` miss rate is essentially constant (9-12 per slice) independent of v42.7.X version after v42.7.13. This IS the ceiling for our agent's evidence sources (literature + openalex + bioRxiv + crossref + semantic_scholar + 14 other research agents). Beating it requires NEW evidence sources (sponsor press releases, conference abstracts, etc.) — v42.8 architectural work.
@@ -130,7 +153,7 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 | production-gate | 250 | 99999 | RETIRED | #101 (239 NCTs scored, ±6.3pp CI, certified SHIP-WITH-FLAG 2026-05-02) |
 | full-corpus-1 | 315 | n/a | RETIRED | #102 = `88a03e590e0e` (49.7h, commit 771ecb10, 2026-05-04 — class 97.8% / pept 86.1% / deliv 89.2% / outcome 49.3% / seq 27.0% / RfF 90.0%) |
 | full-corpus-2 | 315 | n/a | RETIRED | #103 = `a3138340e531` (315 NCTs, commit 771ecb10, finished 2026-05-06 02:02 PT) |
-| test-batch    | 50  | n/a | RESERVED  | #104 (post Job #103 + v42.7.24 merge — unbiased held-out certification, ~8h) |
+| test-batch    | 50  | n/a | DEFERRED  | #104 (post v42.8 stack — single-shot unbiased held-out certification, ~8h) |
 
 `scripts/submit_holdout_validation.sh --milestone --check-sync` triggers the 147-NCT validation.
 `scripts/submit_holdout_validation.sh --production-gate --check-sync` triggers the 250-NCT certification (only after #100 PASS).
@@ -155,7 +178,8 @@ Job `e46797571504`, 2 NCTs, 28 min. **Both flipped from Job #83 Unknown → Posi
 **Implication:** ±10pp on a 47-NCT slice is the minimum delta we should treat as signal. The held-out 30-NCT slice is our overfitting check.
 
 ### Currently in flight
-- **None.** Job #103 landed 2026-05-06 02:02 PT (315 NCTs, commit 771ecb10). Merged + scored — see "Full-corpus canonical result" header above. Next: merge v42.7.24 reasoning caps to main, then Job #104 (test-batch certification).
+- **None.** Full-corpus 630-NCT canonical numbers landed (Jobs #102+#103, commit 771ecb10). v42.7.24 + test-batch infrastructure merged to main (commit 8537c540). Per Option B decision (2026-05-06): Job #104 deferred until v42.8 cycle completes.
+- **v42.8 progress (2026-05-06):** Levers 1 (RfF emission gate, `9b8ed95c`) and 2 (strong-failure override, `91e4cbe0`) landed on dev with trip-wires. Levers 3-5 pending (pub-to-trial matcher → drug-code resolver → press-release agent). Held-out validation slice for v42.8.1+v42.8.2 should be built before levers 3-5 land — pull a new 20-NCT slice from the 38-NCT residual + any test-batch-overlap-free additions, biased toward outcomes ∈ {failed-completed-trial, terminated, withdrawn} to exercise both lever 1 & 2.
 
 ### Job #100 milestone result (147 NCTs, ±8pp CI half-width)
 | Field | Result | vs #83 baseline | vs target | Status |

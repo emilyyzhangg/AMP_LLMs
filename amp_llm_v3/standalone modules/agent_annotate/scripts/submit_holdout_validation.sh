@@ -20,7 +20,7 @@ for arg in "$@"; do
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
         --test-batch) ALLOW_TEST_BATCH=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -43,6 +43,13 @@ for arg in "$@"; do
         --slice-d) SLICE="$THIS_DIR/holdout_outcome_slice_d_v42_7_18.json" ;;
         --slice-e) SLICE="$THIS_DIR/holdout_outcome_slice_e_v42_7_19.json" ;;
         --slice-f) SLICE="$THIS_DIR/holdout_outcome_slice_f_v42_7_23.json" ;;
+        # slice-G: v42.8.1+v42.8.2 validation. 20 NCTs all with failure-class
+        # outcome (8 failed-completed + 8 terminated + 4 withdrawn) and
+        # GT RfF consensus, picked to exercise both the RfF emission gate
+        # (lever 1) and the strong-failure publication override (lever 2).
+        # Controlled re-use of full-corpus NCTs — they have been measured
+        # but never used in iteration prompts or EDAM corrections.
+        --slice-g) SLICE="$THIS_DIR/holdout_outcome_slice_g_v42_8_validation.json" ;;
         # Milestone validation: 147-NCT combined slice (Job #83 baseline +
         # held-out A/B/C/D). Used to certify accuracy with ±8pp CI
         # half-width, ~24h overnight run. Triggered when iteration cycles

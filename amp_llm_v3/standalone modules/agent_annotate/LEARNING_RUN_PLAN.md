@@ -1,6 +1,27 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-04-28
+**Last updated:** 2026-05-06 — v42.8 cycle in progress; full-corpus 630-NCT canonical landed; Job #104 deferred until v42.8 stack complete.
+
+## Recent additions (post-2026-04-28)
+
+| # | Job ID | NCTs | Completed | Status | Agent Ver | Notes |
+|---|---|---|---|---|---|---|
+| #101 | `826f2608ddd8` (prod) | 239 | 2026-05-02 03:18 | **Production gate certified — SHIP-WITH-FLAG** | v42.7.22 (`2172018e`) | First per-outcome-class breakdown at scale. Headline ±6.3pp CI. Class 95.1, peptide 89.4, delivery 88.6, outcome 60.7, RfF 86.4, sequence 31.1. Per-class outcome: positive 46.2%, unknown 79.5%, terminated 90.0%, **failed 0/11 = 0%**, withdrawn 100%. Report: `docs/PRODUCTION_GATE_REPORT.md §7` (historical). |
+| #102 | `88a03e590e0e` (prod) | 315 | 2026-05-04 05:08 | **Complete** (full-corpus batch 1) | v42.7.22 (`771ecb10`) | NCT00001703 → NCT05021016. 49.7h. Class 97.8, peptide 86.1, delivery 89.2, outcome 49.3, sequence 27.0, RfF 90.0. |
+| #103 | `a3138340e531` (prod) | 315 | 2026-05-06 02:02 | **Complete** (full-corpus batch 2) | v42.7.22 (`771ecb10`) | NCT05025267 → NCT07012330. ~48h. All 2021+ trials; outcome ~31% (recency stratification). |
+| **canonical** | merged #102+#103 | 630 | 2026-05-06 | **Full-corpus canonical** | v42.7.22 (`771ecb10`) | class 96.8 (±1.5pp), peptide 86.8 (±2.9pp), delivery 87.7 (±2.9pp), outcome 42.3 (±5.3pp), sequence 25.8 (±4.5pp), RfF 86.2 recall / 94.9% precision-when-emitted. Beats human IRA on 3/5 fields. Report: `docs/PRODUCTION_GATE_REPORT.md`. |
+| #104 | (DEFERRED) | 50 | — | **Reserved** | post-v42.8 | Single-shot held-out test_batch certification. Fires only after entire v42.8 stack lands + Jobs #105+#106 fresh full-corpus confirms new floor. |
+| slice-G | `43d3739fd0b1` (dev) | 20 | in flight (~3-4h) | **In flight** | v42.8.2 (`91e4cbe0` + `dcc5b2c0`) | Validation slice for levers 1+2. 8 failed-completed (incl. the 0/11=0% audit set) + 8 terminated + 4 withdrawn, all with GT RfF consensus. |
+| #105 | TBD | 315 | — | Reserved | post-v42.8.5 | Fresh full-corpus batch 1 with v42.8 stack. |
+| #106 | TBD | 315 | — | Reserved | post-v42.8.5 | Fresh full-corpus batch 2 with v42.8 stack. |
+
+### v42.7 → v42.8 transition (2026-05-06)
+
+v42.7-frozen agent at commit `82a88146` is the publication baseline of record (3/5 fields beat human IRA). v42.8 cycle (`docs/V42_8_IMPLEMENTATION_PLAN.md`) targets the 2 fields below human IRA:
+- Outcome (42.3% vs human 55.6%) — recency mechanic + failed-completed 0% miss class
+- RfF recall (86.2% vs human 91.3%) — agent-blank-when-GT-had-reason class (75% of misses)
+
+Levers 1 (RfF emission gate, `9b8ed95c`) + 2 (strong-failure publication override, `91e4cbe0`) landed on dev 2026-05-06; levers 3-5 spec'd and pending.
 
 ## Job Registry
 

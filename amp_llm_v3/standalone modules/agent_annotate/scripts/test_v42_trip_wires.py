@@ -183,8 +183,10 @@ def test_v42_7_14_failed_override_status_gated():
     must restrict to terminal statuses (COMPLETED / TERMINATED /
     WITHDRAWN). Removing it recreates the over-call class."""
     src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
-    idx = src.find("v42.7.14")
-    assert idx > 0, "v42.7.14 marker missing in outcome.py"
+    # v42.8.2 mention 'v42.7.14 lesson' in its comment — search for the
+    # specific v42.7.14 BLOCK marker, not the bare version string.
+    idx = src.find("v42.7.14 (2026-04-27): Trial-specific publications")
+    assert idx > 0, "v42.7.14 block marker missing in outcome.py"
     block = src[idx:idx + 1500]
     assert 'status in ("COMPLETED", "TERMINATED", "WITHDRAWN")' in block, \
         "v42.7.14 trip-wire: Failed override must remain gated on terminal status"
@@ -490,6 +492,75 @@ def test_v42_7_24_failure_reason_early_return_gated():
     print("  ✓ v42.7.24: failure_reason early-return gated on outcome_result")
 
 
+def test_v42_8_2_strong_failure_override():
+    """v42.8.2 (2026-05-06): Job #101 audit + full-corpus scoring found
+    GT=Failed-completed-trial scored 0/11 = 0%. 5/11 misses were agent
+    → Unknown when a trial-specific publication explicitly stated the
+    primary endpoint was missed. The pre-existing v42.7.14 publication
+    override required `not efficacy_keywords` (any stray review-language
+    efficacy mention killed the rule). Fix: introduce a STRONG_FAILURE
+    keyword class anchored on explicit primary-endpoint phrases (mirror
+    of _STRONG_EFFICACY) and a dedicated override that fires regardless
+    of stray efficacy keywords, gated on CT.gov status COMPLETED or
+    TERMINATED.
+    """
+    src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert "_STRONG_FAILURE = [" in src, (
+        "v42.8.2 trip-wire: _STRONG_FAILURE keyword class missing from "
+        "outcome.py — failed-completed-trial 0% miss class will resurface."
+    )
+    for kw in (
+        "did not meet the primary",
+        "primary endpoint was not met",
+        "primary endpoint was not achieved",
+        "failed to meet the primary",
+    ):
+        assert f'"{kw}"' in src, (
+            f"v42.8.2 trip-wire: _STRONG_FAILURE missing required phrase {kw!r} — "
+            f"primary-endpoint-anchored failure detection regressed."
+        )
+    assert "_has_strong_failure(neg)" in src, (
+        "v42.8.2 trip-wire: _dossier_publication_override no longer calls "
+        "_has_strong_failure(neg); failed-completed override regressed."
+    )
+    strong_idx = src.find("v42.8.2 (2026-05-06): strong-failure publication override")
+    v7_14_idx = src.find("v42.7.14 (2026-04-27): Trial-specific publications")
+    assert strong_idx > 0 and v7_14_idx > strong_idx, (
+        "v42.8.2 trip-wire: strong-failure override must precede the v42.7.14 "
+        "mixed-evidence rule. If v42.7.14 fires first, the strong-failure path "
+        "is dead code."
+    )
+    print("  ✓ v42.8.2: strong-failure override precedes v42.7.14 mixed gate")
+
+
+def test_v42_8_1_failure_reason_emission_gate():
+    """v42.8.1 (2026-05-06): Job #101 audit found 9/12 RfF misses were
+    agent-blank when GT had a reason (75% of all RfF misses), and
+    GT=Failed-completed-trial scored 0/11 = 0% at full-corpus scale.
+    Fix: extend the v26 safety-net default to cover 'Failed - completed
+    trial' alongside Terminated/Withdrawn, with per-outcome defaults
+    (failed-completed → Ineffective for purpose; terminated/withdrawn
+    → Business Reason). The dict FAILURE_DEFAULTS encodes this; if it
+    regresses to a hardcoded tuple of just Terminated/Withdrawn we
+    silently lose the failed-completed coverage.
+    """
+    src = (PKG_ROOT / "agents" / "annotation" / "failure_reason.py").read_text()
+    assert "FAILURE_DEFAULTS = {" in src, (
+        "v42.8.1 trip-wire: FAILURE_DEFAULTS dict missing from failure_reason.py — "
+        "the per-outcome emission gate has been replaced; failed-completed-trial "
+        "trials will silently emit blank RfF again."
+    )
+    assert '"Failed - completed trial": "Ineffective for purpose"' in src, (
+        "v42.8.1 trip-wire: FAILURE_DEFAULTS missing 'Failed - completed trial' "
+        "key — Job #101's 0/11 = 0% miss class will resurface."
+    )
+    assert '"Terminated": "Business Reason"' in src and '"Withdrawn": "Business Reason"' in src, (
+        "v42.8.1 trip-wire: FAILURE_DEFAULTS missing Terminated/Withdrawn keys — "
+        "v26 default coverage has regressed."
+    )
+    print("  ✓ v42.8.1: failure_reason emission gate covers Terminated/Withdrawn/Failed-completed")
+
+
 def test_dbaasp_word_boundary_preserved():
     """v25 DBAASP word-boundary fix: 'NS' (normal saline) and short
     drug-name prefixes were matching DBAASP entries by substring, not
@@ -536,6 +607,8 @@ def main() -> int:
         test_v42_7_23_radiotracer_isotope_class_split,
         test_v42_7_24_reasoning_caps_raised,
         test_v42_7_24_failure_reason_early_return_gated,
+        test_v42_8_1_failure_reason_emission_gate,
+        test_v42_8_2_strong_failure_override,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0
