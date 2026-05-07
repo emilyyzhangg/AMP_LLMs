@@ -1,16 +1,20 @@
-# v42.8 Implementation Plan — Levers 3, 4, 5
+# v42.8 Implementation Plan — Levers 4, 5 (Lever 3 LANDED)
 
-_Authored 2026-05-06. Levers 1+2 already landed (commits `9b8ed95c`, `91e4cbe0`). This document is the executable spec for the remaining three levers — each future session opens this file, picks the next lever, follows the implementation steps verbatim, and lands the change._
+_Authored 2026-05-06. Levers 1+2+3 landed (commits `9b8ed95c`, `91e4cbe0`, `f2cf9559`). This document is the executable spec for the remaining two levers (4, 5) — each future session opens this file, picks the next lever, follows the implementation steps verbatim, and lands the change._
 
 ---
 
 ## 0. Preamble — what's locked in already
 
 - **Agent code freeze for v42.7 publication target:** main `82a88146` + report `8537c540`
-- **v42.8 levers landed on dev:**
-  - v42.8.1 (commit `9b8ed95c`): RfF emission gate — `FAILURE_DEFAULTS` dict in `failure_reason.py` covers Failed-completed-trial / Terminated / Withdrawn
-  - v42.8.2 (commit `91e4cbe0`): strong-failure publication override — `_STRONG_FAILURE` keyword class in `outcome.py` + `_has_strong_failure(neg)` classmethod + override before v42.7.14 mixed gate
-- **Validation slice for v42.8.1+v42.8.2:** `scripts/holdout_outcome_slice_g_v42_8_validation.json` (20 NCTs) submitted on dev as `43d3739fd0b1`. Score with `python3 scripts/score_full_corpus.py 43d3739fd0b1` after completion.
+- **v42.8 levers landed on main:**
+  - v42.8.1 (commit `9b8ed95c`): RfF emission gate — `FAILURE_DEFAULTS` dict in `failure_reason.py` covers Failed-completed-trial / Terminated / Withdrawn.
+  - v42.8.2 (commit `91e4cbe0`): strong-failure publication override — `_STRONG_FAILURE` keyword class in `outcome.py` + `_has_strong_failure(neg)` classmethod + override before v42.7.14 mixed gate.
+  - v42.8.3 (commit `f2cf9559`): pub-to-trial matcher — `app/services/pub_trial_matcher.py` (4 signals: NCT mention, sponsor, intervention, year-window; 2-of-4 = matched, 1-of-4 = candidate). Wired into outcome dossier (sponsor + start_year captured from CT.gov, post-loop matcher populates `matched_trial_pubs`, valence-keyword rescan on matched pubs the heuristic classifier missed). LLM prompt surfaces "Matched Trial Publications:" line + Rule 7 (ii) widening clause. 4 publication-override gates upgraded to use `trial_evidence_count = trial_specific + matched + registered` (v42.8.2 strong-failure, v42.7.14 mixed-evidence, v42.6.11 Unknown→Positive STRONG-evidence, v42.7.7 vaccine override).
+- **Validation slices:**
+  - slice-G `43d3739fd0b1` (dev, 2026-05-07): v42.8.1+v42.8.2. RfF 92.3% ✅ (v42.8.1 emission gate working — beats human IRA 91.3%); failed-completed 0/8 ❌ — v42.8.2 logic correct, sourcing gap (3/4 misses had 0 trial-specific pubs in the original dossier). This finding motivated v42.8.3.
+  - slice-H `76389352da32` (prod, commit `e4673808`, IN FLIGHT 2026-05-07): 4 slice-G failed-completed Unknown misses (direct Lever-3 test) + 12 pos→unk full-corpus misses (dominant outcome miss class) + 2 known-good positives (regression check) + 2 terminated (stability). Score with `python3 scripts/score_full_corpus.py --merged-json results/json/76389352da32.json`.
+- **Workflow shift (user 2026-05-07):** code lands on main directly. Reason: dev autoupdater wipes local commits every 30s via `git reset --hard origin/dev`. Push requires `GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes" git push origin main`. Jobs run on prod port 8005.
 - **Test_batch (50 NCTs, single-shot held-out):** stays locked through this entire cycle. Job #104 is the FINAL run — fires only after the v42.8 stack is fully merged to main and a fresh full-corpus run (Jobs #105+#106) confirms the new accuracy floor.
 
 ## 1. Sequencing rules (apply to every lever)
