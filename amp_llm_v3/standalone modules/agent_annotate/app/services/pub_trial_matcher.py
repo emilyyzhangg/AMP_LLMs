@@ -112,15 +112,30 @@ def year_window_match(trial_start_year, pub_year) -> bool:
     return 0 <= delta <= 7
 
 
+def _normalize_pmid(p: str) -> str:
+    """Strip "PMID:" prefix. CT.gov referencesModule stores bare digits but
+    research-agent SourceCitation identifiers carry the "PMID:" prefix.
+    Without this normalization the registered-pub equality silently fails
+    and every registered pub falls through to the matched/candidate path
+    (slice-H regression: NCT03285737 had registered_pmid 30289425 but
+    pub identifier 'PMID:30289425' — matcher returned 0 registered)."""
+    s = (p or "").strip()
+    if s.upper().startswith("PMID:"):
+        s = s[5:].strip()
+    return s
+
+
 def classify_pub_relevance(pub: dict, trial_meta: dict) -> str:
     """Return one of: registered | matched | candidate | unrelated.
 
     pub:        {pmid, text, year}
     trial_meta: {nct_id, sponsor_name, interventions, start_year, registered_pmids}
     """
-    pmid = (pub.get("pmid") or "").strip()
-    if pmid and pmid in (trial_meta.get("registered_pmids") or []):
-        return "registered"
+    pmid = _normalize_pmid(pub.get("pmid"))
+    if pmid:
+        registered = {_normalize_pmid(p) for p in (trial_meta.get("registered_pmids") or [])}
+        if pmid in registered:
+            return "registered"
 
     text = pub.get("text") or ""
     signals = (

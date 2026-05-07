@@ -70,6 +70,23 @@ def test_classify_registered():
     assert classify_pub_relevance(pub, meta) == "registered"
 
 
+def test_classify_registered_pmid_prefix_normalization():
+    """Slice-H regression (2026-05-07): SourceCitation.identifier carries
+    'PMID:NNN' while CT.gov referencesModule stores bare digits 'NNN'.
+    Without normalization the registered check silently fails — every
+    registered pub falls through to matched/candidate. Direct cause of
+    NCT03285737 / NCT04524442 / NCT01651715 / NCT04747002 still emitting
+    Unknown after v42.8.3 landed."""
+    pub_with_prefix = {"pmid": "PMID:30289425", "text": "anything", "year": 2019}
+    meta_bare = {"nct_id": "NCT01", "sponsor_name": "", "interventions": [],
+                 "start_year": None, "registered_pmids": ["30289425"]}
+    assert classify_pub_relevance(pub_with_prefix, meta_bare) == "registered"
+    pub_bare = {"pmid": "30289425", "text": "anything", "year": 2019}
+    meta_with_prefix = {"nct_id": "NCT01", "sponsor_name": "", "interventions": [],
+                        "start_year": None, "registered_pmids": ["PMID:30289425"]}
+    assert classify_pub_relevance(pub_bare, meta_with_prefix) == "registered"
+
+
 def test_classify_matched_4_signals():
     pub = {"pmid": "P1",
            "text": "Phase I/II trial of widget-12 by Acme Therapeutics in NCT01234567",
@@ -132,6 +149,7 @@ def main() -> int:
         test_intervention_match,
         test_year_window_match,
         test_classify_registered,
+        test_classify_registered_pmid_prefix_normalization,
         test_classify_matched_4_signals,
         test_classify_matched_2_signals,
         test_classify_candidate,

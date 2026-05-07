@@ -521,9 +521,20 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
                             cit_year = int(ym.group(0).strip("()"))
                         except (ValueError, TypeError):
                             cit_year = None
+                # v42.8.3a (2026-05-07): raise stored snippet cap from
+                # 300 → 800 so the pub-to-trial matcher can see the
+                # abstract excerpt, not just the title. literature agent
+                # _build_snippet caps abstracts at 300 chars and prepends
+                # title/authors/journal lines — total snippets routinely
+                # run 500-700 chars. The 300-char cap was clipping the
+                # abstract entirely (matcher saw title-only), starving
+                # the intervention/sponsor signals. The keyword-scan
+                # block uses the full (uncapped) citation snippet, so
+                # this change does not affect _STRONG_FAILURE / _STRONG_
+                # EFFICACY firing — only the matcher's 4-signal vote.
                 pub = {
                     "pmid": pmid,
-                    "title": title[:300],
+                    "title": title[:800],
                     "year": cit_year,
                     "source": getattr(citation, "source_name", ""),
                     "classification": _classify_publication(title, nct_id),
