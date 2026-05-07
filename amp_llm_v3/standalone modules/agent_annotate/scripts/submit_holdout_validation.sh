@@ -20,7 +20,7 @@ for arg in "$@"; do
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
         --test-batch) ALLOW_TEST_BATCH=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -50,6 +50,15 @@ for arg in "$@"; do
         # Controlled re-use of full-corpus NCTs — they have been measured
         # but never used in iteration prompts or EDAM corrections.
         --slice-g) SLICE="$THIS_DIR/holdout_outcome_slice_g_v42_8_validation.json" ;;
+        # slice-H: v42.8.3 (Lever 3 pub-to-trial matcher) validation. 20 NCTs:
+        # 4 slice-G failed-completed Unknown misses (direct test of whether
+        # the matcher surfaces pubs the existing pipeline missed),
+        # 12 positive→unknown full-corpus misses (dominant outcome miss
+        # class that v42.8.3 + widened trial_evidence_count gates aim to
+        # close), 2 known-good positives (regression check), 2 terminated
+        # (stability check). Controlled re-use of full-corpus NCTs —
+        # measured but never used in iteration prompts or EDAM.
+        --slice-h) SLICE="$THIS_DIR/holdout_outcome_slice_h_v42_8_3.json" ;;
         # Milestone validation: 147-NCT combined slice (Job #83 baseline +
         # held-out A/B/C/D). Used to certify accuracy with ±8pp CI
         # half-width, ~24h overnight run. Triggered when iteration cycles
