@@ -561,6 +561,69 @@ def test_v42_8_1_failure_reason_emission_gate():
     print("  ✓ v42.8.1: failure_reason emission gate covers Terminated/Withdrawn/Failed-completed")
 
 
+def test_v42_8_3_pub_trial_matcher():
+    """v42.8.3 (2026-05-07) Lever 3: pub-to-trial matcher must exist as
+    a standalone module, classify pubs into 4 buckets via 4 explicit
+    signals, and be wired into outcome.py's dossier + the v42.8.2 +
+    v42.7.14 publication overrides via `trial_evidence_count`.
+
+    Slice-G failed-completed-trial 0/8 audit (2026-05-07): 3 of 4
+    Unknown misses had 0 trial-specific pubs because the heuristic
+    classifier rejected everything by default (v42.7.20). The matcher
+    surfaces those pubs via NCT/sponsor/intervention/year-window
+    convergence — closes the sourcing gap that v42.8.2 alone couldn't.
+    """
+    from app.services import pub_trial_matcher
+    for fn in ("nct_in_pub", "sponsor_match", "intervention_match",
+               "year_window_match", "classify_pub_relevance"):
+        assert hasattr(pub_trial_matcher, fn), (
+            f"v42.8.3 trip-wire: pub_trial_matcher.{fn} missing — "
+            f"Lever 3 module structure regressed."
+        )
+
+    # Smoke the aggregation rule
+    pub = {"pmid": "P1", "text": "First-in-human study of widget-12 in NCT01234567",
+           "year": 2020}
+    meta = {"nct_id": "NCT01234567", "sponsor_name": "Acme Therapeutics",
+            "interventions": ["widget-12"], "start_year": 2018,
+            "registered_pmids": []}
+    r = pub_trial_matcher.classify_pub_relevance(pub, meta)
+    assert r == "matched", (
+        f"v42.8.3 trip-wire: 4/4-signal pub returned {r!r}, expected 'matched'."
+    )
+    r2 = pub_trial_matcher.classify_pub_relevance(
+        {"pmid": "X", "text": "Generic review on widgets", "year": 2030},
+        meta,
+    )
+    assert r2 == "unrelated", (
+        f"v42.8.3 trip-wire: zero-signal review returned {r2!r}, expected 'unrelated'."
+    )
+
+    # Wire-up assertions on outcome.py
+    src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert "from app.services.pub_trial_matcher import classify_pub_relevance" in src, (
+        "v42.8.3 trip-wire: outcome.py no longer imports classify_pub_relevance — "
+        "matched-pub computation will silently return zero."
+    )
+    assert "matched_trial_pubs_count" in src and "trial_evidence_count" in src, (
+        "v42.8.3 trip-wire: outcome.py missing matched_trial_pubs_count or "
+        "trial_evidence_count — overrides reverted to trial_specific-only gate."
+    )
+    assert "Matched Trial Publications:" in src, (
+        "v42.8.3 trip-wire: dossier prompt no longer surfaces Matched Trial "
+        "Publications line — LLM Rule 7 cannot apply the (ii) widening clause."
+    )
+    # The strong-failure override must use trial_evidence_count, not trial_specific.
+    strong_block_start = src.find("v42.8.2 (2026-05-06): strong-failure publication override")
+    assert strong_block_start > 0
+    strong_block = src[strong_block_start:strong_block_start + 1500]
+    assert "trial_evidence_count > 0" in strong_block, (
+        "v42.8.3 trip-wire: strong-failure override still gates on trial_specific; "
+        "matched pubs will never satisfy the v42.8.2 path."
+    )
+    print("  ✓ v42.8.3: pub-to-trial matcher wired (4 signals, dossier, overrides)")
+
+
 def test_dbaasp_word_boundary_preserved():
     """v25 DBAASP word-boundary fix: 'NS' (normal saline) and short
     drug-name prefixes were matching DBAASP entries by substring, not
@@ -609,6 +672,7 @@ def main() -> int:
         test_v42_7_24_failure_reason_early_return_gated,
         test_v42_8_1_failure_reason_emission_gate,
         test_v42_8_2_strong_failure_override,
+        test_v42_8_3_pub_trial_matcher,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0

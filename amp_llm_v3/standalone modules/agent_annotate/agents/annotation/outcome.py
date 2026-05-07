@@ -38,6 +38,7 @@ from typing import Optional
 from agents.base import BaseAnnotationAgent
 from app.models.research import ResearchResult, SourceCitation
 from app.models.annotation import FieldAnnotation
+from app.services.pub_trial_matcher import classify_pub_relevance
 
 logger = logging.getLogger("agent_annotate.annotation.outcome")
 
@@ -289,6 +290,18 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         # registered publications.
         "registered_pmids": [],
         "registered_trial_pubs_count": 0,
+        # v42.8.3 (2026-05-07) Lever 3 — pub-to-trial matcher.
+        # `matched_trial_pubs` accumulates pubs that converge on ≥2 of 4
+        # signals (NCT in pub text, sponsor name in pub text, intervention
+        # name in pub text, year-window match). These are explicit-evidence-
+        # driven trial-specific even when the sponsor didn't register them
+        # in protocolSection.referencesModule. `sponsor_name` and
+        # `trial_start_year` are extracted alongside for the matcher.
+        "sponsor_name": "",
+        "trial_start_year": None,
+        "matched_trial_pubs": [],
+        "matched_trial_pubs_count": 0,
+        "candidate_trial_pubs_count": 0,
     }
 
     # v41: Split positive keywords into efficacy (supports Positive) and safety (does NOT).
@@ -420,6 +433,25 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
             if any(tok in brief_title for tok in _VACCINE_NAME_TOKENS):
                 dossier["is_vaccine_trial"] = True
 
+            # v42.8.3 (2026-05-07): capture sponsor + start year for the
+            # pub-to-trial matcher (Lever 3). Lead sponsor lives in
+            # sponsorCollaboratorsModule.leadSponsor.name; trial start in
+            # statusModule.startDateStruct.date (YYYY-MM-DD or YYYY-MM).
+            if not dossier["sponsor_name"]:
+                spons_mod = proto.get("sponsorCollaboratorsModule", {}) or {}
+                lead = spons_mod.get("leadSponsor", {}) or {}
+                if isinstance(lead, dict):
+                    dossier["sponsor_name"] = (lead.get("name") or "").strip()
+            if dossier["trial_start_year"] is None:
+                sd = status_mod.get("startDateStruct", {}) or {}
+                if isinstance(sd, dict):
+                    sd_date = (sd.get("date") or "").strip()
+                    if sd_date and len(sd_date) >= 4 and sd_date[:4].isdigit():
+                        try:
+                            dossier["trial_start_year"] = int(sd_date[:4])
+                        except (ValueError, TypeError):
+                            pass
+
             # v42.7.12: extract CT.gov-registered publications. PMIDs here are
             # proven trial-specific because the trial sponsor registered them.
             ref_module = proto.get("referencesModule", {})
@@ -479,10 +511,20 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
             for citation in getattr(result, "citations", []):
                 pmid = getattr(citation, "identifier", "") or ""
                 title = getattr(citation, "snippet", "") or ""
+                # v42.8.3: extract year from snippet's "Journal: <name> (YYYY)"
+                # pattern when SourceCitation doesn't carry it as a field.
+                cit_year = getattr(citation, "year", None)
+                if not cit_year and title:
+                    ym = re.search(r"\((19|20)\d{2}\)", title)
+                    if ym:
+                        try:
+                            cit_year = int(ym.group(0).strip("()"))
+                        except (ValueError, TypeError):
+                            cit_year = None
                 pub = {
                     "pmid": pmid,
                     "title": title[:300],
-                    "year": getattr(citation, "year", None),
+                    "year": cit_year,
                     "source": getattr(citation, "source_name", ""),
                     "classification": _classify_publication(title, nct_id),
                 }
@@ -558,6 +600,69 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
     dossier["trial_specific_count"] = sum(
         1 for p in dossier["publications"] if p.get("classification") == "trial_specific"
     )
+
+    # v42.8.3 (2026-05-07) Lever 3 — pub-to-trial matcher.
+    # Slice-G v42.8.1+v42.8.2 validation showed failed-completed-trial 0/8:
+    # 4 of those misses had 0 trial-specific pubs because the heuristic
+    # _classify_publication rejects everything by default (v42.7.20),
+    # AND no PMID was registered in protocolSection.referencesModule.
+    # The matcher converges on ≥2 of 4 explicit signals
+    # (NCT mention, sponsor name, intervention name, year window) — bars
+    # high enough to keep review-article false-positives out (the
+    # v42.7.13 over-call class) but low enough to surface primary
+    # readouts that sponsors didn't formally register.
+    #
+    # Matched pubs are added to the trial-evidence base used by Rule 7
+    # (LLM prompt) and the v42.8.2 strong-failure / v42.7.14 mixed-evidence
+    # publication overrides. Keyword rescan on matched pubs lets
+    # _STRONG_FAILURE / _STRONG_EFFICACY phrases fire even when the
+    # heuristic classifier marked the pub general.
+    trial_meta = {
+        "nct_id": nct_id,
+        "sponsor_name": dossier["sponsor_name"],
+        "interventions": dossier["intervention_names"],
+        "start_year": dossier["trial_start_year"],
+        "registered_pmids": dossier["registered_pmids"],
+    }
+    for pub in dossier["publications"]:
+        pmid = (pub.get("pmid") or "").strip()
+        relevance = classify_pub_relevance(
+            {"pmid": pmid, "text": pub.get("title", ""), "year": pub.get("year")},
+            trial_meta,
+        )
+        pub["relevance"] = relevance
+        if relevance in ("registered", "matched"):
+            tag = pmid or pub.get("title", "")[:60]
+            if tag and tag not in dossier["matched_trial_pubs"]:
+                dossier["matched_trial_pubs"].append(tag)
+            # Rescan valence keywords on matched pubs the heuristic
+            # classifier missed. Existing scan at line ~539 only fires when
+            # _classify_publication returned "trial_specific"; matched pubs
+            # with classification="general" but explicit-signal convergence
+            # are exactly the slice-G recall gap. The 2-of-4 matcher
+            # threshold is at least as strict as the heuristic, so this
+            # does not re-introduce the v42.7.13 over-call class.
+            if pub.get("classification") != "trial_specific":
+                text = (pub.get("title") or "").lower()
+                for kw in _POSITIVE_KW:
+                    if kw in text and kw not in dossier["positive_keywords"]:
+                        dossier["positive_keywords"].append(kw)
+                for kw in _NEGATIVE_KW:
+                    if kw in text and kw not in dossier["negative_keywords"]:
+                        dossier["negative_keywords"].append(kw)
+                for kw in _EFFICACY_KW:
+                    if kw in text and kw not in dossier["efficacy_keywords"]:
+                        dossier["efficacy_keywords"].append(kw)
+                for kw in _SAFETY_KW:
+                    if kw in text and kw not in dossier["safety_keywords"]:
+                        dossier["safety_keywords"].append(kw)
+                for kw in _IMMUNOGENICITY_KW:
+                    if kw in text and kw not in dossier["immunogenicity_keywords"]:
+                        dossier["immunogenicity_keywords"].append(kw)
+        elif relevance == "candidate":
+            dossier["candidate_trial_pubs_count"] += 1
+
+    dossier["matched_trial_pubs_count"] = len(dossier["matched_trial_pubs"])
 
     if dossier["completion_date"]:
         try:
@@ -793,6 +898,23 @@ def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
             "articles that mention the drug; they are NOT proven trial-specific."
         )
 
+    # v42.8.3 (2026-05-07) Lever 3 — surface matched pubs alongside
+    # registered. ≥2 of 4 explicit signals (NCT, sponsor, intervention,
+    # year window) is treated as proof-of-trial-specificity even when
+    # the sponsor didn't formally register the pub in
+    # protocolSection.referencesModule. Phase I primary publications
+    # often live here.
+    matched = dossier.get("matched_trial_pubs_count", 0)
+    if matched > 0:
+        sample = ", ".join(str(p) for p in dossier["matched_trial_pubs"][:3])
+        lines.append(
+            f"Matched Trial Publications: {matched} pub(s) with ≥2/4 explicit"
+            f" signals (NCT, sponsor, intervention, year-window) [{sample}]"
+            f" — treat these as trial-specific evidence equivalent to registered."
+        )
+    else:
+        lines.append("Matched Trial Publications: 0")
+
     return "\n".join(lines)
 
 # v38: Single-pass dossier-based LLM prompt (replaces 2-pass PASS1+PASS2)
@@ -828,10 +950,10 @@ RULES (follow in order):
 7. Phase I: only mark Positive with an explicit primary-endpoint-met statement. Safety + biological activity without that statement → "Unknown".
    EXCEPTION (vaccine / immunotherapy trials only): mark Positive when:
      (i) The dossier indicates a VACCINE or IMMUNOTHERAPY trial; AND
-     (ii) The trial has clear trial-specific publications. STRONGEST evidence: "Registered Trial Publications" count ≥ 1 (sponsor-registered PMIDs are proven trial-specific). EQUIVALENT acceptable evidence: ≥1 publication whose TITLE explicitly describes THIS trial's design — e.g., "Randomized phase I/II clinical trial of [drug]", "First-in-human study of [drug]", "Phase 1b trial of [drug] in [population]", "Results of [drug] in [indication]". The pub TITLE must contain BOTH the trial's drug/vaccine name AND a clinical-trial descriptor (phase / first-in-human / clinical trial / results). Generic field reviews ("Advances in cancer vaccination", "Epigenetic Regulation of Immune Responses", "Modern Methods in Peptide Vaccination") do NOT qualify under this branch — they describe the field, not the trial.
+     (ii) The trial has clear trial-specific publications. STRONGEST evidence: "Registered Trial Publications" count ≥ 1 (sponsor-registered PMIDs are proven trial-specific). EQUIVALENT acceptable evidence: "Matched Trial Publications" count ≥ 1 (pubs with ≥2/4 explicit signals — NCT, sponsor, intervention, year-window — are equivalently trial-specific even when not formally registered). EQUIVALENT acceptable evidence: ≥1 publication whose TITLE explicitly describes THIS trial's design — e.g., "Randomized phase I/II clinical trial of [drug]", "First-in-human study of [drug]", "Phase 1b trial of [drug] in [population]", "Results of [drug] in [indication]". The pub TITLE must contain BOTH the trial's drug/vaccine name AND a clinical-trial descriptor (phase / first-in-human / clinical trial / results). Generic field reviews ("Advances in cancer vaccination", "Epigenetic Regulation of Immune Responses", "Modern Methods in Peptide Vaccination") do NOT qualify under this branch — they describe the field, not the trial.
      (iii) ≥2 publications report immunogenicity outcomes (induces immune response, antibody titers, T-cell response, seroconversion, sustained immune response); AND
      (iv) No failure/adverse signals.
-   When "Registered Trial Publications: 0" appears in the dossier AND no pub title meets the (ii)-equivalent description, the exception does NOT apply — default to "Unknown".
+   When "Registered Trial Publications: 0" AND "Matched Trial Publications: 0" appear in the dossier AND no pub title meets the (ii)-equivalent description, the exception does NOT apply — default to "Unknown".
 8. Default when evidence is inconclusive → "Unknown" (not "Positive").
 
 CRITICAL: "Positive" REQUIRES a specific primary-endpoint-met / p<0.05 / approval / phase-advancement signal. Vague "efficacy" or "benefit" language is NOT sufficient.
@@ -1138,6 +1260,20 @@ class OutcomeAgent(BaseAnnotationAgent):
         efficacy = dossier.get("efficacy_keywords", [])
         neg = dossier["negative_keywords"]
         trial_specific = dossier.get("trial_specific_count", dossier["publication_count"])
+        # v42.8.3 (2026-05-07) Lever 3: combined trial-evidence count.
+        # Slice-G failed-completed-trial 0/8 audit: the v42.8.2 strong-failure
+        # override and the v42.7.14 mixed-evidence rule both gated on
+        # `trial_specific > 0`, which fails when the heuristic classifier
+        # returns 0 trial-specific pubs (the post-v42.7.20 default).
+        # `trial_evidence_count` adds matched pubs (explicit-signal-driven)
+        # and registered PMIDs (sponsor-registered) — broader denominator
+        # for the override gates without re-introducing the v42.7.13
+        # over-call class (matcher's 2-of-4 bar is strict).
+        trial_evidence_count = (
+            trial_specific
+            + dossier.get("matched_trial_pubs_count", 0)
+            + dossier.get("registered_trial_pubs_count", 0)
+        )
         stale = dossier["stale_status"]
         status = dossier["registry_status"].upper()
 
@@ -1163,8 +1299,13 @@ class OutcomeAgent(BaseAnnotationAgent):
                 and current_value not in ("Positive", "Failed - completed trial")):
             return "Positive"
 
-        # v42.6.11: STRONG-evidence gate for Unknown → Positive
-        if (trial_specific >= 2
+        # v42.6.11: STRONG-evidence gate for Unknown → Positive.
+        # v42.8.3: trial_evidence_count widens the denominator to include
+        # matched pubs (≥2/4 explicit signals) and registered PMIDs.
+        # The _has_strong_efficacy guard remains the hard precondition,
+        # so this only opens recall — never enables an over-call without
+        # an explicit primary-endpoint-met signal.
+        if (trial_evidence_count >= 2
                 and cls._has_strong_efficacy(efficacy)
                 and not neg):
             return "Positive"
@@ -1181,9 +1322,16 @@ class OutcomeAgent(BaseAnnotationAgent):
         # don't get this auto-Positive path; the LLM can still call them
         # Positive based on stronger evidence (strong-efficacy keywords +
         # explicit primary-endpoint statement in the prompt).
+        # v42.8.3: widen `trial_specific >= 2` to trial_evidence_count;
+        # registered ≥ 1 OR matched ≥ 1 satisfies the proven-trial-specific
+        # gate (matcher's 2-of-4 bar is high enough to substitute).
+        registered_or_matched = (
+            dossier.get("registered_trial_pubs_count", 0)
+            + dossier.get("matched_trial_pubs_count", 0)
+        )
         if (dossier.get("is_vaccine_trial")
-                and trial_specific >= 2
-                and dossier.get("registered_trial_pubs_count", 0) >= 1
+                and trial_evidence_count >= 2
+                and registered_or_matched >= 1
                 and dossier.get("immunogenicity_keywords")
                 and not neg):
             return "Positive"
@@ -1201,7 +1349,7 @@ class OutcomeAgent(BaseAnnotationAgent):
         # 0% miss class (agent → Unknown when pub clearly says endpoint
         # was missed); estimated +1.5pp on full-corpus outcome accuracy.
         if (status in ("COMPLETED", "TERMINATED")
-                and trial_specific > 0
+                and trial_evidence_count > 0
                 and cls._has_strong_failure(neg)):
             return "Failed - completed trial"
 
@@ -1212,7 +1360,7 @@ class OutcomeAgent(BaseAnnotationAgent):
         # based on mixed pub signals is an over-call (Job #92's NCT03018665
         # was status=UNKNOWN with mixed pubs and got mis-called Failed
         # when GT was Unknown).
-        if (trial_specific > 0
+        if (trial_evidence_count > 0
                 and neg
                 and not efficacy
                 and status in ("COMPLETED", "TERMINATED", "WITHDRAWN")):
