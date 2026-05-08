@@ -668,6 +668,60 @@ def test_v42_8_4_drug_code_resolver():
     print("  ✓ v42.8.4: drug-code resolver wired (PubChem + RxNorm, orchestrator + dossier)")
 
 
+def test_v42_8_5_press_release_agent():
+    """v42.8.5 (2026-05-07) Lever 5: press-release / news-aggregator
+    agent must exist with classify_headline + fetch_news; be registered;
+    outcome dossier must populate press_release_evidence and gate the
+    new override on primary-endpoint-anchored phrases (mirror of
+    v42.8.2 strong-failure discipline). Targets the recency-driven
+    positive→unknown miss class on NCT05+ trials."""
+    pr_path = PKG_ROOT / "agents" / "research" / "press_release_client.py"
+    assert pr_path.exists(), (
+        "v42.8.5 trip-wire: agents/research/press_release_client.py missing"
+    )
+    src = pr_path.read_text()
+    for fn in ("def classify_headline(", "def fetch_news(",
+               "class PressReleaseAgent"):
+        assert fn in src, f"v42.8.5 trip-wire: {fn!r} missing"
+    # Must NOT include bare 'failed' / 'approved' as standalone list entries
+    # — repeats v42.6.14 + v42.7.15. A bare list entry shows up as either
+    # '"failed",' (with trailing comma) or '"failed"\n' (final entry).
+    # Multi-word phrases ('"failed primary endpoint"', '"failed to meet"',
+    # '"fda approved"') are explicitly allowed.
+    import re as _re
+    bad = _re.search(r'"\s*(failed|approved)\s*"\s*[,\]\)]', src)
+    assert not bad, (
+        "v42.8.5 trip-wire: bare 'failed' / 'approved' detected as standalone "
+        f"list entry near {bad.group()!r} — repeats v42.6.14 + v42.7.15 "
+        "over-call class. All phrases must be primary-endpoint or "
+        "regulatory-qualified (e.g. 'failed primary endpoint', 'fda approves')."
+    )
+    # Must anchor on primary endpoint
+    assert "achieves primary" in src or "achieved primary" in src, (
+        "v42.8.5 trip-wire: primary-endpoint anchor phrase missing"
+    )
+    # Registry
+    reg_src = (PKG_ROOT / "agents" / "research" / "__init__.py").read_text()
+    assert "PressReleaseAgent" in reg_src and '"press_release"' in reg_src, (
+        "v42.8.5 trip-wire: PressReleaseAgent not registered"
+    )
+    # Dossier wiring
+    out_src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert "press_release_evidence" in out_src and "has_positive_pr" in out_src, (
+        "v42.8.5 trip-wire: outcome dossier missing press-release fields"
+    )
+    # Override block must precede v42.8.2 strong-failure (positive PR is a
+    # primary-readout signal; should fire before negative-only paths).
+    pr_idx = out_src.find("v42.8.5 (2026-05-07) Lever 5: press-release override")
+    sf_idx = out_src.find("v42.8.2 (2026-05-06): strong-failure publication override")
+    assert pr_idx > 0 and sf_idx > pr_idx, (
+        "v42.8.5 trip-wire: press-release override must precede v42.8.2 "
+        "strong-failure (positive readout takes precedence over deterministic "
+        "publication-failure phrasing)."
+    )
+    print("  ✓ v42.8.5: press-release agent wired (Google News RSS + override + dossier)")
+
+
 def test_dbaasp_word_boundary_preserved():
     """v25 DBAASP word-boundary fix: 'NS' (normal saline) and short
     drug-name prefixes were matching DBAASP entries by substring, not
@@ -718,6 +772,7 @@ def main() -> int:
         test_v42_8_2_strong_failure_override,
         test_v42_8_3_pub_trial_matcher,
         test_v42_8_4_drug_code_resolver,
+        test_v42_8_5_press_release_agent,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0

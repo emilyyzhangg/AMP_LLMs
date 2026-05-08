@@ -133,6 +133,16 @@ research_agents:
     sources:
       - pubchem
       - rxnorm
+  # v42.8.5 (2026-05-07) Lever 5: sponsor press-release / news-aggregator
+  # agent. Queries Google News RSS for the trial's drug + readout
+  # phrases, classifies headlines as positive / negative / neutral
+  # using primary-endpoint-anchored phrases (mirror of v42.8.2
+  # _STRONG_FAILURE / v42.6.14 _STRONG_EFFICACY discipline). Targets
+  # the recency-driven outcome miss class on NCT05+ trials where
+  # primary-readout pubs haven't reached peer-reviewed journals yet.
+  press_release:
+    sources:
+      - google_news_rss
 
 annotation_agents:
   classification:

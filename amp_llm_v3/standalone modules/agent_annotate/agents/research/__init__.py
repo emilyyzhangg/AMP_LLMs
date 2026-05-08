@@ -48,6 +48,13 @@ from agents.research.nih_reporter_client import NIHRePORTERClient
 # biological entity. Slice-H sequence accuracy 1/9 = 11.1% was
 # directly caused by these codes returning no_structured_match.
 from agents.research.drug_code_resolver import DrugCodeResolverAgent
+# v42.8.5 (2026-05-07) Lever 5: sponsor press-release / news-aggregator
+# agent. Surfaces trial-readout reporting that doesn't reach
+# peer-reviewed literature within Phase I trial timelines via Google
+# News RSS (aggregates PR Newswire, BusinessWire, sponsor newsrooms,
+# trade pubs). Targets the dominant outcome miss class (positive→
+# unknown) on the recent NCT05+ cohort where literature is sparse.
+from agents.research.press_release_client import PressReleaseAgent
 
 RESEARCH_AGENTS = {
     "clinical_protocol": ClinicalProtocolAgent,
@@ -76,4 +83,6 @@ RESEARCH_AGENTS = {
     "nih_reporter": NIHRePORTERClient,
     # v42.8.4: drug-code → biological-name resolution
     "drug_code_resolver": DrugCodeResolverAgent,
+    # v42.8.5: trial-readout press releases via Google News RSS
+    "press_release": PressReleaseAgent,
 }

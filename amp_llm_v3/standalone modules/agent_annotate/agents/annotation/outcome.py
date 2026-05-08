@@ -308,6 +308,16 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         # "<orig> resolved to: <name1>, <name2>, ...". Lets the LLM
         # connect pharma codes to biological identities.
         "resolved_drug_names": {},
+        # v42.8.5 (2026-05-07) Lever 5: trial-readout press-release
+        # evidence from Google News RSS. Each item has
+        # {title, link, date, source, classification}.
+        # Classification: 'positive' | 'negative' | 'neutral' based on
+        # primary-endpoint-anchored headline phrases. Used by the
+        # v42.8.5 dossier override and surfaced to the LLM.
+        "press_release_evidence": [],
+        "press_release_count": 0,
+        "has_positive_pr": False,
+        "has_negative_pr": False,
     }
 
     # v41: Split positive keywords into efficacy (supports Positive) and safety (does NOT).
@@ -603,6 +613,20 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
                     if name:
                         dossier["fda_label_indications"][name] = v
 
+        # --- v42.8.5: press-release / news-aggregator output ---
+        if result.agent_name == "press_release" and result.raw_data:
+            evidence = result.raw_data.get("press_release_evidence") or []
+            for it in evidence:
+                if it not in dossier["press_release_evidence"]:
+                    dossier["press_release_evidence"].append(it)
+            dossier["press_release_count"] = len(dossier["press_release_evidence"])
+            dossier["has_positive_pr"] = bool(
+                result.raw_data.get("has_positive_pr") or dossier["has_positive_pr"]
+            )
+            dossier["has_negative_pr"] = bool(
+                result.raw_data.get("has_negative_pr") or dossier["has_negative_pr"]
+            )
+
         # --- v42.8.4: drug-code resolver output ---
         if result.agent_name == "drug_code_resolver" and result.raw_data:
             mapped = result.raw_data.get("resolved_drug_names", {}) or {}
@@ -894,6 +918,23 @@ def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
             if resolved_list:
                 top = resolved_list[:3]
                 lines.append(f"  → {orig} resolved to: {', '.join(top)}")
+
+    # v42.8.5 (2026-05-07) Lever 5: surface trial-readout press releases
+    # from Google News RSS. The LLM uses these alongside peer-reviewed
+    # publications when applying Rule 3 — a positive press release
+    # counts as a primary-endpoint-met signal when no contradicting
+    # negative PR exists.
+    if dossier.get("press_release_count", 0) > 0:
+        lines.append(
+            f"Press Release Evidence: {dossier['press_release_count']} headline(s)"
+            f" — positive: {sum(1 for e in dossier['press_release_evidence'] if e.get('classification') == 'positive')},"
+            f" negative: {sum(1 for e in dossier['press_release_evidence'] if e.get('classification') == 'negative')}"
+        )
+        for it in dossier["press_release_evidence"][:5]:
+            tag = it.get("classification", "?").upper()
+            src = it.get("source") or "unknown"
+            date = (it.get("date") or "")[:16]
+            lines.append(f"  [{tag}] {it.get('title','')[:140]} — {src} ({date})")
     if dossier.get("immunogenicity_keywords"):
         lines.append(f"Immunogenicity Signals: {', '.join(dossier['immunogenicity_keywords'][:6])}")
     # v42.7.8: surface FDA-approval status from openFDA structured data,
@@ -1371,6 +1412,36 @@ class OutcomeAgent(BaseAnnotationAgent):
                 and dossier.get("immunogenicity_keywords")
                 and not neg):
             return "Positive"
+
+        # v42.8.5 (2026-05-07) Lever 5: press-release override.
+        # Sponsors often announce trial readouts via press releases
+        # (Google News RSS aggregates PR Newswire / BusinessWire /
+        # sponsor newsroom / trade pubs) months before — or instead of
+        # — peer-reviewed publication. Closes the recency-driven
+        # positive→unknown miss class on NCT05+ trials where literature
+        # is sparse.
+        #
+        # Positive override: ≥1 positive PR + 0 negative PR + status
+        # in COMPLETED/ACTIVE_NOT_RECRUITING/RECRUITING (running or
+        # completed trial). Headlines are anchored on primary-endpoint
+        # phrases (mirror of _STRONG_EFFICACY); bare "approved" /
+        # "results" do not fire (per v42.6.14 over-call lesson).
+        #
+        # Negative override: ≥1 negative PR + 0 positive PR + status
+        # in COMPLETED/TERMINATED. Mirrors v42.8.2 strong-failure for
+        # the press-release evidence channel.
+        if (dossier.get("has_positive_pr")
+                and not dossier.get("has_negative_pr")
+                and dossier.get("press_release_count", 0) >= 1
+                and status not in ("WITHDRAWN", "")
+                and current_value not in ("Positive", "Failed - completed trial")):
+            return "Positive"
+
+        if (dossier.get("has_negative_pr")
+                and not dossier.get("has_positive_pr")
+                and status in ("COMPLETED", "TERMINATED")
+                and current_value not in ("Failed - completed trial",)):
+            return "Failed - completed trial"
 
         # v42.8.2 (2026-05-06): strong-failure publication override. When a
         # trial-specific publication explicitly reports primary-endpoint
