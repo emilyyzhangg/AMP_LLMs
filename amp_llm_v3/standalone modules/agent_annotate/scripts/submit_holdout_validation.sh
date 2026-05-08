@@ -20,7 +20,7 @@ for arg in "$@"; do
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
         --test-batch) ALLOW_TEST_BATCH=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -67,6 +67,13 @@ for arg in "$@"; do
         # sequence-hit NCTs (regression check). Controlled re-use of
         # full-corpus NCTs.
         --slice-i) SLICE="$THIS_DIR/holdout_outcome_slice_i_v42_8_4.json" ;;
+        # slice-J: v42.8.5 (Lever 5 press-release agent) validation. 20 NCTs:
+        # 14 NCT05+ pos→unk full-corpus misses (Lever 5 target = recency-
+        # driven outcome miss class where literature is sparse but
+        # sponsor press releases exist) + 4 older pos→unk + 2 known-good
+        # positives (regression check). Controlled re-use of full-corpus
+        # NCTs.
+        --slice-j) SLICE="$THIS_DIR/holdout_outcome_slice_j_v42_8_5.json" ;;
         # Milestone validation: 147-NCT combined slice (Job #83 baseline +
         # held-out A/B/C/D). Used to certify accuracy with ±8pp CI
         # half-width, ~24h overnight run. Triggered when iteration cycles
