@@ -20,7 +20,7 @@ for arg in "$@"; do
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
         --test-batch) ALLOW_TEST_BATCH=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -59,6 +59,14 @@ for arg in "$@"; do
         # (stability check). Controlled re-use of full-corpus NCTs —
         # measured but never used in iteration prompts or EDAM.
         --slice-h) SLICE="$THIS_DIR/holdout_outcome_slice_h_v42_8_3.json" ;;
+        # slice-I: v42.8.4 (Lever 4 drug-code resolver) validation. 20 NCTs:
+        # 12 sequence-miss NCTs with pharma-code interventions (GSK3008348,
+        # ABY-029, GT-001, AMG 334, TRV027, TH1902, DSP-7888, PGV-001,
+        # CNP-104, XW003, ATX-101, GLSI-100) — direct Lever 4 test;
+        # 4 sequence-miss NCTs with non-code interventions (control); 4
+        # sequence-hit NCTs (regression check). Controlled re-use of
+        # full-corpus NCTs.
+        --slice-i) SLICE="$THIS_DIR/holdout_outcome_slice_i_v42_8_4.json" ;;
         # Milestone validation: 147-NCT combined slice (Job #83 baseline +
         # held-out A/B/C/D). Used to certify accuracy with ±8pp CI
         # half-width, ~24h overnight run. Triggered when iteration cycles
