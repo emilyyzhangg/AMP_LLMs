@@ -89,8 +89,12 @@ def _is_uninformative_synonym(syn: str) -> bool:
     """Filter out synonyms that aren't useful biological names.
 
     Drops: pure CAS numbers, IUPAC chemical names (very long), other
-    pharma codes, ChEMBL/UNII/CID identifiers, internal lab codes
-    (orb3142637, GTPL13313, TP3849), and the input itself.
+    pharma codes, ChEMBL/UNII/CID identifiers, internal lab codes,
+    bare UNII codes (10-char uppercase alphanumeric), IUPAC stereo
+    strings (parenthesized stereodescriptors), and lowercase
+    amino-acid linkage notation. Slice-I audit (2026-05-08) revealed
+    ~half of resolver output was noise of these shapes — wasted
+    UniProt queries downstream.
     """
     s = (syn or "").strip()
     if not s:
@@ -102,9 +106,24 @@ def _is_uninformative_synonym(syn: str) -> bool:
     for prefix in ("CHEMBL", "DTXSID", "DTXCID", "UNII", "CID", "SCHEMBL", "GTPL"):
         if s.upper().startswith(prefix):
             return True
+    # Bare UNII format: 10 alphanumeric uppercase characters with at
+    # least one digit and one letter (e.g. 'J1J4P3PQZD', '17ZS80333G',
+    # '33W7SJ9TBX'). The synonym list returns UNIIs without the prefix.
+    if (len(s) == 10 and s.isalnum() and s == s.upper()
+            and any(c.isdigit() for c in s) and any(c.isalpha() for c in s)):
+        return True
+    # IUPAC stereodescriptor pattern: parenthesized stereo markers like
+    # "(2R)-", "(2S)-", "(3S,4R)-" appearing 2+ times. These never
+    # appear in bio names (UniProt protein names, generic drug names).
+    if len(re.findall(r"\(\d+[A-Z]\)", s)) >= 2:
+        return True
+    # IUPAC amino-acid linkage notation (lowercase 3-letter codes
+    # connected by dashes): "sar-val-tyr-ile-his-pro-d-ala-oh"
+    if re.search(r"\b[a-z]{3}-[a-z]{3}-[a-z]{3}-", s):
+        return True
     # IUPAC/structural names with stereochemistry markers — repeated
     # "-L-" / "-D-" amino-acid linkages are unambiguous IUPAC regardless
-    # of length. Or very long all-uppercase strings (>120 chars).
+    # of length.
     if s.count("-L-") >= 3 or s.count("-D-") >= 3:
         return True
     if len(s) > 120 and s.upper() == s:
@@ -216,8 +235,27 @@ async def resolve(name: str, client: Optional[httpx.AsyncClient] = None) -> list
         owns_client = client is None
         c = client or httpx.AsyncClient(timeout=15)
         try:
-            pubchem_results = await _resolve_pubchem(name, c)
-            rxnorm_results = await _resolve_rxnorm(name, c) if not pubchem_results else []
+            # Slice-I audit (2026-05-08): PubChem indexes "AMG-334" but not
+            # "AMG 334" (space variant). Try the original name plus dash/
+            # no-dash variants when the original has a separator.
+            variants = [name]
+            if " " in name:
+                variants.append(name.replace(" ", "-"))
+                variants.append(name.replace(" ", ""))
+            elif "-" in name:
+                variants.append(name.replace("-", " "))
+                variants.append(name.replace("-", ""))
+            pubchem_results: list[dict] = []
+            for v in variants:
+                pubchem_results = await _resolve_pubchem(v, c)
+                if pubchem_results:
+                    break
+            rxnorm_results: list[dict] = []
+            if not pubchem_results:
+                for v in variants:
+                    rxnorm_results = await _resolve_rxnorm(v, c)
+                    if rxnorm_results:
+                        break
             combined = pubchem_results + rxnorm_results
             # Deduplicate by lowercased name; keep highest confidence
             best: dict[str, dict] = {}
