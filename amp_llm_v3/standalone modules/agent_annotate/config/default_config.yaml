@@ -123,6 +123,16 @@ research_agents:
   nih_reporter:
     sources:
       - nih_reporter
+  # v42.8.4 (2026-05-07) Lever 4: drug-code → biological-name resolver.
+  # Resolves pharma research codes (PLG0206 → WLBU2, CBX129801 →
+  # C-Peptide) via PubChem then RxNorm. Output flows into
+  # shared_metadata's interventions[i]['resolved'] alongside EDAM-
+  # cached LLM resolutions so peptide_identity / sequence agents
+  # downstream see canonical names without per-agent wiring.
+  drug_code_resolver:
+    sources:
+      - pubchem
+      - rxnorm
 
 annotation_agents:
   classification:

@@ -624,6 +624,50 @@ def test_v42_8_3_pub_trial_matcher():
     print("  ✓ v42.8.3: pub-to-trial matcher wired (4 signals, dossier, overrides)")
 
 
+def test_v42_8_4_drug_code_resolver():
+    """v42.8.4 (2026-05-07) Lever 4: drug-code resolver agent must exist,
+    be registered in RESEARCH_AGENTS, and the orchestrator's
+    _resolve_drug_names must call into it before falling back to the
+    LLM Layer-1 prompt. Slice-H sequence 1/9 = 11.1% was the miss class
+    this lever closes."""
+    resolver_path = PKG_ROOT / "agents" / "research" / "drug_code_resolver.py"
+    assert resolver_path.exists(), (
+        "v42.8.4 trip-wire: agents/research/drug_code_resolver.py missing — "
+        "Lever 4 module deleted; sequence under-extraction will resurface."
+    )
+    src = resolver_path.read_text()
+    for fn in ("def resolve(", "def _resolve_pubchem(", "def _resolve_rxnorm(",
+               "class DrugCodeResolverAgent"):
+        assert fn in src, (
+            f"v42.8.4 trip-wire: drug_code_resolver.py missing required symbol {fn!r}"
+        )
+    assert "pubchem.ncbi.nlm.nih.gov" in src, (
+        "v42.8.4 trip-wire: PubChem URL missing from drug_code_resolver.py"
+    )
+    assert "rxnav.nlm.nih.gov" in src, (
+        "v42.8.4 trip-wire: RxNorm URL missing from drug_code_resolver.py"
+    )
+
+    reg_src = (PKG_ROOT / "agents" / "research" / "__init__.py").read_text()
+    assert "DrugCodeResolverAgent" in reg_src and '"drug_code_resolver"' in reg_src, (
+        "v42.8.4 trip-wire: drug_code_resolver not registered in RESEARCH_AGENTS"
+    )
+
+    orch_src = (PKG_ROOT / "app" / "services" / "orchestrator.py").read_text()
+    assert "from agents.research.drug_code_resolver import resolve" in orch_src, (
+        "v42.8.4 trip-wire: orchestrator no longer imports drug_code_resolver.resolve"
+    )
+    assert "_pubchem_resolve" in orch_src, (
+        "v42.8.4 trip-wire: orchestrator deterministic-resolver step removed"
+    )
+
+    out_src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert "resolved_drug_names" in out_src, (
+        "v42.8.4 trip-wire: outcome dossier no longer carries resolved_drug_names"
+    )
+    print("  ✓ v42.8.4: drug-code resolver wired (PubChem + RxNorm, orchestrator + dossier)")
+
+
 def test_dbaasp_word_boundary_preserved():
     """v25 DBAASP word-boundary fix: 'NS' (normal saline) and short
     drug-name prefixes were matching DBAASP entries by substring, not
@@ -673,6 +717,7 @@ def main() -> int:
         test_v42_8_1_failure_reason_emission_gate,
         test_v42_8_2_strong_failure_override,
         test_v42_8_3_pub_trial_matcher,
+        test_v42_8_4_drug_code_resolver,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0

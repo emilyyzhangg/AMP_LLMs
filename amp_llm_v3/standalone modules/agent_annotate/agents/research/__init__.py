@@ -42,6 +42,12 @@ from agents.research.fda_drugs_client import FDADrugsClient
 # grant funding is the subject of academic/federally-funded research;
 # project end dates without renewals are a weak discontinuation signal.
 from agents.research.nih_reporter_client import NIHRePORTERClient
+# v42.8.4 (2026-05-07) Lever 4: PubChem + RxNorm drug-code resolver.
+# Resolves pharma codes (PLG0206 → WLBU2, CBX129801 → C-Peptide) so
+# UniProt / DRAMP / ChEMBL queries downstream actually find the
+# biological entity. Slice-H sequence accuracy 1/9 = 11.1% was
+# directly caused by these codes returning no_structured_match.
+from agents.research.drug_code_resolver import DrugCodeResolverAgent
 
 RESEARCH_AGENTS = {
     "clinical_protocol": ClinicalProtocolAgent,
@@ -68,4 +74,6 @@ RESEARCH_AGENTS = {
     "fda_drugs": FDADrugsClient,
     # v42.7.6: federal-grants funding context
     "nih_reporter": NIHRePORTERClient,
+    # v42.8.4: drug-code → biological-name resolution
+    "drug_code_resolver": DrugCodeResolverAgent,
 }

@@ -302,6 +302,12 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
         "matched_trial_pubs": [],
         "matched_trial_pubs_count": 0,
         "candidate_trial_pubs_count": 0,
+        # v42.8.4 (2026-05-07) Lever 4: populated from drug_code_resolver
+        # raw_data. Maps original intervention name → list of canonical
+        # names (PubChem/RxNorm). Surfaced in the LLM prompt as
+        # "<orig> resolved to: <name1>, <name2>, ...". Lets the LLM
+        # connect pharma codes to biological identities.
+        "resolved_drug_names": {},
     }
 
     # v41: Split positive keywords into efficacy (supports Positive) and safety (does NOT).
@@ -597,6 +603,16 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
                     if name:
                         dossier["fda_label_indications"][name] = v
 
+        # --- v42.8.4: drug-code resolver output ---
+        if result.agent_name == "drug_code_resolver" and result.raw_data:
+            mapped = result.raw_data.get("resolved_drug_names", {}) or {}
+            for orig, candidates in mapped.items():
+                if not candidates:
+                    continue
+                names = [c.get("name") for c in candidates if c.get("name")]
+                if names and orig not in dossier["resolved_drug_names"]:
+                    dossier["resolved_drug_names"][orig] = names
+
         # --- v42.7.8: SEC EDGAR sponsor disclosure presence ---
         if result.agent_name == "sec_edgar" and getattr(result, "citations", []):
             # Any non-zero citation count = sponsor publicly disclosed
@@ -869,6 +885,15 @@ def _format_dossier_for_llm(dossier: dict, nct_id: str) -> str:
     if dossier.get("intervention_names"):
         names = dossier["intervention_names"][:5]
         lines.append(f"Trial Drugs: {', '.join(names)}")
+    # v42.8.4 (2026-05-07) Lever 4: surface resolved drug-code → biological-
+    # name mappings so the LLM can recognize that PLG0206 IS WLBU2 and
+    # CBX129801 IS C-Peptide. Reduces "no trial drug evidence" misjudgements
+    # on pharma-code interventions.
+    if dossier.get("resolved_drug_names"):
+        for orig, resolved_list in list(dossier["resolved_drug_names"].items())[:5]:
+            if resolved_list:
+                top = resolved_list[:3]
+                lines.append(f"  → {orig} resolved to: {', '.join(top)}")
     if dossier.get("immunogenicity_keywords"):
         lines.append(f"Immunogenicity Signals: {', '.join(dossier['immunogenicity_keywords'][:6])}")
     # v42.7.8: surface FDA-approval status from openFDA structured data,

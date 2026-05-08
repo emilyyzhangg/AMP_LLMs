@@ -1355,9 +1355,57 @@ class PipelineOrchestrator:
             if name in cached_resolutions:
                 interv["resolved"] = cached_resolutions[name]
 
-        # If all names were cached, skip the LLM call entirely
+        # v42.8.4 (2026-05-07) Lever 4: deterministic PubChem + RxNorm
+        # resolver before the LLM fallback. Catches pharma research
+        # codes (PLG0206, CBX129801, GT-001, 64Cu-SARTATE) that the
+        # LLM Layer-1 prompt was hit-or-miss on. Resolved names are
+        # written into EDAM so subsequent NCTs reusing the same code
+        # skip both this and the LLM call. Designed to graceful-
+        # degrade — any exception drops back to the LLM path.
+        try:
+            from agents.research.drug_code_resolver import resolve as _pubchem_resolve
+
+            still_unresolved = []
+            for nm in names_needing_llm:
+                try:
+                    candidates = await _pubchem_resolve(nm)
+                except Exception as exc:
+                    logger.debug(f"  drug_code_resolver failed for {nm!r}: {exc}")
+                    still_unresolved.append(nm)
+                    continue
+                if not candidates:
+                    still_unresolved.append(nm)
+                    continue
+                names = [c["name"] for c in candidates if c.get("name")]
+                # Persist into the intervention record + EDAM
+                for interv in interventions:
+                    if interv.get("name") == nm:
+                        merged = list(interv.get("resolved") or [])
+                        for new_name in names:
+                            if new_name not in merged:
+                                merged.append(new_name)
+                        interv["resolved"] = merged
+                if _edam and names:
+                    try:
+                        for resolved_name in names:
+                            _edam.store_drug_name(
+                                nm, resolved_name,
+                                context="pubchem_rxnorm_v42_8_4",
+                                nct_id=nct_id,
+                            )
+                    except Exception:
+                        pass
+                logger.info(
+                    f"  PubChem/RxNorm resolved {nm!r} → "
+                    f"{names[:3]}{'...' if len(names) > 3 else ''}"
+                )
+            names_needing_llm = still_unresolved
+        except Exception as exc:
+            logger.warning(f"  drug_code_resolver bulk failed (non-fatal): {exc}")
+
+        # If all names were cached / deterministically resolved, skip the LLM call entirely
         if not names_needing_llm:
-            logger.info("  All drug names resolved from EDAM cache — skipping LLM call")
+            logger.info("  All drug names resolved from EDAM cache or PubChem/RxNorm — skipping LLM call")
             return
 
         prompt = (
