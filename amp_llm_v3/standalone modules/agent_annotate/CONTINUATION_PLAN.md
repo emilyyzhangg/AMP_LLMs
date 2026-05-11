@@ -165,6 +165,7 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 | held-out-H | 20 | n/a | RETIRED   | v42.8.3 = `76389352da32` (broken matcher) + `1c3a900ffb3c` (v42.8.3a fix): 0/16 flips on targeted misses — matcher works but LLM correctly applies Rule 3 (no endpoint phrasing in matched pubs); no harm, peptide +5pp |
 | held-out-I | 20 | n/a | RETIRED   | v42.8.4 = `d808b70b8c77` (commit `97af0b5c`, pre-v42.8.4a): sequence 1/20 = 5%; resolver fires on ~half the codes, empty on AMG 334 / ABY-029 / TH1902 / DSP-7888 (not in PubChem). v42.8.4a (`685bb018`) shipped synonym noise filter + variant lookup |
 | held-out-J | 20 | n/a | RETIRED   | v42.8.5 = `e6ee9665d680` (commit `f254e285`): **5/14 NCT05+ pos→unk FLIPPED to Positive** ⭐ — Lever 5 breakout; classification 100%, peptide 89%, delivery 89%; 0 false positives; the 9 non-flipped trials had small/academic sponsors lacking press-wire coverage |
+| full-corpus-1 (re-run) | 315 | n/a | IN FLIGHT | Job #105 = `7e7efda9649e` (commit `916c1f1e`, submitted 2026-05-08). v42.8 stack certification at scale; ETA ~50-80h. After completion, submit batch 2 (Job #106) per §5. |
 | test-batch    | 50  | n/a | DEFERRED  | #104 (post v42.8 stack — single-shot unbiased held-out certification, ~8h) |
 
 `scripts/submit_holdout_validation.sh --milestone --check-sync` triggers the 147-NCT validation.
