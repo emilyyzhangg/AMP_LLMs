@@ -8,7 +8,25 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 ---
 
-## 1. Current state (last refreshed 2026-05-06 — full-corpus 630-NCT canonical, v42.8 cycle in progress)
+## 1. Current state (last refreshed 2026-05-08 — v42.8 stack LANDED, full-corpus re-run in flight)
+
+**v42.8 stack on main (Levers 1-5 all landed).** Slice-G through slice-J validated each lever in isolation. Slice-J was the breakout: Lever 5's press-release agent flipped 5/14 NCT05+ pos→unk to Positive with 0 false positives. Full-corpus re-run Jobs #105 (`7e7efda9649e`) + #106 (`c7ca38f92f6b`, queued) running now to certify at scale — ETA 4-7 days. Job #104 stays deferred until #105+#106 close.
+
+**Projected v42.8 full-corpus accuracy (from slice signals, awaiting #105+#106 confirmation):**
+
+| Field | Pre-v42.8 | Projected v42.8 |
+|---|---|---|
+| classification | 96.8% | 96-98% (flat) |
+| peptide | 86.8% | 86-89% (flat) |
+| delivery_mode | 87.7% | 87-89% (flat) |
+| outcome | 42.3% | **~45%** (+2.7pp via Lever 5) |
+| sequence | 25.8% | ~26-27% (+0.6pp; 116/138 misses NOT addressable by Lever 4) |
+| RfF (true recall) | ~29% | **~70%** (+40pp via Lever 1; 38/57 blank cases default-match GT) |
+| RfF (score-blind) | 86.2% | 90-93% |
+
+**v42.9 plan drafted** at `docs/V42_9_IMPLEMENTATION_PLAN.md`. Targets residual gap: outcome still below human IRA (~10pp) + sequence stuck under 30%. Levers 6 (ASCO/ASH/AAD conference abstracts), 7 (SEC 8-K trial-readout extension), 8 (UniProt search broadening).
+
+## 1.0 v42.7.22 full-corpus baseline (historical — pre-v42.8 reference)
 
 **🎯 FULL-CORPUS CANONICAL** (Jobs #102+#103 merged, commit `771ecb10`, 630 NCTs):
 
@@ -37,21 +55,21 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 Recent trials have less published evidence by definition. The agent correctly emits Unknown when public evidence is genuinely insufficient; GT annotators use out-of-band knowledge (sponsor pipeline, conference abstracts, press releases) to label these Positive. Lever 5 (press-release agent) targets this gap directly.
 
-### 1.2 v42.8 cycle status (last update 2026-05-06)
+### 1.2 v42.8 cycle status (last update 2026-05-08 — all levers LANDED)
 
-Decision (2026-05-06, **Option B**): Job #104 (50-NCT held-out test_batch certification) is **deferred** until v42.8 stack complete. v42.7-frozen agent's 42.3% outcome is below human IRA (55.6%) and is too weak a publication target to burn the single-shot test_batch on. v42.8 levers plausibly bring outcome to 52-58% (above human IRA) and sequence to 45-55%.
-
-| Lever | Status | Commit | Target field |
+| Lever | Status | Commit | Slice result |
 |---|---|---|---|
-| 1: RfF emission gate (Failed-completed/Term/Withd default) | ✅ landed on dev | `9b8ed95c` | RfF recall +~30pp |
-| 2: Strong-failure publication override (`_STRONG_FAILURE`) | ✅ landed on dev | `91e4cbe0` | Outcome failed-completed 0% → ~6/11; +1.5pp full-corpus |
-| 3: Pub-to-trial matcher (NCT/sponsor/intervention/year, 2-of-4) | 📋 spec'd | `docs/V42_8_IMPLEMENTATION_PLAN.md §2` | Outcome positive→unknown +4-7pp |
-| 4: Drug-code resolver (RxNorm/DrugBank) | 📋 spec'd | `docs/V42_8_IMPLEMENTATION_PLAN.md §3` | Sequence +15-20pp |
-| 5: Press-release / conference-abstract agent | 📋 spec'd | `docs/V42_8_IMPLEMENTATION_PLAN.md §4` | Outcome recency class +3-4pp |
+| 1: RfF emission gate (Failed-completed/Term/Withd default) | ✅ on main | `9b8ed95c` | slice-G 12/13 = 92% RfF ✅ (beats human IRA 91.3%) |
+| 2: Strong-failure publication override (`_STRONG_FAILURE`) | ✅ on main | `91e4cbe0` | slice-G 0/8 — logic correct, sourcing gap; depends on Lever 5 |
+| 3: Pub-to-trial matcher (NCT/sponsor/intervention/year, 2-of-4) | ✅ on main | `f2cf9559` + `851bc617` (PMID fix) | slice-H 0/16 flips — foundation only; LLM correctly applies Rule 3 |
+| 4: Drug-code resolver (PubChem + RxNorm) | ✅ on main | `de3236b3` + `685bb018` (filter fix) | slice-I sequence 1/16; resolver fires on ~half codes |
+| 5: Press-release agent (Google News RSS) | ✅ on main | `9c778ada` | **slice-J 5/14 = 36% NCT05+ pos→unk FLIPPED** ⭐, 0 false positives |
 
-**Validation in flight:** slice-G (20 NCTs failure-class) submitted on dev as `43d3739fd0b1` (~3-4h). Decision rule: if RfF +20pp recall and outcome +1pp on slice-G failed-completed subset, levers 1+2 validated.
+**Workflow shift 2026-05-07:** code lands on main directly (no dev staging) per user direction. Dev autoupdater wipes uncommitted commits via `git reset --hard origin/dev` every 30s; main has the same autoupdater but jobs run on prod port 8005. Push via `GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes" git push origin main`.
 
-**Closing the cycle:** after all 5 levers + per-lever validation slices pass → fresh full-corpus (Jobs #105+#106) → merge dev to main → fire Job #104 (single-shot test-batch, 50 NCTs) → publication.
+**Closing the cycle:** Jobs #105 (`7e7efda9649e`) + #106 (`c7ca38f92f6b`, queued) running now (ETA 4-7 days). After completion → score canonical v42.8 result → if outcome ≥45% AND RfF >70% true-recall, fire Job #104 (single-shot test-batch, 50 NCTs, ~8h) → publication. If projections miss, refer to `docs/V42_9_IMPLEMENTATION_PLAN.md` for residual-gap closure (Levers 6-8: conference abstracts / SEC 8-K / sequence-DB broadening).
+
+**Decision rule for Job #104:** stay deferred until the v42.8 full-corpus canonical confirms outcome above human IRA (55.6%) OR after the v42.9 cycle if needed. Single-shot test-batch fires once at the end of the architectural work.
 
 ### 1.3 Historical: Job #101 production gate (n=239, retired)
 

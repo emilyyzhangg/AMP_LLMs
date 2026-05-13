@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-05-06 — v42.8 cycle in progress; full-corpus 630-NCT canonical landed; Job #104 deferred until v42.8 stack complete.
+**Last updated:** 2026-05-08 — v42.8 stack (Levers 1-5) LANDED on main; full-corpus re-run (Jobs #105 + #106) in flight to certify at scale; Job #104 stays deferred until #105+#106 complete; v42.9 plan drafted (`docs/V42_9_IMPLEMENTATION_PLAN.md`) for residual gaps.
 
 ## Recent additions (post-2026-04-28)
 
@@ -11,9 +11,12 @@
 | #103 | `a3138340e531` (prod) | 315 | 2026-05-06 02:02 | **Complete** (full-corpus batch 2) | v42.7.22 (`771ecb10`) | NCT05025267 → NCT07012330. ~48h. All 2021+ trials; outcome ~31% (recency stratification). |
 | **canonical** | merged #102+#103 | 630 | 2026-05-06 | **Full-corpus canonical** | v42.7.22 (`771ecb10`) | class 96.8 (±1.5pp), peptide 86.8 (±2.9pp), delivery 87.7 (±2.9pp), outcome 42.3 (±5.3pp), sequence 25.8 (±4.5pp), RfF 86.2 recall / 94.9% precision-when-emitted. Beats human IRA on 3/5 fields. Report: `docs/PRODUCTION_GATE_REPORT.md`. |
 | #104 | (DEFERRED) | 50 | — | **Reserved** | post-v42.8 | Single-shot held-out test_batch certification. Fires only after entire v42.8 stack lands + Jobs #105+#106 fresh full-corpus confirms new floor. |
-| slice-G | `43d3739fd0b1` (dev) | 20 | in flight (~3-4h) | **In flight** | v42.8.2 (`91e4cbe0` + `dcc5b2c0`) | Validation slice for levers 1+2. 8 failed-completed (incl. the 0/11=0% audit set) + 8 terminated + 4 withdrawn, all with GT RfF consensus. |
-| #105 | TBD | 315 | — | Reserved | post-v42.8.5 | Fresh full-corpus batch 1 with v42.8 stack. |
-| #106 | TBD | 315 | — | Reserved | post-v42.8.5 | Fresh full-corpus batch 2 with v42.8 stack. |
+| slice-G | `43d3739fd0b1` (dev) | 20 | 2026-05-07 | Complete | v42.8.2 (`91e4cbe0`) | Levers 1+2 validation. **RfF 92.3% ✅** (beats human IRA), failed-completed 0/8 (sourcing gap → motivated Lever 3). |
+| slice-H | `1c3a900ffb3c` (prod) | 20 | 2026-05-07 | Complete | v42.8.3a (`851bc617`) | Lever 3 validation. 0/16 verdict flips — matcher works but LLM correctly applies Rule 3; no harm done. |
+| slice-I | `d808b70b8c77` (prod) | 20 | 2026-05-08 | Complete | v42.8.4 (`97af0b5c`, pre-filter-fix) | Lever 4 validation. Mixed — resolver fires on ~half codes; v42.8.4a filter fix (`685bb018`) followed. |
+| slice-J | `e6ee9665d680` (prod) | 20 | 2026-05-08 | Complete | v42.8.5 (`f254e285`) | **Lever 5 breakout — 5/14 NCT05+ pos→unk FLIPPED to Positive ⭐**, 0 false positives, classification 100%. |
+| #105 | `7e7efda9649e` (prod) | 315 | — | **In flight** | v42.8.5 (`916c1f1e`) | Full-corpus batch 1 v42.8 re-run. ETA 50-80h. |
+| #106 | `c7ca38f92f6b` (prod) | 315 | — | **Queued** | v42.8.5 (`916c1f1e`) | Full-corpus batch 2 v42.8 re-run. Runs after #105. |
 
 ### v42.7 → v42.8 transition (2026-05-06)
 
