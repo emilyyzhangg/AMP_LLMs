@@ -34,6 +34,53 @@ Slice-G through slice-J probed each v42.8 lever in isolation. Summary of what wa
 
 ---
 
+## 0.A. v42.8 actual full-corpus result (2026-05-11)
+
+| Field | Pre-v42.8 | v42.8 actual | vs projection |
+|---|---|---|---|
+| classification | 96.8% | **96.2%** | flat |
+| peptide | 86.8% | **85.5%** | flat |
+| delivery | 87.7% | **87.5%** | flat |
+| outcome | 42.3% | **41.1%** | **-1.2pp vs +2.7 projected** ❌ |
+| sequence | 25.8% | **25.8%** | flat |
+| RfF (score-blind) | 86.2% | **90.6%** | +4.4pp |
+| RfF (true-recall, new metric) | ~29% | **47.5%** | +18pp (less than projected +40pp) |
+
+### Where projections diverged from reality
+
+**Lever 5 outcome — net regression.** Slice-J showed 5/14 = 36% positive conversion. At full corpus, Lever 5 fired on 100 trials and:
+- +3 positive recall hits (positive class 54→57; +2.5pp)
+- −7 unknown recall hits (unknown class 65→58; −8.4pp via false flips)
+- Net −4 outcome hits
+
+Root cause: slice-J had **zero unknown-GT trials** because it was picked from pos→unk misses. The full corpus exposes the unknown→positive false-flip class — old NCTs (NCT02xxx/NCT03xxx) matching recent Google News results for the same drug but DIFFERENT trial. The v42.8.5 override fired unconditionally on ≥1 positive PR with no recency or multi-source check.
+
+**Mitigation shipped (v42.8.5a, commit `99bb2443`, 2026-05-11):** override now requires ≥2 PRs OR (1 PR + matched/registered trial pub), status COMPLETED or ACTIVE_NOT_RECRUITING, completion within 5 years. Slice-K validation in flight.
+
+**Lever 1 RfF — under-projected ceiling.** I projected +40pp on true-recall to ~70%. Actual: +18pp to 47.5%. Per-class breakdown reveals why:
+
+| GT class | n | hits | blank | accuracy |
+|---|---|---|---|---|
+| business reason | 25 | 15 | 7 | 60.0% |
+| recruitment issues | 15 | 12 | 3 | 80.0% |
+| ineffective for purpose | 15 | 1 | 14 | **6.7%** |
+| toxic/unsafe | 4 | 1 | 3 | 25.0% |
+| due to covid | 2 | 0 | 2 | 0.0% |
+
+The "ineffective for purpose" 1/15 hit-rate is the dominant residual gap. Lever 1's default applies "Ineffective for purpose" only when outcome=Failed-completed-trial. Since the agent's outcome accuracy on Failed-completed-trial is **0/11 = 0%**, the default never fires on these 14 cases — they're scored as Terminated, defaulting to "Business Reason" → miss.
+
+**Cascade dependency:** Lever 1 RfF improvement on this class is GATED on outcome accuracy improvement on Failed-completed-trial. That requires Levers 2 (strong-failure publication override) firing on more cases — which in turn requires Lever 5's NEGATIVE-PR coverage on these trials. The full-corpus audit showed only 8/630 had negative PRs (vs 100 positive PRs); Google News underweights discontinuation announcements.
+
+This is a v42.9 lever target: **Lever 7 (SEC 8-K extension)** specifically addresses failed-completed-trial detection via mandatory regulatory disclosures.
+
+### v42.8.4b improvements shipped this session (2026-05-11)
+
+- **IUPHAR Tier 3 fallback** in `drug_code_resolver.py` (commit `a2000614`): closes AMG 334 → erenumab class. PubChem covers consumer drugs, RxNorm covers FDA-approved + late-stage, IUPHAR covers research-stage biologicals (antibodies, peptides, novel modalities). Slice-I cohort: AMG 334 now resolves; ABY-029/TH1902/DSP-7888/PGV-001 still empty (very early-stage codes not in any public DB).
+- **Score script dual-metric RfF reporting** (`scripts/score_full_corpus.py`): the new "Reason for Failure — dual-metric report" section exposes blank-when-GT-had as a miss and breaks down by GT class. Previous score-blind methodology masked Lever 1's actual position.
+- **Synonym filter tightening:** colon-prefixed db refs (`RefChem:`, `ChEBI:`), drug-dictionary bracketed suffixes (`[WHO-DD]`, `[INN]`), and salt-form decorations (`GSK3008348 monohydrochloride`) now all drop. 8/8 unit tests + 28/28 trip-wires pass.
+
+---
+
 ## 1. Sequencing rules (apply to every v42.9 lever)
 
 1. **Wait for Job #105 + #106 to complete** before starting v42.9 work. Real full-corpus numbers may diverge from projections — calibrate targets against actuals.
