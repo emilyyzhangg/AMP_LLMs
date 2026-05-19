@@ -647,6 +647,15 @@ def test_v42_8_4_drug_code_resolver():
     assert "rxnav.nlm.nih.gov" in src, (
         "v42.8.4 trip-wire: RxNorm URL missing from drug_code_resolver.py"
     )
+    # v42.8.4b: IUPHAR Tier 3 fallback for research-stage biologicals
+    # (AMG 334 / erenumab class) that PubChem + RxNorm don't index.
+    assert "guidetopharmacology.org" in src, (
+        "v42.8.4b trip-wire: IUPHAR URL missing — Tier 3 fallback for "
+        "research-stage biologicals (AMG 334 → erenumab) removed."
+    )
+    assert "def _resolve_iuphar(" in src, (
+        "v42.8.4b trip-wire: _resolve_iuphar() function missing"
+    )
 
     reg_src = (PKG_ROOT / "agents" / "research" / "__init__.py").read_text()
     assert "DrugCodeResolverAgent" in reg_src and '"drug_code_resolver"' in reg_src, (

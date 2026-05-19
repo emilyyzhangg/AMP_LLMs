@@ -211,6 +211,65 @@ def main() -> int:
         if pred == gt_v:
             d["hits"] += 1
 
+    # v42.8.5a addition (2026-05-11): RfF dual-metric reporting. The
+    # score-blind methodology in the main table skips trials where the
+    # agent emitted blank — masking the score-blindness gap that
+    # Lever 1 (RfF emission gate) was designed to close. Full-corpus
+    # #105+#106 (post-Lever-1) showed RfF emissions 9 → 56 = +47, but
+    # the score-blind number only shifted from 86.2% (n=29) to 90.6%
+    # (n=32). The TRUE recall (counting blank-when-GT-had as a miss)
+    # exposes the actual Lever 1 lift.
+    rff_true_hits = 0
+    rff_true_n = 0
+    rff_emitted = 0
+    rff_blank_when_gt = 0
+    rff_by_class: dict[str, dict] = {}
+    for t in trials:
+        nct = (t.get("nct_id") or "").upper()
+        gt_v = (gt.get(nct, {}) or {}).get("reason_for_failure")
+        if not gt_v:
+            continue
+        rff_true_n += 1
+        pred = get_pred(t, "reason_for_failure").strip()
+        if pred and pred.lower() not in ("n/a", "na"):
+            rff_emitted += 1
+        else:
+            rff_blank_when_gt += 1
+        is_hit = bool(pred and norm(pred) == gt_v)
+        if is_hit:
+            rff_true_hits += 1
+        d = rff_by_class.setdefault(gt_v, {"n": 0, "hits": 0, "blank": 0})
+        d["n"] += 1
+        if is_hit:
+            d["hits"] += 1
+        elif not pred or pred.lower() in ("n/a", "na"):
+            d["blank"] += 1
+    if rff_true_n:
+        rff_true_p = rff_true_hits / rff_true_n
+        rff_true_hw = wald_hw(rff_true_p, rff_true_n)
+        print("## Reason for Failure — dual-metric report\n")
+        print("The main-table RfF accuracy uses score-blind methodology "
+              "(blank-when-GT-had skipped from denominator). The TRUE "
+              "recall counts blank as a miss — this exposes the v42.8.1 "
+              "emission-gate lift.\n")
+        print(f"- **Score-blind (n=non-blank):** {full_results['reason_for_failure']['hits']}/"
+              f"{full_results['reason_for_failure']['n']} = "
+              f"{full_results['reason_for_failure']['p']*100:.1f}%\n")
+        print(f"- **True recall (blank counts as miss, n=all GT-had):** "
+              f"{rff_true_hits}/{rff_true_n} = {rff_true_p*100:.1f}% "
+              f"±{rff_true_hw*100:.1f}pp\n")
+        print(f"- **Emissions:** {rff_emitted}/{rff_true_n} = "
+              f"{rff_emitted/rff_true_n*100:.1f}% "
+              f"(blank-when-GT-had: {rff_blank_when_gt})\n")
+        print("\n### Per-GT-class breakdown\n")
+        print("| GT class | n | hits | blank | accuracy |")
+        print("|---|---|---|---|---|")
+        for cls in sorted(rff_by_class.keys()):
+            d = rff_by_class[cls]
+            acc = d["hits"] / d["n"] * 100 if d["n"] else 0
+            print(f"| {cls} | {d['n']} | {d['hits']} | {d['blank']} | {acc:.1f}% |")
+        print()
+
     print("## Outcome stratified by GT class\n")
     print("| GT outcome | n | hits | accuracy |")
     print("|---|---|---|---|")

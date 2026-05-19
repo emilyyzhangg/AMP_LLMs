@@ -48,10 +48,37 @@ def test_uninformative_synonym_filters():
     assert _is_uninformative_synonym(
         "L-ARGINYL-L-ARGINYL-L-TRYPTOPHYL-L-VALYL-L-ARGINYL-L-ARGINYL-L-VALYL-L-ARGINYL"
     )
+    # v42.8.4b additions: colon-prefixed db refs, drug-dictionary
+    # bracketed suffixes, salt forms of pharma codes.
+    assert _is_uninformative_synonym("RefChem:933588")
+    assert _is_uninformative_synonym("ChEBI:12345")
+    assert _is_uninformative_synonym("TRV 027 [WHO-DD]")
+    assert _is_uninformative_synonym("Foo [INN]")
+    assert _is_uninformative_synonym("GSK3008348 monohydrochloride")
+    assert _is_uninformative_synonym("Compound-X dihydrate")
     # Real names should pass through
     assert not _is_uninformative_synonym("WLBU2")
     assert not _is_uninformative_synonym("plectasin")
     assert not _is_uninformative_synonym("C-Peptide")
+    assert not _is_uninformative_synonym("erenumab")
+    # Brand names with no salt suffix should pass
+    assert not _is_uninformative_synonym("Ozempic")
+    assert not _is_uninformative_synonym("Saxenda")
+
+
+def test_resolve_iuphar_tier3_amg334():
+    """v42.8.4b: IUPHAR Tier 3 fallback resolves AMG 334 → erenumab.
+    PubChem + RxNorm both return empty for this antibody research code
+    (slice-I audit confirmed). IUPHAR /services/ligands fills the gap."""
+    candidates = asyncio.run(resolve("AMG 334"))
+    names = [c["name"].lower() for c in candidates]
+    sources = {c["source"] for c in candidates}
+    assert "iuphar" in sources, (
+        f"expected IUPHAR fallback to fire on AMG 334; got sources={sources}"
+    )
+    assert any("erenumab" in n for n in names), (
+        f"expected erenumab in resolutions; got {names}"
+    )
 
 
 def test_resolve_pharma_code_pubchem():
@@ -109,6 +136,7 @@ def main() -> int:
         test_resolve_marketed_drug_pubchem,
         test_resolve_unknown_returns_empty,
         test_agent_research_outputs_resolved_map,
+        test_resolve_iuphar_tier3_amg334,
     ]
     failed = 0
     for t in tests:

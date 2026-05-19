@@ -63,6 +63,14 @@ PUBCHEM_NAME_URL = (
 RXNORM_APPROX_URL = (
     "https://rxnav.nlm.nih.gov/REST/approximateTerm.json"
 )
+# v42.8.4b (2026-05-11): IUPHAR Guide to Pharmacology as Tier 3
+# fallback. PubChem indexes marketed drugs and CAS-registered
+# compounds; RxNorm covers FDA-approved + late-stage. IUPHAR
+# covers RESEARCH-STAGE biologicals (antibodies, peptides, novel
+# modalities) that the other two miss — slice-I full-corpus
+# audit confirmed AMG 334 → erenumab via IUPHAR (PubChem + RxNorm
+# both empty).
+IUPHAR_LIGANDS_URL = "https://www.guidetopharmacology.org/services/ligands"
 
 # Common pharma-code shape: 2-6 letters + optional dash + 2-7 digits, or
 # isotope-prefix + dash + letters (64Cu-SARTATE). The resolver still
@@ -106,6 +114,16 @@ def _is_uninformative_synonym(syn: str) -> bool:
     for prefix in ("CHEMBL", "DTXSID", "DTXCID", "UNII", "CID", "SCHEMBL", "GTPL"):
         if s.upper().startswith(prefix):
             return True
+    # Colon-prefixed database refs ('RefChem:933588', 'ChEBI:12345', etc.)
+    if ":" in s and s.split(":", 1)[0].upper() in (
+        "REFCHEM", "CHEBI", "DRUGBANK", "MESH", "BIND", "KEGG", "NCIT"
+    ):
+        return True
+    # Drug-dictionary suffixes ('TRV 027 [WHO-DD]', 'Foo [INN]', etc.)
+    # are informative but the BARE name is preferred — IUPHAR already
+    # returns the canonical INN separately. Drop bracketed suffixes.
+    if re.search(r"\s*\[[A-Z][A-Z\-]+\]\s*$", s):
+        return True
     # Bare UNII format: 10 alphanumeric uppercase characters with at
     # least one digit and one letter (e.g. 'J1J4P3PQZD', '17ZS80333G',
     # '33W7SJ9TBX'). The synonym list returns UNIIs without the prefix.
@@ -132,6 +150,34 @@ def _is_uninformative_synonym(syn: str) -> bool:
     # ('orb3142637', 'tp3849', etc.). Biological names rarely look like this.
     if re.match(r"^[a-z]{2,4}\d{4,}$", s):
         return True
+    # Salt-form decorations of pharma codes: 'X monohydrochloride',
+    # 'X free acid', 'X dihydrate', 'X mesylate', etc. The bare base
+    # name (X) is more useful for downstream UniProt / DRAMP queries.
+    # Drop if the lead token looks like a pharma code OR matches the
+    # pharma-code shape, AND the trailing tokens are salt-form words.
+    _SALT_FORM_TOKENS = (
+        "monohydrochloride", "hydrochloride", "dihydrochloride",
+        "trihydrochloride", "mesylate", "tosylate", "citrate",
+        "tartrate", "fumarate", "maleate", "succinate",
+        "free acid", "free base", "hydrate", "dihydrate",
+        "monohydrate", "anhydrous", "sodium salt", "potassium salt",
+    )
+    s_lower = s.lower()
+    for salt in _SALT_FORM_TOKENS:
+        if s_lower.endswith(" " + salt):
+            head = s_lower[: -len(salt) - 1].strip()
+            if not head:
+                continue
+            # Drop if head looks like a code (pharma code shape, single
+            # uppercase token, or contains digits). 'aspirin sodium salt'
+            # would be a real generic but is too short — keep biological
+            # names safe by requiring the head be uppercase-derived or
+            # digit-bearing.
+            head_upper = head.upper()
+            if (looks_like_pharma_code(head_upper)
+                    or any(ch.isdigit() for ch in head)
+                    or "-" in head):
+                return True
     # Other pharma-code-shaped synonyms (we want biological names, not
     # other internal codes)
     if looks_like_pharma_code(s):
@@ -171,6 +217,69 @@ async def _resolve_pubchem(name: str, client: httpx.AsyncClient) -> list[dict]:
             if len(out) >= 6:
                 break
         if out:
+            break
+    return out
+
+
+async def _resolve_iuphar(name: str, client: httpx.AsyncClient) -> list[dict]:
+    """Query IUPHAR /services/ligands?name=<code>; return INN + canonical name.
+
+    IUPHAR returns ligand objects with `name` (canonical), `inn`
+    (international nonproprietary name), `abbreviation`, and `type`
+    (Antibody / Peptide / Synthetic organic / etc.). Both `name` and
+    `inn` are useful for downstream UniProt / DRAMP queries.
+    """
+    try:
+        resp = await resilient_get(
+            IUPHAR_LIGANDS_URL,
+            client=client,
+            params={"name": name},
+            headers={"Accept": "application/json"},
+        )
+    except Exception as exc:
+        logger.debug(f"iuphar resolve failed for {name!r}: {exc}")
+        return []
+    if resp.status_code != 200:
+        return []
+    try:
+        data = resp.json()
+    except ValueError:
+        return []
+    if not isinstance(data, list):
+        # Error response is a dict like {'error': 'No ligands found'};
+        # treat as empty
+        if isinstance(data, dict) and "error" in data:
+            return []
+        data = [data] if data else []
+
+    # IUPHAR's API does its own synonym/code lookup before returning —
+    # we trust the match. (My earlier substring filter rejected the
+    # AMG 334 → erenumab case because "amg 334" doesn't appear in
+    # "erenumab"; that case is exactly the code→canonical resolution
+    # we want.) Cap at top 3 ligands per query to bound noise.
+    needle = name.lower().strip()
+    out: list[dict] = []
+    for lig in data[:3]:
+        if not isinstance(lig, dict):
+            continue
+        canonical = (lig.get("name") or "").strip()
+        inn = (lig.get("inn") or "").strip()
+        # Add both name and inn as separate candidates (downstream
+        # UniProt/DRAMP try each; inn is usually the canonical generic
+        # while name might be a brand variant). De-dup at the resolve()
+        # layer by (name lower).
+        for n in (canonical, inn):
+            if not n or _is_uninformative_synonym(n):
+                continue
+            if n.lower() == needle:
+                continue
+            out.append({
+                "name": n,
+                "source": "iuphar",
+                "confidence": 0.90,
+                "id": str(lig.get("ligandId", "")),
+            })
+        if len(out) >= 4:
             break
     return out
 
@@ -256,7 +365,16 @@ async def resolve(name: str, client: Optional[httpx.AsyncClient] = None) -> list
                     rxnorm_results = await _resolve_rxnorm(v, c)
                     if rxnorm_results:
                         break
-            combined = pubchem_results + rxnorm_results
+            iuphar_results: list[dict] = []
+            if not pubchem_results and not rxnorm_results:
+                # Tier 3: IUPHAR covers research-stage biologicals
+                # (AMG 334 → erenumab, etc.) that the consumer-drug-
+                # focused databases above miss.
+                for v in variants:
+                    iuphar_results = await _resolve_iuphar(v, c)
+                    if iuphar_results:
+                        break
+            combined = pubchem_results + rxnorm_results + iuphar_results
             # Deduplicate by lowercased name; keep highest confidence
             best: dict[str, dict] = {}
             for r in combined:
