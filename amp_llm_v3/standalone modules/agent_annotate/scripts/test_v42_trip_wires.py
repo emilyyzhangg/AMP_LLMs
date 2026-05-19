@@ -712,12 +712,30 @@ def test_v42_8_5_press_release_agent():
     )
     # Override block must precede v42.8.2 strong-failure (positive PR is a
     # primary-readout signal; should fire before negative-only paths).
-    pr_idx = out_src.find("v42.8.5 (2026-05-07) Lever 5: press-release override")
+    pr_idx = max(
+        out_src.find("v42.8.5 (2026-05-07) Lever 5: press-release override"),
+        out_src.find("v42.8.5a (2026-05-11) Lever 5 press-release override"),
+    )
     sf_idx = out_src.find("v42.8.2 (2026-05-06): strong-failure publication override")
     assert pr_idx > 0 and sf_idx > pr_idx, (
         "v42.8.5 trip-wire: press-release override must precede v42.8.2 "
         "strong-failure (positive readout takes precedence over deterministic "
         "publication-failure phrasing)."
+    )
+
+    # v42.8.5a tightening: positive override MUST require multi-source
+    # convergence (≥2 PRs OR 1 PR + matched/registered pub) — guards
+    # against the unknown→positive false-flip class (21/100 misfires
+    # on full-corpus #105+#106).
+    assert "positive_pr_strong" in out_src, (
+        "v42.8.5a trip-wire: multi-source convergence gate missing — "
+        "reverting to single-PR override re-introduces the 21/100 "
+        "unknown→positive false-flip class observed on full-corpus."
+    )
+    assert "recency_ok" in out_src, (
+        "v42.8.5a trip-wire: completion-date recency gate missing — "
+        "old NCTs commonly match recent Google News results about the "
+        "same drug but different trial; recency check is required."
     )
     print("  ✓ v42.8.5: press-release agent wired (Google News RSS + override + dossier)")
 

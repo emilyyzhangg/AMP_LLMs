@@ -1413,32 +1413,68 @@ class OutcomeAgent(BaseAnnotationAgent):
                 and not neg):
             return "Positive"
 
-        # v42.8.5 (2026-05-07) Lever 5: press-release override.
-        # Sponsors often announce trial readouts via press releases
-        # (Google News RSS aggregates PR Newswire / BusinessWire /
-        # sponsor newsroom / trade pubs) months before — or instead of
-        # — peer-reviewed publication. Closes the recency-driven
-        # positive→unknown miss class on NCT05+ trials where literature
-        # is sparse.
+        # v42.8.5a (2026-05-11) Lever 5 press-release override — TIGHTENED.
+        # v42.8.5 fired on ≥1 positive PR with no status gating on running
+        # vs completed; full-corpus #105+#106 audit (2026-05-11): 21 of
+        # 100 trials where Lever 5 fired POSITIVE were unknown→positive
+        # FALSE FLIPS (GT=unknown). Old NCTs (NCT02xxx, NCT03xxx)
+        # commonly matched a recent Google News result for the same
+        # drug name but a DIFFERENT trial — cross-trial-name confusion.
+        # The override unconditionally won against the LLM (0 cases
+        # where LLM held Unknown despite PR firing).
         #
-        # Positive override: ≥1 positive PR + 0 negative PR + status
-        # in COMPLETED/ACTIVE_NOT_RECRUITING/RECRUITING (running or
-        # completed trial). Headlines are anchored on primary-endpoint
-        # phrases (mirror of _STRONG_EFFICACY); bare "approved" /
-        # "results" do not fire (per v42.6.14 over-call lesson).
+        # Tightened gates (v42.8.5a):
+        #   (a) ≥2 positive PRs OR (1 positive PR AND ≥1 matched/
+        #       registered trial publication) — single PR alone is too
+        #       noisy; multi-source convergence is required;
+        #   (b) status MUST be COMPLETED or ACTIVE_NOT_RECRUITING —
+        #       RECRUITING / NOT_YET_RECRUITING trials can't have a
+        #       readout yet;
+        #   (c) trial completion date AT MOST 5 years ago (when
+        #       available) — protects against late-PR-for-old-trial
+        #       cross-confusion (the bulk of the false-flip class).
         #
-        # Negative override: ≥1 negative PR + 0 positive PR + status
-        # in COMPLETED/TERMINATED. Mirrors v42.8.2 strong-failure for
-        # the press-release evidence channel.
-        if (dossier.get("has_positive_pr")
-                and not dossier.get("has_negative_pr")
-                and dossier.get("press_release_count", 0) >= 1
-                and status not in ("WITHDRAWN", "")
+        # Slice-J wins preserved: NCT05660109 (2 PRs), NCT05477095
+        # (2 PRs) survive both gates. NCT05635045 / NCT05554913 /
+        # NCT05218915 (1 PR each) now require a matched/registered pub
+        # — verified that their full-corpus dossiers DO have such
+        # pubs, so they still flip.
+        #
+        # Negative override: same gates mirror (≥2 negative PRs OR
+        # 1 PR + matched pub, status COMPLETED/TERMINATED).
+        pr_pos_count = sum(
+            1 for e in dossier.get("press_release_evidence", [])
+            if e.get("classification") == "positive"
+        )
+        pr_neg_count = sum(
+            1 for e in dossier.get("press_release_evidence", [])
+            if e.get("classification") == "negative"
+        )
+        matched_or_registered = (
+            dossier.get("matched_trial_pubs_count", 0)
+            + dossier.get("registered_trial_pubs_count", 0)
+        )
+        days_since = dossier.get("days_since_completion")
+        recency_ok = days_since is None or days_since <= 5 * 365
+
+        positive_pr_strong = (
+            pr_pos_count >= 2
+            or (pr_pos_count >= 1 and matched_or_registered >= 1)
+        )
+        negative_pr_strong = (
+            pr_neg_count >= 2
+            or (pr_neg_count >= 1 and matched_or_registered >= 1)
+        )
+
+        if (positive_pr_strong
+                and pr_neg_count == 0
+                and status in ("COMPLETED", "ACTIVE_NOT_RECRUITING")
+                and recency_ok
                 and current_value not in ("Positive", "Failed - completed trial")):
             return "Positive"
 
-        if (dossier.get("has_negative_pr")
-                and not dossier.get("has_positive_pr")
+        if (negative_pr_strong
+                and pr_pos_count == 0
                 and status in ("COMPLETED", "TERMINATED")
                 and current_value not in ("Failed - completed trial",)):
             return "Failed - completed trial"

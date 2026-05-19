@@ -20,7 +20,7 @@ for arg in "$@"; do
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
         --test-batch) ALLOW_TEST_BATCH=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--slice-k|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -74,6 +74,13 @@ for arg in "$@"; do
         # positives (regression check). Controlled re-use of full-corpus
         # NCTs.
         --slice-j) SLICE="$THIS_DIR/holdout_outcome_slice_j_v42_8_5.json" ;;
+        # slice-K: v42.8.5a (Lever 5 override tightening) validation. 20 NCTs:
+        # 15 unknown-GT false flips from full-corpus #105+#106 (Lever 5 fired
+        # but GT=Unknown — cross-trial-name confusion class) + 5 slice-J
+        # confirmed wins (regression check that high-confidence flips
+        # still fire). Decision rule: false flips → Unknown ≥10/15
+        # AND regression check ≥3/5 stay Positive.
+        --slice-k) SLICE="$THIS_DIR/holdout_outcome_slice_k_v42_8_5a.json" ;;
         # Milestone validation: 147-NCT combined slice (Job #83 baseline +
         # held-out A/B/C/D). Used to certify accuracy with ±8pp CI
         # half-width, ~24h overnight run. Triggered when iteration cycles
