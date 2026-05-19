@@ -8,7 +8,7 @@ interface ModelConfig {
 
 interface EvidenceThreshold {
   min_sources: number;
-  min_quality_score: number;
+  min_quality: number;
 }
 
 export default function SettingsPage() {
@@ -136,7 +136,7 @@ export default function SettingsPage() {
         let hasThresholdChanges = false;
         for (const [field, current] of Object.entries(origThresholds)) {
           const override = thresholdOverrides[field];
-          if (override && (override.min_sources !== current.min_sources || override.min_quality_score !== current.min_quality_score)) {
+          if (override && (override.min_sources !== current.min_sources || override.min_quality !== current.min_quality)) {
             thresholdChanges[field] = override;
             hasThresholdChanges = true;
           }
@@ -168,7 +168,7 @@ export default function SettingsPage() {
     setModelOverrides((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleThresholdChange = (field: string, prop: "min_sources" | "min_quality_score", value: number) => {
+  const handleThresholdChange = (field: string, prop: "min_sources" | "min_quality", value: number) => {
     setThresholdOverrides((prev) => ({
       ...prev,
       [field]: { ...prev[field], [prop]: value },
@@ -304,10 +304,10 @@ export default function SettingsPage() {
                   min="0"
                   max="1"
                   step="0.05"
-                  value={thresh.min_quality_score}
-                  onChange={(e) => handleThresholdChange(field, "min_quality_score", parseFloat(e.target.value))}
+                  value={thresh.min_quality}
+                  onChange={(e) => handleThresholdChange(field, "min_quality", parseFloat(e.target.value))}
                 />
-                <span className="slider-value">{thresh.min_quality_score.toFixed(2)}</span>
+                <span className="slider-value">{thresh.min_quality.toFixed(2)}</span>
               </div>
             </div>
           ))
