@@ -171,7 +171,7 @@ Per IMPROVEMENT_STRATEGY §1.2, the GT itself has substantial human-vs-human dis
 | held-out-J | 20 | n/a | RETIRED   | v42.8.5 = `e6ee9665d680` (commit `f254e285`): **5/14 NCT05+ pos→unk FLIPPED to Positive** ⭐ — Lever 5 breakout; classification 100%, peptide 89%, delivery 89%; 0 false positives; the 9 non-flipped trials had small/academic sponsors lacking press-wire coverage |
 | full-corpus-1 (re-run) | 315 | n/a | RETIRED   | Job #105 = `7e7efda9649e` (commit `916c1f1e`, complete 2026-05-11). v42.8 stack at scale. Class 96.2%, peptide 85.5%, delivery 87.5%, outcome 41.1%, sequence 25.8%, RfF 90.6%. |
 | full-corpus-2 (re-run) | 315 | n/a | RETIRED   | Job #106 = `c7ca38f92f6b` (commit `916c1f1e`, complete 2026-05-11). Merged with #105 for canonical 630-NCT v42.8 result; outcome regressed -1.2pp vs pre-v42.8 due to Lever-5 false flips on unknown-GT. |
-| held-out-K | 20 | n/a | IN FLIGHT | v42.8.5a override tightening = `<TBD>` (commit `<TBD>`). 15 unknown-GT false flips + 5 slice-J wins; decision rule false→Unknown ≥10/15 AND wins ≥3/5 stay Positive. |
+| held-out-K | 20 | n/a | RETIRED   | v42.8.5a = `ea6cb2da5244` (commit `99bb2443`). Mixed: 14/15 false flips reverted ✅ but only 1/5 slice-J wins survived ❌ — multi-source gate too strict. Slice-K revealed PR coverage is temporally volatile (slice-J's 2-PR wins returned 0-1 PRs on re-query 3 days later). v42.8.5b (`<TBD>`) drops multi-source requirement, keeps recency + status — projected 14/15 false flips blocked + 3/5 wins via simulation. |
 | test-batch    | 50  | n/a | DEFERRED  | #104 (post v42.8 stack — single-shot unbiased held-out certification, ~8h) |
 
 `scripts/submit_holdout_validation.sh --milestone --check-sync` triggers the 147-NCT validation.

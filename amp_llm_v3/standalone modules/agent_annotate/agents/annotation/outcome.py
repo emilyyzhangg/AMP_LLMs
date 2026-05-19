@@ -1413,35 +1413,40 @@ class OutcomeAgent(BaseAnnotationAgent):
                 and not neg):
             return "Positive"
 
-        # v42.8.5a (2026-05-11) Lever 5 press-release override — TIGHTENED.
-        # v42.8.5 fired on ≥1 positive PR with no status gating on running
-        # vs completed; full-corpus #105+#106 audit (2026-05-11): 21 of
-        # 100 trials where Lever 5 fired POSITIVE were unknown→positive
-        # FALSE FLIPS (GT=unknown). Old NCTs (NCT02xxx, NCT03xxx)
-        # commonly matched a recent Google News result for the same
-        # drug name but a DIFFERENT trial — cross-trial-name confusion.
-        # The override unconditionally won against the LLM (0 cases
-        # where LLM held Unknown despite PR firing).
+        # v42.8.5b (2026-05-11) Lever 5 press-release override — softened
+        # back to ≥1 PR + strict status/recency, after slice-K
+        # `ea6cb2da5244` exposed the v42.8.5a multi-source requirement
+        # was too aggressive.
         #
-        # Tightened gates (v42.8.5a):
-        #   (a) ≥2 positive PRs OR (1 positive PR AND ≥1 matched/
-        #       registered trial publication) — single PR alone is too
-        #       noisy; multi-source convergence is required;
-        #   (b) status MUST be COMPLETED or ACTIVE_NOT_RECRUITING —
-        #       RECRUITING / NOT_YET_RECRUITING trials can't have a
-        #       readout yet;
-        #   (c) trial completion date AT MOST 5 years ago (when
-        #       available) — protects against late-PR-for-old-trial
-        #       cross-confusion (the bulk of the false-flip class).
+        # Slice-K result (15 false-flips + 5 slice-J wins):
+        #   - v42.8.5a multi-source gate: 14/15 false flips blocked ✅
+        #     but only 1/5 slice-J wins still flipped ❌
+        #   - Reason: PR coverage is TEMPORALLY VOLATILE (slice-J's
+        #     2-PR wins NCT05660109 / NCT05477095 returned only 0-1
+        #     PRs on slice-K re-query 3 days later — Google News ages
+        #     headlines out). Matched/registered=0 for ALL 5 wins
+        #     because these are recent NCT05+ trials without formally
+        #     registered pubs — the (1 PR + matched/registered) clause
+        #     never fires for the target class.
         #
-        # Slice-J wins preserved: NCT05660109 (2 PRs), NCT05477095
-        # (2 PRs) survive both gates. NCT05635045 / NCT05554913 /
-        # NCT05218915 (1 PR each) now require a matched/registered pub
-        # — verified that their full-corpus dossiers DO have such
-        # pubs, so they still flip.
+        # Simulation against the slice-K corpus (re-run on the same
+        # research_results, just the gate logic changed):
+        #   v42.8.5b: ≥1 PR + status COMPLETED/ACTIVE_NOT_RECRUITING
+        #             + completion ≤5y
+        #     - Slice-J wins fire: 3/5 (60%, vs 1/5 under v42.8.5a)
+        #     - False flips fire: 1/15 (7%, vs 1/15 under v42.8.5a)
+        #     → Net +2 hits over v42.8.5a, far below the +5 of v42.8.5
+        #       but with the false-flip class controlled.
         #
-        # Negative override: same gates mirror (≥2 negative PRs OR
-        # 1 PR + matched pub, status COMPLETED/TERMINATED).
+        # The 14 false-flips that get blocked share signatures the
+        # recency+status gate handles cleanly:
+        #   - status UNKNOWN/TERMINATED (4 NCTs blocked)
+        #   - completion > 5y (5 NCTs blocked)
+        #   - 0 PRs at re-query time (5 NCTs naturally blocked)
+        # Only NCT03422666 slips through (status=COMPLETED, days=1813);
+        # genuine cross-trial-name confusion remains a residual.
+        #
+        # Negative override: same gates mirror.
         pr_pos_count = sum(
             1 for e in dossier.get("press_release_evidence", [])
             if e.get("classification") == "positive"
@@ -1450,32 +1455,20 @@ class OutcomeAgent(BaseAnnotationAgent):
             1 for e in dossier.get("press_release_evidence", [])
             if e.get("classification") == "negative"
         )
-        matched_or_registered = (
-            dossier.get("matched_trial_pubs_count", 0)
-            + dossier.get("registered_trial_pubs_count", 0)
-        )
         days_since = dossier.get("days_since_completion")
         recency_ok = days_since is None or days_since <= 5 * 365
 
-        positive_pr_strong = (
-            pr_pos_count >= 2
-            or (pr_pos_count >= 1 and matched_or_registered >= 1)
-        )
-        negative_pr_strong = (
-            pr_neg_count >= 2
-            or (pr_neg_count >= 1 and matched_or_registered >= 1)
-        )
-
-        if (positive_pr_strong
+        if (pr_pos_count >= 1
                 and pr_neg_count == 0
                 and status in ("COMPLETED", "ACTIVE_NOT_RECRUITING")
                 and recency_ok
                 and current_value not in ("Positive", "Failed - completed trial")):
             return "Positive"
 
-        if (negative_pr_strong
+        if (pr_neg_count >= 1
                 and pr_pos_count == 0
                 and status in ("COMPLETED", "TERMINATED")
+                and recency_ok
                 and current_value not in ("Failed - completed trial",)):
             return "Failed - completed trial"
 

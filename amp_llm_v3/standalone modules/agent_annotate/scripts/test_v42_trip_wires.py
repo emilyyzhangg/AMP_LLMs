@@ -724,6 +724,7 @@ def test_v42_8_5_press_release_agent():
     pr_idx = max(
         out_src.find("v42.8.5 (2026-05-07) Lever 5: press-release override"),
         out_src.find("v42.8.5a (2026-05-11) Lever 5 press-release override"),
+        out_src.find("v42.8.5b (2026-05-11) Lever 5 press-release override"),
     )
     sf_idx = out_src.find("v42.8.2 (2026-05-06): strong-failure publication override")
     assert pr_idx > 0 and sf_idx > pr_idx, (
@@ -732,19 +733,21 @@ def test_v42_8_5_press_release_agent():
         "publication-failure phrasing)."
     )
 
-    # v42.8.5a tightening: positive override MUST require multi-source
-    # convergence (≥2 PRs OR 1 PR + matched/registered pub) — guards
-    # against the unknown→positive false-flip class (21/100 misfires
-    # on full-corpus #105+#106).
-    assert "positive_pr_strong" in out_src, (
-        "v42.8.5a trip-wire: multi-source convergence gate missing — "
-        "reverting to single-PR override re-introduces the 21/100 "
-        "unknown→positive false-flip class observed on full-corpus."
-    )
+    # v42.8.5b softening (2026-05-11): the multi-source convergence
+    # gate (≥2 PRs OR 1 PR + matched pub) was too strict — slice-K
+    # showed only 1/5 high-confidence slice-J wins survived because
+    # PR coverage is temporally volatile and the target class has 0
+    # matched/registered pubs by definition. v42.8.5b keeps the
+    # recency + status gates but drops the multi-source requirement.
+    # Recency + status is what actually blocks the false-flip class.
     assert "recency_ok" in out_src, (
-        "v42.8.5a trip-wire: completion-date recency gate missing — "
+        "v42.8.5b trip-wire: completion-date recency gate missing — "
         "old NCTs commonly match recent Google News results about the "
         "same drug but different trial; recency check is required."
+    )
+    assert "ACTIVE_NOT_RECRUITING" in out_src, (
+        "v42.8.5b trip-wire: status gate missing the override scope "
+        "(COMPLETED + ACTIVE_NOT_RECRUITING only)."
     )
     print("  ✓ v42.8.5: press-release agent wired (Google News RSS + override + dossier)")
 
