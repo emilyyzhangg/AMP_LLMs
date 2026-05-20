@@ -168,11 +168,41 @@ data-bound (need the efficacy-failure publication, same gap as outcome/sequence)
 and coupled to the outcome call. Citation-cap raise + agent broadening from the
 original audit are lower priority — they don't address the dominant whyStopped gap.
 
-### P3 — Classification / delivery / peptide edge cases
-Classification: post-LLM AMP override checks "suppress" keywords *after* deciding
-(classification.py:513-538); DBAASP-only hits not flagged uncertain to the LLM.
-Peptide: insulin is contradictorily in/out of the known list; multi-drug trials
-can miss a co-administered peptide. Delivery: multi-route dedup is fragile.
+### P3 — Peptide (84.1%) — INVESTIGATED 2026-05-20, NO CHANGE (naive fixes degrade)
+**All 43 corpus misses are FALSE POSITIVES (over-call); zero false negatives** —
+the agent's final recall is perfect, precision is the gap. Two override BUGS were
+found and look like easy wins, but the data proves fixing them *reduces* accuracy:
+
+1. `resolve_known_sequence` (sequence.py) substring-matched 2-char tokens:
+   `"ns" ⊂ "angiote**ns**in-(1-7)"`, and EDAM resolves **"Placebo" → "NS"** (normal
+   saline) — so the pre-cascade override stamped peptide=True on placebo/saline
+   arms via a fake 7-aa angiotensin sequence. `resolve_known_sequence("7")` also
+   matches.
+2. The consistency override (orchestrator.py ~2426) treats the no-sequence
+   sentinel **"N/A"** as a 3-amino-acid sequence (`len("N/A")==3 ∈ [2,100]`) and
+   flips peptide False→True. 67 corpus trials hit this; all had sequence="N/A".
+
+**Why fixing them degrades:** the base peptide agent UNDER-calls — it labels real
+peptide drugs False ("marine collagen peptide", "collagen hydrolysate", QL0911,
+OPT101, GLP-1 coded drugs). The two buggy overrides crudely flip many False→True,
+and **58% of those flips are correct** (the base agent's False calls are mostly
+wrong). Simulated removals: N/A-guard = +21 fix / −29 regress (net −8);
+`resolve_known_sequence` guard = +3 fix / −7 regress (net −4). Both changes were
+implemented, simulated, and **reverted** — shipping them would have lowered
+accuracy. (This is why the audit pipeline now validates offline before shipping.)
+
+**Real lever:** improve the *base* peptide agent's recall so it stops calling
+real peptides False — then the crude overrides can be removed safely. That is its
+own careful cycle (peptide.py Pass-1/Pass-2 logic + the collagen/nutritional and
+coded-drug definitional edges), not an override tweak. Separately, EDAM stores
+hallucinated/garbage resolved-drug-names ("Placebo"→"NS"; erenumab→a paragraph of
+LLM disclaimer text) — a drug-resolution data-quality issue worth its own pass.
+
+### P3 — Classification / delivery edge cases (not yet investigated)
+Classification (96%): post-LLM AMP override checks "suppress" keywords *after*
+deciding (classification.py:513-538); DBAASP-only hits not flagged uncertain to
+the LLM. Delivery (92%): multi-route dedup is fragile. Both above target — low
+priority.
 
 ### P3 — Cross-cutting
 Drug cache (`drug_cache.py`) caches empty/error results with no TTL → a drug that
