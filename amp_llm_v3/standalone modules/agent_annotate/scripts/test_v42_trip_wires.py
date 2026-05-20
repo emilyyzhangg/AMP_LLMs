@@ -843,6 +843,34 @@ def test_v42_9_sequence_resolved_lookup_and_fallback():
     print("  ✓ v42.9 P2: sequence resolved-name lookup + widened LLM fallback")
 
 
+def test_v42_9_rff_tier0_whystopped():
+    """v42.9 (2026-05-20) P2: reason_for_failure must classify SPECIFIC-cause
+    whyStopped deterministically from the registry field. Slice analysis found
+    terminated trials with whyStopped='Low enrollment rate' / 'Patient
+    recruitment issues' being defaulted to 'Business Reason' because the LLM
+    evidence builder never surfaced whyStopped (Pass 1 reported 'Not provided').
+    The Tier-0 classifier reads whyStopped directly and maps recruitment / toxic
+    / ineffective / covid causes; vague 'business/sponsor' is left to the LLM."""
+    from agents.annotation.failure_reason import FailureReasonAgent as _F
+    # Specific causes classify; vague business defers (returns "").
+    assert _F._classify_whystopped_specific("Low enrollment rate") == "Recruitment issues"
+    assert _F._classify_whystopped_specific("Patient recruitment issues") == "Recruitment issues"
+    assert _F._classify_whystopped_specific("Stopped for unacceptable toxicity") == "Toxic/Unsafe"
+    assert _F._classify_whystopped_specific("terminated for lack of efficacy") == "Ineffective for purpose"
+    assert _F._classify_whystopped_specific("Sponsor decision") == "", (
+        "vague business whyStopped must defer to the LLM, not classify deterministically"
+    )
+    assert _F._classify_whystopped_specific("Not due to any safety concerns") == "", (
+        "negation filter must prevent 'safety' firing Toxic/Unsafe"
+    )
+    src = (PKG_ROOT / "agents" / "annotation" / "failure_reason.py").read_text()
+    assert "_extract_status_and_whystopped" in src and "Tier-0 whyStopped" in src, (
+        "P2 trip-wire: failure_reason must read whyStopped from raw_data and apply "
+        "the Tier-0 classifier before the LLM passes."
+    )
+    print("  ✓ v42.9 P2: RfF Tier-0 specific-cause whyStopped classifier")
+
+
 def test_audit_trail_wired():
     """Audit trail (2026-05-20): every annotation LLM call's input (prompt +
     system) and raw output must be captured and written to a per-trial
@@ -927,6 +955,7 @@ def main() -> int:
         test_v42_9_completed_not_failed_override,
         test_v42_9_resolved_name_propagation,
         test_v42_9_sequence_resolved_lookup_and_fallback,
+        test_v42_9_rff_tier0_whystopped,
         test_audit_trail_wired,
         test_dbaasp_word_boundary_preserved,
     ]

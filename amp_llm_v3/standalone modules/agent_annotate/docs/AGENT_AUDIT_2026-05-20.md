@@ -143,15 +143,30 @@ retrieve the *single* exact epitope (UniProt slice or IEDB lookup), not spray an
 antigen's whole epitope set. Antibody-VH-domain and modified-synthetic GT is
 likely beyond legitimate automated retrieval.
 
-### P2 — RfF evidence starvation + over-literal whyStopped
-`failure_reason.py` feeds the LLM only 4 web + 4 literature citations capped at
-2800 chars, and only the `literature`/`web_context` agents (drops openalex,
-crossref, biorxiv, structured press releases, SEC). whyStopped keyword matching is
-too literal: "interim analysis" → Ineffective (wrong for early-success), bare
-"sponsor decision" → Business Reason (masks efficacy/safety failures). Emission
-gate defaults aggressively for TERMINATED even on sparse evidence. **Fixes:**
-raise caps + priority-sort; broaden agents; remove over-broad keywords + add
-negation handling; gate the default on Pass-1 confidence.
+### P2 — RfF whyStopped not reaching the agent — ✅ partial fix shipped 2026-05-20
+**Root cause (315-NCT job, 20 RfF-GT trials):** RfF true-recall was 3/20. 11
+recall misses (agent blank, mostly `ineffective` on COMPLETED trials — data-bound,
+needs the efficacy-failure publication, coupled to outcome) + 6 precision misses.
+**All 6 precision misses were TERMINATED/WITHDRAWN trials whose CT.gov whyStopped
+clearly stated a specific cause** ("Low enrollment rate", "Patient recruitment
+issues", "0 enrollment") — yet the agent's own Pass-1 reasoning said "whyStopped:
+Not provided". The structured `whyStopped`/`overallStatus` from clinical_protocol
+raw_data **was never reaching the LLM** (the evidence builder didn't surface it),
+so the agent defaulted Terminated/Withdrawn → "Business Reason".
+
+**Fixed:** `failure_reason.py` now reads `whyStopped` + `overallStatus` straight
+from clinical_protocol raw_data and applies a **Tier-0 deterministic classifier**
+for SPECIFIC causes (recruitment / toxic / ineffective / covid), with negation
+filtering. Vague "business/sponsor decision" whyStopped is deliberately left to
+the LLM (per the audit caution that literature can override a vague registry
+reason). status+whyStopped are also prepended to the LLM evidence for the
+remaining cases. Offline replay: **RfF true-recall 3/20 → 8/20, +5 fixed, 0
+broke.** Trip-wire `test_v42_9_rff_tier0_whystopped`.
+
+**Not done (deferred):** the 11 `ineffective`-on-COMPLETED recall misses are
+data-bound (need the efficacy-failure publication, same gap as outcome/sequence)
+and coupled to the outcome call. Citation-cap raise + agent broadening from the
+original audit are lower priority — they don't address the dominant whyStopped gap.
 
 ### P3 — Classification / delivery / peptide edge cases
 Classification: post-LLM AMP override checks "suppress" keywords *after* deciding

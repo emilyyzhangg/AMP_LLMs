@@ -136,6 +136,42 @@ class FailureReasonAgent(BaseAnnotationAgent):
                 skip_verification=True,
             )
 
+        # --- TIER 0 (v42.9 P2): deterministic specific-cause whyStopped ---
+        # CT.gov whyStopped, when it names a specific cause, is the sponsor's own
+        # primary-source statement. Slice analysis found the LLM passes routinely
+        # miss it (the evidence builder reports "whyStopped: Not provided" while
+        # the registry clearly says "Low enrollment rate") and then default
+        # Terminated/Withdrawn → Business Reason — misclassifying every
+        # recruitment/toxicity termination. Reading whyStopped directly and
+        # classifying the SPECIFIC causes (recruitment, toxic, ineffective, covid)
+        # fixes that precision class. Vague "business/sponsor decision" whyStopped
+        # is intentionally left to the LLM (it can weigh the literature).
+        overall_status, why_stopped = self._extract_status_and_whystopped(research_results)
+        ws_category = self._classify_whystopped_specific(why_stopped)
+        is_failure_state = (
+            overall_status.upper() in ("TERMINATED", "WITHDRAWN", "SUSPENDED")
+            or outcome_result in ("Terminated", "Withdrawn", "Failed - completed trial")
+        )
+        if ws_category and is_failure_state:
+            logger.info(
+                f"  failure_reason: Tier-0 whyStopped → '{ws_category}' "
+                f"(whyStopped={why_stopped[:60]!r})"
+            )
+            return FieldAnnotation(
+                field_name=self.field_name,
+                value=ws_category,
+                confidence=0.9,
+                reasoning=(
+                    f"[Tier-0 whyStopped] CT.gov status={overall_status or 'n/a'}, "
+                    f"whyStopped={why_stopped!r} → {ws_category}"
+                ),
+                evidence=[],
+                model_name="deterministic",
+                # The sponsor's own stated specific cause is authoritative — lock
+                # it in rather than letting the verifier pool re-guess it.
+                skip_verification=True,
+            )
+
         from app.services.config_service import config_service
 
         _config = config_service.get()
@@ -150,6 +186,18 @@ class FailureReasonAgent(BaseAnnotationAgent):
             max_citations=max_cites,
             max_snippet_chars=max_snippet,
         )
+
+        # v42.9 (P2): surface the structured CT.gov status + whyStopped to the
+        # LLM passes — the evidence builder doesn't reliably include them, which
+        # is why Pass 1 kept reporting "whyStopped: Not provided" on trials that
+        # had one. This helps the vague-whyStopped and recall cases that Tier-0
+        # above intentionally leaves to the model.
+        if overall_status or why_stopped:
+            evidence_text = (
+                f"CLINICALTRIALS.GOV STATUS: {overall_status or 'unknown'}\n"
+                f"WHY STOPPED: {why_stopped or 'Not provided'}\n\n"
+                + evidence_text
+            )
 
         # --- EDAM guidance injection ---
         edam_guidance = await self.get_edam_guidance(nct_id, evidence_text)
@@ -358,6 +406,70 @@ class FailureReasonAgent(BaseAnnotationAgent):
         r"\n(?:trial status|why stopped|published findings?"
         r"|outcome signals?|is this a failure)"
     )
+
+    # v42.9 (P2): specific-cause whyStopped categories. Ordered by priority —
+    # the primary cause wins when several co-occur ("difficulty recruiting also
+    # due to the pandemic" → Recruitment, not Covid). Deliberately EXCLUDES the
+    # vague "business/sponsor decision" bucket: those whyStopped values are
+    # unreliable (a "sponsor decision" can mask a real toxicity/efficacy cause
+    # the literature reveals), so they fall through to the LLM passes. Only the
+    # specific, self-evident causes are classified deterministically here.
+    _WHYSTOP_SPECIFIC = [
+        ("Toxic/Unsafe", [
+            "toxic", "safety", "adverse", "dose-limiting", "dose limiting",
+            "hepatotox", "nephrotox", "serious adverse", "unacceptable",
+        ]),
+        ("Ineffective for purpose", [
+            "efficacy", "futility", "futile", "endpoint", "ineffective",
+            "lack of effic", "did not meet", "no benefit", "no improvement",
+            "no clinical benefit", "did not demonstrate",
+        ]),
+        ("Recruitment issues", [
+            "recruit", "enroll", "enrol", "accrual", "low accrual",
+        ]),
+        ("Due to covid", ["covid", "coronavirus", "sars-cov", "pandemic"]),
+    ]
+
+    @classmethod
+    def _classify_whystopped_specific(cls, why: str) -> str:
+        """Map a CT.gov whyStopped string to a specific failure category.
+
+        Returns "" for blank or vague-business whyStopped (those defer to the
+        LLM). Negation-filtered so "not due to safety concerns" doesn't fire
+        Toxic/Unsafe.
+        """
+        if not why:
+            return ""
+        w = cls._strip_negated_sentences(why.lower())
+        if not w.strip():
+            return ""
+        for category, keywords in cls._WHYSTOP_SPECIFIC:
+            if any(kw in w for kw in keywords):
+                return category
+        return ""
+
+    @staticmethod
+    def _extract_status_and_whystopped(research_results) -> tuple[str, str]:
+        """Pull overallStatus + whyStopped straight from clinical_protocol raw_data.
+
+        The LLM evidence builder doesn't reliably surface these structured
+        fields (Job/slice analysis showed Pass 1 reporting "whyStopped: Not
+        provided" while the registry clearly had "Low enrollment rate"), so the
+        agent reads them directly.
+        """
+        for r in research_results:
+            if getattr(r, "error", None):
+                continue
+            if getattr(r, "agent_name", "") != "clinical_protocol":
+                continue
+            rd = getattr(r, "raw_data", None) or {}
+            ps = rd.get("protocol_section") or rd.get("protocolSection") or {}
+            sm = ps.get("statusModule", {}) if isinstance(ps, dict) else {}
+            return (
+                (sm.get("overallStatus") or "").strip(),
+                (sm.get("whyStopped") or "").strip(),
+            )
+        return ("", "")
 
     @staticmethod
     def _strip_negated_sentences(text: str) -> str:
