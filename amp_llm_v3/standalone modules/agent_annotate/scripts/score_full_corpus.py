@@ -147,9 +147,17 @@ def main() -> int:
     ap.add_argument("--merged-json", help="path to a merge_full_corpus_results.py output")
     ap.add_argument("--gate-job", default="826f2608ddd8",
                     help="production-gate job ID to compare against (default: Job #101)")
+    ap.add_argument("--gt-path",
+                    help="override GT CSV path (e.g. docs/human_ground_truth_val_df.csv "
+                         "for validation set, docs/human_ground_truth_test_df.csv for test set)")
     args = ap.parse_args()
 
     trials = load_trials(args)
+    if args.gt_path:
+        global GT_PATH  # noqa: PLW0603
+        GT_PATH = Path(args.gt_path)
+        if not GT_PATH.is_absolute():
+            GT_PATH = PKG_ROOT / args.gt_path
     gt = load_gt()
     print(f"Loaded {len(trials)} trials. Scoring against {len(gt)} GT entries.\n",
           file=sys.stderr)

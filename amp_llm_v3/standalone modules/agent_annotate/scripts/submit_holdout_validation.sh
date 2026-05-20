@@ -20,7 +20,7 @@ for arg in "$@"; do
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
         --test-batch) ALLOW_TEST_BATCH=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--slice-k|--slice-m|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--slice-k|--slice-m|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50|--validation-set|--test-set) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -90,6 +90,24 @@ for arg in "$@"; do
         # (10 NCTs). Smarter than re-running 630 NCTs when we know
         # classification/peptide/delivery are stable.
         --slice-m) SLICE="$THIS_DIR/holdout_outcome_slice_m_v42_8_5b.json" ;;
+        # validation-set: user-defined formal validation cohort (86 NCTs)
+        # for tracking progress at decision points. NCTs and human
+        # annotations sourced from clinical_trials-with-sequences.xlsx
+        # (both replicate sheets). GT lives in
+        # docs/human_ground_truth_val_df.csv. Score with:
+        #   score_full_corpus.py <job_id> --gt-path docs/human_ground_truth_val_df.csv
+        # ETA ~14h on prod. Used for v42.8.5b certification and ongoing
+        # iteration checkpoints. NOT used for prompt-tuning or EDAM
+        # corrections (per train/val/test discipline).
+        --validation-set) SLICE="$THIS_DIR/validation_set_v1.json" ;;
+        # test-set: user-defined formal test cohort (85 NCTs), single-
+        # shot use only. Replaces the legacy test_batch_50 concept.
+        # GT in docs/human_ground_truth_test_df.csv. Fires ONCE at the
+        # end of an architectural cycle (e.g., v42.8 publication).
+        # Per the test-set discipline, route this through the API
+        # with allow_test_batch=true and ensure the NCT validator
+        # in EDAM accepts these IDs.
+        --test-set) SLICE="$THIS_DIR/test_set_v1.json"; ALLOW_TEST_BATCH=1 ;;
         # Milestone validation: 147-NCT combined slice (Job #83 baseline +
         # held-out A/B/C/D). Used to certify accuracy with ±8pp CI
         # half-width, ~24h overnight run. Triggered when iteration cycles

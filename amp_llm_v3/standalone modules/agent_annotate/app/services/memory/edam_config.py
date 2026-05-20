@@ -196,6 +196,14 @@ FIELD_SNIPPET_OVERRIDES = {
 # ---------------------------------------------------------------------------
 _TRAINING_CSV = Path(__file__).resolve().parents[3] / "docs" / "human_ground_truth_train_df.csv"
 _TEST_BATCH = Path(__file__).resolve().parents[3] / "scripts" / "fast_learning_batch_50.txt"
+# 2026-05-11: user-defined formal validation + test cohorts. Sourced
+# from clinical_trials-with-sequences.xlsx (the master annotation file)
+# and extracted via scripts/extract_val_test_gt.py. These NCTs are
+# OUTSIDE the original 680-NCT training CSV — they expand the GT
+# universe rather than partitioning the existing one. EDAM still
+# learns only from TRAINING_NCTS (which excludes val + test).
+_VAL_CSV = Path(__file__).resolve().parents[3] / "docs" / "human_ground_truth_val_df.csv"
+_TEST_CSV = Path(__file__).resolve().parents[3] / "docs" / "human_ground_truth_test_df.csv"
 
 
 def _load_training_ncts() -> set[str]:
@@ -234,11 +242,44 @@ def _load_test_batch_ncts() -> set[str]:
         return set()
 
 
-TRAINING_NCTS: set[str] = _load_training_ncts() - _load_test_batch_ncts()
+def _load_csv_ncts(path: Path, label: str) -> set[str]:
+    """Generic NCT loader for the new val/test CSVs (same schema as training)."""
+    if not path.exists():
+        _logger.warning("%s CSV not found at %s — set will be empty", label, path)
+        return set()
+    try:
+        with open(path) as f:
+            reader = csv.DictReader(f)
+            ncts = {row["nct_id"].strip().upper() for row in reader if row.get("nct_id")}
+        _logger.info("Loaded %d %s NCTs from %s", len(ncts), label, path.name)
+        return ncts
+    except Exception as e:
+        _logger.error("Failed to load %s CSV: %s", label, e)
+        return set()
 
-# Full 680-NCT GT universe (training + held-out test_batch). Used by the
-# job-creation router to allow opt-in test-batch submissions for the final
-# unbiased test-set evaluation (Job #104). EDAM gating still uses
-# TRAINING_NCTS, so test-batch annotations never contaminate learning.
-ALL_GT_NCTS: set[str] = _load_training_ncts()
-TEST_BATCH_NCTS: set[str] = _load_test_batch_ncts()
+
+# Set definitions — clear separation:
+#   TRAINING_NCTS    = iteration/EDAM-learning pool (from training CSV minus
+#                     legacy test_batch_50, val, and new test cohorts)
+#   VALIDATION_NCTS  = formal validation cohort (86 NCTs) — used to score
+#                     progress at decision points, never enters EDAM
+#   NEW_TEST_NCTS    = formal test cohort (85 NCTs) — single-shot use only
+#   TEST_BATCH_NCTS  = legacy test batch (50 NCTs) — kept for historical
+#                     scoring; subsumed by NEW_TEST_NCTS going forward
+#   ALL_GT_NCTS      = union of all four — the router's allow-list when
+#                     allow_test_batch=True. Annotating any of these is OK;
+#                     EDAM gating (in stability_tracker + memory_store) uses
+#                     TRAINING_NCTS only, so val/test annotations never
+#                     contaminate learning.
+_train_ncts = _load_training_ncts()
+_legacy_test_batch = _load_test_batch_ncts()
+VALIDATION_NCTS: set[str] = _load_csv_ncts(_VAL_CSV, "validation")
+NEW_TEST_NCTS: set[str] = _load_csv_ncts(_TEST_CSV, "test")
+TEST_BATCH_NCTS: set[str] = _legacy_test_batch
+
+TRAINING_NCTS: set[str] = (
+    _train_ncts - _legacy_test_batch - VALIDATION_NCTS - NEW_TEST_NCTS
+)
+ALL_GT_NCTS: set[str] = (
+    _train_ncts | VALIDATION_NCTS | NEW_TEST_NCTS | _legacy_test_batch
+)
