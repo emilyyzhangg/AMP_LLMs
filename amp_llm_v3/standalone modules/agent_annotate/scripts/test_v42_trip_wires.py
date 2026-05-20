@@ -818,6 +818,31 @@ def test_v42_9_resolved_name_propagation():
     print("  ✓ v42.9 P1: resolved-name propagation + max_phase capture wired")
 
 
+def test_v42_9_sequence_resolved_lookup_and_fallback():
+    """v42.9 (2026-05-20) P2: the sequence agent must consume P1's output.
+    P1 made the research agents store sequence data under the resolved
+    canonical name (chembl_erenumab_helm), but the sequence agent keyed its
+    raw_data lookups on the raw trial code (chembl_'AMG 334'_helm) — a key
+    mismatch P1 introduced. The sequence agent must expand its DB-lookup names
+    with the Lever-4 resolved names. The LLM sequence fallback must also fire
+    for peptide != 'false' (was 'true' only), since peptide=Unknown trials can
+    still carry a sequence stated in the research text."""
+    src = (PKG_ROOT / "agents" / "annotation" / "sequence.py").read_text()
+    assert "from agents.research.resolved_names import extract_interventions" in src, (
+        "P2 trip-wire: sequence.py must import the resolved_names helper to "
+        "expand DB-key lookups with Lever-4 resolved names."
+    )
+    assert "Resolved-name DB lookups added" in src, (
+        "P2 trip-wire: sequence.py must append resolved names to the DB-lookup "
+        "intervention list (otherwise P1's resolved-name DB hits are unreachable)."
+    )
+    assert 'peptide_val != "false"' in src, (
+        "P2 trip-wire: LLM sequence fallback must fire for peptide != 'false' "
+        "(widened from 'true'-only to also cover peptide=Unknown)."
+    )
+    print("  ✓ v42.9 P2: sequence resolved-name lookup + widened LLM fallback")
+
+
 def test_audit_trail_wired():
     """Audit trail (2026-05-20): every annotation LLM call's input (prompt +
     system) and raw output must be captured and written to a per-trial
@@ -901,6 +926,7 @@ def main() -> int:
         test_v42_8_5_press_release_agent,
         test_v42_9_completed_not_failed_override,
         test_v42_9_resolved_name_propagation,
+        test_v42_9_sequence_resolved_lookup_and_fallback,
         test_audit_trail_wired,
         test_dbaasp_word_boundary_preserved,
     ]

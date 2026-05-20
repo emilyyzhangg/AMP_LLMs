@@ -108,15 +108,40 @@ consumer now iterates the real `*_molecules` keys. Relevance-filter loosening
 (substring-only) deferred — low marginal value now that the not-failed principle
 no longer depends on drug-advancement data.
 
-### P2 — Sequence field (~24%): AMP-DB gate + key-matching fragility
-`sequence.py:685-688` skips DBAASP/APD entirely when `classification=Other` — so a
-mis-classified trial loses the only DBs that hold its sequence. Intervention-name
-lookups are exact-key against raw_data and break on formulation stripping /
-resolved-name mismatch (e.g. "Colistin" vs `dbaasp_Polymyxin_B_Colistin_Complex`).
-HELM parsing linearizes cyclic/disulfide peptides (oxytocin). LLM fallback only
-fires for `peptide=True`. **Fixes:** query AMP DBs regardless of classification
-with a relevance penalty; substring/​resolved-name fallback on raw_data keys;
-multi-chain join; widen LLM fallback to `peptide=Unknown`.
+### P2 — Sequence field (~24%) — DATA-BOUND; partial fix shipped 2026-05-20
+**Root-cause re-grounding (slice-M, 25 sequence misses):** 24/25 are RECALL
+failures (agent returned N/A), only 1 precision error — so the agent isn't
+picking wrong sequences, it finds *nothing*. Critically, **23/24 have the GT
+sequence ABSENT from everything the agent fetched** (abstracts only, not full
+text; no epitope DB; no antibody DB). The misses break down as:
+- **T-cell / tumor-antigen epitopes** (IMDQVPFSV, YLEPGPVTA, YISPWILAV…) — the
+  largest group; live in **IEDB**, which the pipeline does not query.
+- **Protein fragments** (EPO precursor — verified present in UniProt P01588 but
+  not fetched; antibody VH domains like erenumab's).
+- **Chemically-modified synthetics** ((Ac)CRGDKGPDC(NH2), DOTA-conjugates,
+  non-standard residues) — often not in public structured DBs at all.
+
+So the originally-hypothesized logic fixes (AMP-DB gate, key matching) barely move
+slice-M: these sequences aren't in those DBs. The AMP-DB gate was **left as-is on
+purpose** — loosening it re-introduces the documented Brevinin-for-cancer-vaccine
+false-positive class, and precision is currently near-perfect (24/25). Adding the
+specific obscure sequences to `_KNOWN_SEQUENCES` would be cheating.
+
+**Shipped (safe, correct, no-gaming):**
+- **Resolved-name DB-key consumption** — P1 made the research agents store
+  sequence data under the *resolved* name (`chembl_erenumab_helm`) while the
+  sequence agent keyed lookups on the raw trial code; this closes that mismatch
+  (`sequence.py`, helper `extract_interventions`). Required to consume P1.
+- **LLM sequence fallback widened** from `peptide=='true'` to `peptide!='false'`
+  (covers peptide=Unknown; only emits sequences actually found in the text).
+Trip-wire `test_v42_9_sequence_resolved_lookup_and_fallback`.
+
+**The real lever (decision pending):** IEDB integration for epitopes — the only
+source covering the dominant miss category. Must be done WITHOUT gaming the
+set-containment scorer: extract antigen + residue-range/HLA from the protocol and
+retrieve the *single* exact epitope (UniProt slice or IEDB lookup), not spray an
+antigen's whole epitope set. Antibody-VH-domain and modified-synthetic GT is
+likely beyond legitimate automated retrieval.
 
 ### P2 — RfF evidence starvation + over-literal whyStopped
 `failure_reason.py` feeds the LLM only 4 web + 4 literature citations capped at

@@ -668,6 +668,31 @@ class SequenceAgent(BaseAnnotationAgent):
                     skip_verification=True,
                 )
 
+        # v42.9 (P2): expand the lookup list with Lever-4 resolved canonical
+        # names. P1 made the research agents (ChEMBL/UniProt/etc.) query the
+        # resolved name as a fallback and store raw_data under whichever name
+        # hit — so a trial intervention "AMG 334" can have its sequence data
+        # under `chembl_erenumab_*`. Without adding the resolved names here, the
+        # exact-key lookups below (`chembl_{intervention}_helm`) miss P1's hits.
+        # Known-sequence matching already ran above (returns early on hit), so
+        # appending here only affects the structured-DB candidate search.
+        try:
+            from agents.research.resolved_names import extract_interventions as _ei
+            _seen = {i.lower() for i in interventions}
+            _resolved_extra: list[str] = []
+            for _iv in _ei(metadata):
+                for _r in _iv.get("resolved", []):
+                    if _r.lower() not in _seen:
+                        _resolved_extra.append(_r)
+                        _seen.add(_r.lower())
+            if _resolved_extra:
+                interventions = list(interventions) + _resolved_extra
+                reasoning_parts.append(
+                    f"Resolved-name DB lookups added: {_resolved_extra[:3]}"
+                )
+        except Exception:
+            pass  # resolved-name expansion is best-effort
+
         # Also keep citation references for evidence attribution
         citations_by_source: dict[str, list[SourceCitation]] = {}
         for result in research_results:
@@ -1108,10 +1133,19 @@ class SequenceAgent(BaseAnnotationAgent):
                 + "; ".join(reasoning_parts)
             )
         else:
-            # LLM fallback: only for confirmed peptide=True trials where structured
-            # sources found nothing. Searches research text for explicit AA sequences.
-            peptide_confirmed = str(metadata.get("peptide_result", "") if metadata else "").lower() == "true"
-            if peptide_confirmed:
+            # LLM fallback: for any not-explicitly-non-peptide trial where
+            # structured sources found nothing. Searches research text for
+            # explicit AA sequences.
+            # v42.9 (P2): widened from peptide=="true" to "not false" — a
+            # peptide=Unknown trial can still carry a peptide whose sequence is
+            # stated in the research text; only peptide=False reliably excludes
+            # one. The fallback only emits a sequence it can actually find in the
+            # text, so widening cannot fabricate sequences.
+            peptide_val = str(
+                metadata.get("peptide_result", "") if metadata else ""
+            ).lower()
+            peptide_not_excluded = peptide_val != "false"
+            if peptide_not_excluded:
                 llm_seq = await self._llm_extract_sequence(
                     nct_id, interventions, research_results, metadata
                 )
