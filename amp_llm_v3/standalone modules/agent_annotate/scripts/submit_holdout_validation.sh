@@ -20,7 +20,7 @@ for arg in "$@"; do
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
         --test-batch) ALLOW_TEST_BATCH=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--slice-k|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--slice-k|--slice-m|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -81,6 +81,15 @@ for arg in "$@"; do
         # still fire). Decision rule: false flips → Unknown ≥10/15
         # AND regression check ≥3/5 stay Positive.
         --slice-k) SLICE="$THIS_DIR/holdout_outcome_slice_k_v42_8_5a.json" ;;
+        # slice-M: v42.8.5b pre-Job-#104 decision-rule verification. 58 NCTs
+        # (~12h on prod). Direct measurement of: (a) Lever 5 conversion on
+        # pos→unk class (30 NCTs, 20 NCT05+ + 10 older); (b) false-flip
+        # blocking on unknown-GT+PR (8 NCTs, residual after slice-K exclusion);
+        # (c) Lever 1 RfF default-mapping on terminated/withdrawn (10 NCTs);
+        # (d) regression check on known-good positives + failed-completed
+        # (10 NCTs). Smarter than re-running 630 NCTs when we know
+        # classification/peptide/delivery are stable.
+        --slice-m) SLICE="$THIS_DIR/holdout_outcome_slice_m_v42_8_5b.json" ;;
         # Milestone validation: 147-NCT combined slice (Job #83 baseline +
         # held-out A/B/C/D). Used to certify accuracy with ±8pp CI
         # half-width, ~24h overnight run. Triggered when iteration cycles
