@@ -33,6 +33,7 @@ import httpx
 from agents.base import BaseResearchAgent
 from agents.research.drug_cache import drug_cache
 from agents.research.http_utils import resilient_get
+from agents.research.resolved_names import extract_interventions, query_names
 from app.models.research import ResearchResult, SourceCitation
 
 logger = logging.getLogger("agent_annotate.research.fda_drugs")
@@ -46,23 +47,29 @@ FDA_DRUGS_URL = "https://api.fda.gov/drug/drugsfda.json"
 FDA_LABEL_URL = "https://api.fda.gov/drug/label.json"
 
 
+_SKIP = {"placebo", "saline", "vehicle", "normal saline", "standard of care"}
+
+
+def _drug_interventions(metadata: Optional[dict]) -> list[dict]:
+    """Drug/biological interventions with their Lever-4 resolved names.
+
+    Keeps the v42.7.10 type filter (DRUG / BIOLOGICAL only; bare-string items
+    with no type are included), drops placebo/vehicle, and carries the
+    ``resolved`` canonical names so the query loop can fall back to them.
+    """
+    out: list[dict] = []
+    for interv in extract_interventions(metadata):
+        if interv["name"].lower() in _SKIP:
+            continue
+        if interv["type"] and interv["type"] not in ("DRUG", "BIOLOGICAL"):
+            continue
+        out.append(interv)
+    return out
+
+
 def _extract_intervention_names(metadata: Optional[dict]) -> list[str]:
-    if not metadata:
-        return []
-    raw = metadata.get("interventions", [])
-    if not isinstance(raw, list):
-        return []
-    names: list[str] = []
-    _SKIP = {"placebo", "saline", "vehicle", "normal saline", "standard of care"}
-    for item in raw:
-        if isinstance(item, dict):
-            name = (item.get("name") or item.get("intervention_name") or "").strip()
-            itype = (item.get("type") or "").upper()
-            if itype in ("DRUG", "BIOLOGICAL") and name and name.lower() not in _SKIP:
-                names.append(name)
-        elif isinstance(item, str) and item.strip().lower() not in _SKIP:
-            names.append(item.strip())
-    return names
+    """Backward-compatible flat-name view (raw names only)."""
+    return [i["name"] for i in _drug_interventions(metadata)]
 
 
 class FDADrugsClient(BaseResearchAgent):
@@ -74,7 +81,10 @@ class FDADrugsClient(BaseResearchAgent):
     async def research(self, nct_id: str, metadata: Optional[dict] = None) -> ResearchResult:
         citations: list = []
         raw_data: dict = {}
-        interventions = _extract_intervention_names(metadata)
+        # v42.9 (P1): query Lever-4 resolved canonical names as a fallback. A
+        # trial code ("AMG 334") is not in Drugs@FDA; its resolved generic
+        # ("erenumab") is — so approval was previously missed for code-named drugs.
+        interventions = _drug_interventions(metadata)
 
         if not interventions:
             return ResearchResult(
@@ -83,19 +93,26 @@ class FDADrugsClient(BaseResearchAgent):
             )
 
         async with httpx.AsyncClient(timeout=20) as client:
-            for intervention in interventions[:3]:
-                async def compute(intv=intervention):
-                    return await self._fetch_intervention(client, intv)
+            for interv in interventions[:3]:
+                per = None
+                for nm in query_names(interv):
+                    async def compute(intv=nm):
+                        return await self._fetch_intervention(client, intv)
 
-                if drug_cache.is_enabled():
-                    per = await drug_cache.get_or_compute(
-                        self.agent_name, intervention, compute,
-                    )
-                else:
-                    per = await compute()
+                    if drug_cache.is_enabled():
+                        candidate = await drug_cache.get_or_compute(
+                            self.agent_name, nm, compute,
+                        )
+                    else:
+                        candidate = await compute()
 
-                citations.extend(per["citations"])
-                raw_data.update(per["raw_data"])
+                    per = candidate
+                    if candidate["citations"]:
+                        break  # raw name or first resolved name that hits wins
+
+                if per:
+                    citations.extend(per["citations"])
+                    raw_data.update(per["raw_data"])
 
         return ResearchResult(
             agent_name=self.agent_name,

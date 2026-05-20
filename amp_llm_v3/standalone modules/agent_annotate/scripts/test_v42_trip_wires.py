@@ -780,6 +780,44 @@ def test_v42_9_completed_not_failed_override():
     print("  ✓ v42.9: completed-not-failed override (fill Unknown→Positive, failure-gated)")
 
 
+def test_v42_9_resolved_name_propagation():
+    """v42.9 (2026-05-20) P1: Lever-4 resolved canonical drug names must reach
+    ChEMBL / FDA Drugs / NIH RePORTER / SEC EDGAR / IUPHAR. Previously these
+    agents queried only the raw trial code ("AMG 334") and missed the indexed
+    generic ("erenumab"). Each must import the shared resolved_names helper and
+    use query_names() for raw->resolved fallback. Also: ChEMBL max_phase must be
+    coerced (accept numeric 0; not dropped as falsy), and the outcome consumer
+    must read per-intervention `*_molecules` keys (not a flat 'molecules')."""
+    helper = PKG_ROOT / "agents" / "research" / "resolved_names.py"
+    assert helper.exists(), "P1 trip-wire: agents/research/resolved_names.py missing"
+    hsrc = helper.read_text()
+    assert "def extract_interventions(" in hsrc and "def query_names(" in hsrc, (
+        "P1 trip-wire: resolved_names helper missing extract_interventions/query_names"
+    )
+    for agent in ("chembl_client", "fda_drugs_client", "nih_reporter_client",
+                  "sec_edgar_client", "iuphar_client"):
+        src = (PKG_ROOT / "agents" / "research" / f"{agent}.py").read_text()
+        assert "from agents.research.resolved_names import" in src, (
+            f"P1 trip-wire: {agent} must import the resolved_names helper"
+        )
+        assert "query_names(" in src, (
+            f"P1 trip-wire: {agent} must use query_names() for raw->resolved fallback"
+        )
+    # ChEMBL max_phase coercion accepts phase 0 (preclinical) and rejects falsy-drop.
+    chembl = (PKG_ROOT / "agents" / "research" / "chembl_client.py").read_text()
+    assert "_coerce_phase" in chembl, (
+        "P1 trip-wire: chembl_client must coerce max_phase via _coerce_phase "
+        "(old falsy check dropped valid phase 0 and left drug_max_phase null)."
+    )
+    # Outcome consumer reads the real per-intervention molecules key.
+    out_src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert 'endswith("_molecules")' in out_src, (
+        "P1 trip-wire: outcome ChEMBL consumer must iterate '*_molecules' keys, "
+        "not the flat 'molecules' key that never existed."
+    )
+    print("  ✓ v42.9 P1: resolved-name propagation + max_phase capture wired")
+
+
 def test_audit_trail_wired():
     """Audit trail (2026-05-20): every annotation LLM call's input (prompt +
     system) and raw output must be captured and written to a per-trial
@@ -862,6 +900,7 @@ def main() -> int:
         test_v42_8_4_drug_code_resolver,
         test_v42_8_5_press_release_agent,
         test_v42_9_completed_not_failed_override,
+        test_v42_9_resolved_name_propagation,
         test_audit_trail_wired,
         test_dbaasp_word_boundary_preserved,
     ]

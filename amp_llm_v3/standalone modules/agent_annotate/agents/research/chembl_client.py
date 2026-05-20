@@ -14,12 +14,31 @@ import httpx
 from agents.base import BaseResearchAgent
 from agents.research.drug_cache import drug_cache
 from agents.research.http_utils import resilient_get
+from agents.research.resolved_names import extract_interventions, query_names
 from app.models.research import ResearchResult, SourceCitation
 
 CHEMBL_API_BASE = "https://www.ebi.ac.uk/chembl/api/data"
 CHEMBL_MOLECULE_SEARCH_URL = f"{CHEMBL_API_BASE}/molecule/search"
 CHEMBL_MECHANISM_URL = f"{CHEMBL_API_BASE}/mechanism"
 CHEMBL_ACTIVITY_URL = f"{CHEMBL_API_BASE}/activity"
+
+
+def _coerce_phase(value) -> Optional[int]:
+    """Normalize a ChEMBL max_phase to an int in [0, 4], or None if absent.
+
+    ChEMBL returns max_phase as int (4), float (4.0), or numeric string ("4"),
+    and uses null / "" / "None" for "no clinical phase recorded". Phase 0
+    (preclinical) is a VALID value and must not be dropped as falsy.
+    """
+    if value is None or value == "":
+        return None
+    try:
+        phase = int(float(value))
+    except (ValueError, TypeError):
+        return None
+    if 0 <= phase <= 4:
+        return phase
+    return None
 
 
 class ChEMBLClient(BaseResearchAgent):
@@ -32,19 +51,11 @@ class ChEMBLClient(BaseResearchAgent):
         citations = []
         raw_data = {}
 
-        # v14: Fixed intervention extraction — was converting dicts to strings
-        # (e.g., "{'name': 'Liraglutide'}") instead of extracting the name.
-        interventions = []
-        if metadata:
-            raw_interventions = metadata.get("interventions", [])
-            if isinstance(raw_interventions, list):
-                for item in raw_interventions:
-                    if isinstance(item, dict):
-                        name = item.get("name") or item.get("intervention_name") or ""
-                        if name:
-                            interventions.append(str(name))
-                    elif isinstance(item, str) and item:
-                        interventions.append(item)
+        # v14: Fixed intervention extraction — was converting dicts to strings.
+        # v42.9 (P1): also surface Lever-4 resolved canonical names so a trial
+        # code like "AMG 334" falls back to "erenumab" when the code returns
+        # nothing from ChEMBL (codes are rarely indexed; canonical names are).
+        interventions = extract_interventions(metadata)
 
         if not interventions:
             return ResearchResult(
@@ -55,21 +66,29 @@ class ChEMBLClient(BaseResearchAgent):
             )
 
         async with httpx.AsyncClient(timeout=15) as client:
-            for intervention in interventions[:3]:
-                # Per-drug response is a pure function of the drug name — cache
-                # across NCTs within this process. See docs/AGENT_STRATEGY_ROADMAP.md §6.
-                async def compute(intv=intervention):
-                    return await self._fetch_intervention(client, intv)
+            for interv in interventions[:3]:
+                # Query the raw trial name first; only fall back to resolved
+                # canonical names if it found nothing. Each name is cached
+                # independently (response is a pure function of the drug name).
+                per_intervention = None
+                for nm in query_names(interv):
+                    async def compute(intv=nm):
+                        return await self._fetch_intervention(client, intv)
 
-                if drug_cache.is_enabled():
-                    per_intervention = await drug_cache.get_or_compute(
-                        self.agent_name, intervention, compute,
-                    )
-                else:
-                    per_intervention = await compute()
+                    if drug_cache.is_enabled():
+                        candidate = await drug_cache.get_or_compute(
+                            self.agent_name, nm, compute,
+                        )
+                    else:
+                        candidate = await compute()
 
-                citations.extend(per_intervention["citations"])
-                raw_data.update(per_intervention["raw_data"])
+                    per_intervention = candidate
+                    if candidate["citations"]:
+                        break  # raw name or first resolved name that hits wins
+
+                if per_intervention:
+                    citations.extend(per_intervention["citations"])
+                    raw_data.update(per_intervention["raw_data"])
 
         return ResearchResult(
             agent_name=self.agent_name,
@@ -141,7 +160,12 @@ class ChEMBLClient(BaseResearchAgent):
                 chembl_id = mol.get("molecule_chembl_id", "")
                 pref_name = mol.get("pref_name", "")
                 mol_type = mol.get("molecule_type", "")
-                max_phase = mol.get("max_phase", "")
+                # v42.9 (P1): ChEMBL returns max_phase as int, float, or numeric
+                # string; the old `mol.get("max_phase", "")` + falsy check dropped
+                # a valid phase 0 (preclinical) and stored inconsistent types,
+                # leaving drug_max_phase null even for approved (phase 4) drugs.
+                # Normalize to an int in [0, 4], or None when truly absent.
+                max_phase = _coerce_phase(mol.get("max_phase"))
                 helm_notation = mol.get("helm_notation", "")
                 first_approval = mol.get("first_approval", "")
 
@@ -163,7 +187,7 @@ class ChEMBLClient(BaseResearchAgent):
                 snippet_parts = [f"Molecule: {pref_name or chembl_id}"]
                 if mol_type:
                     snippet_parts.append(f"Type: {mol_type}")
-                if max_phase is not None and max_phase != "":
+                if max_phase is not None:
                     snippet_parts.append(f"Max clinical phase: {max_phase}")
                 if helm_notation:
                     snippet_parts.append(f"HELM: {helm_notation[:100]}")

@@ -87,19 +87,26 @@ Protected by trip-wire `test_audit_trail_wired`.
 Ordered by expected accuracy impact per unit risk. Each is a separate validated
 change so its effect can be measured cleanly.
 
-### P1 — Resolved drug names never reach ChEMBL/FDA/NIH/SEC/IUPHAR
+### P1 — Resolved drug names never reach ChEMBL/FDA/NIH/SEC/IUPHAR — ✅ SHIPPED 2026-05-20
 `_resolve_drug_names` (orchestrator.py:1291) stores Lever-4 canonical names in
 `interventions[i]["resolved"]`, but `chembl_client`, `fda_drugs_client`,
 `nih_reporter_client`, `sec_edgar_client`, `iuphar_client` all read only the raw
-`name` (e.g. they query "AMG 334", never "erenumab"). `peptide_identity` is the
-only consumer that uses `resolved`. **Fix:** each of those agents should query
-the resolved name when the raw name returns nothing. This is the enabler for the
-drug-advancement corroboration signal. (chembl_client.py:38-47; fda_drugs_client.py:49-65)
+`name` (e.g. they queried "AMG 334", never "erenumab"). `peptide_identity` was
+the only consumer that used `resolved`. **Fixed:** new shared helper
+`agents/research/resolved_names.py` (`extract_interventions` + `query_names`);
+each of the five agents now queries the raw name first and falls back to the
+resolved canonical name(s) only when it returns nothing (minimizes extra API
+calls). DRUG/BIOLOGICAL type filters and placebo skips preserved. Trip-wire
+`test_v42_9_resolved_name_propagation`.
 
-### P1 — ChEMBL `max_phase` lost even for approved drugs
-`chembl_client.py:144,166` drops numeric `0` (valid preclinical) via a falsy
-check and the relevance filter (lines 126-129) is substring-only, dropping valid
-molecules. **Fix:** validate `0 ≤ max_phase ≤ 4` numerically; loosen the filter.
+### P1 — ChEMBL `max_phase` lost even for approved drugs — ✅ SHIPPED 2026-05-20
+`chembl_client.py` dropped numeric `0` (valid preclinical) via a falsy check, and
+the **outcome consumer read a flat `molecules` key that never existed** (ChEMBL
+stores `chembl_<name>_molecules`) — so `drug_max_phase` was *always* None.
+**Fixed:** `_coerce_phase()` normalizes to int in [0,4] (accepts 0); the outcome
+consumer now iterates the real `*_molecules` keys. Relevance-filter loosening
+(substring-only) deferred — low marginal value now that the not-failed principle
+no longer depends on drug-advancement data.
 
 ### P2 — Sequence field (~24%): AMP-DB gate + key-matching fragility
 `sequence.py:685-688` skips DBAASP/APD entirely when `classification=Other` — so a

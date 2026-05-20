@@ -18,6 +18,7 @@ import httpx
 from agents.base import BaseResearchAgent
 from agents.research.drug_cache import drug_cache
 from agents.research.http_utils import resilient_get
+from agents.research.resolved_names import extract_interventions, query_names
 from app.models.research import ResearchResult, SourceCitation
 
 logger = logging.getLogger("agent_annotate.research.iuphar")
@@ -58,8 +59,9 @@ class IUPHARClient(BaseResearchAgent):
         citations = []
         raw_data = {}
 
-        # Extract intervention names to search for ligands/drugs
-        interventions = _extract_intervention_names(metadata)
+        # Extract intervention names (with Lever-4 resolved canonical names) to
+        # search for ligands/drugs.
+        interventions = extract_interventions(metadata)
 
         if not interventions:
             return ResearchResult(
@@ -70,19 +72,27 @@ class IUPHARClient(BaseResearchAgent):
             )
 
         async with httpx.AsyncClient(timeout=15) as client:
-            for intervention in interventions[:3]:
-                async def compute(intv=intervention):
-                    return await self._fetch_intervention(client, intv)
+            for interv in interventions[:3]:
+                # v42.9 (P1): query the raw name, then resolved names as fallback.
+                per_intervention = None
+                for nm in query_names(interv):
+                    async def compute(intv=nm):
+                        return await self._fetch_intervention(client, intv)
 
-                if drug_cache.is_enabled():
-                    per_intervention = await drug_cache.get_or_compute(
-                        self.agent_name, intervention, compute,
-                    )
-                else:
-                    per_intervention = await compute()
+                    if drug_cache.is_enabled():
+                        candidate = await drug_cache.get_or_compute(
+                            self.agent_name, nm, compute,
+                        )
+                    else:
+                        candidate = await compute()
 
-                citations.extend(per_intervention["citations"])
-                raw_data.update(per_intervention["raw_data"])
+                    per_intervention = candidate
+                    if candidate["citations"]:
+                        break
+
+                if per_intervention:
+                    citations.extend(per_intervention["citations"])
+                    raw_data.update(per_intervention["raw_data"])
 
         return ResearchResult(
             agent_name=self.agent_name,

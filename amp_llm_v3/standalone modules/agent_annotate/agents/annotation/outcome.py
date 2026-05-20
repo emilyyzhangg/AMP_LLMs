@@ -590,12 +590,21 @@ def _build_evidence_dossier(research_results: list, nct_id: str = "") -> dict:
                         dossier["immunogenicity_keywords"].append(kw)
 
         # --- ChEMBL drug advancement ---
+        # v42.9 (P1): ChEMBL stores molecule entries under per-intervention keys
+        # (`chembl_<name>_molecules`), but this consumer previously read a flat
+        # "molecules" key that never existed — so drug_max_phase was ALWAYS None
+        # even for approved drugs. Iterate the real per-intervention keys.
         if result.agent_name == "chembl" and result.raw_data:
-            for mol in result.raw_data.get("molecules", []):
-                max_phase = mol.get("max_phase")
-                if max_phase and (dossier["drug_max_phase"] is None
-                                  or max_phase > dossier["drug_max_phase"]):
-                    dossier["drug_max_phase"] = max_phase
+            for key, val in result.raw_data.items():
+                if not key.endswith("_molecules"):
+                    continue
+                for mol in (val or []):
+                    max_phase = mol.get("max_phase")
+                    if max_phase is not None and (
+                        dossier["drug_max_phase"] is None
+                        or max_phase > dossier["drug_max_phase"]
+                    ):
+                        dossier["drug_max_phase"] = max_phase
 
         # --- v42.7.8: FDA Drugs structured approval signal ---
         if result.agent_name == "fda_drugs" and result.raw_data:

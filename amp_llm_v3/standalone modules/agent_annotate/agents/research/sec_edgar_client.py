@@ -35,6 +35,7 @@ import httpx
 from agents.base import BaseResearchAgent
 from agents.research.drug_cache import drug_cache
 from agents.research.http_utils import resilient_get
+from agents.research.resolved_names import extract_interventions, query_names
 from app.models.research import ResearchResult, SourceCitation
 
 logger = logging.getLogger("agent_annotate.research.sec_edgar")
@@ -51,24 +52,24 @@ _SEC_USER_AGENT = "Amphoraxe Annotation Pipeline amphoraxe@amphoraxe.ca"
 _FORMS = "10-K,10-Q,8-K"
 
 
+_SKIP = {"placebo", "saline", "vehicle", "normal saline", "standard of care"}
+
+
+def _drug_interventions(metadata: Optional[dict]) -> list[dict]:
+    """DRUG/BIOLOGICAL interventions with their Lever-4 resolved names."""
+    out: list[dict] = []
+    for interv in extract_interventions(metadata):
+        if interv["name"].lower() in _SKIP:
+            continue
+        if interv["type"] and interv["type"] not in ("DRUG", "BIOLOGICAL"):
+            continue
+        out.append(interv)
+    return out
+
+
 def _extract_intervention_names(metadata: Optional[dict]) -> list[str]:
-    """Extract DRUG/BIOLOGICAL intervention names. Skip placebo/saline."""
-    if not metadata:
-        return []
-    raw = metadata.get("interventions", [])
-    if not isinstance(raw, list):
-        return []
-    names: list[str] = []
-    _SKIP = {"placebo", "saline", "vehicle", "normal saline", "standard of care"}
-    for item in raw:
-        if isinstance(item, dict):
-            name = (item.get("name") or item.get("intervention_name") or "").strip()
-            itype = (item.get("type") or "").upper()
-            if itype in ("DRUG", "BIOLOGICAL") and name and name.lower() not in _SKIP:
-                names.append(name)
-        elif isinstance(item, str) and item.strip().lower() not in _SKIP:
-            names.append(item.strip())
-    return names
+    """Backward-compatible flat-name view (raw names only)."""
+    return [i["name"] for i in _drug_interventions(metadata)]
 
 
 class SECEdgarClient(BaseResearchAgent):
@@ -81,30 +82,37 @@ class SECEdgarClient(BaseResearchAgent):
     async def research(self, nct_id: str, metadata: Optional[dict] = None) -> ResearchResult:
         citations: list = []
         raw_data: dict = {}
-        interventions = _extract_intervention_names(metadata)
+        interventions = _drug_interventions(metadata)
 
-        # Always also search for the NCT ID directly — sometimes sponsor
-        # 8-K filings reference the registry NCT explicitly.
-        search_terms: list[str] = [nct_id]
-        search_terms.extend(interventions[:3])
+        async def run_term(client, term):
+            async def compute(t=term):
+                return await self._fetch_term(client, t)
+            if drug_cache.is_enabled():
+                return await drug_cache.get_or_compute(self.agent_name, term, compute)
+            return await compute()
 
         async with httpx.AsyncClient(
             timeout=20,
             headers={"User-Agent": _SEC_USER_AGENT, "Accept": "application/json"},
         ) as client:
-            for term in search_terms:
-                async def compute(t=term):
-                    return await self._fetch_term(client, t)
+            # Always search the NCT ID directly — sponsor 8-K filings sometimes
+            # reference the registry NCT explicitly.
+            per_nct = await run_term(client, nct_id)
+            citations.extend(per_nct["citations"])
+            raw_data.update(per_nct["raw_data"])
 
-                if drug_cache.is_enabled():
-                    per_term = await drug_cache.get_or_compute(
-                        self.agent_name, term, compute,
-                    )
-                else:
-                    per_term = await compute()
-
-                citations.extend(per_term["citations"])
-                raw_data.update(per_term["raw_data"])
+            # v42.9 (P1): for each drug intervention, search the raw name and
+            # fall back to its Lever-4 resolved canonical name(s) — sponsors file
+            # under the generic/brand name, not the trial code.
+            for interv in interventions[:3]:
+                per = None
+                for nm in query_names(interv):
+                    per = await run_term(client, nm)
+                    if per["citations"]:
+                        break
+                if per:
+                    citations.extend(per["citations"])
+                    raw_data.update(per["raw_data"])
 
         return ResearchResult(
             agent_name=self.agent_name,
