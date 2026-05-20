@@ -136,12 +136,26 @@ specific obscure sequences to `_KNOWN_SEQUENCES` would be cheating.
   (covers peptide=Unknown; only emits sequences actually found in the text).
 Trip-wire `test_v42_9_sequence_resolved_lookup_and_fallback`.
 
-**The real lever (decision pending):** IEDB integration for epitopes — the only
-source covering the dominant miss category. Must be done WITHOUT gaming the
-set-containment scorer: extract antigen + residue-range/HLA from the protocol and
-retrieve the *single* exact epitope (UniProt slice or IEDB lookup), not spray an
-antigen's whole epitope set. Antibody-VH-domain and modified-synthetic GT is
-likely beyond legitimate automated retrieval.
+**Epitope resolver — ✅ SHIPPED 2026-05-20 (the real lever, done the clean way).**
+Rather than IEDB (which needs HLA/position to disambiguate an antigen's many
+epitopes and risks gaming the set-containment scorer), the protocols themselves
+name the antigen + exact residue range ("gp100:209-217", "p53:264-272"). New
+`agents/research/epitope_resolver.py` extracts antigen-adjacent colon/paren ranges
+of epitope length and slices the **canonical UniProt sequence** at exactly those
+residues — a single-answer, no-gaming retrieval. Validated: p53:264-272 →
+`LLGRNSFEV` (exact GT, fixes nct00001827); gp100:280-288 → `YLEPGPVTA`. Peptide
+hormones (GLP-1(7-36), exendin(9-39)…) are EXCLUDED — their numbering is
+peptide-relative, so a precursor slice would be wrong (those are handled by
+`_KNOWN_SEQUENCES`). Precision validated against decoys (dose/age/grade ranges →
+nothing). Non-harmful under set-containment (adds candidates for N/A cases only).
+Wired: registered + configured, orchestrator passes protocol summary in research
+metadata, sequence agent consumes `epitope_resolver_sequences` (weight 0.88).
+Trip-wire `test_v42_9_epitope_resolver`.
+
+Remaining sequence gaps: anchor-modified epitopes (gp100:209-217(210M)), drug-coded
+multi-peptide vaccines that give no residue positions (PVX-410, Vacc-4x — would
+need a curated drug→epitopes map or IEDB), antibody-VH domains, and
+chemically-modified synthetics — likely beyond clean automated retrieval.
 
 ### P2 — RfF whyStopped not reaching the agent — ✅ partial fix shipped 2026-05-20
 **Root cause (315-NCT job, 20 RfF-GT trials):** RfF true-recall was 3/20. 11

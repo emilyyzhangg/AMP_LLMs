@@ -143,6 +143,15 @@ research_agents:
   press_release:
     sources:
       - google_news_rss
+  # v42.9 (2026-05-20): epitope resolver. When a protocol names a tumor/viral
+  # antigen and a residue range (e.g. "gp100:209-217", "p53:264-272"), slice the
+  # canonical UniProt sequence at those residues to recover the exact vaccine
+  # epitope — the dominant sequence-field miss class, absent from DBAASP/APD/
+  # ChEMBL and from fetched abstracts. Peptide hormones (GLP-1(7-36) etc.) are
+  # excluded because their numbering is peptide-relative, not precursor-relative.
+  epitope_resolver:
+    sources:
+      - uniprot
 
 annotation_agents:
   classification:

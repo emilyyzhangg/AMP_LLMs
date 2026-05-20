@@ -843,6 +843,42 @@ def test_v42_9_sequence_resolved_lookup_and_fallback():
     print("  ✓ v42.9 P2: sequence resolved-name lookup + widened LLM fallback")
 
 
+def test_v42_9_epitope_resolver():
+    """v42.9 (2026-05-20) P2: epitope_resolver recovers tumor/viral vaccine
+    epitopes by slicing the canonical UniProt sequence at the antigen residue
+    range the protocol states (gp100:209-217, p53:264-272). It must (a) extract
+    only antigen-adjacent colon/paren ranges of epitope length, (b) EXCLUDE
+    peptide hormones whose numbering is peptide-relative (GLP-1(7-36) etc.), be
+    registered + configured, and feed the sequence agent."""
+    from agents.research.epitope_resolver import extract_epitope_specs, _is_hormone_antigen
+    # Extraction: tumor antigens fire, hormones / decoys don't.
+    assert extract_epitope_specs("gp100:209-217") == [("gp100", 209, 217)]
+    assert extract_epitope_specs("p53 (264-272)") == [("p53", 264, 272)]
+    assert extract_epitope_specs("patients aged 18-65 years") == [], (
+        "epitope trip-wire: dose/age ranges must not be extracted"
+    )
+    assert extract_epitope_specs("GLP-1 (7-36)") == [], (
+        "epitope trip-wire: peptide hormones use peptide-relative numbering and "
+        "must be excluded (a UniProt-precursor slice would be wrong)"
+    )
+    assert _is_hormone_antigen("GLP-2") and _is_hormone_antigen("exendin")
+    assert not _is_hormone_antigen("gp100") and not _is_hormone_antigen("p53")
+    # Registered + configured.
+    from agents.research import RESEARCH_AGENTS
+    assert "epitope_resolver" in RESEARCH_AGENTS, "epitope_resolver not registered"
+    # Sequence agent consumes it; orchestrator passes the protocol summary.
+    seq_src = (PKG_ROOT / "agents" / "annotation" / "sequence.py").read_text()
+    assert "epitope_resolver_sequences" in seq_src, (
+        "epitope trip-wire: sequence agent must consume epitope_resolver_sequences"
+    )
+    orch_src = (PKG_ROOT / "app" / "services" / "orchestrator.py").read_text()
+    assert "brief_summary" in orch_src and "detailed_description" in orch_src, (
+        "epitope trip-wire: orchestrator must pass protocol summary/description "
+        "in research metadata so the resolver can find antigen:position specs"
+    )
+    print("  ✓ v42.9 P2: epitope_resolver (antigen:pos → UniProt slice, hormones excluded)")
+
+
 def test_v42_9_rff_tier0_whystopped():
     """v42.9 (2026-05-20) P2: reason_for_failure must classify SPECIFIC-cause
     whyStopped deterministically from the registry field. Slice analysis found
@@ -955,6 +991,7 @@ def main() -> int:
         test_v42_9_completed_not_failed_override,
         test_v42_9_resolved_name_propagation,
         test_v42_9_sequence_resolved_lookup_and_fallback,
+        test_v42_9_epitope_resolver,
         test_v42_9_rff_tier0_whystopped,
         test_audit_trail_wired,
         test_dbaasp_word_boundary_preserved,

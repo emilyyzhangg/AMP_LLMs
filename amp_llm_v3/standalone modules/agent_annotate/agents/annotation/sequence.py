@@ -52,6 +52,10 @@ _SOURCE_WEIGHTS = {
     "dbaasp": 0.95,
     "apd": 0.95,
     "chembl_helm": 0.90,
+    # v42.9: epitope sliced from canonical UniProt at the residue range the
+    # protocol itself specifies — exact for unmodified epitopes. High weight,
+    # below the AMP DBs / known-sequence path.
+    "epitope_resolver": 0.88,
     "uniprot_mature": 0.85,
     "ebi_mature": 0.80,
     "uniprot_full": 0.70,
@@ -1019,6 +1023,30 @@ class SequenceAgent(BaseAnnotationAgent):
                             "is_mature": False,
                             "accession": accession,
                         })
+
+        # 7. v42.9 epitope_resolver — vaccine epitopes sliced from canonical
+        # UniProt at the protocol-stated residue range (NCT-level, not keyed by
+        # intervention). Recovers the tumor/viral-antigen epitope class that the
+        # AMP/structure DBs don't carry. Each entry already carries the exact
+        # sequence; just add it as a candidate.
+        for epi in all_raw.get("epitope_resolver_sequences", []):
+            if not isinstance(epi, dict):
+                continue
+            norm = normalize_sequence(epi.get("sequence", ""))
+            if norm and not any(c["sequence"] == norm for c in candidates):
+                candidates.append({
+                    "sequence": norm,
+                    "source": "epitope_resolver",
+                    "protein_name": epi.get("antigen", ""),
+                    "relevance": 0.9,
+                    "length": len(norm),
+                    "is_mature": True,
+                    "accession": epi.get("accession", ""),
+                })
+                reasoning_parts.append(
+                    f"Epitope {epi.get('antigen','')}:{epi.get('start','')}-"
+                    f"{epi.get('end','')} → {norm} ({len(norm)} aa)"
+                )
 
         # --- Phase 2: Score and rank candidates ---
         for c in candidates:

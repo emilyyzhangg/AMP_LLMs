@@ -55,6 +55,7 @@ from agents.research.drug_code_resolver import DrugCodeResolverAgent
 # trade pubs). Targets the dominant outcome miss class (positive→
 # unknown) on the recent NCT05+ cohort where literature is sparse.
 from agents.research.press_release_client import PressReleaseAgent
+from agents.research.epitope_resolver import EpitopeResolverAgent
 
 RESEARCH_AGENTS = {
     "clinical_protocol": ClinicalProtocolAgent,
@@ -85,4 +86,6 @@ RESEARCH_AGENTS = {
     "drug_code_resolver": DrugCodeResolverAgent,
     # v42.8.5: trial-readout press releases via Google News RSS
     "press_release": PressReleaseAgent,
+    # v42.9: protocol-specified epitope (antigen:start-end) → UniProt slice
+    "epitope_resolver": EpitopeResolverAgent,
 }

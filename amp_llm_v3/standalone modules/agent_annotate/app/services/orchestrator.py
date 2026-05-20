@@ -1215,7 +1215,15 @@ class PipelineOrchestrator:
                         id_mod.get("briefTitle", "")
                         or id_mod.get("officialTitle", "")
                     )
-                    metadata = {"interventions": interventions, "title": trial_title}
+                    # v42.9: include the protocol summary/description so the
+                    # epitope_resolver can find "antigen:start-end" specs.
+                    desc_mod = proto_section.get("descriptionModule", {})
+                    metadata = {
+                        "interventions": interventions,
+                        "title": trial_title,
+                        "brief_summary": desc_mod.get("briefSummary", "") or "",
+                        "detailed_description": desc_mod.get("detailedDescription", "") or "",
+                    }
                     logger.info(
                         f"  Extracted interventions: "
                         f"{[i['name'] for i in interventions]}"
