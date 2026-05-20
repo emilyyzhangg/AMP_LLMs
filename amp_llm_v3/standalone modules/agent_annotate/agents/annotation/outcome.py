@@ -1158,6 +1158,40 @@ class OutcomeAgent(BaseAnnotationAgent):
                 logger.info("  outcome: v38 hasResults override (COMPLETED + results posted)")
                 value = "Positive"
                 reasoning = "[v38 hasResults override] " + reasoning
+            else:
+                # v42.9 Lever 6 — "a completed trial that did not fail is a success".
+                # Most Positive under-calls are Phase 1/2 safety & PK trials: they
+                # have no efficacy endpoint to "meet", so requiring explicit positive
+                # language strands them at Unknown even though the trial achieved its
+                # (safety/feasibility/PK) objective. Per the design principle, a
+                # COMPLETED trial is a success unless there is an actual failure
+                # signal. We only reach this branch when value is still Unknown,
+                # which means the strong-failure publication override above did NOT
+                # fire — so no trial-specific publication reports endpoint failure.
+                # We re-check strong-failure on the negative-keyword set and require
+                # no negative press release as belt-and-suspenders before promoting.
+                pr_neg = sum(
+                    1 for e in dossier.get("press_release_evidence", [])
+                    if e.get("classification") == "negative"
+                )
+                failed_endpoint = any(
+                    ep.get("p_value") is not None and ep["p_value"] >= 0.05
+                    for ep in dossier.get("primary_endpoints", [])
+                )
+                if (not self._has_strong_failure(dossier.get("negative_keywords", []))
+                        and pr_neg == 0
+                        and not failed_endpoint):
+                    logger.info(
+                        "  outcome: v42.9 completed-not-failed override "
+                        "(COMPLETED + no failure signal → Positive)"
+                    )
+                    value = "Positive"
+                    reasoning = (
+                        "[v42.9 completed-not-failed: COMPLETED with no endpoint "
+                        "failure, no failure publication, and no negative press "
+                        "release → Positive (trial reached completion = objective met)] "
+                        + reasoning
+                    )
 
         # v42.6.12 (2026-04-24) — Registry-status safety net.
         # Job #80 revealed that the v42.6.11 tightened prompt was under-calling

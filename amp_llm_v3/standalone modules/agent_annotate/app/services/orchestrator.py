@@ -24,6 +24,7 @@ from app.services.config_service import config_service
 from app.services.output_service import save_json_output
 from app.services.version_service import get_version_stamp, get_git_commit_full, get_git_commit_short
 from app.services.persistence_service import PersistenceService
+from app.services.audit_trail import audit_recorder
 from app.config import RESULTS_DIR
 from agents.research import RESEARCH_AGENTS
 from agents.annotation import ANNOTATION_AGENTS
@@ -759,9 +760,19 @@ class PipelineOrchestrator:
                 )
 
                 try:
-                    annotations = await self._run_annotation(
-                        nct_id, research, config, job
+                    # Audit trail: bind every LLM call made while annotating this
+                    # trial to its nct_id. Reset afterwards so the batched
+                    # cross-trial verifier calls (which run without a trial
+                    # context) are not misattributed to the last trial.
+                    _trial_audit_token = audit_recorder.set_context(
+                        nct_id=nct_id, field="", stage="annotation"
                     )
+                    try:
+                        annotations = await self._run_annotation(
+                            nct_id, research, config, job
+                        )
+                    finally:
+                        audit_recorder.reset(_trial_audit_token)
                     # Snapshot pre-consistency values for EDAM learning
                     pre_consistency = {a.field_name: a.value for a in annotations}
                     self._enforce_consistency(annotations, research_data=research)
@@ -774,6 +785,7 @@ class PipelineOrchestrator:
                 except Exception as e:
                     logger.error(f"[{job.job_id}] Annotation error for {nct_id}: {e}")
                     batch_errors[nct_id] = str(e)
+                    audit_recorder.discard(nct_id)  # drop any captured calls
                     # Persist error result immediately
                     metadata = TrialMetadata(nct_id=nct_id)
                     trial_output = {
@@ -1102,6 +1114,15 @@ class PipelineOrchestrator:
                         "research_coverage": research_coverage,
                     }
                     persistence.save_annotation(job.job_id, nct_id, trial_output)
+                    # Audit trail: write the per-trial LLM input/output document
+                    # next to the annotation JSON. Best-effort — never fail the job.
+                    try:
+                        audit_md = audit_recorder.render_markdown(
+                            nct_id, trial_output, audit_recorder.pop_calls(nct_id)
+                        )
+                        persistence.save_audit(job.job_id, nct_id, audit_md)
+                    except Exception as _audit_e:
+                        logger.debug(f"audit-trail write failed for {nct_id}: {_audit_e}")
                     all_trial_results.append(trial_output)
 
                     if verified.flagged_for_review:
@@ -1536,6 +1557,16 @@ class PipelineOrchestrator:
                 break
 
         async def annotate_field(field_name: str, metadata: Optional[dict] = None) -> FieldAnnotation:
+            # Audit trail: tag every LLM call made while annotating this field
+            # (including atomic sub-agents) with the field name so the per-trial
+            # audit document attributes each input/output to the right field.
+            _af_token = audit_recorder.set_context(field=field_name, stage="annotation")
+            try:
+                return await _annotate_field_impl(field_name, metadata)
+            finally:
+                audit_recorder.reset(_af_token)
+
+        async def _annotate_field_impl(field_name: str, metadata: Optional[dict] = None) -> FieldAnnotation:
             agent_cls = ANNOTATION_AGENTS.get(field_name)
             if not agent_cls:
                 return FieldAnnotation(

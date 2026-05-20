@@ -131,6 +131,25 @@ class PersistenceService:
         logger.debug(f"Saved annotation for {nct_id} -> {path}")
         return path
 
+    def save_audit(self, job_id: str, nct_id: str, markdown: str) -> Optional[Path]:
+        """Write the per-trial LLM audit-trail Markdown next to its annotation.
+
+        Best-effort: a failure here must not fail the annotation. Returns the
+        path written, or None on error.
+        """
+        try:
+            adir = self._annotations_dir(job_id)
+            adir.mkdir(parents=True, exist_ok=True)
+            path = adir / f"{nct_id}.audit.md"
+            tmp_path = path.with_suffix(path.suffix + ".tmp")
+            with open(tmp_path, "w") as f:
+                f.write(markdown)
+            os.rename(tmp_path, path)
+            return path
+        except Exception as e:
+            logger.warning(f"Failed to save audit trail for {nct_id}: {e}")
+            return None
+
     def load_annotation(self, job_id: str, nct_id: str) -> Optional[dict]:
         """Load annotation result for a single trial."""
         path = self._annotations_dir(job_id) / f"{nct_id}.json"

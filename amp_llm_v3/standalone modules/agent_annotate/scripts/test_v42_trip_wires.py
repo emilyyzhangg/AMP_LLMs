@@ -752,6 +752,64 @@ def test_v42_8_5_press_release_agent():
     print("  ✓ v42.8.5: press-release agent wired (Google News RSS + override + dossier)")
 
 
+def test_v42_9_completed_not_failed_override():
+    """v42.9 (2026-05-20) Lever 6: a COMPLETED trial that shows no failure
+    signal is a success. Phase 1/2 safety & PK trials have no efficacy
+    endpoint to "meet", so requiring positive-efficacy language strands them
+    at Unknown. The override fills Unknown→Positive for COMPLETED trials,
+    gated on: no strong-failure publication phrase, no negative press release,
+    and no failed primary endpoint. It must NOT overturn a non-Unknown call."""
+    out_src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert "v42.9 completed-not-failed" in out_src, (
+        "v42.9 trip-wire: completed-not-failed override marker missing"
+    )
+    # The override must be guarded by all three failure signals.
+    idx = out_src.find("v42.9 Lever 6")
+    assert idx > 0, "v42.9 trip-wire: override block comment missing"
+    block = out_src[idx:idx + 2000]
+    for guard in ("_has_strong_failure", "pr_neg == 0", "not failed_endpoint"):
+        assert guard in block, (
+            f"v42.9 trip-wire: failure guard {guard!r} missing from override — "
+            "without it the rule would flip genuinely-failed completed trials."
+        )
+    # Must only fire when the model left the field Unknown (fill, don't overturn).
+    assert 'value == "Unknown" and dossier["registry_status"].upper() == "COMPLETED"' in out_src, (
+        "v42.9 trip-wire: override must be gated on value==Unknown + COMPLETED "
+        "so it never overturns a Failed/Terminated/Positive determination."
+    )
+    print("  ✓ v42.9: completed-not-failed override (fill Unknown→Positive, failure-gated)")
+
+
+def test_audit_trail_wired():
+    """Audit trail (2026-05-20): every annotation LLM call's input (prompt +
+    system) and raw output must be captured and written to a per-trial
+    Markdown document. Verifies the recorder exists, the ollama chokepoint
+    feeds it, the orchestrator binds trial/field context and flushes the doc,
+    and the persistence layer writes <nct>.audit.md."""
+    at_path = PKG_ROOT / "app" / "services" / "audit_trail.py"
+    assert at_path.exists(), "audit trip-wire: app/services/audit_trail.py missing"
+    at_src = at_path.read_text()
+    for fn in ("class AuditRecorder", "def record(", "def render_markdown(",
+               "def set_context(", "def pop_calls("):
+        assert fn in at_src, f"audit trip-wire: {fn!r} missing from audit_trail.py"
+    # Chokepoint feeds the recorder.
+    oc_src = (PKG_ROOT / "app" / "services" / "ollama_client.py").read_text()
+    assert "audit_recorder.record(" in oc_src, (
+        "audit trip-wire: ollama_client.generate must call audit_recorder.record"
+    )
+    # Orchestrator binds context + flushes the document.
+    orch_src = (PKG_ROOT / "app" / "services" / "orchestrator.py").read_text()
+    assert "audit_recorder.set_context(" in orch_src and "save_audit(" in orch_src, (
+        "audit trip-wire: orchestrator must set audit context and call save_audit"
+    )
+    # Persistence writes the markdown file.
+    pers_src = (PKG_ROOT / "app" / "services" / "persistence_service.py").read_text()
+    assert "def save_audit(" in pers_src and ".audit.md" in pers_src, (
+        "audit trip-wire: persistence_service must write <nct>.audit.md"
+    )
+    print("  ✓ audit-trail: per-trial LLM input/output document wired")
+
+
 def test_dbaasp_word_boundary_preserved():
     """v25 DBAASP word-boundary fix: 'NS' (normal saline) and short
     drug-name prefixes were matching DBAASP entries by substring, not
@@ -803,6 +861,8 @@ def main() -> int:
         test_v42_8_3_pub_trial_matcher,
         test_v42_8_4_drug_code_resolver,
         test_v42_8_5_press_release_agent,
+        test_v42_9_completed_not_failed_override,
+        test_audit_trail_wired,
         test_dbaasp_word_boundary_preserved,
     ]
     failed = 0

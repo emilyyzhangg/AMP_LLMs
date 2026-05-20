@@ -177,7 +177,23 @@ class OllamaAnnotationClient:
                         json=payload,
                     )
                     resp.raise_for_status()
-                    return resp.json()
+                    result = resp.json()
+                    # Audit trail: capture the exact input (prompt + system) and
+                    # raw output of every LLM call, attributed to the current
+                    # trial/field via the audit contextvar. Best-effort — must
+                    # never break generation.
+                    try:
+                        from app.services.audit_trail import audit_recorder
+                        audit_recorder.record(
+                            model=model,
+                            prompt=prompt,
+                            response=result.get("response", ""),
+                            system=system,
+                            temperature=temperature,
+                        )
+                    except Exception:
+                        pass
+                    return result
             except httpx.ConnectError:
                 logger.error("Ollama unreachable at %s", self._base_url)
                 raise RuntimeError(
