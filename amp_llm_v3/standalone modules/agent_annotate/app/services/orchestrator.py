@@ -707,7 +707,7 @@ class PipelineOrchestrator:
         """
         import time as _time
 
-        MINI_BATCH_SIZE = 5
+        MINI_BATCH_SIZE = getattr(config.orchestrator, "mini_batch_size", 5) or 5
 
         job.progress.current_phase = "annotation"
         all_trial_results = []

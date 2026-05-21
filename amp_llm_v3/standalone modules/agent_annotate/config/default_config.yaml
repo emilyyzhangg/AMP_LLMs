@@ -184,13 +184,23 @@ orchestrator:
   # llama3.1:8b and qwen3:14b, costing 60-90s per trial in model reload overhead).
   annotation_model: "qwen3:14b"
 
+  # 2026-05-21: mini-batch size for the annotate→verify→reconcile pipeline.
+  # Raised 5 → 15 to amortize the ~5 fixed model loads/batch over more trials
+  # (reloads/trial ~1.0 → ~0.33). Memory-safe (one model loads at a time
+  # regardless); trade-off is up to 15 trials re-annotated on interruption.
+  mini_batch_size: 15
+
   # v42 Phase 5 shadow-mode flags. Each runs a parallel "atomic" agent under a
   # distinct _atomic field name; legacy authoritative fields are untouched.
-  # These MUST stay true on dev during Phase 5 validation. Flip them off on
-  # prod until the 94-NCT run is analyzed and B1/B2/B3 verdicts are in.
-  outcome_atomic_shadow: true
-  classification_atomic_shadow: true
-  failure_reason_atomic_shadow: true
+  # 2026-05-21: DISABLED. The atomic pipelines stayed shadow-only
+  # (prefer_atomic_* = false) and repeatedly lost to legacy, so their output was
+  # discarded — they were burning ~1 LLM call/trial (mostly classification_atomic)
+  # for diagnostics no longer in use. Off saves that compute with zero accuracy
+  # impact (legacy is and remains authoritative). Re-enable for a periodic
+  # head-to-head re-evaluation if/when the atomic pipelines are revisited.
+  outcome_atomic_shadow: false
+  classification_atomic_shadow: false
+  failure_reason_atomic_shadow: false
   # v42 B1: Tier 1b per-pub LLM cap. Prevents 45-pub NCTs from stalling the
   # whole batch on a single trial. 0 = unlimited.
   outcome_atomic_max_voting_pubs: 20

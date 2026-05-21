@@ -159,6 +159,13 @@ class OrchestratorConfig(BaseModel):
     # Default 0 = use all defined verifiers.
     verifier_count: int = 0
 
+    # Mini-batch size for the annotate→verify→reconcile pipeline. Larger batches
+    # amortize the ~5 fixed model loads/batch over more trials (fewer reloads per
+    # trial); the trade-off is up to this many trials of annotation work re-done
+    # on interruption (research is cached, persisted trials are safe). One model
+    # loads at a time regardless, so this does not change peak RAM.
+    mini_batch_size: int = 5
+
 
 class OllamaConfig(BaseModel):
     host: str = "localhost"
