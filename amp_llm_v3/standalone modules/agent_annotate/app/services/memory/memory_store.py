@@ -493,7 +493,13 @@ class MemoryStore:
         """Store a drug name resolution mapping.
 
         Non-fatal: silently ignores duplicates (UNIQUE constraint).
+        Drops malformed resolutions (LLM reasoning/disclaimer/IUPAC/sentence
+        leakage) at write time so garbage never enters the table.
         """
+        if is_garbage_resolution(resolved):
+            logger.debug("EDAM: rejected garbage resolution %r -> %r",
+                         original, resolved)
+            return
         try:
             self._conn.execute(
                 "INSERT OR IGNORE INTO drug_names "
