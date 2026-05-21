@@ -1162,6 +1162,7 @@ class OutcomeAgent(BaseAnnotationAgent):
                 reasoning = "[v38 Terminated safety net] " + reasoning
 
         # hasResults override: Unknown + COMPLETED + results posted → Positive
+        v429_completed_positive = False
         if value == "Unknown" and dossier["registry_status"].upper() == "COMPLETED":
             if dossier["has_results"] is True:
                 logger.info("  outcome: v38 hasResults override (COMPLETED + results posted)")
@@ -1195,6 +1196,7 @@ class OutcomeAgent(BaseAnnotationAgent):
                         "(COMPLETED + no failure signal → Positive)"
                     )
                     value = "Positive"
+                    v429_completed_positive = True
                     reasoning = (
                         "[v42.9 completed-not-failed: COMPLETED with no endpoint "
                         "failure, no failure publication, and no negative press "
@@ -1243,6 +1245,15 @@ class OutcomeAgent(BaseAnnotationAgent):
         if value == "Failed - completed trial" and has_pmid_evidence and dossier["negative_keywords"] and not dossier.get("efficacy_keywords", dossier["positive_keywords"]):
             skip_verification = True
             logger.info(f"  outcome: v39 publication-anchored Failed — skip_verification=True")
+        # v42.9 (2026-05-20): lock in the completed-not-failed Positive. Job
+        # 74f71a5c306d showed the 3-pass verifier flips 17/35 of these back to
+        # Unknown — the verifier prompts still encode the old "Phase-1 → Unknown"
+        # conservatism and re-litigate the deterministic principle. The override
+        # is already gated on no-failure-signal, so skip verification (same
+        # discipline as the RfF Tier-0 whyStopped classifier).
+        if v429_completed_positive:
+            skip_verification = True
+            logger.info("  outcome: v42.9 completed-not-failed — skip_verification=True (lock-in)")
 
         # v42.7.24: dossier excerpt cap raised 400 → 1200 chars (paired with
         # _parse_reasoning cap raise to 2000) for publication-grade auditability.

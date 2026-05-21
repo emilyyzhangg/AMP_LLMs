@@ -777,7 +777,18 @@ def test_v42_9_completed_not_failed_override():
         "v42.9 trip-wire: override must be gated on value==Unknown + COMPLETED "
         "so it never overturns a Failed/Terminated/Positive determination."
     )
-    print("  ✓ v42.9: completed-not-failed override (fill Unknown→Positive, failure-gated)")
+    # Must lock in the result: Job 74f71a5c306d showed the 3-pass verifier flips
+    # 17/35 of these Positives back to Unknown. The override must skip
+    # verification so the deterministic principle isn't re-litigated and undone.
+    assert "v429_completed_positive" in out_src, (
+        "v42.9 trip-wire: override must set a flag (v429_completed_positive) and "
+        "skip verification — otherwise the verifier pool reverts the principle."
+    )
+    idx = out_src.find("if v429_completed_positive:")
+    assert idx > 0 and "skip_verification = True" in out_src[idx:idx + 200], (
+        "v42.9 trip-wire: v429_completed_positive must force skip_verification=True."
+    )
+    print("  ✓ v42.9: completed-not-failed override (fill Unknown→Positive, failure-gated, verify-locked)")
 
 
 def test_v42_9_resolved_name_propagation():
