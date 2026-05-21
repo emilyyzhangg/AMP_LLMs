@@ -450,6 +450,32 @@ For downstream consumers wanting only high-confidence annotations: filter to `ev
 
 ## 9. Maintenance Scripts
 
+### 9.0 Standalone agent evaluation (test a single agent WITHOUT a full run)
+
+Replay one annotation agent against the **cached research** already saved from a
+past job (`results/research/<job_id>/<nct>.json`) and score it against ground
+truth. Skips the full pipeline, verification, and the other five fields — so you
+iterate one agent in seconds-to-minutes instead of a ~7.6 min/trial full run.
+
+```bash
+# Deterministic peptide anchor only — INSTANT, no LLM. Reports anchor coverage,
+# precision, and how many trials defer to the LLM.
+python3 scripts/eval_peptide.py <research_job_id> [--errors]
+
+# Any single agent (runs its real deterministic + LLM logic) on cached research.
+# Cross-field deps (peptide_result/classification_result/outcome_result) are
+# injected from ground truth so the agent is tested with correct upstream inputs.
+python3 scripts/eval_agent.py <field> <research_job_id> [--limit N] [--errors]
+#   field ∈ peptide | classification | delivery_mode | outcome |
+#           reason_for_failure | sequence
+```
+
+Notes: `eval_agent.py` does NOT apply the orchestrator's post-annotation overrides
+or verification, so it measures the agent's own output. It uses Ollama for fields
+with an LLM step — don't run it while a production job is annotating (they contend
+for the single loaded model). Use a recent 315-trial research job (e.g.
+`c7ca38f92f6b`) for the fullest coverage.
+
 ### 8.1 retroactive_fix.py
 
 Applies expanded value normalization rules to completed annotation jobs. This script is used when normalization logic is updated (e.g., new verifier parsing patterns are discovered) and previously completed jobs need to be re-processed with the improved rules.
