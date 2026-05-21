@@ -50,6 +50,7 @@ EXCLUDES as peptide (False):
 - Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms
 - Heat shock protein-peptide complexes: HSPPC-96/Oncophage (the HSP is the drug, not the peptide)
 - Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
+- Cells PULSED or LOADED with peptides (dendritic-cell vaccines, peptide-pulsed T cells): the administered product is the CELL, not the peptide → False (the peptide is cargo). Answer True only if a free peptide is itself given as a separate intervention.
 - Gene therapies, cell therapies, medical devices
 - Single amino acids (e.g., L-glutamine, L-arginine supplements)
 
@@ -121,6 +122,7 @@ EXCLUDES as peptide (False):
 - Nutritional formulas containing hydrolyzed proteins: "Peptide 1.5", Peptamen, Kate Farms, Vital Peptide, Nutri Peptide
 - Heat shock protein-peptide complexes: HSPPC-96/Oncophage (the HSP is the drug, not the peptide)
 - Exosome/dexosome vehicles loaded with peptides (the vehicle is the drug)
+- Cells PULSED or LOADED with peptides (dendritic-cell vaccines, peptide-pulsed T cells): the administered product is the CELL, not the peptide → False (the peptide is cargo). Answer True only if a free peptide is itself given as a separate intervention.
 - Gene therapies, cell therapies, medical devices
 - Single amino acids (e.g., L-glutamine, L-arginine supplements)
 
@@ -149,6 +151,7 @@ STEP 3 — Final confirmation
 
 CRITICAL RULES:
 - The question is whether ANY intervention is or contains a peptide molecule
+- Judge only the ADMINISTERED INTERVENTION(S). A peptide named only as a biomarker, lab measurement, or endpoint (e.g. "C-peptide levels", "fasting peptide measured", "peptide hormone assay") is NOT an intervention → it does not make the answer True. Likewise "peptide" appearing only in eligibility criteria, mechanism background, or a non-experimental comparator does not count.
 - Brand names containing "peptide" do NOT make the product a peptide drug
 - Nutritional formulas with hydrolyzed proteins are NOT peptide drugs
 - Monoclonal antibodies are NOT peptides (different drug class)
