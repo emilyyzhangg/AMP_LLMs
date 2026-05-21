@@ -788,6 +788,26 @@ def test_v42_10_peptide_anchor():
     print("  ✓ v42.10: peptide anchor (deterministic core + override protection)")
 
 
+def test_v42_10_edam_resolution_filter():
+    """v42.10 (2026-05-21): the EDAM drug-name resolver leaks reasoning/disclaimer
+    text, IUPAC/SMILES, and sentences (~4% of drug_names). get_resolved_names must
+    filter these so they don't misdirect ChEMBL/FDA/peptide research lookups."""
+    from app.services.memory.memory_store import is_garbage_resolution
+    for bad in ("Evzio (Note: Erenumab is the generic name)", "None (Note: x)",
+                "but no widely recognized generic synonyms", "肠外营养液",
+                "(2R)-2-[[(2S)-1-[(2S)-2-[[(2S,3S)-2-amino-pentanoyl]]]]]"):
+        assert is_garbage_resolution(bad), f"should flag garbage: {bad!r}"
+    for ok in ("Semaglutide", "Amino Acid Solution", "octreotide",
+               "Glucose-dependent insulinotropic polypeptide (GIP)"):
+        assert not is_garbage_resolution(ok), f"should keep legit name: {ok!r}"
+    src = (PKG_ROOT / "app" / "services" / "memory" / "memory_store.py").read_text()
+    assert "is_garbage_resolution(r[\"resolved_name\"])" in src or \
+           "is_garbage_resolution(r['resolved_name'])" in src, (
+        "v42.10 trip-wire: get_resolved_names must filter garbage resolutions."
+    )
+    print("  ✓ v42.10: EDAM resolved-name garbage filter")
+
+
 def test_v42_9_completed_not_failed_override():
     """v42.9 (2026-05-20) Lever 6: a COMPLETED trial that shows no failure
     signal is a success. Phase 1/2 safety & PK trials have no efficacy
@@ -1036,6 +1056,7 @@ def main() -> int:
         test_v42_8_4_drug_code_resolver,
         test_v42_8_5_press_release_agent,
         test_v42_10_peptide_anchor,
+        test_v42_10_edam_resolution_filter,
         test_v42_9_completed_not_failed_override,
         test_v42_9_resolved_name_propagation,
         test_v42_9_sequence_resolved_lookup_and_fallback,

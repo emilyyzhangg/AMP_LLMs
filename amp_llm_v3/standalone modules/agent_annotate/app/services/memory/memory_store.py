@@ -36,6 +36,43 @@ logger = logging.getLogger("agent_annotate.edam.store")
 
 DB_PATH = RESULTS_DIR / "edam.db"
 
+# Markers of a malformed resolved drug-name: the LLM drug-code resolver sometimes
+# leaks reasoning/disclaimer text, IUPAC/SMILES structures, or sentences instead of
+# a clean synonym. ~4% of the drug_names table is such garbage and it misdirects
+# downstream research (ChEMBL/FDA/peptide) lookups, so it is filtered at read time.
+_RESOLUTION_GARBAGE_SUBSTR = (
+    "note:", "(note", "i do not", "i cannot", "as an ai", "is incorrect",
+    "should not", "but the", "however", "does not have", "no known",
+    "is the generic name", "i'm not", "i am not", "cannot find", "unable to",
+    " is ", " are ", "listed", "for context", "synonym", "recognized",
+    "beyond the", "it's ", "they are", "this is", " due to", "not a ",
+    " known ", " widely ", "would be", "may refer", "appears to", "i.e.",
+    "e.g.", "such as", " not ",
+)
+
+
+def is_garbage_resolution(s: str) -> bool:
+    """True if a resolved drug-name looks like LLM reasoning, a disclaimer, an
+    IUPAC/SMILES structure, a sentence, or otherwise not a usable name."""
+    if not s or not s.strip():
+        return True
+    t = s.strip()
+    low = " " + t.lower() + " "
+    if low.strip() in ("none", "n/a", "unknown", ""):
+        return True
+    if any(b in low for b in _RESOLUTION_GARBAGE_SUBSTR):
+        return True
+    if len(t) > 40:  # IUPAC/SMILES/structure: long + dense with digits/parens
+        special = sum(c in "()[]{}0123456789-,+" for c in t)
+        if special / len(t) > 0.22:
+            return True
+    if len(t) > 30 and t.count("-") >= 5:  # AA sequence stored as a name
+        return True
+    if any("一" <= c <= "鿿" for c in t):  # CJK text
+        return True
+    return False
+
+
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS config_epochs (
     epoch           INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -479,7 +516,10 @@ class MemoryStore:
                 "WHERE original_name = ? ORDER BY created_at DESC",
                 (original_name,),
             ).fetchall()
-            return [r["resolved_name"] for r in rows]
+            # Drop malformed resolutions (LLM reasoning/disclaimer/IUPAC/sentence
+            # leakage) so they don't misdirect downstream research lookups.
+            return [r["resolved_name"] for r in rows
+                    if not is_garbage_resolution(r["resolved_name"])]
         except Exception as e:
             logger.warning("EDAM: failed to query drug names: %s", e)
             return []
