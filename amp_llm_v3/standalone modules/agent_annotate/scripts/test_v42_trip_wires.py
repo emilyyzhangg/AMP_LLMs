@@ -752,6 +752,42 @@ def test_v42_8_5_press_release_agent():
     print("  ✓ v42.8.5: press-release agent wired (Google News RSS + override + dossier)")
 
 
+def test_v42_10_peptide_anchor():
+    """v42.10 (2026-05-21): evidence-based deterministic peptide anchor.
+    extract_peptide_signals + peptide_anchor settle the high-confidence cases
+    (INN -tide stem / DB / sequence = True; pure antibody / cell-gene = False),
+    deferring the ambiguous middle (None) to the LLM. A peptide signal from any
+    arm must beat the exclusions (peptide-vaccine + checkpoint-mAb combos). The
+    agent must consume it, and the two crude overrides (pre-cascade
+    resolve_known_sequence, N/A-as-3-AA consistency) must respect anchored
+    decisions so they can't flip an antibody=False back to True."""
+    from agents.annotation.peptide_signals import peptide_anchor
+    # antibody alone -> False; cell-gene alone -> False
+    assert peptide_anchor({"antibody": True, "n_real_drugs": 1}) == "False"
+    assert peptide_anchor({"cell_gene": True, "n_real_drugs": 1}) == "False"
+    # peptide signal wins over exclusions (combo with checkpoint mAb)
+    assert peptide_anchor({"inn": True, "antibody": True, "n_real_drugs": 2}) == "True"
+    # peptide + cell context is the ambiguous edge -> defer to LLM
+    assert peptide_anchor({"peptide_in_name": True, "cell_gene": True}) is None
+    # INN stem / DB / sequence -> True; nothing -> defer
+    assert peptide_anchor({"inn": True}) == "True"
+    assert peptide_anchor({"db_peptide": True}) == "True"
+    assert peptide_anchor({}) is None
+    # agent + orchestrator wiring
+    pep = (PKG_ROOT / "agents" / "annotation" / "peptide.py").read_text()
+    assert "peptide_anchor" in pep and "v42.10 peptide anchor" in pep, (
+        "v42.10 trip-wire: PeptideAgent must consume the anchor"
+    )
+    orch = (PKG_ROOT / "app" / "services" / "orchestrator.py").read_text()
+    assert orch.count('"[v42.10 peptide anchor" not in') + orch.count(
+        '"[v42.10 peptide anchor" in (peptide.reasoning') >= 2 or \
+        orch.count("v42.10 peptide anchor") >= 2, (
+        "v42.10 trip-wire: both crude peptide overrides (pre-cascade + N/A-3AA "
+        "consistency) must respect anchored decisions."
+    )
+    print("  ✓ v42.10: peptide anchor (deterministic core + override protection)")
+
+
 def test_v42_9_completed_not_failed_override():
     """v42.9 (2026-05-20) Lever 6: a COMPLETED trial that shows no failure
     signal is a success. Phase 1/2 safety & PK trials have no efficacy
@@ -999,6 +1035,7 @@ def main() -> int:
         test_v42_8_3_pub_trial_matcher,
         test_v42_8_4_drug_code_resolver,
         test_v42_8_5_press_release_agent,
+        test_v42_10_peptide_anchor,
         test_v42_9_completed_not_failed_override,
         test_v42_9_resolved_name_propagation,
         test_v42_9_sequence_resolved_lookup_and_fallback,

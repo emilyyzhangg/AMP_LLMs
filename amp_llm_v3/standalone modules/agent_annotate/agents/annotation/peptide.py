@@ -480,6 +480,34 @@ class PeptideAgent(BaseAnnotationAgent):
         if det_result is not None:
             return det_result
 
+        # v42.10: evidence-based deterministic anchor (INN -tide stem / DB /
+        # structural confirmation = peptide; antibody / cell-gene therapy =
+        # not). Validated 94.8% precision over ~57% of trials on cached research
+        # (scripts/eval_peptide.py). The ambiguous middle returns None and falls
+        # through to the LLM, which reads whether "peptide" describes the drug
+        # itself vs an incidental mention. skip_verification=True locks the
+        # high-confidence verdict (the verifier pool would re-litigate it).
+        from agents.annotation.peptide_signals import (
+            extract_peptide_signals, peptide_anchor,
+        )
+        _sig = extract_peptide_signals(research_results, metadata)
+        _anchor = peptide_anchor(_sig)
+        if _anchor is not None:
+            if _anchor == "True":
+                why = ("INN peptide stem" if _sig["inn"] else
+                       "database/structural confirmation" if _sig["db_peptide"] else
+                       "explicit amino-acid sequence" if _sig["aa_seq"] else
+                       "named as a peptide")
+            else:
+                why = ("antibody (large protein)" if _sig["antibody"]
+                       else "cell/gene therapy")
+            logger.info(f"  peptide: v42.10 anchor → {_anchor} ({why}) for {nct_id}")
+            return FieldAnnotation(
+                field_name=self.field_name, value=_anchor, confidence=0.93,
+                reasoning=f"[v42.10 peptide anchor: {why} → {_anchor}]",
+                evidence=[], model_name="deterministic", skip_verification=True,
+            )
+
         from app.services.config_service import config_service
         from app.services.memory.edam_config import FIELD_SNIPPET_OVERRIDES
 

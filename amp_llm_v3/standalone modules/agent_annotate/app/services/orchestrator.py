@@ -1672,7 +1672,12 @@ class PipelineOrchestrator:
         # but BEFORE the cascade wipes sequence to N/A).
         # v29: Uses resolve_known_sequence() with alias support + checks
         # EDAM-resolved names from enriched intervention dicts.
-        if peptide_ann.value == "False":
+        # v42.10: respect the deterministic peptide anchor — if the agent already
+        # decided peptide via the evidence-based anchor (incl. antibody/cell-gene
+        # = False), do NOT let this crude resolve_known_sequence flip it (it has
+        # known false matches, e.g. placebo→"NS"→angiotensin-(1-7)).
+        if (peptide_ann.value == "False"
+                and "[v42.10 peptide anchor" not in (peptide_ann.reasoning or "")):
             from agents.annotation.sequence import resolve_known_sequence
             intervention_names = shared_metadata.get("interventions", [])
             for name in intervention_names:
@@ -2431,7 +2436,11 @@ class PipelineOrchestrator:
             # Use length of first sequence if pipe-separated
             first_seq = sequence.value.split(" | ")[0].strip()
             seq_len = len(first_seq)
-            if 2 <= seq_len <= 100 and peptide.value == "False":
+            # v42.10: do not override the deterministic peptide anchor (e.g. an
+            # antibody/cell-gene = False decision). Non-anchored (LLM-decided)
+            # trials keep the existing consistency behaviour unchanged.
+            anchored = "[v42.10 peptide anchor" in (peptide.reasoning or "")
+            if 2 <= seq_len <= 100 and peptide.value == "False" and not anchored:
                 logger.info(
                     f"  consistency: sequence={seq_len} aa, "
                     f"forcing peptide from 'False' to 'True'"
