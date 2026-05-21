@@ -40,6 +40,12 @@ _COMPOSITION_RE = re.compile(
 _AA_SEQ_RE = re.compile(r"\b[ACDEFGHIKLMNPQRSTVWY]{8,}\b")
 _PLACEBO = ("placebo", "saline", "vehicle", "normal saline", "standard of care",
             "best supportive care", "observation")
+# split a combo intervention name into its component drugs ("LTX-315 +
+# pembrolizumab", "X in combination with Y") so an antibody partner doesn't mask
+# an experimental peptide.
+_COMBO_SPLIT = re.compile(
+    r"\s*(?:\+|/|\bin combination with\b|\bcombined with\b|\bplus\b|\bwith\b|&)\s*",
+    re.I)
 
 
 def _norm(s):
@@ -137,11 +143,15 @@ def extract_peptide_signals(research_results, metadata: Optional[dict] = None) -
         "peptide_word": bool(_PEPTIDE_NAME_RE.search(name_blob))
         or ("peptid" in text.lower())
         or bool(_COMPOSITION_RE.search(text)),
-        # count of non-placebo drug interventions — a multi-drug combo means an
-        # antibody arm may just be a partner, not the experimental subject.
-        "n_real_drugs": sum(
-            1 for n in names if n and not any(p in n.lower() for p in _PLACEBO)
-        ),
+        # count of non-placebo drug units — splitting combo names ("A + B",
+        # "A in combination with B") so an antibody partner doesn't mask an
+        # experimental peptide co-drug.
+        "n_real_drugs": len({
+            part.strip().lower()
+            for n in names if n
+            for part in _COMBO_SPLIT.split(n)
+            if part.strip() and not any(p in part.lower() for p in _PLACEBO)
+        }),
     }
 
 
@@ -150,25 +160,29 @@ def peptide_anchor(signals: dict) -> Optional[str]:
 
     Returns "True", "False", or None (ambiguous).
     """
-    peptide_signal = (signals.get("inn") or signals.get("db_peptide")
-                      or signals.get("aa_seq") or signals.get("peptide_in_name"))
+    # STRONG peptide identity (unambiguous): INN -tide stem, explicit AA sequence,
+    # or the name itself says peptide. The DB-protein signal is WEAKER — ChEMBL
+    # mol_type "protein" also fires for antibodies (they ARE proteins), so it must
+    # not by itself overturn an antibody exclusion.
+    strong_pep = (signals.get("inn") or signals.get("aa_seq")
+                  or signals.get("peptide_in_name"))
+    any_pep = strong_pep or signals.get("db_peptide")
+    multi = signals.get("n_real_drugs", 0) > 1
 
-    # A peptide signal from ANY arm means a peptide is present as an intervention.
-    # The exclusions must not force "False" then — peptide-vaccine + checkpoint-mAb
-    # combos (pembrolizumab/nivolumab end -mab) and peptide + cell arms are common.
-    if peptide_signal:
-        # peptide AND cell-context is the genuinely ambiguous edge
-        # ("MUC1 peptide vaccine" = peptide drug, True; "dendritic cells loaded
-        # with peptides" = cell is the drug, False) — let the LLM read it.
-        if signals.get("cell_gene"):
-            return None
-        return "True"
-    # No peptide signal at all. A pure antibody / cell / gene therapy is "False",
-    # but in a multi-drug combo the antibody/cell arm may be a partner while the
-    # (unrecognized) experimental drug is a peptide — defer those to the LLM.
-    if signals.get("antibody") or signals.get("cell_gene"):
-        if signals.get("n_real_drugs", 0) > 1:
-            return None
-        return "False"
-    # Nothing decisive -> LLM.
+    # Antibody = large protein, never a peptide. Overridden only by a STRONG
+    # peptide signal (genuine peptide co-drug) or a multi-drug combo where the
+    # unrecognized experimental drug may be a peptide — defer those to the LLM.
+    if signals.get("antibody"):
+        if strong_pep:
+            return "True"
+        return None if multi else "False"
+    # A peptide signal from any arm: peptide present. Peptide + cell-context is the
+    # ambiguous edge ("MUC1 peptide vaccine" True vs "cells loaded with peptides"
+    # False) — defer; otherwise True.
+    if any_pep:
+        return None if signals.get("cell_gene") else "True"
+    # Pure cell/gene therapy is False; in a combo the experimental drug may be a
+    # peptide -> defer.
+    if signals.get("cell_gene"):
+        return None if multi else "False"
     return None
