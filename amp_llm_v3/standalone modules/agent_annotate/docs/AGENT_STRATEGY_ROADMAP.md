@@ -35,8 +35,8 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 **Validated 2026-05-21:** slice-M `8a27ac16de24` confirmed in production — peptide +7.8pp, per-trial −1.6 min, no regression on any other field. All targets met except sequence (data-bound).
 
 **Next levers (on the to-do list):**
-1. **Peptide deferred band** — improve the LLM on the 125 ambiguous "peptide-in-prose" cases (the only path past ~86%); validate via `eval_agent.py peptide`. Recall-safe prompt rules already added (peptide-pulsed cells, biomarker mentions).
-2. **EDAM resolved-name data quality** — garbage resolved names (e.g. glibenclamide → "c-peptide") cause peptide anchor FP and pollute ChEMBL/FDA/NIH lookups.
+1. **Peptide deferred band** — improve the LLM on the ~125 ambiguous "peptide-in-prose" cases (the only path past ~90%); validate via `eval_agent.py peptide`. Recall-safe prompt rules already added (peptide-pulsed cells, biomarker mentions).
+2. **Drug-resolver wrong synonyms** — EDAM format garbage is now filtered at read+write (`is_garbage_resolution`, `9204f19a`); but wrong-but-valid synonyms (Erenumab→Evzio=naloxone) are format-undetectable and need resolver-side validation (cross-check synonym maps back to the original via ChEMBL/RxNorm).
 3. **Sequence research (harder)** — sequence stays data-bound. The earlier "consume peptide_identity" idea was INVESTIGATED and rejected: peptide_identity returns UniProt *name-search* hits that are the wrong entity — of 21 GT-has-seq trials only 1 matched the GT peptide length, 19 returned >100-aa receptors/proteins ("Angiotensin II" → the receptor P50052, not DRVYIHPF). A real lever would query the peptide PRECURSOR and slice the mature-peptide/chain feature (like the epitope resolver), not the full protein — a research-agent change, not a quick win.
 
 ### 1.x v42.8 state (historical — superseded by §1 above)
