@@ -223,3 +223,46 @@ Drug cache (`drug_cache.py`) caches empty/error results with no TTL → a drug t
 fails to resolve once stays empty for the process. No retry for research agents.
 Surface trial phase/enrollment/condition to the RfF and outcome prompts (FDA
 indication-overlap is currently delegated to implicit LLM reasoning).
+
+---
+
+## 2026-05-21 — Shipped follow-ups
+
+### Outcome v42.9 verify-lock (fcd925ec)
+slice-M (74f71a5c306d) exposed the 3-pass verifier flipping 17/35 v42.9 Positives
+back to Unknown. Fix: completed-not-failed override sets `skip_verification=True`.
+Re-validated LIVE on slice-M re-run d38ff1434897: **outcome 48.3% → 79.3%** (+31pp),
+positive 91.4%. Lesson: any deterministic outcome override the verifier prompts
+don't encode WILL be reverted unless it skips verification; score `final_value`.
+
+### Efficiency (60c9ff22) — already <10 min/trial
+Per-trial dropped 11.5 → 7.6 min just from the v42.9/RfF skip-verification lock-ins
+(fewer fields hit the 3-verifier stage). Further: (1) atomic shadow agents DISABLED
+(`*_atomic_shadow: false`) — they were shadow-only (prefer_atomic_*=false), lost to
+legacy, burned ~1 LLM call/trial for unused diagnostics; (2) `mini_batch_size`
+config-driven, 5 → 15 (amortizes ~5 model loads/batch over more trials). Per-field
+verifier count (#2 from review) NOT done per request — estimated ~30% fewer verifier
+calls but global setting would risk weaker fields; would need a per-field policy.
+
+### Peptide v42.10 — hybrid (deterministic anchor + LLM) (01cc1767, 2adabc29)
+`agents/annotation/peptide_signals.py`: anchor settles high-confidence cases — INN
+-tide stem / DB / AA sequence = True; pure antibody (-mab) / cell-gene = False
+(name-based; peptide signal from any arm beats exclusions; peptide+cell defers).
+**153/270 decided @ 94.8% precision**; 117 deferred to the LLM. Agent runs the
+anchor pre-LLM (skip_verification=True, skips the 2-pass LLM for 57% → faster); the
+two crude overrides (pre-cascade resolve_known_sequence, N/A-as-3-AA consistency)
+RESPECT anchored decisions. Offline net +1.9pp (~84.1% → ~85.9%), zero deferred
+regression. LLM prompt for the deferred band: added recall-safe disambiguations
+(peptide-pulsed cells = cell is the drug → False; biomarker-only mentions like
+"C-peptide levels" don't count). No drug-name answer-keys (no-cheat-sheet rule).
+User chose "maximize accuracy" (accept some FN to cut the 43 FP / 0 FN over-call).
+
+### Tooling — standalone agent eval (no full run)
+`scripts/eval_peptide.py <job>` (deterministic anchor, instant) and
+`scripts/eval_agent.py <field> <job> [--limit N]` (any real agent on CACHED
+research, one field, ~Nx faster) — iterate agents in seconds-to-minutes vs a full
+7.6 min/trial run. Cached research lives at `results/research/<job>/<nct>.json`.
+
+### Validation in flight
+slice-M 8a27ac16de24 (on 2adabc29) — production validation of all the above
+(efficiency timing + peptide v42.10 + outcome/RfF/sequence). Score when complete.
