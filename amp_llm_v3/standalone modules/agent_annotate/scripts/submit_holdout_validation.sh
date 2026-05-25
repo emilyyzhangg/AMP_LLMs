@@ -20,7 +20,7 @@ for arg in "$@"; do
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
         --test-batch) ALLOW_TEST_BATCH=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--slice-k|--slice-m|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--test-batch-50|--validation-set|--test-set) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--slice-k|--slice-m|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--full-corpus|--test-batch-50|--validation-set|--test-set) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -134,6 +134,10 @@ for arg in "$@"; do
         # Submit batch 1, wait for completion, then submit batch 2.
         --full-corpus-1) SLICE="$THIS_DIR/full_corpus_batch_1.json" ;;
         --full-corpus-2) SLICE="$THIS_DIR/full_corpus_batch_2.json" ;;
+        # Whole training corpus as ONE job (batch_1 + batch_2 = 629 unique
+        # scoreable train NCTs; the unscoreable NCT06895408 is excluded). One
+        # resumable job → one merged result to score directly. ~63h on prod.
+        --full-corpus) SLICE="$THIS_DIR/full_corpus_all.json" ;;
         # Held-out test-set certification (Job #104, post full-corpus). 50
         # NCTs reserved by API contract for unbiased final measurement —
         # never seen by training/iteration/gate/full-corpus. Requires
