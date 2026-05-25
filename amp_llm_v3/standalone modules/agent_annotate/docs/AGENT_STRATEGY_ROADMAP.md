@@ -34,6 +34,23 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 **Validated 2026-05-21:** slice-M `8a27ac16de24` confirmed in production — peptide +7.8pp, per-trial −1.6 min, no regression on any other field. All targets met except sequence (data-bound).
 
+### 1.1 FULL DEV-CORPUS (629 NCTs, `fb5f5e083e1d`+`01bd2f03eadd`, e466a2a0) vs HUMAN IRA — 2026-05-22
+
+The real goal is beating **human inter-annotator agreement** (how often the two annotators agree), not arbitrary targets. Corrected scoring (v42.11 ongoing→Active applied):
+
+| Field | Agent | Human IRA | Verdict |
+|---|---|---|---|
+| classification | 96.4% | 92.4% | ✅ **BEATS human (+4.0)** |
+| peptide | 88.8% | 86.0% | ✅ **BEATS human (+2.8)** |
+| reason_for_failure | 88.9% precision-when-emitted | 92.3% | near (−3.4); gap is RECALL (emits 27/61), not precision |
+| delivery_mode | 87.8% | 88.8% | near (−1.0); dominant miss is the bidirectional "other"↔"injection/infusion" boundary |
+| outcome | 60.1% | 61.3% | **AT HUMAN CEILING (−1.2)** |
+| sequence | 29.4% | 43.6% | data-bound |
+
+**CRITICAL — outcome is at the human-consistency ceiling, do NOT grind it:** human IRA is only 61.3% (the two annotators DISAGREE 39% of the time — outcome is inherently subjective). Investigated every lever 2026-05-22; all dead: (a) the 57 GT-unknown→Positive misses are v42.9's "completed=success" directive vs conservative human "unknown" — and GT-positive vs GT-unknown completed trials are STATISTICALLY IDENTICAL on every available signal (pub 66% vs 67%, phase-3+ 11% vs 16%, results-posted 0% vs 0%), so no gate can separate them; v42.9 (all→Positive) already nets +10 vs the alternative and is MORE consistent than the humans. (b) 25 of the 29 active→Positive are GT STALENESS (CT.gov now COMPLETED; trial finished after annotation — agent is arguably more current). (c) extending v42.9 to UNKNOWN-status+past-completion is net −11 (those are mostly GT-unknown/active). (d) the 6 failed→Positive have failure evidence NOT in the agent's research. The agent is essentially at human level on outcome and more self-consistent.
+
+**Bottom line: the "better than human" goal is MET where achievable** — beats human on classification + peptide, at human level on outcome, near-human on delivery + RfF-precision. Remaining gaps are human subjectivity (outcome/delivery low IRA), recall-gating (RfF), or missing source data (sequence) — not fixable agent deficiencies. The big real win this session was v42.11 (outcome 43%→60% by fixing the ongoing-label scoring bug that suppressed every prior version ~17pp).
+
 **Next levers (on the to-do list):**
 1. **Peptide deferred band** — improve the LLM on the ~125 ambiguous "peptide-in-prose" cases (the only path past ~90%); validate via `eval_agent.py peptide`. Recall-safe prompt rules already added (peptide-pulsed cells, biomarker mentions).
 2. **Drug-resolver wrong synonyms — ADDRESSED (`d23e1cd2`).** Root cause: the LLM synonym fallback in the orchestrator (~line 1440) hallucinated wrong-drug synonyms + leaked notes. Robust auto-detection rejected as unviable — PubChem CID cross-check wrongly rejects legit brand/salt synonyms (Octreotide→Sandostatin = same drug, different CIDs) and can't check antibodies (erenumab not in PubChem). Fix = harden the fallback prompt (same-active-ingredient-only, prefer unknown/none, output-only-format) + the `is_garbage_resolution` filter (read+write). Residual confident hallucinations are rarer and format-filtered.
