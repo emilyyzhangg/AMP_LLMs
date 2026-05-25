@@ -92,8 +92,12 @@ DELIVERY_MODE_ALIASES: dict[str, str] = {
 }
 
 OUTCOME_ALIASES: dict[str, str] = {
+    # GT uses the single coarse label "Active" for every ongoing trial, so all
+    # granular CT.gov ongoing statuses canonicalise to "Active" (matches the
+    # agent's v42.11 output and the documented intent below).
     "active": "Active", "active, not recruiting": "Active",
-    "active not recruiting": "Active", "recruiting": "Recruiting",
+    "active not recruiting": "Active", "recruiting": "Active",
+    "not yet recruiting": "Active", "enrolling by invitation": "Active",
     "failed - completed trial": "Failed - completed trial",
     "positive": "Positive", "terminated": "Terminated",
     "withdrawn": "Withdrawn", "unknown": "Unknown",

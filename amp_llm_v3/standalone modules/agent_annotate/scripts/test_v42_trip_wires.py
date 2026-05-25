@@ -752,6 +752,29 @@ def test_v42_8_5_press_release_agent():
     print("  ✓ v42.8.5: press-release agent wired (Google News RSS + override + dossier)")
 
 
+def test_v42_11_ongoing_active_label():
+    """v42.11 (2026-05-22): GT uses one coarse "Active" label for all ongoing
+    trials; the agent emitted granular "Recruiting"/"Active, not recruiting" which
+    scored 0/99 ongoing trials on the full corpus. outcome.py must collapse the
+    granular ongoing statuses to "Active" and lock it past verification; the
+    concordance OUTCOME_ALIASES must canonicalise all ongoing variants to Active."""
+    out_src = (PKG_ROOT / "agents" / "annotation" / "outcome.py").read_text()
+    assert "ongoing_collapsed" in out_src and 'value = "Active"' in out_src, (
+        "v42.11 trip-wire: outcome.py must collapse ongoing statuses to Active."
+    )
+    idx = out_src.rfind("if ongoing_collapsed:")  # the skip-verification block
+    assert idx > 0 and "skip_verification = True" in out_src[idx:idx + 200], (
+        "v42.11 trip-wire: the ongoing→Active collapse must skip verification."
+    )
+    from app.services.concordance_service import OUTCOME_ALIASES
+    for ongoing in ("active", "active, not recruiting", "recruiting",
+                    "not yet recruiting"):
+        assert OUTCOME_ALIASES.get(ongoing) == "Active", (
+            f"v42.11 trip-wire: OUTCOME_ALIASES[{ongoing!r}] must be 'Active'."
+        )
+    print("  ✓ v42.11: ongoing → Active (GT coarse label) collapse + concordance")
+
+
 def test_v42_10_peptide_anchor():
     """v42.10 (2026-05-21): evidence-based deterministic peptide anchor.
     extract_peptide_signals + peptide_anchor settle the high-confidence cases
@@ -1055,6 +1078,7 @@ def main() -> int:
         test_v42_8_3_pub_trial_matcher,
         test_v42_8_4_drug_code_resolver,
         test_v42_8_5_press_release_agent,
+        test_v42_11_ongoing_active_label,
         test_v42_10_peptide_anchor,
         test_v42_10_edam_resolution_filter,
         test_v42_9_completed_not_failed_override,
