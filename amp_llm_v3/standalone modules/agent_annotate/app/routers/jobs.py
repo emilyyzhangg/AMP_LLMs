@@ -21,7 +21,10 @@ logger = logging.getLogger("agent_annotate.jobs")
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
 NCT_PATTERN = re.compile(r"^NCT\d{8}$")
-MAX_BATCH_SIZE = 500
+# 2026-05-22: raised 500 → 750 so the whole 629-NCT training corpus can run as a
+# single job. Jobs are resumable (per-trial persistence) and mini-batched, so
+# this only affects how many NCTs one job tracks, not peak memory.
+MAX_BATCH_SIZE = 750
 
 
 class CreateJobRequest(BaseModel):
