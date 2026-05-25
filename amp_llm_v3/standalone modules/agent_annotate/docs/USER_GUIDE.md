@@ -416,7 +416,12 @@ python3 scripts/score_production_gate.py JOB_ID --write           # supplementar
 
 ### 8.2 Full-corpus annotation (post-gate)
 ```bash
-# Submit batch 1 of 2 (315 NCTs each, ~50-80h per batch)
+# PREFERRED: whole training corpus (629 unique scoreable NCTs) as ONE resumable
+# job → one merged result to score directly (no merge step). ~63h on prod.
+# (Requires MAX_BATCH_SIZE >= 629 in app/routers/jobs.py — currently 750.)
+bash scripts/submit_holdout_validation.sh --full-corpus --check-sync
+
+# ALTERNATIVE: two ~315-NCT halves (older flow; needs the merge step in 8.3)
 bash scripts/submit_holdout_validation.sh --full-corpus-1 --check-sync
 # Wait for batch 1 to complete, then:
 bash scripts/submit_holdout_validation.sh --full-corpus-2 --check-sync
