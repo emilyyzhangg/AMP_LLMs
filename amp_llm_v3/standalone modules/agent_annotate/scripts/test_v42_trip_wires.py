@@ -785,6 +785,25 @@ def test_v42_11_ongoing_active_label():
     print("  ✓ v42.11: ongoing → Active (GT coarse label) collapse + concordance")
 
 
+def test_v42_11_2_reconciler_no_freeform_leak():
+    """v42.11.2 (2026-05-28): the reconciler LLM sometimes emits freeform prose
+    after "Final Answer:" instead of a label; the old code stored it verbatim as
+    final_value, corrupting 4 outcome cells on full-corpus job 5c8d0aa0431a. When
+    the parsed answer resolves to no canonical value, the reconciler must fall back
+    to the majority vote rather than storing raw text."""
+    rec_src = (PKG_ROOT / "agents" / "verification" / "reconciler.py").read_text()
+    assert "if not matched and valid_values:" in rec_src, (
+        "v42.11.2 trip-wire: reconciler must detect unparseable answers (matched flag)."
+    )
+    idx = rec_src.find("if not matched and valid_values:")
+    guard = rec_src[idx:idx + 500]
+    assert "_majority_vote" in guard and "canonical = fallback" in guard, (
+        "v42.11.2 trip-wire: unparseable reconciler answer must fall back to "
+        "majority vote, not store raw freeform text."
+    )
+    print("  ✓ v42.11.2: reconciler freeform-answer guard (no raw text in final_value)")
+
+
 def test_v42_10_peptide_anchor():
     """v42.10 (2026-05-21): evidence-based deterministic peptide anchor.
     extract_peptide_signals + peptide_anchor settle the high-confidence cases
@@ -1089,6 +1108,7 @@ def main() -> int:
         test_v42_8_4_drug_code_resolver,
         test_v42_8_5_press_release_agent,
         test_v42_11_ongoing_active_label,
+        test_v42_11_2_reconciler_no_freeform_leak,
         test_v42_10_peptide_anchor,
         test_v42_10_edam_resolution_filter,
         test_v42_9_completed_not_failed_override,

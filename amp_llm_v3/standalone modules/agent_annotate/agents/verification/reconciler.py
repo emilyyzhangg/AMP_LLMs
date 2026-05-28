@@ -136,13 +136,32 @@ class ReconciliationAgent:
             field_config = FIELD_PROMPTS.get(field_name, {})
             valid_values = field_config.get("valid_values", [])
             canonical = final_value  # default to raw
+            matched = False
             for vv in valid_values:
                 if vv.lower() == normalized:
                     canonical = vv
+                    matched = True
                     break
             # Handle empty string for reason_for_failure
             if normalized == "" and "" in valid_values:
                 canonical = ""
+                matched = True
+
+            # v42.11.2 (2026-05-28): the reconciler LLM sometimes emits freeform
+            # prose after "Final Answer:" (e.g. a markdown-bolded drug description)
+            # instead of a label. Previously that raw text was stored verbatim as
+            # final_value, corrupting the field — full-corpus job 5c8d0aa0431a had
+            # 4 outcome cells holding LLM reasoning like "**Pembrolizumab is a
+            # FDA-approved PD-1 inhibitor...**". If the parsed answer resolves to no
+            # canonical value (and the field constrains values), fall back to the
+            # majority vote rather than storing garbage.
+            if not matched and valid_values:
+                fallback = self._majority_vote(consensus_result)
+                logger.warning(
+                    f"  {field_name}: Reconciler returned unparseable answer "
+                    f"{final_value[:60]!r} — majority-vote fallback='{fallback}'"
+                )
+                canonical = fallback
 
             # v31: Cross-check reconciler against confidence-weighted vote.
             # If the reconciler contradicts the weighted vote AND the primary
