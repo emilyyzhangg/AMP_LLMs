@@ -772,6 +772,16 @@ def test_v42_11_ongoing_active_label():
         assert OUTCOME_ALIASES.get(ongoing) == "Active", (
             f"v42.11 trip-wire: OUTCOME_ALIASES[{ongoing!r}] must be 'Active'."
         )
+    # v42.11.1 (2026-05-28): the highest-precedence _deterministic_outcome status
+    # mapper bypasses the annotate() collapse (returns directly,
+    # skip_verification=True). Full-corpus job 5c8d0aa0431a leaked 32 "Recruiting"
+    # here, scoring 0/32. The map must emit GT's coarse "Active" for ongoing.
+    from agents.annotation.outcome import _DETERMINISTIC_STATUSES
+    for ongoing in ("RECRUITING", "NOT_YET_RECRUITING", "ENROLLING_BY_INVITATION"):
+        assert _DETERMINISTIC_STATUSES.get(ongoing) == "Active", (
+            f"v42.11.1 trip-wire: _DETERMINISTIC_STATUSES[{ongoing!r}] must be "
+            f"'Active' (GT coarse label), not the granular CT.gov status."
+        )
     print("  ✓ v42.11: ongoing → Active (GT coarse label) collapse + concordance")
 
 

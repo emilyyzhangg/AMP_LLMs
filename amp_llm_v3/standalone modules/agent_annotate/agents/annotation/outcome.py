@@ -191,9 +191,16 @@ def _classify_publication(title_or_snippet: str, nct_id: str) -> str:
 # --------------------------------------------------------------------------- #
 
 _DETERMINISTIC_STATUSES = {
-    "RECRUITING": "Recruiting",
-    "NOT_YET_RECRUITING": "Recruiting",
-    "ENROLLING_BY_INVITATION": "Recruiting",
+    # v42.11.1 (2026-05-28): ongoing statuses map to GT's coarse "Active" label,
+    # NOT the granular CT.gov "Recruiting". This top-level status mapper is the
+    # HIGHEST-precedence outcome path and returns directly with
+    # skip_verification=True, so it bypasses the v42.11 collapse in annotate().
+    # Full-corpus job 5c8d0aa0431a scored 0/32 RECRUITING-status ongoing trials
+    # because they leaked the granular label here. GT uses one "active" label for
+    # every ongoing trial → emit "Active".
+    "RECRUITING": "Active",
+    "NOT_YET_RECRUITING": "Active",
+    "ENROLLING_BY_INVITATION": "Active",
     "WITHDRAWN": "Withdrawn",
     "SUSPENDED": "Unknown",
     # v21: TERMINATED removed — some TERMINATED trials have positive published results.
