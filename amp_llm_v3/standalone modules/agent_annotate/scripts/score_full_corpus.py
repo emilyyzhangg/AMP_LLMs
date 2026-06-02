@@ -69,8 +69,53 @@ def norm(s: str) -> str:
     return (s or "").strip().lower()
 
 
-def consensus(a: str, b: str) -> str | None:
-    a, b = norm(a), norm(b)
+# Train GT was pre-flattened into a coarse label space (lowercase, single
+# token per category). The val/test GT carry the raw granular CT.gov /
+# extraction-time labels. Coarsen field values into the train space BEFORE
+# consensus so two annotators don't disagree merely because one wrote
+# "Recruiting" while the other wrote "Active", or one wrote "Injection/Infusion
+# - Subcutaneous/Intradermal" while the other wrote "IV".
+_COARSE_OUTCOME = {
+    "recruiting": "active",
+    "active, not recruiting": "active",
+    "active not recruiting": "active",
+    "not yet recruiting": "active",
+    "enrolling by invitation": "active",
+}
+
+
+def _coarsen_one_delivery(token: str) -> str:
+    t = token.strip()
+    if not t:
+        return ""
+    if t == "iv":
+        return "injection/infusion"
+    for prefix in ("injection/infusion", "oral", "topical"):
+        if t == prefix or t.startswith(prefix + " -"):
+            return prefix
+    if t in ("intranasal", "inhalation", "other", "other/unspecified", "unspecified"):
+        return "other"
+    return t
+
+
+def coarsen(field: str, value: str) -> str:
+    v = norm(value)
+    if not v:
+        return ""
+    if field == "outcome":
+        return _COARSE_OUTCOME.get(v, v)
+    if field == "delivery_mode":
+        parts = [p.strip() for p in v.split(",") if p.strip()]
+        coarsened = sorted({_coarsen_one_delivery(p) for p in parts} - {""})
+        return ", ".join(coarsened)
+    return v
+
+
+def consensus(a: str, b: str, field: str | None = None) -> str | None:
+    if field is not None:
+        a, b = coarsen(field, a), coarsen(field, b)
+    else:
+        a, b = norm(a), norm(b)
     if a and b:
         return a if a == b else None
     return a or b or None
@@ -107,7 +152,7 @@ def load_gt() -> dict[str, dict]:
             if not nct:
                 continue
             gt[nct] = {
-                field: consensus(r.get(c1, ""), r.get(c2, ""))
+                field: consensus(r.get(c1, ""), r.get(c2, ""), field=field)
                 for field, (c1, c2) in GT_COLS.items()
             }
             gt[nct]["_raw_seq_r1"] = (r.get("Sequence_ann1") or "").strip()
@@ -196,7 +241,7 @@ def main() -> int:
                 if not gt_v:
                     continue
                 n += 1
-                if norm(pred) == gt_v:
+                if coarsen(field, pred) == gt_v:
                     hits += 1
         p = hits / n if n else 0
         hw = wald_hw(p, n) if n else float("nan")
@@ -210,7 +255,7 @@ def main() -> int:
     by_class: dict[str, dict] = {}
     for t in trials:
         nct = (t.get("nct_id") or "").upper()
-        pred = norm(get_pred(t, "outcome"))
+        pred = coarsen("outcome", get_pred(t, "outcome"))
         gt_v = (gt.get(nct, {}) or {}).get("outcome")
         if not gt_v or not pred:
             continue
@@ -281,7 +326,7 @@ def main() -> int:
     print("## Outcome stratified by GT class\n")
     print("| GT outcome | n | hits | accuracy |")
     print("|---|---|---|---|")
-    for cls in ("positive", "unknown", "terminated", "failed - completed trial", "withdrawn"):
+    for cls in ("positive", "unknown", "active", "terminated", "failed - completed trial", "withdrawn"):
         d = by_class.get(cls, {"n": 0, "hits": 0})
         n = d["n"]
         acc = d["hits"] / n * 100 if n else 0
