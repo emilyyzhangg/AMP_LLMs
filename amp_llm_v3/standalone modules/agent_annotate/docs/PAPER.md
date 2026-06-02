@@ -2,7 +2,13 @@
 
 **Amphoraxe Research Team**
 
-> **⚠️ Staleness note (2026-05-06):** The abstract and results sections below describe v9–v10 architecture with 70-trial evaluation and 25-trial concordance numbers. The current pipeline is v42.7.22 (publication baseline frozen at commit `82a88146`) with **6 annotation fields** and **19 research agents**, evaluated on the **630-NCT full corpus** (Jobs #102+#103, 2026-05-06). Canonical headline numbers and per-field human-IRA deltas: see `docs/PRODUCTION_GATE_REPORT.md`. Recency-stratification narrative (outcome 49.3% on pre-2021 trials vs ~31% on 2021+ trials) and v42.8 architectural cycle (levers 1+2 landed; levers 3-5 spec'd in `docs/V42_8_IMPLEMENTATION_PLAN.md`): see `docs/AGENT_STRATEGY_ROADMAP.md §1`. **Defer publication-side rewrite of this file until the v42.8 stack closes (post-Jobs #105+#106 + Job #104 single-shot test-batch certification) — avoids reworking the abstract twice.**
+> **⚠️ Staleness note (refreshed 2026-05-28):** The abstract and results sections below describe v9–v10 architecture with 70-trial evaluation and 25-trial concordance numbers. The current pipeline is **v42.11** (commit `cd45dff2`) with 6 annotation fields and 22 research agents. **Development has concluded** (every field is at its natural ceiling — beating human IRA, at the human-consistency ceiling, or data-bound). The canonical numbers for publication now come from the formal **train (629) / val (86) / test (85) split**:
+>
+> - **Full dev-corpus** (629 NCTs, job `5c8d0aa0431a`): classification 96.4%, peptide 89.4%, delivery 87.5%, outcome 58.9%, sequence 26.2%, RfF 84.8% precision (true recall 45.9%). Beats human IRA on classification + peptide + delivery (statistical tie); outcome at human ceiling (61.3%).
+> - **Sealed validation** (86 NCTs, job `8d9398b0af66`, 2026-05-28, PASSES): classification 97.1%, peptide 97.5%, delivery 95.7%, outcome 56.1%, sequence 38.3%. Every field except outcome is at or above the dev-corpus number AND above human-IRA on the sealed cohort. No overfitting to train.
+> - **Single-shot test** (85 NCTs, job `b9301e02fef5`, in flight 2026-05-28): the unbiased canonical accuracy number for the v42.11 stack. Will replace the headline numbers in the paper rewrite.
+>
+> Canonical narrative + per-lever history: `docs/AGENT_STRATEGY_ROADMAP.md §1` (sealed-val results in §1.2). The publication-side rewrite of this file is deferred until the test-set scores; that way the abstract is rewritten once, against the canonical test number.
 
 ---
 

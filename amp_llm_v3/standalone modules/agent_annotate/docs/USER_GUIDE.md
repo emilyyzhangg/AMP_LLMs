@@ -414,6 +414,27 @@ python3 scripts/score_production_gate.py JOB_ID --write           # supplementar
 #   outcome <55% → INVESTIGATE before scaling up
 ```
 
+### 8.1b Sealed validation + single-shot test (the canonical accuracy numbers)
+
+The 86-NCT validation set (`scripts/validation_set_v1.json`) and 85-NCT test set (`scripts/test_set_v1.json`) are held-out cohorts outside the 629-NCT training universe. Both live in `ALL_GT_NCTS` but not `TRAINING_NCTS`, so EDAM corrections never fire on them — they stay sealed across runs. The GT CSVs (`docs/human_ground_truth_val_df.csv`, `docs/human_ground_truth_test_df.csv`) carry the **raw granular CT.gov labels** ("Recruiting", "Active, not recruiting", "Injection/Infusion - Subcutaneous/Intradermal", "IV", etc.), unlike the train GT which was pre-flattened. The scorer's `coarsen(field, value)` (added in `8d8c1f62`) handles this automatically — no preprocessing needed.
+
+```bash
+# Validation set — run after a development cycle to confirm the agent
+# generalizes off-train. Iterate freely on the val number; it's allowed.
+bash scripts/submit_holdout_validation.sh --validation-set --check-sync --test-batch
+# Score:
+python3 scripts/score_full_corpus.py <job_id> --gt-path docs/human_ground_truth_val_df.csv
+
+# Test set — SINGLE SHOT. Fires once per architectural cycle; the result
+# is the unbiased canonical accuracy number for the deployed code. The
+# --test-set flag auto-sets allow_test_batch=true.
+bash scripts/submit_holdout_validation.sh --test-set --check-sync
+# Score:
+python3 scripts/score_full_corpus.py <job_id> --gt-path docs/human_ground_truth_test_df.csv
+```
+
+ETA on prod: ~9h for either cohort. Both are submitted to the same `/api/jobs` endpoint with the same MAX_BATCH_SIZE budget as full-corpus.
+
 ### 8.2 Full-corpus annotation (post-gate)
 ```bash
 # PREFERRED: whole training corpus (629 unique scoreable NCTs) as ONE resumable
