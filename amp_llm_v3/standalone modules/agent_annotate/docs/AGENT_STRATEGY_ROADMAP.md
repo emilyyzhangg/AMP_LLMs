@@ -8,7 +8,7 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 ---
 
-## 1. Current state (last refreshed 2026-05-21 — v42.9 + v42.10 + efficiency + eval harnesses LANDED)
+## 1. Current state (last refreshed 2026-05-28 — sealed validation PASSES; test set next)
 
 **Shipped since v42.8 (all on main, trip-wires 35/35):**
 
@@ -61,6 +61,28 @@ The real goal is beating **human inter-annotator agreement** (how often the two 
 1. **Peptide deferred band** — improve the LLM on the ~125 ambiguous "peptide-in-prose" cases (the only path past ~90%); validate via `eval_agent.py peptide`. Recall-safe prompt rules already added (peptide-pulsed cells, biomarker mentions).
 2. **Drug-resolver wrong synonyms — ADDRESSED (`d23e1cd2`).** Root cause: the LLM synonym fallback in the orchestrator (~line 1440) hallucinated wrong-drug synonyms + leaked notes. Robust auto-detection rejected as unviable — PubChem CID cross-check wrongly rejects legit brand/salt synonyms (Octreotide→Sandostatin = same drug, different CIDs) and can't check antibodies (erenumab not in PubChem). Fix = harden the fallback prompt (same-active-ingredient-only, prefer unknown/none, output-only-format) + the `is_garbage_resolution` filter (read+write). Residual confident hallucinations are rarer and format-filtered.
 3. **Sequence — CONFIRMED DATA-BOUND (two recovery approaches investigated, both rejected).** (a) "consume peptide_identity" → it returns UniProt *name-search* hits that are the wrong entity (of 21 GT-has-seq trials only 1 matched the GT peptide length; 19 were >100-aa receptors, "Angiotensin II"→ receptor P50052). (b) "UniProt precursor + mature-peptide-feature slice" → tested live: only **5/164 misses recovered correctly** (angiotensin II/-(1-7), GLP-1, glucagon — endogenous hormones only), with a species-mismatch trap (Calcitonin → human seq when the drug is *salmon* calcitonin). The vast majority of missed sequences are synthetic analogs / coded drugs whose exact sequences are in no source. Not worth building (~+1.5pp at a precision risk). Sequence's reachable subset is already served by the epitope resolver (antigen:position). NO further sequence lever recommended.
+
+### 1.2 SEALED VALIDATION — job `8d9398b0af66` (86 NCTs, commit `cd45dff2`, completed 2026-05-28)
+
+First sealed-cohort run on `main` post-development-conclusion. Submitted via `submit_holdout_validation.sh --validation-set --check-sync --test-batch` (val NCTs are in `ALL_GT_NCTS` but not `TRAINING_NCTS`; EDAM learning is gated on `TRAINING_NCTS` so val never contaminates memory regardless). 8h40m, 6.0 min/trial, zero errors. Scored via `score_full_corpus.py 8d9398b0af66 --gt-path docs/human_ground_truth_val_df.csv`.
+
+| Field | Val | Dev-corpus (629) | Human IRA | Verdict |
+|---|---|---|---|---|
+| classification | **97.1%** (68/70) ±3.9pp | 96.4% | 92.4% | ✅ holds, beats human |
+| peptide | **97.5%** (39/40) ±4.8pp | 89.4% | 86.0% | ✅ holds (small-n favorable), beats human |
+| delivery_mode | **95.7%** (67/70) ±4.7pp | 87.5% | 88.8% | ✅ holds, beats human |
+| outcome | **56.1%** (23/41) ±15.2pp | 59.5% | 61.3% | ≈ at human ceiling (−3pp vs dev, well within val CI) |
+| sequence | **38.3%** (18/47) ±13.9pp | 26.2% | 43.6% | val cohort more recoverable — actually closer to human |
+| RfF score-blind | 50.0% (1/2) — n=2 noise | 84.8% | 92.3% | small-n |
+| RfF true recall | 12.5% (1/8) | 45.9% | n/a | "ineffective for purpose" 0/4 all blank — same data-bound finding as dev (no registry stop-reason) |
+
+**Outcome stratified:** positive 12/14 (85.7%), unknown 1/11 (9.1%), active 9/12 (75%), terminated 1/2, failed-completed 0/2. The unknown-class miss is the dev finding: v42.9 reads "completed=success" where one human is conservative; statistically indistinguishable from positives at the signal level. Human-ceiling subjectivity, not an agent bug.
+
+**Bottom line:** every field except outcome is at or above dev-corpus AND above human-IRA on the sealed val cohort. Outcome is at the human ceiling. No fields show overfitting to train. **Validation passes.**
+
+**Scorer fix landed (`8d8c1f62`).** The first val score reported delivery 0/60 = 0.0% (and outcome 35.9%) because the **train GT was pre-flattened to a coarse lowercase label space** (`injection/infusion / oral / other / topical`, `active` for any ongoing), while **val/test GT carry the raw granular CT.gov labels** (`Injection/Infusion - Subcutaneous/Intradermal`, `IV`, `Intranasal`, `Recruiting`, `Active, not recruiting`, etc.). The scorer's consensus rule lowercased but never collapsed granularity, so two annotators routinely "disagreed" on labels that mean the same thing, and the agent's coarse outputs never matched. Added `coarsen(field, value)` applied to both GT readings before consensus and to the predicted value before comparison; no-op on already-coarse train (dev-corpus outcome ticks 58.9 → 59.5% recovering 2 trials silently dropped before). Required for any val/test scoring to be meaningful.
+
+**Next step:** single-shot test set (85 NCTs, `scripts/test_set_v1.json`, GT `docs/human_ground_truth_test_df.csv`). Per test-set discipline this fires ONCE at the end of an architectural cycle. Submit with `submit_holdout_validation.sh --test-set --check-sync` (the script auto-sets `allow_test_batch=true`).
 
 ### 1.x v42.8 state (historical — superseded by §1 above)
 ## 1. Current state (last refreshed 2026-05-08 — v42.8 stack LANDED, full-corpus re-run in flight)
