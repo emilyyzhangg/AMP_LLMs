@@ -4,18 +4,21 @@
 **Dataset generated:** 2026-06-03
 **Status:** Production-ready (sealed test PASSES)
 
-This directory contains the v42.11 stack's annotations for 800 unique clinical trials, split into three formal cohorts. Numbers below come from `scripts/score_full_corpus.py` against the matching `docs/human_ground_truth_<cohort>_df.csv`.
+This directory contains the v42.11 stack's annotations for 850 unique clinical trials, split into four cohorts. Numbers below come from `scripts/score_full_corpus.py` against the matching `docs/human_ground_truth_<cohort>_df.csv` (for the legacy_test_batch cohort, score against `human_ground_truth_train_df.csv` — the 50 NCTs are a subset).
 
 ## Files
 
 | File | Cohort | NCTs | Source job | Per-trial pace |
 |---|---|---|---|---|
-| **`all_annotations_800nct.csv`** | **all** | **800** | merged from the three below | — |
+| **`all_annotations_850nct.csv`** | **all** | **850** | merged from the four below | — |
 | `train_dev_corpus_5c8d0aa0431a.csv` | train | 629 | `5c8d0aa0431a` (2026-05-28, ~63 h wall) | ~6.0 min |
 | `val_8d9398b0af66.csv` | val | 86 | `8d9398b0af66` (2026-05-28, 8h40m) | 6.05 min |
 | `test_b9301e02fef5.csv` | test | 85 | `b9301e02fef5` (2026-06-02, 8h54m, 85/85 OK) | 6.29 min |
+| `legacy_test_batch_50_036fc5dea889.csv` | legacy_test_batch | 50 | `036fc5dea889` (2026-06-03, 4h38m) | 5.57 min |
 
-`all_annotations_800nct.csv` is the **single-file form** — every currently-annotated NCT in one CSV with two extra leading columns (`Cohort`, `Source Job ID`). Remaining 16 columns are identical to the per-cohort files. Use this when you want one dataset; use the per-cohort files when you want them split.
+`all_annotations_850nct.csv` is the **single-file form** — every currently-annotated NCT in one CSV with two extra leading columns (`Cohort`, `Source Job ID`). Remaining 20 columns (NCT ID + study metadata + 6 fields × 4 cols each) are identical to the per-cohort files. Use this when you want one dataset; use the per-cohort files when you want them split.
+
+**Pending:** master-extension job `c74ce600868d` (994 NCTs, ETA ~4.3 days; submitted 2026-06-03) will lift the total to 1844 once complete — the full annotator-master xlsx universe.
 
 Each CSV is in the canonical "standard" format produced by `app/services/output_service.generate_standard_csv` (the same format the in-app `/api/jobs/<id>/csv` endpoint serves). Columns: NCT ID, Study Title, Study Status, Phase, Conditions, Interventions, then for each of the 6 annotation fields (`classification`, `delivery_mode`, `outcome`, `reason_for_failure`, `peptide`, `sequence`): the field value plus three companion columns — Evidence (deduplicated source identifiers), Sources (`database:identifier` pairs), and Evidence Text (extracted excerpts that informed the decision). The leading `#` line records the version stamp + commit + export timestamp.
 
@@ -27,7 +30,21 @@ The "full" 61-column audit CSV (per-field confidence, verifier opinions, reasoni
 - **val** (`docs/human_ground_truth_val_df.csv`, 86 NCTs): a sealed validation cohort outside the original training universe. EDAM never fires on these trials. Used to confirm no overfitting before the single-shot test fire.
 - **test** (`docs/human_ground_truth_test_df.csv`, 85 NCTs): the canonical held-out test cohort. Fires exactly **once** per architectural cycle. The 2026-06-02 fire (`b9301e02fef5`) is the v42.11 cycle's unbiased canonical reading.
 
-The formal split was established 2026-05-11. The 50-NCT legacy `test_batch` (`scripts/fast_learning_batch_50.txt`) is a subset of the original 680-NCT training CSV; it was used for the pre-formal-split production-gate certification (Job #101) on v42.7.22 and is **not** included in this v42.11 dataset release.
+The formal split was established 2026-05-11. The 50-NCT legacy `test_batch` (`scripts/fast_learning_batch_50.txt`) is a subset of the original 680-NCT training CSV that was carved out as a held-out cohort *before* the formal train/val/test split. It was used for the pre-formal-split production-gate certification (Job #101) on v42.7.22; v42.11 re-scored it via job `036fc5dea889` (2026-06-03) and the cohort is now bundled in this dataset.
+
+### Headline accuracy by cohort (sealed scoring vs human GT)
+
+| Field            | train (629) | val (86) | test (85) | legacy_test_batch (50) | Human IRA |
+|------------------|------------|----------|-----------|------------------------|-----------|
+| classification   | 96.4%      | 97.1%    | 97.1%     | 88.6%                  | 92.4%     |
+| peptide          | 89.4%      | 97.5%    | 97.4%     | 97.9%                  | 86.0%     |
+| delivery_mode    | 87.5%      | 95.7%    | 88.2%     | 95.0%                  | 88.8%     |
+| outcome          | 58.9%      | 56.1%    | 60.5%     | 88.4%                  | 61.3%     |
+| sequence         | 26.2%      | 38.3%    | 17.4%     | 38.5%                  | 43.6%     |
+| RfF score-blind  | 84.8%      | 50% (n=2)| 100%      | 80.0%                  | 92.3%     |
+| RfF true recall  | 45.9%      | 12.5%    | 42.9%     | 66.7%                  | n/a       |
+
+The legacy_test_batch cohort shows higher outcome (88.4%) and RfF recall (66.7%) than the formal cohorts — it was curated to be a clean, mostly-failed cohort for early production-gate testing, so the agent's deterministic + LLM stack performs unusually well on it. Per-class outcome and RfF breakdowns in `/tmp/036fc5dea889_score.log`.
 
 ## Headline accuracy (sealed test `b9301e02fef5`, scored against `docs/human_ground_truth_test_df.csv`)
 
