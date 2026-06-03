@@ -2,13 +2,13 @@
 
 **Amphoraxe Research Team**
 
-> **⚠️ Staleness note (refreshed 2026-05-28):** The abstract and results sections below describe v9–v10 architecture with 70-trial evaluation and 25-trial concordance numbers. The current pipeline is **v42.11** (commit `cd45dff2`) with 6 annotation fields and 22 research agents. **Development has concluded** (every field is at its natural ceiling — beating human IRA, at the human-consistency ceiling, or data-bound). The canonical numbers for publication now come from the formal **train (629) / val (86) / test (85) split**:
+> **⚠️ Staleness note (refreshed 2026-06-02):** The abstract and results sections below describe v9–v10 architecture with 70-trial evaluation and 25-trial concordance numbers. The current pipeline is **v42.11** (commit `bacc31ce`) with 6 annotation fields and 22 research agents. **Development has concluded → PRODUCTION-READY** (every field is at its natural ceiling — beating human IRA, at the human-consistency ceiling, or data-bound). The canonical numbers for publication come from the formal **train (629) / val (86) / test (85) split**, with the single-shot test as the headline:
 >
-> - **Full dev-corpus** (629 NCTs, job `5c8d0aa0431a`): classification 96.4%, peptide 89.4%, delivery 87.5%, outcome 58.9%, sequence 26.2%, RfF 84.8% precision (true recall 45.9%). Beats human IRA on classification + peptide + delivery (statistical tie); outcome at human ceiling (61.3%).
+> - **Single-shot test — HEADLINE** (85 NCTs, job `b9301e02fef5`, 2026-06-02, **PASSES**): classification **97.1%** (68/70) ±3.9pp, peptide **97.4%** (37/38) ±5.1pp, delivery **88.2%** (60/68) ±7.7pp, outcome **60.5%** (23/38) ±15.5pp, sequence **17.4%** (8/46) ±11.0pp, RfF blind **100%** (6/6) / true recall **42.9%** (6/14) ±25.9pp. Three fields beat human IRA (classification +4.7, peptide +11.4, delivery at IRA); outcome at human ceiling (−0.8 vs IRA 61.3%); sequence + RfF-recall data-bound (cohort variance vs val 38.3% / dev 45.9%). 8h54m wall, 6.29 min/trial, 85/85 successful.
 > - **Sealed validation** (86 NCTs, job `8d9398b0af66`, 2026-05-28, PASSES): classification 97.1%, peptide 97.5%, delivery 95.7%, outcome 56.1%, sequence 38.3%. Every field except outcome is at or above the dev-corpus number AND above human-IRA on the sealed cohort. No overfitting to train.
-> - **Single-shot test** (85 NCTs, job `b9301e02fef5`, in flight 2026-05-28): the unbiased canonical accuracy number for the v42.11 stack. Will replace the headline numbers in the paper rewrite.
+> - **Full dev-corpus** (629 NCTs, job `5c8d0aa0431a`): classification 96.4%, peptide 89.4%, delivery 87.5%, outcome 58.9%, sequence 26.2%, RfF 84.8% precision (true recall 45.9%). Beats human IRA on classification + peptide + delivery (statistical tie); outcome at human ceiling (61.3%).
 >
-> Canonical narrative + per-lever history: `docs/AGENT_STRATEGY_ROADMAP.md §1` (sealed-val results in §1.2). The publication-side rewrite of this file is deferred until the test-set scores; that way the abstract is rewritten once, against the canonical test number.
+> Canonical narrative + per-lever history: `docs/AGENT_STRATEGY_ROADMAP.md §1` (test results in §1.3, sealed-val in §1.2). **The publication-side rewrite of this file (new abstract + results section + methods alignment to v42.11) is now the immediate next step** — write against the canonical test numbers above.
 
 ---
 

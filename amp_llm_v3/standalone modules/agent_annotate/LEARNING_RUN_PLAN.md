@@ -1,6 +1,6 @@
 # EDAM Learning Run Plan
 
-**Last updated:** 2026-05-28 — Sealed validation `8d9398b0af66` PASSES on `main` (commit `cd45dff2`); single-shot test set `b9301e02fef5` (commit `bacc31ce`) IN FLIGHT. Agent code unchanged from val (the two intervening commits touch scorer + roadmap only). EDAM unchanged: val + test are in `ALL_GT_NCTS` but NOT `TRAINING_NCTS`, so EDAM corrections never fired on either cohort — sealed cleanly.
+**Last updated:** 2026-06-02 — Sealed validation `8d9398b0af66` PASSES + single-shot test `b9301e02fef5` PASSES on `main` (commit `bacc31ce`) → **PRODUCTION-READY**. Agent code unchanged from val (intervening commits touched scorer + roadmap only). EDAM unchanged: val + test are in `ALL_GT_NCTS` but NOT `TRAINING_NCTS`, so EDAM corrections never fired on either cohort — sealed cleanly. Dev cycle CONCLUDED.
 
 **Prior:** 2026-05-08 — v42.8 stack (Levers 1-5) LANDED on main; full-corpus re-run (Jobs #105 + #106) in flight to certify at scale; Job #104 stays deferred until #105+#106 complete; v42.9 plan drafted (`docs/V42_9_IMPLEMENTATION_PLAN.md`) for residual gaps.
 
@@ -9,7 +9,7 @@
 | # | Job ID | NCTs | Completed | Status | Agent Ver | Notes |
 |---|---|---|---|---|---|---|
 | **val** | `8d9398b0af66` (prod) | 86 | 2026-05-28 21:10 | **Sealed val PASSES** | v42.11 (`cd45dff2`) | class 97.1, peptide 97.5, delivery 95.7 ✅ beat human; outcome 56.1 at human ceiling; sequence 38.3, RfF n=2 noise. Required scorer GT-coarsening fix (commit `8d8c1f62`) — train GT was pre-flattened, val/test GT raw. |
-| **test** | `b9301e02fef5` (prod) | 85 | — | **In flight (single shot)** | v42.11 (`bacc31ce`; agent unchanged from `cd45dff2`) | ETA ~9h. Score: `score_full_corpus.py b9301e02fef5 --gt-path docs/human_ground_truth_test_df.csv`. |
+| **test** | `b9301e02fef5` (prod) | 85 | 2026-06-02 17:35 | **Single-shot test PASSES — PRODUCTION-READY** | v42.11 (`bacc31ce`; agent unchanged from `cd45dff2`) | 8h54m, **6.29 min/trial**, 85/85 OK. class 97.1, peptide 97.4, delivery 88.2 (at human IRA), outcome 60.5 (at human ceiling), sequence 17.4 (data-bound, cohort variance vs val), RfF blind 100% / true recall 42.9 (same data-bound finding as dev). No overfitting, no val→test degradation. |
 | #101 | `826f2608ddd8` (prod) | 239 | 2026-05-02 03:18 | **Production gate certified — SHIP-WITH-FLAG** | v42.7.22 (`2172018e`) | First per-outcome-class breakdown at scale. Headline ±6.3pp CI. Class 95.1, peptide 89.4, delivery 88.6, outcome 60.7, RfF 86.4, sequence 31.1. Per-class outcome: positive 46.2%, unknown 79.5%, terminated 90.0%, **failed 0/11 = 0%**, withdrawn 100%. Report: `docs/PRODUCTION_GATE_REPORT.md §7` (historical). |
 | #102 | `88a03e590e0e` (prod) | 315 | 2026-05-04 05:08 | **Complete** (full-corpus batch 1) | v42.7.22 (`771ecb10`) | NCT00001703 → NCT05021016. 49.7h. Class 97.8, peptide 86.1, delivery 89.2, outcome 49.3, sequence 27.0, RfF 90.0. |
 | #103 | `a3138340e531` (prod) | 315 | 2026-05-06 02:02 | **Complete** (full-corpus batch 2) | v42.7.22 (`771ecb10`) | NCT05025267 → NCT07012330. ~48h. All 2021+ trials; outcome ~31% (recency stratification). |

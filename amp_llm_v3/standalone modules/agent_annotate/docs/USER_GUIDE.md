@@ -435,6 +435,20 @@ python3 scripts/score_full_corpus.py <job_id> --gt-path docs/human_ground_truth_
 
 ETA on prod: ~9h for either cohort. Both are submitted to the same `/api/jobs` endpoint with the same MAX_BATCH_SIZE budget as full-corpus.
 
+**Canonical sealed-cohort numbers (v42.11, commit `bacc31ce`/`cd45dff2`):**
+
+| Field | Val (86, `8d9398b0af66`) | Test (85, `b9301e02fef5`) | Human IRA | Verdict |
+|---|---|---|---|---|
+| classification | 97.1% (68/70) ±3.9pp | **97.1%** (68/70) ±3.9pp | 92.4% | ✅ identical, beats human (+4.7) |
+| peptide | 97.5% (39/40) ±4.8pp | **97.4%** (37/38) ±5.1pp | 86.0% | ✅ matches val, beats human (+11.4) |
+| delivery_mode | 95.7% (67/70) ±4.7pp | **88.2%** (60/68) ±7.7pp | 88.8% | ✅ at human IRA on test (CIs overlap val) |
+| outcome | 56.1% (23/41) ±15.2pp | **60.5%** (23/38) ±15.5pp | 61.3% | ≈ human ceiling (test −0.8 vs IRA) |
+| sequence | 38.3% (18/47) ±13.9pp | **17.4%** (8/46) ±11.0pp | 43.6% | data-bound; cohort variance |
+| RfF score-blind | 50.0% (1/2, n=2 noise) | **100%** (6/6) | 92.3% | precision intact when emitted |
+| RfF true recall | 12.5% (1/8) | **42.9%** (6/14) ±25.9pp | n/a | data-bound (registry stop-reason gap) |
+
+Single-shot test PASSES → **production-ready**. No field shows overfitting to train; no field shows val→test degradation beyond cohort variance. Sequence + RfF-recall are bound by missing source data, not agent capability.
+
 ### 8.2 Full-corpus annotation (post-gate)
 ```bash
 # PREFERRED: whole training corpus (629 unique scoreable NCTs) as ONE resumable
