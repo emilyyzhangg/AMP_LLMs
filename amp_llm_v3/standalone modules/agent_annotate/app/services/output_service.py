@@ -280,6 +280,7 @@ def _extract_row(trial: dict, full: bool = False, version_info: dict = None,
             "outcome": "Outcome",
             "reason_for_failure": "Reason for Failure",
             "peptide": "Peptide",
+            "sequence": "Sequence",
         }
         col_name = col_map.get(field, field)
         row[col_name] = final
