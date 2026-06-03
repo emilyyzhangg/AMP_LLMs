@@ -462,29 +462,45 @@ bash scripts/submit_holdout_validation.sh --full-corpus-1 --check-sync
 bash scripts/submit_holdout_validation.sh --full-corpus-2 --check-sync
 ```
 
-### 8.3 Merge + score for publication
+### 8.3 Export single-job CSV (preferred, post-2026-06)
 ```bash
-# Combine both batches into canonical JSON+CSV
-python3 scripts/merge_full_corpus_results.py JOB_ID_1 JOB_ID_2
+# Export standard (16-col) + full (61-col) CSVs from a single completed job.
+# Works for the single-job full-corpus flow AND the val/test sealed cohorts.
+python3 scripts/export_single_job_csv.py <job_id> --label <name>
+#   produces:  scripts/<name>_<job_id>_<commit8>.csv      (standard)
+#              scripts/<name>_<job_id>_<commit8>_full.csv (full audit)
+```
 
-# Score the merged output for publication-grade benchmark
+For the legacy two-batch flow (deprecated; use only if you split into 8.2 alternate path):
+```bash
+python3 scripts/merge_full_corpus_results.py JOB_ID_1 JOB_ID_2
 python3 scripts/score_full_corpus.py --merged-json scripts/full_corpus_merged_<commit>.json
 ```
 
-### 8.4 Publication outputs
-- **`scripts/full_corpus_merged_<commit>.csv`** — per-NCT annotations across all 6 fields with evidence trails. This is the dataset to publish.
-- **`docs/PRODUCTION_GATE_REPORT.md`** (auto-written by `score_production_gate.py --write`) — per-field accuracy + 95% CI + outcome stratification + ship/accept decision.
-- **`docs/PRODUCTION_GATE_REPORT_TEMPLATE.md`** — methodology section (data source, GT consensus rule, sequence scoring, hardware, etc.) suitable for paper Methods.
+### 8.4 Publication outputs (v42.11)
+The canonical publication-ready dataset lives at **`scripts/dataset_v42_11/`** with one CSV per cohort:
+- `train_dev_corpus_5c8d0aa0431a.csv` — 629 NCTs (job `5c8d0aa0431a`, ~63h on prod)
+- `val_8d9398b0af66.csv` — 86 NCTs (sealed validation, PASSES)
+- `test_b9301e02fef5.csv` — 85 NCTs (single-shot test, PASSES → production-ready)
+- `README.md` — cohort definitions, per-field headline accuracy, reproduction instructions
+
+Each CSV is the canonical 16-col standard format (NCT ID, study metadata, then 6 annotation fields × {value, evidence, sources, evidence text}); regenerate with `scripts/export_single_job_csv.py`. The 61-col full audit (per-field confidence, verifier opinions, reasoning chain, consensus status, reconciler usage, manual-review flag, config hash) is not committed but is one command away via the same script.
+
+Companion docs for paper Methods:
+- `docs/PAPER.md` — full publication paper (v42.11 rewrite, 2026-06-03)
+- `docs/AGENT_STRATEGY_ROADMAP.md` §1.3 — sealed test results in roadmap form
+- `docs/PRODUCTION_GATE_REPORT.md` (historical, v42.7.22 production gate)
+- `docs/PRODUCTION_GATE_REPORT_TEMPLATE.md` (methodology section template)
 
 ### 8.5 What to publish
 | Claim | Source | Caveat |
 |---|---|---|
-| Per-field accuracy | `PRODUCTION_GATE_REPORT.md` §2 | ±6.3pp CI on outcome (the bottleneck field) |
-| Beats human inter-rater agreement | §4 vs-IRA table | True for classification/peptide/delivery; outcome matches IRA but rarely exceeds by 5pp |
-| Annotation dataset | `full_corpus_merged_*.csv` | 630 unique NCTs; per-NCT confidence available via `evidence_grade` field |
-| Methodology | template §6 | Reproducible from main commit `2172018e` + `human_ground_truth_train_df.csv` |
+| Per-field accuracy on test | `PAPER.md` §4.4 + `dataset_v42_11/README.md` | ±3.9pp to ±25.9pp CIs per field; 85-NCT sealed cohort |
+| Beats human inter-rater agreement | `PAPER.md` §4.5 vs-IRA table | True for classification (+4.7pp), peptide (+11.4pp); delivery at IRA; outcome at human ceiling (−0.8pp) |
+| Annotation dataset | `scripts/dataset_v42_11/*.csv` | 800 unique NCTs (629 train + 86 val + 85 test); evidence-grade column in full CSV |
+| Methodology | `PAPER.md` §3 | Reproducible from main commit `bacc31ce` + `docs/human_ground_truth_*.csv` |
 
-For downstream consumers wanting only high-confidence annotations: filter to `evidence_grade ∈ {db_confirmed, deterministic}` (per `app/models/annotation.py`).
+For downstream consumers wanting only high-confidence annotations: regenerate the full CSV and filter to `evidence_grade ∈ {db_confirmed, deterministic}` (per `app/models/annotation.py`).
 
 ---
 
@@ -515,6 +531,10 @@ or verification, so it measures the agent's own output. It uses Ollama for field
 with an LLM step — don't run it while a production job is annotating (they contend
 for the single loaded model). Use a recent 315-trial research job (e.g.
 `c7ca38f92f6b`) for the fullest coverage.
+
+### 9.0a export_single_job_csv.py
+
+Exports a completed single-job result to standard (16-col) + full (61-col) CSVs. Use for the v42.11 single-job full-corpus flow and the val/test sealed cohorts; the legacy `merge_full_corpus_results.py` is only for the older two-batch flow. Outputs land in `scripts/` with the naming pattern `<label>_<job_id>_<commit8>{,_full}.csv`. The v42.11 publication-ready dataset at `scripts/dataset_v42_11/` was produced with this script — see that directory's `README.md` for the full provenance.
 
 ### 8.1 retroactive_fix.py
 
