@@ -10,9 +10,12 @@ This directory contains the v42.11 stack's annotations for 800 unique clinical t
 
 | File | Cohort | NCTs | Source job | Per-trial pace |
 |---|---|---|---|---|
+| **`all_annotations_800nct.csv`** | **all** | **800** | merged from the three below | — |
 | `train_dev_corpus_5c8d0aa0431a.csv` | train | 629 | `5c8d0aa0431a` (2026-05-28, ~63 h wall) | ~6.0 min |
 | `val_8d9398b0af66.csv` | val | 86 | `8d9398b0af66` (2026-05-28, 8h40m) | 6.05 min |
 | `test_b9301e02fef5.csv` | test | 85 | `b9301e02fef5` (2026-06-02, 8h54m, 85/85 OK) | 6.29 min |
+
+`all_annotations_800nct.csv` is the **single-file form** — every currently-annotated NCT in one CSV with two extra leading columns (`Cohort`, `Source Job ID`). Remaining 16 columns are identical to the per-cohort files. Use this when you want one dataset; use the per-cohort files when you want them split.
 
 Each CSV is in the canonical "standard" format produced by `app/services/output_service.generate_standard_csv` (the same format the in-app `/api/jobs/<id>/csv` endpoint serves). Columns: NCT ID, Study Title, Study Status, Phase, Conditions, Interventions, then for each of the 6 annotation fields (`classification`, `delivery_mode`, `outcome`, `reason_for_failure`, `peptide`, `sequence`): the field value plus three companion columns — Evidence (deduplicated source identifiers), Sources (`database:identifier` pairs), and Evidence Text (extracted excerpts that informed the decision). The leading `#` line records the version stamp + commit + export timestamp.
 
