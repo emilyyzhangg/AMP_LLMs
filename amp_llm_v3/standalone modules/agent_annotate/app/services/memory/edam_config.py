@@ -283,3 +283,44 @@ TRAINING_NCTS: set[str] = (
 ALL_GT_NCTS: set[str] = (
     _train_ncts | VALIDATION_NCTS | NEW_TEST_NCTS | _legacy_test_batch
 )
+
+
+# 2026-06-03: MASTER NCT extension. The annotator-master xlsx contains
+# 1844 unique trials; only 850 are in ALL_GT_NCTS. The remaining ~994
+# either have zero human annotation (576) or partial annotation outside
+# the formal cohorts (~418). We can still produce agent annotations for
+# them — they extend the publication dataset, never trigger EDAM
+# (gated on TRAINING_NCTS), and have no GT to score against.
+#
+# To submit any of these, set `allow_external=true` on the job request.
+# The router widens its allowed set to ALL_SUBMITTABLE_NCTS for that
+# request. EDAM gating is unchanged.
+
+import json as _json  # local import to keep top-of-file imports unchanged
+
+_MASTER_UNANNOTATED = Path(__file__).resolve().parents[3] / "scripts" / "master_unannotated_576.json"
+_MASTER_PARTIAL = Path(__file__).resolve().parents[3] / "scripts" / "master_partial_outside_gt_423.json"
+_MASTER_EXTENSION = Path(__file__).resolve().parents[3] / "scripts" / "master_extension_v1.json"
+
+
+def _load_json_ncts(path: Path, label: str) -> set[str]:
+    """Load a JSON array of NCT IDs into an uppercased set."""
+    if not path.exists():
+        _logger.warning("%s file not found at %s — set will be empty", label, path)
+        return set()
+    try:
+        data = _json.loads(path.read_text())
+        ncts = {str(n).strip().upper() for n in data if str(n).strip().upper().startswith("NCT")}
+        _logger.info("Loaded %d %s NCTs from %s", len(ncts), label, path.name)
+        return ncts
+    except Exception as e:
+        _logger.error("Failed to load %s JSON: %s", label, e)
+        return set()
+
+
+MASTER_NCTS: set[str] = (
+    _load_json_ncts(_MASTER_UNANNOTATED, "master-unannotated")
+    | _load_json_ncts(_MASTER_PARTIAL, "master-partial-outside-gt")
+    | _load_json_ncts(_MASTER_EXTENSION, "master-extension")
+)
+ALL_SUBMITTABLE_NCTS: set[str] = ALL_GT_NCTS | MASTER_NCTS

@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 
 from app.services.orchestrator import orchestrator
 from app.services.ollama_client import ollama_client
-from app.services.memory.edam_config import TRAINING_NCTS, ALL_GT_NCTS, TEST_BATCH_NCTS
+from app.services.memory.edam_config import TRAINING_NCTS, ALL_GT_NCTS, TEST_BATCH_NCTS, ALL_SUBMITTABLE_NCTS, MASTER_NCTS
 
 logger = logging.getLogger("agent_annotate.jobs")
 
@@ -24,12 +24,20 @@ NCT_PATTERN = re.compile(r"^NCT\d{8}$")
 # 2026-05-22: raised 500 → 750 so the whole 629-NCT training corpus can run as a
 # single job. Jobs are resumable (per-trial persistence) and mini-batched, so
 # this only affects how many NCTs one job tracks, not peak memory.
-MAX_BATCH_SIZE = 750
+# 2026-06-03: raised 750 → 1100 to accommodate the 994-NCT master extension
+# (master_extension_v1.json — annotator-master xlsx minus ALL_GT_NCTS).
+MAX_BATCH_SIZE = 1100
 
 
 class CreateJobRequest(BaseModel):
     nct_ids: list[str]
     allow_test_batch: bool = False
+    # 2026-06-03: when true, widens the allowed NCT set to ALL_SUBMITTABLE_NCTS
+    # (ALL_GT_NCTS ∪ MASTER_NCTS = the full annotator-master xlsx universe,
+    # ~1844 NCTs). EDAM gating is unchanged — the orchestrator still only
+    # learns from TRAINING_NCTS, so external NCTs never contaminate memory.
+    # Use this for dataset-extension runs on trials with no/partial human GT.
+    allow_external: bool = False
 
 
 @router.post("")
@@ -76,20 +84,28 @@ async def create_job(req: CreateJobRequest):
     # Deduplicate
     valid_ids = list(dict.fromkeys(valid_ids))
 
-    # Validate against training CSV — only NCTs with human annotations are
-    # scoreable. With allow_test_batch=True the validator widens to the full
-    # 680-NCT GT universe (training + held-out test_batch); EDAM learning
-    # remains gated on TRAINING_NCTS in the orchestrator, so the test-batch
-    # annotations never feed back into memory.
-    allowed = ALL_GT_NCTS if (req.allow_test_batch and ALL_GT_NCTS) else TRAINING_NCTS
+    # Validate against the allowed NCT set, which widens by flag:
+    #   default                         → TRAINING_NCTS (629, the EDAM-learning pool)
+    #   allow_test_batch=True           → ALL_GT_NCTS (850, train + val + new test + legacy test_batch)
+    #   allow_external=True             → ALL_SUBMITTABLE_NCTS (~1844, the full annotator-master
+    #                                     xlsx universe; trials with no or partial human GT).
+    # EDAM learning is gated on TRAINING_NCTS in the orchestrator regardless,
+    # so wider allow sets never contaminate memory.
+    if req.allow_external and ALL_SUBMITTABLE_NCTS:
+        allowed = ALL_SUBMITTABLE_NCTS
+    elif req.allow_test_batch and ALL_GT_NCTS:
+        allowed = ALL_GT_NCTS
+    else:
+        allowed = TRAINING_NCTS
     if allowed:
         outside = [nct for nct in valid_ids if nct not in allowed]
         if outside:
             raise HTTPException(
                 status_code=400,
                 detail=(
-                    f"{len(outside)}/{len(valid_ids)} NCT IDs are not in the training CSV "
-                    f"(human_ground_truth_train_df.csv) and have no human annotations for scoring. "
+                    f"{len(outside)}/{len(valid_ids)} NCT IDs are outside the allowed set "
+                    f"({'ALL_SUBMITTABLE_NCTS' if req.allow_external else 'ALL_GT_NCTS' if req.allow_test_batch else 'TRAINING_NCTS'}). "
+                    f"For trials with no human GT, set allow_external=True. "
                     f"First 10: {outside[:10]}"
                 ),
             )
@@ -100,6 +116,14 @@ async def create_job(req: CreateJobRequest):
                 "Job submission includes %d test-batch NCT(s); allow_test_batch=True. "
                 "These annotations will NOT contaminate EDAM (gated on TRAINING_NCTS).",
                 n_tb,
+            )
+    if req.allow_external and MASTER_NCTS:
+        n_ext = sum(1 for nct in valid_ids if nct in MASTER_NCTS and nct not in ALL_GT_NCTS)
+        if n_ext:
+            logger.warning(
+                "Job submission includes %d external master-extension NCT(s) with no/partial human GT; "
+                "allow_external=True. These annotations will NOT contaminate EDAM (gated on TRAINING_NCTS).",
+                n_ext,
             )
 
     job = orchestrator.create_job(valid_ids)

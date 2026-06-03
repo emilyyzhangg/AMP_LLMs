@@ -15,12 +15,13 @@ PORT=8005
 HOST="prod"
 CHECK_SYNC=0
 ALLOW_TEST_BATCH=0
+ALLOW_EXTERNAL=0
 for arg in "$@"; do
     case "$arg" in
         --dev) PORT=9005; HOST="dev" ;;
         --check-sync) CHECK_SYNC=1 ;;
         --test-batch) ALLOW_TEST_BATCH=1 ;;
-        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--slice-k|--slice-m|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--full-corpus|--test-batch-50|--validation-set|--test-set) ;;  # handled below
+        --slice-a|--slice-b|--slice-c|--slice-d|--slice-e|--slice-f|--slice-g|--slice-h|--slice-i|--slice-j|--slice-k|--slice-m|--milestone|--production-gate|--smoke-v23|--full-corpus-1|--full-corpus-2|--full-corpus|--test-batch-50|--validation-set|--test-set|--master-extension) ;;  # handled below
         *) echo "unknown arg: $arg" >&2; exit 2 ;;
     esac
 done
@@ -146,6 +147,13 @@ for arg in "$@"; do
         # — if within ±6.3pp CI, the gate's claim certifies on truly
         # unseen data.
         --test-batch-50) SLICE="$THIS_DIR/test_batch_50.json"; ALLOW_TEST_BATCH=1 ;;
+        # Master-xlsx extension: the ~994 NCTs in the annotator master file
+        # that are NOT in any formal cohort. Most have zero human GT (576);
+        # the rest have partial human GT but were not curated into train/val/
+        # test. Requires --master-extension flag → router widens to
+        # ALL_SUBMITTABLE_NCTS via allow_external=true. EDAM gating
+        # unchanged (TRAINING_NCTS only). ETA: ~104h on prod.
+        --master-extension) SLICE="$THIS_DIR/master_extension_v1.json"; ALLOW_EXTERNAL=1 ;;
     esac
 done
 if [ ! -f "$SLICE" ]; then
@@ -171,7 +179,9 @@ if [ "$CHECK_SYNC" = "1" ]; then
 fi
 
 NCT_LIST=$(cat "$SLICE")
-if [ "$ALLOW_TEST_BATCH" = "1" ]; then
+if [ "$ALLOW_EXTERNAL" = "1" ]; then
+    BODY="{\"nct_ids\": $NCT_LIST, \"allow_external\": true}"
+elif [ "$ALLOW_TEST_BATCH" = "1" ]; then
     BODY="{\"nct_ids\": $NCT_LIST, \"allow_test_batch\": true}"
 else
     BODY="{\"nct_ids\": $NCT_LIST}"
