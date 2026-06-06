@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT00002228",
+  "pmid": "PMID:15280778",
+  "source": "pubmed",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "YES",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "UNCLEAR",
+    "q4_failure": "UNCLEAR",
+    "q5_advanced": "UNCLEAR",
+    "evidence_quote": ""
+  },
+  "verdict": "INDETERMINATE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

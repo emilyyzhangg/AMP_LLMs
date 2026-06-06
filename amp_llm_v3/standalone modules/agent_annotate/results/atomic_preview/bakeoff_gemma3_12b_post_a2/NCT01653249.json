@@ -1,0 +1,15 @@
+{
+  "run_id": "bakeoff_gemma3_12b_post_a2",
+  "nct": "NCT01653249",
+  "legacy_outcome": "Unknown",
+  "atomic": {
+    "value": "Positive",
+    "confidence": 0.7,
+    "rule": "R5",
+    "reasoning": "[ATOMIC R5] Positive (conf=0.70)\n  rule: COMPLETED Phase I, no trial-specific pubs, 13 pub(s) mention trial \u2014 Phase I completion with publication = success\n  registry: status=COMPLETED phase=PHASE1 has_results=None completion=2015-07 days_since=3947 stale=False drug_max_phase=None\n  pubs: 13 total (0 ts, 13 gen, 0 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=COMPLETED has_results=None phase=PHASE1 days_since=3947 stale=False drug_max_phase=None\n    pubs: total=13 trial_specific=0 voting=0 pos=0 fail=0\n    R5 fired: Phase I + completed + any pub \u2192 Positive by annotator consensus",
+    "model_name": "atomic-gemma3:12b",
+    "skip_verification": true
+  },
+  "source_annotation_path": "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results/annotations/f6535916f390/NCT01653249.json",
+  "elapsed_sec": 0.0
+}

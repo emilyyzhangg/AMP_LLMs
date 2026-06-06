@@ -1,0 +1,2787 @@
+{
+  "nct_id": "NCT05162027",
+  "metadata": {
+    "nct_id": "NCT05162027",
+    "title": "Erenumab as a Therapeutic Approach for the Management of Painful Chronic Temporomandibular Disorders (TMD)",
+    "phase": "PHASE2",
+    "status": "TERMINATED",
+    "conditions": [
+      "Temporomandibular Disorders"
+    ],
+    "interventions": [
+      "DRUG: Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe",
+      "DRUG: Placebo"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.8099999999999999,
+      "reasoning": "[Pass 1 extraction] Intervention: erenumab-aooe  \nMolecular Class: Peptide / peptide hormone  \nDatabase Confirmation: UniProt: entry found? Amino acid length? - Not specified in provided evidence. DRAMP/DBAASP: antimicrobial peptide database entry? - Not found in DRAMP/DBAASP. ChEMBL: molecule type? - Peptide. PDB: structural data available? - Not found in PDB.  \nProduct Description: Described as a drug, specifically as a therapeutic agent for the management of chronic temporomandibular disorders (TMD).  \nInvestigational Drug Role: Investigational drug\n[Pass 2 decision] Peptide: True  \nReasoning: Step 1 \u2014 The Molecular Class is \"Peptide / peptide hormone,\" which falls within the definition of a peptide. Step 2 \u2014 The intervention is described as a drug (not a food ingredient or brand name only), and the molecular class is clearly a peptide. Step 3 \u2014 Although there are no database hits, the molecular class and description confirm it is a peptide. Therefore, the answer is True.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Brief Summary",
+          "snippet": "Evaluate erenumab- aooe efficacy as a therapeutic approach, for the management of painful chronic temporomandibular disorders (TMD).\n\nThe study will be a randomized, double blind, placebo-controlled trial comparing erenumab-aooe vs Placebo.\n\nA total of 60 patients (30 per each arm) aged 18-65 years old of either sex, and any race or ethnicity presenting chronic temporomandibular disorders (TMD), (meeting the Diagnostic Criteria for Temporomandibular Disorders (DC/TMD) for Clinical and Research A",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737223"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10418780/",
+          "identifier": "PMC:10418780",
+          "title": "Calcitonin Gene-Related Peptide-Mediated Trigeminal Ganglionitis: The Biomolecular Link between Temporomandibular Disorders and Chronic Headaches.",
+          "snippet": "Title: Calcitonin Gene-Related Peptide-Mediated Trigeminal Ganglionitis: The Biomolecular Link between Temporomandibular Disorders and Chronic Headaches.\nAuthors: Sangalli L, Eli B, Mehrotra S et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:47.104908"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1177/0018578718797295",
+          "identifier": "DOI:10.1177/0018578718797295",
+          "title": "Erenumab-aooe",
+          "snippet": "Title: Erenumab-aooe\nJournal: Hospital Pharmacy\nYear: 2018\nAbstract: Each month, subscribers to The Formulary Monograph Service receive 5 to 6 well-documented monographs on drugs that are newly released or are in late phase 3 trials. The monographs are targeted to Pharmacy &amp; Therapeutics Committees. Subscribers al",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153346"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.31525/ct1-nct03912337",
+          "identifier": "DOI:10.31525/ct1-nct03912337",
+          "title": "Effect of Erenumab-aooe on Disability and Work Productivity in Employed Subjects With Episodic Migraine.",
+          "snippet": "Title: Effect of Erenumab-aooe on Disability and Work Productivity in Employed Subjects With Episodic Migraine.\nJournal: Case Medical Research\nYear: 2019",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153409"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.2146/news180044",
+          "identifier": "DOI:10.2146/news180044",
+          "title": "FDA approves licensing of erenumab-aooe to prevent migraine",
+          "snippet": "Title: FDA approves licensing of erenumab-aooe to prevent migraine\nJournal: American Journal of Health-System Pharmacy\nYear: 2018",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153434"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.8099999999999999,
+      "reasoning": "[Peptide cascade: re-classified after peptide flipped True\u2192False] [Pass 1 extraction] Peptide Identity: Erenumab-aooe is not confirmed as a peptide; the trial metadata indicates \"Peptide determination: False.\"\nDatabase Matches: No evidence found.\nMechanism: Erenumab-aooe does not directly kill or inhibit microorganisms. It is not reported to stimulate innate immune defense, disrupt biofilms, or work via a non-antimicrobial mechanism based on the provided evidence.\nTherapeutic Target: The trial is treating painful chronic temporomandibular disorders (TMD), which is not an infection, infectious disease, or pathogen-specific condition. It is a structural or other condition.\nImmune Direction: No evidence found.\n[Pass 2 decision] Classification: Other  \nReasoning: Step 1 \u2014 Peptide determination is \"False,\" so the intervention is not a peptide. Therefore, the trial cannot be classified as an AMP trial. Step 2 is not applicable because the intervention is not a peptide. The mechanism does not involve direct antimicrobial activity, and the therapeutic target is not related to infection or pathogens.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Brief Summary",
+          "snippet": "Evaluate erenumab- aooe efficacy as a therapeutic approach, for the management of painful chronic temporomandibular disorders (TMD).\n\nThe study will be a randomized, double blind, placebo-controlled trial comparing erenumab-aooe vs Placebo.\n\nA total of 60 patients (30 per each arm) aged 18-65 years old of either sex, and any race or ethnicity presenting chronic temporomandibular disorders (TMD), (meeting the Diagnostic Criteria for Temporomandibular Disorders (DC/TMD) for Clinical and Research A",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737223"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10418780/",
+          "identifier": "PMC:10418780",
+          "title": "Calcitonin Gene-Related Peptide-Mediated Trigeminal Ganglionitis: The Biomolecular Link between Temporomandibular Disorders and Chronic Headaches.",
+          "snippet": "Title: Calcitonin Gene-Related Peptide-Mediated Trigeminal Ganglionitis: The Biomolecular Link between Temporomandibular Disorders and Chronic Headaches.\nAuthors: Sangalli L, Eli B, Mehrotra S et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:47.104908"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1177/0018578718797295",
+          "identifier": "DOI:10.1177/0018578718797295",
+          "title": "Erenumab-aooe",
+          "snippet": "Title: Erenumab-aooe\nJournal: Hospital Pharmacy\nYear: 2018\nAbstract: Each month, subscribers to The Formulary Monograph Service receive 5 to 6 well-documented monographs on drugs that are newly released or are in late phase 3 trials. The monographs are targeted to Pharmacy &amp; Therapeutics Committees. Subscribers al",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153346"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.31525/ct1-nct03912337",
+          "identifier": "DOI:10.31525/ct1-nct03912337",
+          "title": "Effect of Erenumab-aooe on Disability and Work Productivity in Employed Subjects With Episodic Migraine.",
+          "snippet": "Title: Effect of Erenumab-aooe on Disability and Work Productivity in Employed Subjects With Episodic Migraine.\nJournal: Case Medical Research\nYear: 2019",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153409"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.2146/news180044",
+          "identifier": "DOI:10.2146/news180044",
+          "title": "FDA approves licensing of erenumab-aooe to prevent migraine",
+          "snippet": "Title: FDA approves licensing of erenumab-aooe to prevent migraine\nJournal: American Journal of Health-System Pharmacy\nYear: 2018",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153434"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "llm"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "Other",
+      "confidence": 0.8,
+      "reasoning": "[ATOMIC-CLS R5] Other (conf=0.80)\n  rule: 2/3 NO, 0 YES\n  registry: dramp=0 apd=0 dbaasp=0 uniprot_amp=0\n  atomic: q1=UNCLEAR q2=NO q3=NO\n  R5 fired: 2 NO, 0 YES",
+      "evidence": [],
+      "model_name": "atomic-cls-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v38] Collected 1 route(s) from all citations",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Arm Group: Erenumab-aooe",
+          "snippet": "Arm: Erenumab-aooe - Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737261"
+        }
+      ],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Terminated",
+      "confidence": 0.9,
+      "reasoning": "[Dossier v38] TERMINATED for business/operational reason: low enrollment rate",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Terminated",
+      "confidence": 0.9,
+      "reasoning": "[ATOMIC R7] Terminated (conf=0.90)\n  rule: registry status TERMINATED, no POSITIVE pub-verdict\n  registry: status=TERMINATED phase=PHASE2 has_results=None completion=2023-01-03 days_since=1219 stale=False drug_max_phase=4\n  pubs: 13 total (0 ts, 13 gen, 0 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=TERMINATED has_results=None phase=PHASE2 days_since=1219 stale=False drug_max_phase=4\n    pubs: total=13 trial_specific=0 voting=0 pos=0 fail=0\n    R7 fired: status=TERMINATED, no positive pubs",
+      "evidence": [],
+      "model_name": "atomic-gemma3:12b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "sequence",
+      "value": "N/A",
+      "confidence": 0.0,
+      "reasoning": "[Structured v23] No amino acid sequence found in research data.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "Business Reason",
+      "confidence": 0.8099999999999999,
+      "reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: No direct findings from the trial NCT05162027 were found in the provided evidence. However, there are several references to erenumab-aooe in other publications. One paper discusses the mechanism of action of erenumab-aooe in relation to trigeminal ganglionitis and its potential relevance to TMD and chronic headaches. Another reference mentions the FDA approval of erenumab-aooe for migraine prevention in 2018. A third reference discusses the effect of erenumab-aooe on disability and work productivity in migraine patients. None of these publications specifically mention the results of NCT05162027.  \nOutcome Signals: No specific outcome signals related to the failure or success of NCT05162027 were identified in the provided evidence.  \nIs This A Failure: Unclear\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Terminated, Pass 2 returned empty, inferred 'Business Reason'] The trial status is \"COMPLETED,\" but there is no published evidence of failure, ineffectiveness, or safety concerns related to NCT05162027. While other publications discuss erenumab-aooe, they do not reference the specific trial in question. According to the rules, absence of published negative results means the trial cannot be classified as a failure. The default for completed trials without evidence of failure is \"EMPTY.\"",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Brief Summary",
+          "snippet": "Evaluate erenumab- aooe efficacy as a therapeutic approach, for the management of painful chronic temporomandibular disorders (TMD).\n\nThe study will be a randomized, double blind, placebo-controlled trial comparing erenumab-aooe vs Placebo.\n\nA total of 60 patients (30 per each arm) aged 18-65 years old of either sex, and any race or ethnicity presenting chronic temporomandibular disorders (TMD), (meeting the Diagnostic Criteria for Temporomandibular Disorders (DC/TMD) for Clinical and Research A",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737223"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4385421977",
+          "identifier": "PMID:37569575",
+          "title": "Calcitonin Gene-Related Peptide-Mediated Trigeminal Ganglionitis: The Biomolecular Link between Temporomandibular Disorders and Chronic Headaches",
+          "snippet": "Title: Calcitonin Gene-Related Peptide-Mediated Trigeminal Ganglionitis: The Biomolecular Link between Temporomandibular Disorders and Chronic Headaches\nYear: 2023\nCitations: 8\nAbstract: A bidirectional causal relationship has been established between temporomandibular disorders (TMDs) and chronic headaches. Recent advances in the neurobiology of chronic pain offer a framework for understanding the comorbidity between these two condi",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:47.547119"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1177/0018578718797295",
+          "identifier": "DOI:10.1177/0018578718797295",
+          "title": "Erenumab-aooe",
+          "snippet": "Title: Erenumab-aooe\nJournal: Hospital Pharmacy\nYear: 2018\nAbstract: Each month, subscribers to The Formulary Monograph Service receive 5 to 6 well-documented monographs on drugs that are newly released or are in late phase 3 trials. The monographs are targeted to Pharmacy &amp; Therapeutics Committees. Subscribers al",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153346"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.31525/ct1-nct03912337",
+          "identifier": "DOI:10.31525/ct1-nct03912337",
+          "title": "Effect of Erenumab-aooe on Disability and Work Productivity in Employed Subjects With Episodic Migraine.",
+          "snippet": "Title: Effect of Erenumab-aooe on Disability and Work Productivity in Employed Subjects With Episodic Migraine.\nJournal: Case Medical Research\nYear: 2019",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153409"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.2146/news180044",
+          "identifier": "DOI:10.2146/news180044",
+          "title": "FDA approves licensing of erenumab-aooe to prevent migraine",
+          "snippet": "Title: FDA approves licensing of erenumab-aooe to prevent migraine\nJournal: American Journal of Health-System Pharmacy\nYear: 2018",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153434"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "Recruitment issues",
+      "confidence": 0.9,
+      "reasoning": "[ATOMIC-FR R1] Recruitment issues (conf=0.90)\n  rule: whyStopped registry keyword match: Recruitment issues\n  whyStopped: Low enrollment rate\n  tier0_match: Recruitment issues\n  atomic: q1_safety=UNCLEAR q2_eff=UNCLEAR q3_covid=UNCLEAR q4_recruit=UNCLEAR q5_business=UNCLEAR\n  R1 fired: registry whyStopped \u2192 Recruitment issues",
+      "evidence": [],
+      "model_name": "atomic-fr-deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT05162027",
+    "fields": [
+      {
+        "field_name": "classification_atomic",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion",
+        "final_value": "Injection/Infusion",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Terminated",
+        "final_value": "Terminated",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Terminated",
+        "final_value": "Terminated",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "sequence",
+        "original_value": "N/A",
+        "final_value": "N/A",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "Recruitment issues",
+        "final_value": "Recruitment issues",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "False",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "Erenumab is an antibody, which falls outside the definition of a peptide (2-100 amino acid residues).",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "Since erenumab-aooe is a monoclonal antibody and not a peptide, the trial does not involve any intervention containing a peptide molecule.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "Based on the CHEMBL data and the description of Erenumab's mechanism of action, it appears that Erenumab is not a peptide molecule. The fact that it is classified as an \"Antibody\" with a large molecular weight further supports this conclusion.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.8099999999999999,
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence from CHEMBL clearly classifies Erenumab as an antibody, not a peptide. Peptides are defined as molecules composed of 2-100 amino acid residues, whereas antibodies are large, complex proteins with significantly higher molecular weights. Since the intervention in the trial is Erenumab-aooe, an antibody, the field \"peptide\" should be marked as \"False.\" The verifiers' reasoning aligns with this conclusion, citing the molecular classification and mechanism of action. The primary annotato",
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Erenumab is an antibody that acts as a calcitonin gene-related peptide receptor antagonist. It is not a peptide itself, and it does not function as an antimicrobial peptide (AMP) through any of the defined modes (A, B, or C). Therefore, it is classified as 'Other'.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Erenumab is not an antimicrobial peptide (AMP) and does not directly kill or inhibit pathogens. It is a monoclonal antibody targeting the CGRP receptor, which is part of the treatment for migraines and not directly related to antimicrobial activity. Therefore, it does not meet the criteria for classification as an AMP.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Erenumab-aooe is a monoclonal antibody that targets the calcitonin gene-related peptide (CGRP) receptor, which is involved in pain transmission. While it is used to treat chronic migraines and other conditions related to CGRP, there is no evidence to suggest that it has antimicrobial properties or functions through any of the three modes defined for AMPs (killing, inhibiting growth, disrupting biofilms). Its mechanism of action is distinct from that of peptides with antimicrobial activity.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "Business Reason",
+        "final_value": "Recruitment issues",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Recruitment issues",
+            "reasoning": "The trial was terminated due to a low enrollment rate, as explicitly stated in the clinicaltrials.gov record.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Recruitment issues",
+            "reasoning": "The trial was terminated due to a low enrollment rate, which directly corresponds to the \"Recruitment issues\" category. There is no evidence of safety concerns, ineffective results, or other reasons for termination.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Recruitment issues",
+            "reasoning": "The trial was terminated due to a low enrollment rate, which is a common reason for trial failure. This information is directly stated in the clinicaltrials.gov metadata, and there is no published evidence suggesting that the trial failed to meet its endpoints or had safety concerns. Therefore, I conclude that recruitment issues were the primary reason for termination.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.8099999999999999,
+        "reconciler_used": true,
+        "reconciler_reasoning": "The clinicaltrials.gov record explicitly states that the trial was terminated due to a \"low enrollment rate,\" which directly corresponds to the \"Recruitment issues\" category. This is supported by the verifiers, who all cite this specific evidence and emphasize that there is no indication of safety concerns, ineffective results, or other business-related reasons for termination. The primary annotator's answer of \"Business Reason\" lacks specific evidence and is therefore less supported by the data",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT05162027",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Erenumab as a Therapeutic Approach for the Management of Painful Chronic Temporomandibular Disorders (TMD)",
+          "snippet": "Title: Erenumab as a Therapeutic Approach for the Management of Painful Chronic Temporomandibular Disorders (TMD)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737213"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Brief Summary",
+          "snippet": "Evaluate erenumab- aooe efficacy as a therapeutic approach, for the management of painful chronic temporomandibular disorders (TMD).\n\nThe study will be a randomized, double blind, placebo-controlled trial comparing erenumab-aooe vs Placebo.\n\nA total of 60 patients (30 per each arm) aged 18-65 years old of either sex, and any race or ethnicity presenting chronic temporomandibular disorders (TMD), (meeting the Diagnostic Criteria for Temporomandibular Disorders (DC/TMD) for Clinical and Research A",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737223"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Detailed Description",
+          "snippet": "Chronic TMD is a considerable burden and affects significantly the quality of life of the sufferer. For some patients, TMD has a tendency to remit or improve pain symptomatology over time but for others, TMD have the potential to become chronic and to lead to persistent dysfunction.\n\nDifferent classes of medications from anti-inflammatories, muscle relaxants, anxiolytics, antidepressants, anticonvulsants and a \u03b2-blocker have indicated to be beneficial for some patients as well as in clinical stu",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737229"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Study Status",
+          "snippet": "Status: TERMINATED | Why stopped: Low enrollment rate",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737234"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Temporomandibular Disorders | Keywords: Craniomandibular Disorders, Temporomandibular Joint Dysfunction Syndrome, Temporomandibular Joint Disorders, Erenumab, Myofascial Pain Syndromes, Physiological Effects of Drugs, Calcitonin Gene-Related Peptide Receptor Antagonists, Neuropeptides, CGRP Receptor Antagonist, Stomatognathic Diseases, Musculoskeletal Diseases",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737243"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Intervention: Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe",
+          "snippet": "DRUG: Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe - Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737249"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Intervention: Placebo",
+          "snippet": "DRUG: Placebo - Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737255"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Arm Group: Erenumab-aooe",
+          "snippet": "Arm: Erenumab-aooe - Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737261"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Arm Group: Placebo",
+          "snippet": "Arm: Placebo - Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737266"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737271"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Results Posted",
+          "snippet": "Results Posted: Yes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737277"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Primary Outcome: Change of >= 30% Reduction in the Monthly Average Pain Score From Baseline to Vi",
+          "snippet": "Primary Outcome: Change of >= 30% Reduction in the Monthly Average Pain Score From Baseline to Visit 4, Compared to Placebo. \u2014 Assessment of the efficacy of erenumab-aooe in the proportion of participants that achieve \\>=30% reduction (Yes/no) in monthly average pain score from baseline to Visit 4 (the end of last monthly tre (timeframe: From Visit 0 (Baseline phase/study day 0) to Visit 4 (study day 112))",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.737286"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT05162027",
+            "orgStudyIdInfo": {
+              "id": "HP-00093037"
+            },
+            "organization": {
+              "fullName": "University of Maryland, Baltimore",
+              "class": "OTHER"
+            },
+            "briefTitle": "Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp Antibody RElief (TMD CARE)",
+            "officialTitle": "Erenumab as a Therapeutic Approach for the Management of Painful Chronic Temporomandibular Disorders (TMD)",
+            "acronym": "TMD CARE"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2024-03",
+            "overallStatus": "TERMINATED",
+            "whyStopped": "Low enrollment rate",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2022-05-26",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2023-01-03",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2023-01-03",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2021-10-29",
+            "studyFirstSubmitQcDate": "2021-12-16",
+            "studyFirstPostDateStruct": {
+              "date": "2021-12-17",
+              "type": "ACTUAL"
+            },
+            "resultsFirstSubmitDate": "2024-01-16",
+            "resultsFirstSubmitQcDate": "2024-03-04",
+            "resultsFirstPostDateStruct": {
+              "date": "2024-04-02",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2024-03-04",
+            "lastUpdatePostDateStruct": {
+              "date": "2024-04-02",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Marcela Romero Reyes",
+              "investigatorTitle": "Clinical Associate Professor, Director Brotman Facial Pain Clinic",
+              "investigatorAffiliation": "University of Maryland, Baltimore"
+            },
+            "leadSponsor": {
+              "name": "University of Maryland, Baltimore",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Amgen",
+                "class": "INDUSTRY"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false,
+            "isUsExport": false
+          },
+          "descriptionModule": {
+            "briefSummary": "Evaluate erenumab- aooe efficacy as a therapeutic approach, for the management of painful chronic temporomandibular disorders (TMD).\n\nThe study will be a randomized, double blind, placebo-controlled trial comparing erenumab-aooe vs Placebo.\n\nA total of 60 patients (30 per each arm) aged 18-65 years old of either sex, and any race or ethnicity presenting chronic temporomandibular disorders (TMD), (meeting the Diagnostic Criteria for Temporomandibular Disorders (DC/TMD) for Clinical and Research Applications of chronic TMD (myalgia +/- arthralgia) will be randomly assigned in a 1:1 parallel, double-blind clinical trial, to receive either erenumab-aooe or placebo. Participants will attend 6 clinic visits (Visit 0-Visit 5) over a period of 21 weeks (20 +/- 1 weeks). Changes in pain intensity and other pain outcomes related to TMD will be assessed. Blood samples will be collected, and participants will need to keep a daily symptom diary and answer some other questionnaires.",
+            "detailedDescription": "Chronic TMD is a considerable burden and affects significantly the quality of life of the sufferer. For some patients, TMD has a tendency to remit or improve pain symptomatology over time but for others, TMD have the potential to become chronic and to lead to persistent dysfunction.\n\nDifferent classes of medications from anti-inflammatories, muscle relaxants, anxiolytics, antidepressants, anticonvulsants and a \u03b2-blocker have indicated to be beneficial for some patients as well as in clinical studies, but tolerability and side effects may be present for some patients. Furthermore, the indications of these drugs are for other disorders, so it is unclear their mechanism of action in TMD pathophysiology. Currently there is no medication specifically indicated for the management of TMD based on its molecular pathophysiology. However, there is evidence showing that CGRP has a role in TMD pathophysiology. CGRP is a key molecule in migraine pathophysiology. Erenumab-aooe is the first antibody therapeutic targeting the CGRP and has shown efficacy, to be well tolerated and with a safety profile similar to placebo for the prevention of migraine. The scientific premise for this study is that inhibiting CGRP in chronic TMD will decrease pain, pain related outcomes and improve TMJ biomechanics (function) in a safe and well tolerated manner for this patient population.\n\nPotential participants will be pre-screened at the Brotman Facial Pain clinic and the Oral and Maxillofacial Surgery Clinic both at the University of Maryland, School of Dentistry or by telephone; those willing to participate will be scheduled for a screening and baseline visit (Visit 0). During this visit potential participants will be evaluated for eligibility (meeting the Diagnostic Criteria for Temporomandibular Disorders (DC/TMD) for Clinical and Research Applications) of chronic TMD (myalgia +/- arthralgia) and written informed consent will be obtained.\n\nThe screening and baseline procedures include medical history review, clinical examinations, tests and administration of questionnaires. After screening, eligible participants will start Visit 0/Day 0 which is the start of the baseline period with a duration of 28 days/4 weeks. Instructions will be given for the completion of a Daily Symptom Diary (DSD) and other questionnaires at home or online. Participants who show 80% compliance with the DSD and who meet the pain score (inclusion criteria) during the baseline period, will be randomly assigned to one of two groups either the investigational drug or placebo and will be scheduled for Visit 1. Visit 1 can occur within 7 days/1 week after the baseline period (+/- 7 days).\n\nThe study drug is erenumab-aooe 70mg, SC injection. Participants will attend 6 clinic visits (Visit 0-Visit 5) over a period of 21 weeks (20 +/- 1 weeks) or 140 +/- 7 days. After randomization and on Visit 1 (Week 4/Day 28), the participant will receive the drug or placebo. This same treatment will be administered once a month for 3 months (3 cycles/12 weeks). It will be administered on Visit 1/Day 28/Week 4; Visit 2/Day 56/Week 8; and Visit 3/Day 84/week 12. On Visit 0 (baseline) and on Visit 1, Visit 2, Visit 3, Visit 4/Day 112/Week 16 and visit 5/Day 140/Week 20, visits will include review of compliance with inclusion criteria, medical history review, review and collection of any adverse event, clinical examinations, questionnaires, tests, blood sample collection on Baseline/Visit 0 and Visit 4; and instruction to complete the DSD and questionnaires."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Temporomandibular Disorders"
+            ],
+            "keywords": [
+              "Craniomandibular Disorders",
+              "Temporomandibular Joint Dysfunction Syndrome",
+              "Temporomandibular Joint Disorders",
+              "Erenumab",
+              "Myofascial Pain Syndromes",
+              "Physiological Effects of Drugs",
+              "Calcitonin Gene-Related Peptide Receptor Antagonists",
+              "Neuropeptides",
+              "CGRP Receptor Antagonist",
+              "Stomatognathic Diseases",
+              "Musculoskeletal Diseases"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "TRIPLE",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "CARE_PROVIDER",
+                  "INVESTIGATOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 5,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Erenumab-aooe",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae",
+                "interventionNames": [
+                  "Drug: Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe"
+                ]
+              },
+              {
+                "label": "Placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo",
+                "interventionNames": [
+                  "Drug: Placebo"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe",
+                "description": "Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.",
+                "armGroupLabels": [
+                  "Erenumab-aooe"
+                ],
+                "otherNames": [
+                  "Aimovig"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "Placebo",
+                "description": "Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.",
+                "armGroupLabels": [
+                  "Placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Change of >= 30% Reduction in the Monthly Average Pain Score From Baseline to Visit 4, Compared to Placebo.",
+                "description": "Assessment of the efficacy of erenumab-aooe in the proportion of participants that achieve \\>=30% reduction (Yes/no) in monthly average pain score from baseline to Visit 4 (the end of last monthly treatment cycle), compared to placebo. The daily pain intensity score will be measured on a 0-100 numeric rating scale (NRS) and reported in the Daily Symptom Diary (DSD). The monthly mean pain intensity score will be determined from baseline, Visit 1/Day 28/Week 4, Visit 2/Day 56/Week 8, Visit 3/Day 84/week 12 and Visit 4/Day 112/Week 16.",
+                "timeFrame": "From Visit 0 (Baseline phase/study day 0) to Visit 4 (study day 112)"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Change of >= 50% Reduction in Monthly TMD Pain Days, Compared to Placebo.",
+                "description": "Assessment of the efficacy of erenumab-aooe in the proportion of participants with at least a 50% reduction (Yes/No) in monthly TMD days from baseline to Visit 5 (follow up/final visit).\n\nDefinition of TMD pain day: A TMD pain day was any calendar day in which the participant experienced pain, stiffness, soreness, tenderness, in the jaw or temple area or either side being brief or continuous; and/or pain with TMJ biomechanics (chewing, mouth opening or any jaw movement; and/or pain with jaw activities (yawning, kissing, talking); and/or pain with jaw habits (chewing gum, clenching, grinding).",
+                "timeFrame": "From Visit 0 (Baseline phase/study day 0) to Visit 5 (study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change of >= 30% Reduction in the Monthly Average Pain Score Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessment of the efficacy of erenumab-aooe in the proportion of participants who achieved a least 30% reduction in the monthly average daily pain score from baseline to Visit 5 (follow up and final study visit). The monthly mean pain intensity score will be determined from baseline, Visit 1/Day 28/Week 4, Visit 2/Day 56/Week 8, Visit 3/Day 84/week 12, Visit 4/Day 112/Week 16 and Visit 5/Day 140/Week 20.",
+                "timeFrame": "From Visit 0 (Baseline phase/study day 0) to Visit 5 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in Pressure Pain Threshold (PPT) Measurement in Muscles of Mastication (Temporalis Muscle) Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessments of pressure stimuli will be performed in the temporalis muscle and averaged to obtain a single pressure pain threshold value (kPa) per site. This assessment will be performed bilaterally in each temporalis muscle. A higher value means a better outcome.",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in Pressure Pain Threshold (PPT) Measurement in Muscles of Mastication (Masseter Muscle) Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessments of pressure stimuli will be performed in the masseter muscle and averaged to obtain a single pressure pain threshold value (kPa) per site. This assessment will be performed bilaterally in each masseter muscle. A higher PPT value means a better outcome.",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in Pressure Pain Threshold (PPT) Measurement in Upper Trapezius Muscle Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessments of pressure stimuli will be performed in the upper trapezius muscle and averaged to obtain a single pressure pain threshold value (kPa) per site (R/L side). This assessment will be performed bilaterally. A higher PPT value means a better outcome.",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in Pressure Pain Threshold (PPT) Measurement in the Temporomandibular Joint (TMJ) Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessments of pressure stimuli will be performed in the TMJ and averaged to obtain a single pressure pain threshold value (kPa) per site. This assessment will be performed bilaterally. A higher PPT value means a better outcome.",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in Pressure Pain Threshold (PPT) Measurement at the Lateral Epicondyle Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessments of pressure stimuli will be applied bilaterally in the right and left lateral epicondyles and averaged to obtain a single pressure pain threshold value (kPa) per site. A higher PPT value means a better outcome.",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in Maximum Unassisted Jaw Opening During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "Measured during TMD examination. A higher value means a better outcome",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in Maximum Pain Free Opening During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "Measured during TMD examination. A higher value means a better outcome",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in Maximum Assisted/Active Opening During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "Measured during TMD examination. A higher value means a better outcome",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in the Jaw Functional Limitation Scale (JFLS) Global Score During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "The JFLS is a 20-item instrument that measures limitations across 3 domains related to TMJ biomechanics: masticatory function, jaw opening (vertical mobility), and verbal and emotional expression. A degree of limitation is rated on a 0-10 scale from 0 (\"no limitation\") to 10 (\"severe limitation\")",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in the Frequency of Oral Behaviors Evaluated by the Oral Behaviors Checklist (OBC) During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "The Oral Behaviors Checklist (OBC) evaluates parafunctional behaviors and generates a single scale representing the frequency of 21 activities such as clenching, chewing gum, and holding objects between teeth, yawning.",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in Graded Chronic Pain Scale (GCPS) Outcomes During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "The GCPS includes 7 items and assesses 2 dimensions of pain, pain intensity and pain-related disability. A higher grade means a worse outcome.",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in Impression of Overall Status Measured by the Patient Global Impression of Change (PGIC) During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "The PGIC measures change in participant's overall status on a scale ranging from 1 (very much improved) to 7 (very much worse).",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              },
+              {
+                "measure": "Change in the Hospital Anxiety and Depression Scale (HADS). Anxiety and Depression Score Change During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "The HADS evaluates anxiety (7 items) and depression (7 items) with a 14-item instrument assessing symptoms on a 4-point scale rated from 0 \"not at all\" to 3 \"very often indeed\". Responses provide separate scores for anxiety and depression. A higher score means a worse outcome.",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)"
+              }
+            ],
+            "otherOutcomes": [
+              {
+                "measure": "Change of Pro-inflammatory and Anti-inflammatory Cytokine Profiles (Th1/Th2) When Compared to Placebo.",
+                "description": "Blood samples will be evaluated for the presence of proinflammatory and anti-inflammatory cytokines.",
+                "timeFrame": "Visit 0 (Baseline/study day 0) and Visit 4/Week 16 (study day 112)"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* In order to be eligible to participate in this study, an individual must meet all of the following criteria:\n\n  1. Provide signed and dated informed consent form\n  2. Is between 18 and 65 years of age (inclusive; male or female and any race or ethnicity)\n  3. Meets diagnostic criteria for TMD: Myalgia with or without arthralgia\n\n     \u2022 The participant must meet 2 criteria relating: 1) reported pain, ache or tenderness in the face, jaw/mandible, pre-auricular area, inside the ear or temple that it is modified by TMJ biomechanics. 2) finding(s) of TMD myalgia according to the classification DC/TMD criteria.\n  4. Has experienced facial pain and/or pain with TMJ biomechanics for the last 3 months episodically or unremitting\n  5. Has experienced facial pain for at least 10 days of the last 30 days prior to Baseline Visit (Visit 0)\n  6. Prior to randomization, has been compliant 80% with the entries in the Daily Symptom Diary within the baseline period and reported an average pain level \u226530 on a numerical rating scale (0-100) in the DSD, or has experienced a pain level \u226530 on the same scale for at least 3 days in the week prior to Visit 1.\n  7. If taking a prescription medication daily for the management of pain (taken for at least 30 days before baseline), agrees to continue the daily use of the medication throughout the study at the same dosage.\n  8. If taking prescription medication, opioid medication or OTC medications as needed or episodically for the management of TMD pain agrees to discontinue its use prior to the Screening and Baseline Visit.\n\n     * Rescue medications will be defined as allowable over-the-counter analgesics used for treatment of TMD pain. In case a patient presents pain during the study, only it is allowed the use of OTC medications as a \"rescue\" and as described on section 6.6.3: Participants use of short-acting non-prescription analgesics such as NSAIDs, acetaminophen or aspirin during the study, will be recorded and quantified at each visit, and the usage will be classified as either episodic or daily. Episodic use of non-prescription analgesics will be defined as use for no more than 2 consecutive days and for no more than 18 days from baseline to visit 4.\n     * This type of analgesics should not be used for more than 2 days a week prior to Baseline and a week prior to visit 4, when the exploratory outcome is assessed (cytokine release assay).\n  9. If taking OTC pain medications daily agrees to continue its daily use at the same dosage throughout the study.\n\n     \u2022 If a participant is taking an over-the-counter medication daily for management of other type of pain or for prophylaxis of myocardial infarction or stroke, the participant will be encouraged to continue the same usage of that medication throughout the study.\n  10. Agrees to not start any new prescription medication for the management of pain throughout the study\n  11. Agrees to not start any injection therapy for the management of TMD (trigger point injections, steroid injections, Botox) during the course of the study\n  12. Agrees to not use acupuncture for the management of pain during the course of the study\n  13. Agrees to not have Physical therapy for the management of TMD during the course of the study.\n  14. Agrees to not start intraoral appliance therapy during the course of the study. If the patient has used a nightguard for more than one month before the study, agrees to continue use it only at night.\n  15. Females of childbearing potential agree to use one of the following methods of contraception throughout the study: licensed hormonal method, intrauterine device, female or male condoms with contraceptive foam, abstinence, bilateral tubal ligation/occlusion, or vasectomy in partner (if postmenopausal, must not have menstruated for at least 12 consecutive months)\n  16. Willing and able to understand and comply with all study procedures and be available for the duration of the study\n\nExclusion Criteria:\n\n1. Participants with a history of congestive heart failure, rheumatoid arthritis or uncontrolled diabetes.\n2. Participants with serious hepatic, respiratory, hematologic or immunologic illnesses, an unstable cardiovascular disease, or any other severe acute or chronic medical or psychiatric condition or laboratory abnormality that may increase the risk associated with trial participation or Erenumab or may interfere with the interpretation of trial results and, in the judgment of the investigator, would make the participant inappropriate for entry into this trial\n3. Participants with high blood pressure, history of abnormal electrocardiograms, history of heart conductance defects, malignant disease, chronic constipation, IBSc or any other severe acute or chronic medical or psychiatric condition or laboratory finding that may increase the risk associated with trial participation with Erenumab\n4. Participants with active malignancy of any type or a history a malignancy (with exception of participants with malignancy surgically removed with no evidence of recurrence within 5 years before enrollment.\n5. History of facial trauma or orofacial or orthognathic surgery within the previous 6 months\n6. Patients with dental pain\n7. Patients with trigeminal neuralgia or other neuropathic pain in the craniofacial area\n8. Patients with degenerative joint disease in the TMJs, rheumatoid arthritis or any systemic arthritis\n9. Patients with chronic migraine with and w/o aura following the ICHD-3 criteria treated or not treated with medication\n\n   \u2022 Without excluding headache attributed to TMD\n10. Participants currently taking or have previously taken Erenumab or other CGRP monoclonal antibody (mAmb) or currently taking a CGRP-Receptor antagonist (gepants) for migraine prevention. CGRP-Receptor antagonist (gepants) for acute use for migraine are allowed.\n11. Patients with hypersensitivity to Erenumab\n12. Patients who have received the Botox injection protocol in the masseters and/or Migraine protocol within 3 months prior screening and baseline visit.\n13. Used injections for management of TMD (trigger point injections, steroid injections) within 2 weeks prior to the Screening and Baseline Visit\n14. Has commenced a new daily prescription medication for the management of pain within 30 days prior to the Screening and Baseline Visit\n15. Has commenced intraoral appliance therapy for the management of facial pain within 30 days prior to the Screening and Baseline Visit\n16. Patient currently undergoing active orthodontic treatment (passive retainers are permitted)\n17. Treatment for drug or alcohol abuse within the last year\n18. Has been treated with another investigational drug or treatment within 30 days prior to the Screening and Baseline Visit\n19. Patients sensitive to Latex\n20. Patient is pregnant, planning to become pregnant or breastfeeding\n21. Anything that, in the opinion of the investigator, would place the participant at increased risk or impede the participant's full compliance with or completion of the study.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "65 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "University of Maryland, School of Dentistry, Brotman Facial Pain Clinic",
+                "city": "Baltimore",
+                "state": "Maryland",
+                "zip": "21201",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.29038,
+                  "lon": -76.61219
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "24591846",
+                "type": "BACKGROUND",
+                "citation": "Romero-Reyes M, Uyanik JM. Orofacial pain management: current perspectives. J Pain Res. 2014 Feb 21;7:99-115. doi: 10.2147/JPR.S37593. eCollection 2014."
+              },
+              {
+                "pmid": "21855814",
+                "type": "BACKGROUND",
+                "citation": "Dworkin SF. Temporomandibular disorder (TMD) pain-related disability found related to depression, nonspecific physical symptoms, and pain duration at 3 international sites. J Evid Based Dent Pract. 2011 Sep;11(3):143-4. doi: 10.1016/j.jebdp.2011.06.002. No abstract available."
+              },
+              {
+                "pmid": "2312947",
+                "type": "BACKGROUND",
+                "citation": "Dworkin SF, Huggins KH, LeResche L, Von Korff M, Howard J, Truelove E, Sommers E. Epidemiology of signs and symptoms in temporomandibular disorders: clinical signs in cases and controls. J Am Dent Assoc. 1990 Mar;120(3):273-81. doi: 10.14219/jada.archive.1990.0043."
+              },
+              {
+                "pmid": "24482784",
+                "type": "BACKGROUND",
+                "citation": "Schiffman E, Ohrbach R, Truelove E, Look J, Anderson G, Goulet JP, List T, Svensson P, Gonzalez Y, Lobbezoo F, Michelotti A, Brooks SL, Ceusters W, Drangsholt M, Ettlin D, Gaul C, Goldberg LJ, Haythornthwaite JA, Hollender L, Jensen R, John MT, De Laat A, de Leeuw R, Maixner W, van der Meulen M, Murray GM, Nixdorf DR, Palla S, Petersson A, Pionchon P, Smith B, Visscher CM, Zakrzewska J, Dworkin SF; International RDC/TMD Consortium Network, International association for Dental Research; Orofacial Pain Special Interest Group, International Association for the Study of Pain. Diagnostic Criteria for Temporomandibular Disorders (DC/TMD) for Clinical and Research Applications: recommendations of the International RDC/TMD Consortium Network* and Orofacial Pain Special Interest Groupdagger. J Oral Facial Pain Headache. 2014 Winter;28(1):6-27. doi: 10.11607/jop.1151."
+              },
+              {
+                "pmid": "12756928",
+                "type": "BACKGROUND",
+                "citation": "Johansson A, Unell L, Carlsson GE, Soderfeldt B, Halling A. Gender difference in symptoms related to temporomandibular disorders in a population of 50-year-old subjects. J Orofac Pain. 2003 Winter;17(1):29-35."
+              },
+              {
+                "pmid": "20141363",
+                "type": "BACKGROUND",
+                "citation": "Dahlstrom L, Carlsson GE. Temporomandibular disorders and oral health-related quality of life. A systematic review. Acta Odontol Scand. 2010 Mar;68(2):80-5. doi: 10.3109/00016350903431118."
+              },
+              {
+                "pmid": "23031401",
+                "type": "BACKGROUND",
+                "citation": "Chen H, Slade G, Lim PF, Miller V, Maixner W, Diatchenko L. Relationship between temporomandibular disorders, widespread palpation tenderness, and multiple pain conditions: a case-control study. J Pain. 2012 Oct;13(10):1016-27. doi: 10.1016/j.jpain.2012.07.011."
+              },
+              {
+                "pmid": "21368664",
+                "type": "BACKGROUND",
+                "citation": "Goncalves DA, Camparis CM, Speciali JG, Franco AL, Castanharo SM, Bigal ME. Temporomandibular disorders are differentially associated with headache diagnoses: a controlled study. Clin J Pain. 2011 Sep;27(7):611-5. doi: 10.1097/AJP.0b013e31820e12f5."
+              },
+              {
+                "pmid": "9520246",
+                "type": "BACKGROUND",
+                "citation": "Ohrbach R, Dworkin SF. Five-year outcomes in TMD: relationship of changes in pain to changes in physical and psychological variables. Pain. 1998 Feb;74(2-3):315-26. doi: 10.1016/s0304-3959(97)00194-2."
+              },
+              {
+                "pmid": "30028791",
+                "type": "BACKGROUND",
+                "citation": "Fillingim RB, Slade GD, Greenspan JD, Dubner R, Maixner W, Bair E, Ohrbach R. Long-term changes in biopsychosocial characteristics related to temporomandibular disorder: findings from the OPPERA study. Pain. 2018 Nov;159(11):2403-2413. doi: 10.1097/j.pain.0000000000001348."
+              },
+              {
+                "pmid": "11203757",
+                "type": "BACKGROUND",
+                "citation": "Kamisaka M, Yatani H, Kuboki T, Matsuka Y, Minakuchi H. Four-year longitudinal course of TMD symptoms in an adult population and the estimation of risk factors in relation to symptoms. J Orofac Pain. 2000 Summer;14(3):224-32."
+              },
+              {
+                "pmid": "23521016",
+                "type": "BACKGROUND",
+                "citation": "Manfredini D, Favero L, Gregorini G, Cocilovo F, Guarda-Nardini L. Natural course of temporomandibular disorders with low pain-related impairment: a 2-to-3-year follow-up study. J Oral Rehabil. 2013 Jun;40(6):436-42. doi: 10.1111/joor.12047. Epub 2013 Mar 22."
+              },
+              {
+                "pmid": "20659695",
+                "type": "BACKGROUND",
+                "citation": "Greene CS; American Association for Dental Research. Diagnosis and treatment of temporomandibular disorders: emergence of a new care guidelines statement. Oral Surg Oral Med Oral Pathol Oral Radiol Endod. 2010 Aug;110(2):137-9. doi: 10.1016/j.tripleo.2010.04.032. No abstract available."
+              },
+              {
+                "pmid": "21237428",
+                "type": "BACKGROUND",
+                "citation": "Ohrbach R. AADR TMD statement is timely and necessary. Oral Surg Oral Med Oral Pathol Oral Radiol Endod. 2011 Feb;111(2):133-4; author reply 136-7. doi: 10.1016/j.tripleo.2010.10.036. No abstract available."
+              },
+              {
+                "pmid": "17030096",
+                "type": "BACKGROUND",
+                "citation": "Kimos P, Biggs C, Mah J, Heo G, Rashiq S, Thie NM, Major PW. Analgesic action of gabapentin on chronic pain in the masticatory muscles: a randomized controlled trial. Pain. 2007 Jan;127(1-2):151-60. doi: 10.1016/j.pain.2006.08.028. Epub 2006 Oct 9."
+              },
+              {
+                "pmid": "26721643",
+                "type": "BACKGROUND",
+                "citation": "Mersfelder TL, Nichols WH. Gabapentin: Abuse, Dependence, and Withdrawal. Ann Pharmacother. 2016 Mar;50(3):229-33. doi: 10.1177/1060028015620800. Epub 2015 Dec 31."
+              },
+              {
+                "pmid": "32701836",
+                "type": "BACKGROUND",
+                "citation": "Tchivileva IE, Hadgraft H, Lim PF, Di Giosia M, Ribeiro-Dasilva M, Campbell JH, Willis J, James R, Herman-Giddens M, Fillingim RB, Ohrbach R, Arbes SJ Jr, Slade GD. Efficacy and safety of propranolol for treatment of temporomandibular disorder pain: a randomized, placebo-controlled clinical trial. Pain. 2020 Aug;161(8):1755-1767. doi: 10.1097/j.pain.0000000000001882."
+              },
+              {
+                "pmid": "29697153",
+                "type": "BACKGROUND",
+                "citation": "Edvinsson L. The CGRP Pathway in Migraine as a Viable Target for Therapies. Headache. 2018 May;58 Suppl 1:33-47. doi: 10.1111/head.13305."
+              },
+              {
+                "pmid": "32259079",
+                "type": "BACKGROUND",
+                "citation": "King CT, Gegg CV, Hu SN, Sen Lu H, Chan BM, Berry KA, Brankow DW, Boone TJ, Kezunovic N, Kelley MR, Shi L, Xu C. Discovery of the Migraine Prevention Therapeutic Aimovig (Erenumab), the First FDA-Approved Antibody against a G-Protein-Coupled Receptor. ACS Pharmacol Transl Sci. 2019 Sep 3;2(6):485-490. doi: 10.1021/acsptsci.9b00061. eCollection 2019 Dec 13."
+              },
+              {
+                "pmid": "19751369",
+                "type": "BACKGROUND",
+                "citation": "Goncalves DA, Bigal ME, Jales LC, Camparis CM, Speciali JG. Headache and symptoms of temporomandibular disorder: an epidemiological study. Headache. 2010 Feb;50(2):231-41. doi: 10.1111/j.1526-4610.2009.01511.x. Epub 2009 Sep 14."
+              },
+              {
+                "pmid": "19704086",
+                "type": "BACKGROUND",
+                "citation": "Goncalves DA, Speciali JG, Jales LC, Camparis CM, Bigal ME. Temporomandibular symptoms, migraine, and chronic daily headaches in the population. Neurology. 2009 Aug 25;73(8):645-6. doi: 10.1212/WNL.0b013e3181b389c2. No abstract available."
+              },
+              {
+                "pmid": "32929719",
+                "type": "BACKGROUND",
+                "citation": "Akerman S, Romero-Reyes M. Preclinical studies investigating the neural mechanisms involved in the co-morbidity of migraine and temporomandibular disorders: the role of CGRP. Br J Pharmacol. 2020 Dec;177(24):5555-5568. doi: 10.1111/bph.15263. Epub 2020 Oct 21."
+              },
+              {
+                "pmid": "22145886",
+                "type": "BACKGROUND",
+                "citation": "Cady RJ, Glenn JR, Smith KM, Durham PL. Calcitonin gene-related peptide promotes cellular changes in trigeminal neurons and glia implicated in peripheral and central sensitization. Mol Pain. 2011 Dec 6;7:94. doi: 10.1186/1744-8069-7-94."
+              },
+              {
+                "pmid": "25981890",
+                "type": "BACKGROUND",
+                "citation": "Romero-Reyes M, Pardi V, Akerman S. A potent and selective calcitonin gene-related peptide (CGRP) receptor antagonist, MK-8825, inhibits responses to nociceptive trigeminal activation: Role of CGRP in orofacial pain. Exp Neurol. 2015 Sep;271:95-103. doi: 10.1016/j.expneurol.2015.05.005. Epub 2015 May 14."
+              },
+              {
+                "pmid": "28460892",
+                "type": "BACKGROUND",
+                "citation": "Tepper S, Ashina M, Reuter U, Brandes JL, Dolezil D, Silberstein S, Winner P, Leonardi D, Mikol D, Lenz R. Safety and efficacy of erenumab for preventive treatment of chronic migraine: a randomised, double-blind, placebo-controlled phase 2 trial. Lancet Neurol. 2017 Jun;16(6):425-434. doi: 10.1016/S1474-4422(17)30083-2. Epub 2017 Apr 28."
+              },
+              {
+                "pmid": "30793254",
+                "type": "BACKGROUND",
+                "citation": "Lattanzi S, Brigo F, Trinka E, Vernieri F, Corradetti T, Dobran M, Silvestrini M. Erenumab for Preventive Treatment of Migraine: A Systematic Review and Meta-Analysis of Efficacy and Safety. Drugs. 2019 Mar;79(4):417-431. doi: 10.1007/s40265-019-01069-1."
+              },
+              {
+                "pmid": "29984601",
+                "type": "BACKGROUND",
+                "citation": "Ashina M, Tepper S, Brandes JL, Reuter U, Boudreau G, Dolezil D, Cheng S, Zhang F, Lenz R, Klatt J, Mikol DD. Efficacy and safety of erenumab (AMG334) in chronic migraine patients with prior preventive treatment failure: A subgroup analysis of a randomized, double-blind, placebo-controlled study. Cephalalgia. 2018 Sep;38(10):1611-1621. doi: 10.1177/0333102418788347. Epub 2018 Jul 8."
+              },
+              {
+                "pmid": "30360965",
+                "type": "BACKGROUND",
+                "citation": "Reuter U, Goadsby PJ, Lanteri-Minet M, Wen S, Hours-Zesiger P, Ferrari MD, Klatt J. Efficacy and tolerability of erenumab in patients with episodic migraine in whom two-to-four previous preventive treatments were unsuccessful: a randomised, double-blind, placebo-controlled, phase 3b study. Lancet. 2018 Nov 24;392(10161):2280-2287. doi: 10.1016/S0140-6736(18)32534-0. Epub 2018 Oct 22."
+              },
+              {
+                "pmid": "32493206",
+                "type": "BACKGROUND",
+                "citation": "Ashina H, Iljazi A, Al-Khazali HM, Eigenbrodt AK, Larsen EL, Andersen AM, Hansen KJ, Brauner KB, Morch-Jessen T, Chaudhry B, Antic S, Christensen CE, Ashina M, Amin FM, Schytz HW. Efficacy, tolerability, and safety of erenumab for the preventive treatment of persistent post-traumatic headache attributed to mild traumatic brain injury: an open-label study. J Headache Pain. 2020 Jun 3;21(1):62. doi: 10.1186/s10194-020-01136-z."
+              },
+              {
+                "pmid": "24275219",
+                "type": "BACKGROUND",
+                "citation": "Slade GD, Fillingim RB, Sanders AE, Bair E, Greenspan JD, Ohrbach R, Dubner R, Diatchenko L, Smith SB, Knott C, Maixner W. Summary of findings from the OPPERA prospective cohort study of incidence of first-onset temporomandibular disorder: implications and future directions. J Pain. 2013 Dec;14(12 Suppl):T116-24. doi: 10.1016/j.jpain.2013.09.010."
+              },
+              {
+                "pmid": "2594394",
+                "type": "BACKGROUND",
+                "citation": "Ohrbach R, Gale EN. Pressure pain thresholds, clinical assessment, and differential diagnosis: reliability and validity in patients with myogenic pain. Pain. 1989 Nov;39(2):157-169. doi: 10.1016/0304-3959(89)90003-1."
+              },
+              {
+                "pmid": "18474055",
+                "type": "BACKGROUND",
+                "citation": "Ohrbach R, Granger C, List T, Dworkin S. Preliminary development and validation of the Jaw Functional Limitation Scale. Community Dent Oral Epidemiol. 2008 Jun;36(3):228-36. doi: 10.1111/j.1600-0528.2007.00397.x."
+              },
+              {
+                "pmid": "18780535",
+                "type": "BACKGROUND",
+                "citation": "Ohrbach R, Larsson P, List T. The jaw functional limitation scale: development, reliability, and validity of 8-item and 20-item versions. J Orofac Pain. 2008 Summer;22(3):219-30."
+              },
+              {
+                "pmid": "17190029",
+                "type": "BACKGROUND",
+                "citation": "Markiewicz MR, Ohrbach R, McCall WD Jr. Oral behaviors checklist: reliability of performance in targeted waking-state behaviors. J Orofac Pain. 2006 Fall;20(4):306-16."
+              },
+              {
+                "pmid": "20701668",
+                "type": "BACKGROUND",
+                "citation": "Ohrbach R. Assessment and further development of RDC/TMD Axis II biobehavioural instruments: a research programme progress report. J Oral Rehabil. 2010 Oct;37(10):784-98. doi: 10.1111/j.1365-2842.2010.02144.x. Epub 2010 Aug 4."
+              },
+              {
+                "pmid": "1408309",
+                "type": "BACKGROUND",
+                "citation": "Von Korff M, Ormel J, Keefe FJ, Dworkin SF. Grading the severity of chronic pain. Pain. 1992 Aug;50(2):133-149. doi: 10.1016/0304-3959(92)90154-4."
+              },
+              {
+                "pmid": "30793414",
+                "type": "BACKGROUND",
+                "citation": "Perrot S, Lanteri-Minet M. Patients' Global Impression of Change in the management of peripheral neuropathic pain: Clinical relevance and correlations in daily practice. Eur J Pain. 2019 Jul;23(6):1117-1128. doi: 10.1002/ejp.1378. Epub 2019 Mar 18."
+              },
+              {
+                "pmid": "14739871",
+                "type": "BACKGROUND",
+                "citation": "Hurst H, Bolton J. Assessing the clinical significance of change scores recorded on subjective outcome measures. J Manipulative Physiol Ther. 2004 Jan;27(1):26-35. doi: 10.1016/j.jmpt.2003.11.003."
+              },
+              {
+                "pmid": "6880820",
+                "type": "BACKGROUND",
+                "citation": "Zigmond AS, Snaith RP. The hospital anxiety and depression scale. Acta Psychiatr Scand. 1983 Jun;67(6):361-70. doi: 10.1111/j.1600-0447.1983.tb09716.x."
+              }
+            ]
+          }
+        },
+        "results_section": {
+          "participantFlowModule": {
+            "preAssignmentDetails": "1 completed study; 1 withdrawn/dis-enrolled from study after visit 1 due to side effect (constipation); 1 dis-enrolled due to ineligibility in not meeting anymore inclusion criteria in visit 1. 1 dis-enrolled short after consent/enrollment due to medical history update; 1 dis-enrolled due to changes in medical history in visit 1.\n\n3 participants completed only baseline phase. Baseline period consisted of 28 days/ 4 weeks prior randomization. Only two participants were assigned to arm/group.",
+            "recruitmentDetails": "Subjects recruited and pre-screened at the Brotman Facial Pain clinic, University of Maryland, School of Dentistry.\n\nEnrollment period: 05/26/2022 to 08/02/2022 Total number of subjects prescreened: 20\n\nApril 1st, 2022 was the estimated study start date. 05/26/2022 was the date of the first participant enrolled.",
+            "groups": [
+              {
+                "id": "FG000",
+                "title": "Erenumab-aooe",
+                "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles."
+              },
+              {
+                "id": "FG001",
+                "title": "Placebo",
+                "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles."
+              }
+            ],
+            "periods": [
+              {
+                "title": "Overall Study",
+                "milestones": [
+                  {
+                    "type": "STARTED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "1"
+                      },
+                      {
+                        "groupId": "FG001",
+                        "numSubjects": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "COMPLETED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "0"
+                      },
+                      {
+                        "groupId": "FG001",
+                        "numSubjects": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT COMPLETED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "1"
+                      },
+                      {
+                        "groupId": "FG001",
+                        "numSubjects": "0"
+                      }
+                    ]
+                  }
+                ],
+                "dropWithdraws": [
+                  {
+                    "type": "Adverse Event",
+                    "reasons": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "1"
+                      },
+                      {
+                        "groupId": "FG001",
+                        "numSubjects": "0"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "baselineCharacteristicsModule": {
+            "populationDescription": "Enrollees who completed baseline period and randomization",
+            "groups": [
+              {
+                "id": "BG000",
+                "title": "Erenumab-aooe",
+                "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles."
+              },
+              {
+                "id": "BG001",
+                "title": "Placebo",
+                "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles."
+              },
+              {
+                "id": "BG002",
+                "title": "Total",
+                "description": "Total of all reporting groups"
+              }
+            ],
+            "denoms": [
+              {
+                "units": "Participants",
+                "counts": [
+                  {
+                    "groupId": "BG000",
+                    "value": "1"
+                  },
+                  {
+                    "groupId": "BG001",
+                    "value": "1"
+                  },
+                  {
+                    "groupId": "BG002",
+                    "value": "2"
+                  }
+                ]
+              }
+            ],
+            "measures": [
+              {
+                "title": "Age, Categorical",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "<=18 years",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Between 18 and 65 years",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "1"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "1"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "2"
+                          }
+                        ]
+                      },
+                      {
+                        "title": ">=65 years",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Sex: Female, Male",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "Female",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "1"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "1"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Male",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "1"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "1"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Ethnicity (NIH/OMB)",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "Hispanic or Latino",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Not Hispanic or Latino",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "1"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "1"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "2"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Unknown or Not Reported",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Race (NIH/OMB)",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "American Indian or Alaska Native",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Asian",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "1"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "1"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Native Hawaiian or Other Pacific Islander",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Black or African American",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "White",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "1"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "1"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "More than one race",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Unknown or Not Reported",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG001",
+                            "value": "0"
+                          },
+                          {
+                            "groupId": "BG002",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "outcomeMeasuresModule": {
+            "outcomeMeasures": [
+              {
+                "type": "PRIMARY",
+                "title": "Change of >= 30% Reduction in the Monthly Average Pain Score From Baseline to Visit 4, Compared to Placebo.",
+                "description": "Assessment of the efficacy of erenumab-aooe in the proportion of participants that achieve \\>=30% reduction (Yes/no) in monthly average pain score from baseline to Visit 4 (the end of last monthly treatment cycle), compared to placebo. The daily pain intensity score will be measured on a 0-100 numeric rating scale (NRS) and reported in the Daily Symptom Diary (DSD). The monthly mean pain intensity score will be determined from baseline, Visit 1/Day 28/Week 4, Visit 2/Day 56/Week 8, Visit 3/Day 84/week 12 and Visit 4/Day 112/Week 16.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "From Visit 0 (Baseline phase/study day 0) to Visit 4 (study day 112)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change of >= 50% Reduction in Monthly TMD Pain Days, Compared to Placebo.",
+                "description": "Assessment of the efficacy of erenumab-aooe in the proportion of participants with at least a 50% reduction (Yes/No) in monthly TMD days from baseline to Visit 5 (follow up/final visit).\n\nDefinition of TMD pain day: A TMD pain day was any calendar day in which the participant experienced pain, stiffness, soreness, tenderness, in the jaw or temple area or either side being brief or continuous; and/or pain with TMJ biomechanics (chewing, mouth opening or any jaw movement; and/or pain with jaw activities (yawning, kissing, talking); and/or pain with jaw habits (chewing gum, clenching, grinding).",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "From Visit 0 (Baseline phase/study day 0) to Visit 5 (study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change of >= 30% Reduction in the Monthly Average Pain Score Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessment of the efficacy of erenumab-aooe in the proportion of participants who achieved a least 30% reduction in the monthly average daily pain score from baseline to Visit 5 (follow up and final study visit). The monthly mean pain intensity score will be determined from baseline, Visit 1/Day 28/Week 4, Visit 2/Day 56/Week 8, Visit 3/Day 84/week 12, Visit 4/Day 112/Week 16 and Visit 5/Day 140/Week 20.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "From Visit 0 (Baseline phase/study day 0) to Visit 5 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in Pressure Pain Threshold (PPT) Measurement in Muscles of Mastication (Temporalis Muscle) Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessments of pressure stimuli will be performed in the temporalis muscle and averaged to obtain a single pressure pain threshold value (kPa) per site. This assessment will be performed bilaterally in each temporalis muscle. A higher value means a better outcome.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in Pressure Pain Threshold (PPT) Measurement in Muscles of Mastication (Masseter Muscle) Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessments of pressure stimuli will be performed in the masseter muscle and averaged to obtain a single pressure pain threshold value (kPa) per site. This assessment will be performed bilaterally in each masseter muscle. A higher PPT value means a better outcome.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in Pressure Pain Threshold (PPT) Measurement in Upper Trapezius Muscle Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessments of pressure stimuli will be performed in the upper trapezius muscle and averaged to obtain a single pressure pain threshold value (kPa) per site (R/L side). This assessment will be performed bilaterally. A higher PPT value means a better outcome.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in Pressure Pain Threshold (PPT) Measurement in the Temporomandibular Joint (TMJ) Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessments of pressure stimuli will be performed in the TMJ and averaged to obtain a single pressure pain threshold value (kPa) per site. This assessment will be performed bilaterally. A higher PPT value means a better outcome.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in Pressure Pain Threshold (PPT) Measurement at the Lateral Epicondyle Compared to Placebo From Baseline to Visit 5.",
+                "description": "Assessments of pressure stimuli will be applied bilaterally in the right and left lateral epicondyles and averaged to obtain a single pressure pain threshold value (kPa) per site. A higher PPT value means a better outcome.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in Maximum Unassisted Jaw Opening During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "Measured during TMD examination. A higher value means a better outcome",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in Maximum Pain Free Opening During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "Measured during TMD examination. A higher value means a better outcome",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in Maximum Assisted/Active Opening During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "Measured during TMD examination. A higher value means a better outcome",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in the Jaw Functional Limitation Scale (JFLS) Global Score During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "The JFLS is a 20-item instrument that measures limitations across 3 domains related to TMJ biomechanics: masticatory function, jaw opening (vertical mobility), and verbal and emotional expression. A degree of limitation is rated on a 0-10 scale from 0 (\"no limitation\") to 10 (\"severe limitation\")",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in the Frequency of Oral Behaviors Evaluated by the Oral Behaviors Checklist (OBC) During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "The Oral Behaviors Checklist (OBC) evaluates parafunctional behaviors and generates a single scale representing the frequency of 21 activities such as clenching, chewing gum, and holding objects between teeth, yawning.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in Graded Chronic Pain Scale (GCPS) Outcomes During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "The GCPS includes 7 items and assesses 2 dimensions of pain, pain intensity and pain-related disability. A higher grade means a worse outcome.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in Impression of Overall Status Measured by the Patient Global Impression of Change (PGIC) During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "The PGIC measures change in participant's overall status on a scale ranging from 1 (very much improved) to 7 (very much worse).",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Change in the Hospital Anxiety and Depression Scale (HADS). Anxiety and Depression Score Change During Erenumab-aooe Treatment, After Treatment and Compared to Placebo.",
+                "description": "The HADS evaluates anxiety (7 items) and depression (7 items) with a 14-item instrument assessing symptoms on a 4-point scale rated from 0 \"not at all\" to 3 \"very often indeed\". Responses provide separate scores for anxiety and depression. A higher score means a worse outcome.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (baseline/study day 0) to Visit 5/Week 20 (Study day 140 +/- 7)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "OTHER_PRE_SPECIFIED",
+                "title": "Change of Pro-inflammatory and Anti-inflammatory Cytokine Profiles (Th1/Th2) When Compared to Placebo.",
+                "description": "Blood samples will be evaluated for the presence of proinflammatory and anti-inflammatory cytokines.",
+                "populationDescription": "Only one subject randomly blinded assigned to placebo completed the study. Data were not collected to report.",
+                "reportingStatus": "POSTED",
+                "timeFrame": "Visit 0 (Baseline/study day 0) and Visit 4/Week 16 (study day 112)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Erenumab-aooe",
+                    "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy study drug versus placebo. Subject randomly blinded assigned to drug group was des-enrolled from study due to side effect after visit 1. Only one subject randomly blinded assigned to placebo completed the study."
+                  },
+                  {
+                    "id": "OG001",
+                    "title": "Placebo",
+                    "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nStudy terminated early-no outcome data available to analyze outcome measures to assess efficacy of study drug versus placebo. Only one subject randomly blinded assigned to placebo completed the study."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "0"
+                      },
+                      {
+                        "groupId": "OG001",
+                        "value": "0"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "adverseEventsModule": {
+            "frequencyThreshold": "0",
+            "timeFrame": "From the first dose of study drug/placebo up to 4 weeks after the last dose (a total of 16 weeks).",
+            "eventGroups": [
+              {
+                "id": "EG000",
+                "title": "Erenumab-aooe",
+                "description": "Erenumab-aooe 70 mg/ml. Subcutaneous injection. Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther Name: Aimovig\u00ae\n\nErenumab-Aooe 70 MG in 1 mL Prefilled Syringe: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.",
+                "deathsNumAffected": 0,
+                "deathsNumAtRisk": 1,
+                "seriousNumAffected": 0,
+                "seriousNumAtRisk": 1,
+                "otherNumAffected": 1,
+                "otherNumAtRisk": 1
+              },
+              {
+                "id": "EG001",
+                "title": "Placebo",
+                "description": "Placebo. Subcutaneous injection.Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.\n\nOther name: Placebo\n\nPlacebo: Administered once every 4 weeks/28 days at visit 1, visit 2 and visit 3 for a total of 3 cycles.",
+                "deathsNumAffected": 0,
+                "deathsNumAtRisk": 1,
+                "seriousNumAffected": 0,
+                "seriousNumAtRisk": 1,
+                "otherNumAffected": 0,
+                "otherNumAtRisk": 1
+              }
+            ],
+            "otherEvents": [
+              {
+                "term": "Other",
+                "organSystem": "Gastrointestinal disorders",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "notes": "Constipation",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numEvents": 1,
+                    "numAffected": 1,
+                    "numAtRisk": 1
+                  },
+                  {
+                    "groupId": "EG001",
+                    "numEvents": 0,
+                    "numAffected": 0,
+                    "numAtRisk": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "moreInfoModule": {
+            "limitationsAndCaveats": {
+              "description": "Early termination due to low enrollment rate."
+            },
+            "certainAgreement": {
+              "piSponsorEmployee": true
+            },
+            "pointOfContact": {
+              "title": "Dr. Marcela Romero Reyes",
+              "organization": "University of Maryland, School of Dentistry",
+              "email": "mromero@umaryland.edu",
+              "phone": "4107067168"
+            }
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT05162027",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10418780/",
+          "identifier": "PMC:10418780",
+          "title": "Calcitonin Gene-Related Peptide-Mediated Trigeminal Ganglionitis: The Biomolecular Link between Temporomandibular Disorders and Chronic Headaches.",
+          "snippet": "Title: Calcitonin Gene-Related Peptide-Mediated Trigeminal Ganglionitis: The Biomolecular Link between Temporomandibular Disorders and Chronic Headaches.\nAuthors: Sangalli L, Eli B, Mehrotra S et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:47.104908"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "10418780"
+        ],
+        "pmc_count": 1,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe_no_structured_match": true,
+        "uniprot_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe": [],
+        "uniprot_Placebo_no_structured_match": true,
+        "uniprot_Placebo": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT05162027",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp ...",
+          "snippet": "Web result for: NCT05162027 Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp Antibody REli",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:48.337360"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ctv.veeva.com/study/erenumab-aooe-for-temporomandibular-disorders-management-tmd-cgrp-antibody-relief-tmd-care",
+          "identifier": "NCT05162027",
+          "title": "Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp ...",
+          "snippet": "Web result for: NCT05162027 Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp Antibody REli",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:48.337432"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp ...",
+          "snippet": "Web result for: NCT05162027 Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp Antibody REli",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:48.337447"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://inclinicaltrials.com/temporomandibular-disorders/NCT05162027/",
+          "identifier": "NCT05162027",
+          "title": "Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp",
+          "snippet": "Web result for: NCT05162027 Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp Antibody REli",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:48.337457"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT05162027?tab=results",
+          "identifier": "NCT05162027",
+          "title": "Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp ...",
+          "snippet": "Web result for: NCT05162027 Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp Antibody REli",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:48.337594"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 22005
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe": {
+          "found": false
+        },
+        "dbaasp_Placebo": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT05162027",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3833329/",
+          "identifier": "CHEMBL3833329",
+          "title": "ERENUMAB - ChEMBL",
+          "snippet": "Molecule: ERENUMAB\nType: Antibody\nMax clinical phase: 4.0\nFirst approval: 2018\nMechanism: Calcitonin gene-related peptide type 1 receptor antagonist",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:50.407681"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1732375/",
+          "identifier": "CHEMBL1732375",
+          "title": "CHEMBL1732375 - ChEMBL",
+          "snippet": "Molecule: CHEMBL1732375\nType: Small molecule\nMolecular weight: 369.34\nBioactivity: IC50=36.0 nM (Voltage-dependent T-type calcium channel subunit alpha-1H); EC50=150.0 nM (Voltage-dependent T-type calcium channel subunit alpha-1H); Inhibition=-1.83 % (SARS-CoV-2); Inhibition=22.78 % (Replicase polyprotein 1ab); Inhibition=-0.1 % (SARS-CoV-2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:50.863702"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2070953/",
+          "identifier": "CHEMBL2070953",
+          "title": "CHEMBL2070953 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2070953\nType: Small molecule\nMolecular weight: 471.60\nBioactivity: EC50=260.0 nM (Potassium voltage-gated channel subfamily KQT member 1); %max=265.9 % (Potassium voltage-gated channel subfamily KQT member 1); EC50=30000.0 nM (Potassium voltage-gated channel subfamily KQT member 2); EC50=30000.0 nM (Potassium voltage-gated channel subfamily KQT member 4); Ratio EC50=100.0 (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:52.573727"
+        }
+      ],
+      "raw_data": {
+        "chembl_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe_count": 5,
+        "chembl_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe_molecules": [
+          {
+            "chembl_id": "CHEMBL3833329",
+            "pref_name": "ERENUMAB",
+            "mol_type": "Antibody",
+            "helm_notation": null,
+            "max_phase": "4.0"
+          },
+          {
+            "chembl_id": "CHEMBL1732375",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL2070953",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          }
+        ],
+        "chembl_Placebo_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "rcsb_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe": {
+          "count": 0
+        },
+        "rcsb_Placebo": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe_count": 0,
+        "ebi_proteins_Placebo_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "apd_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Placebo": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT05162027",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT05162027",
+          "identifier": "NCT05162027",
+          "title": "Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp Antibody RElief (TMD CARE)",
+          "snippet": "Title: Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp Antibody RElief (TMD CARE)\nStatus: Terminated\nPhase: Phase 2\nCountries: United States\nConditions: Temporomandibular Disorders\nInterventions: Drug: Placebo, Drug: Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:18:54.501124"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT05162027",
+          "public_title": "Erenumab-aooe for Temporomandibular Disorders Management: TMD Cgrp Antibody RElief (TMD CARE)",
+          "scientific_title": "Erenumab as a Therapeutic Approach for the Management of Painful Chronic Temporomandibular Disorders (TMD)",
+          "recruitment_status": "Terminated",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized. Intervention model: Parallel Assignment. Primary purpose: Treatment. Masking: Triple (Participant, Care Provider, Investigator).",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Temporomandibular Disorders"
+          ],
+          "interventions": [
+            "Drug: Placebo",
+            "Drug: Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe": {
+          "found": false
+        },
+        "iuphar_Placebo": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe_count": 0,
+        "pdbe_Placebo_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT05162027",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4385421977",
+          "identifier": "PMID:37569575",
+          "title": "Calcitonin Gene-Related Peptide-Mediated Trigeminal Ganglionitis: The Biomolecular Link between Temporomandibular Disorders and Chronic Headaches",
+          "snippet": "Title: Calcitonin Gene-Related Peptide-Mediated Trigeminal Ganglionitis: The Biomolecular Link between Temporomandibular Disorders and Chronic Headaches\nYear: 2023\nCitations: 8\nAbstract: A bidirectional causal relationship has been established between temporomandibular disorders (TMDs) and chronic headaches. Recent advances in the neurobiology of chronic pain offer a framework for understanding the comorbidity between these two condi",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:47.547119"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 1
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT05162027",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1177/0018578718797295",
+          "identifier": "DOI:10.1177/0018578718797295",
+          "title": "Erenumab-aooe",
+          "snippet": "Title: Erenumab-aooe\nJournal: Hospital Pharmacy\nYear: 2018\nAbstract: Each month, subscribers to The Formulary Monograph Service receive 5 to 6 well-documented monographs on drugs that are newly released or are in late phase 3 trials. The monographs are targeted to Pharmacy &amp; Therapeutics Committees. Subscribers al",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153346"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.31525/ct1-nct03912337",
+          "identifier": "DOI:10.31525/ct1-nct03912337",
+          "title": "Effect of Erenumab-aooe on Disability and Work Productivity in Employed Subjects With Episodic Migraine.",
+          "snippet": "Title: Effect of Erenumab-aooe on Disability and Work Productivity in Employed Subjects With Episodic Migraine.\nJournal: Case Medical Research\nYear: 2019",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153409"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.2146/news180044",
+          "identifier": "DOI:10.2146/news180044",
+          "title": "FDA approves licensing of erenumab-aooe to prevent migraine",
+          "snippet": "Title: FDA approves licensing of erenumab-aooe to prevent migraine\nJournal: American Journal of Health-System Pharmacy\nYear: 2018",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:50.153434"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT05162027",
+      "citations": [
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-786742/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-786742/v1",
+          "title": "Psychological Predictors of Negative Treatment Outcome with Erenumab in Chronic Migraine: Data From an Open Label Long-Term Prospective Study",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:48.068518"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-50684/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-50684/v1",
+          "title": "Erenumab during pregnancy: a case report in a patient with chronic migraine",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:48.068546"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.22541/au.161771815.58253079/v1",
+          "identifier": "DOI:10.22541/au.161771815.58253079/v1",
+          "title": "Raynaud's phenomenon secondary to erenumab in a patient with chronic migraine",
+          "snippet": "PPR ({'publisher': 'Authorea Preprints', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:47.933509"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-87163/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-87163/v1",
+          "title": "Different Doses of Erenumab for Preventive Treatment of Episodic Migraine: A Systematic Review and Network Meta-Analysis",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:47.933565"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202511.1312.v1",
+          "identifier": "DOI:10.20944/preprints202511.1312.v1",
+          "title": "Clinic and Genetic Factors Associated with Non Response to Erenumab",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:48.102731"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-5008898/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-5008898/v1",
+          "title": "Unveiling the Efficacy and Safety of Erenumab, a Monoclonal Antibody Targeting Calcitonin Gene-related Peptide (CGRP) Receptor, in Patients with Chronic and Episodic Migraine: A GRADE-assessed Systematic Review and Meta-analysis of Randomized Clinical Trials with Subgroup Analysis",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:48.102778"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-1305232/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-1305232/v1",
+          "title": "Real-world experience of erenumab in patients with chronic or episodic migraine in the UAE",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2022})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:48.102838"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-267455/v2",
+          "identifier": "DOI:10.21203/rs.3.rs-267455/v2",
+          "title": "Treatment of Persistent Post-Traumatic Headache with the Anti-CGRP Receptor Antibody Erenumab: A Case Report",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:48.102852"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.22541/au.163510326.65694933/v1",
+          "identifier": "DOI:10.22541/au.163510326.65694933/v1",
+          "title": "Effectiveness and safety of erenumab and galcanezumab in the prevention of chronic and episodic migraine: a retrospective cohort study",
+          "snippet": "PPR ({'publisher': 'Authorea Preprints', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:48.102859"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-631442/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-631442/v1",
+          "title": "Real-world Evidence Data on the Monoclonal Antibody Erenumab in Migraine Prevention: Perspectives of Treating Physicians in Germany",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:48.102866"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-100067/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-100067/v1",
+          "title": "Association between response to triptans and response to erenumab: real-life data",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:48.102905"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-268641/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-268641/v1",
+          "title": "Mab-Mig: Registry of the Spanish Neurological Society of Erenumab for Migraine Prevention. Three-Months Results",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:48.102920"
+        }
+      ],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 28,
+        "biorxiv_prefilter_dropped": 16
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT05162027_total": 0,
+        "sec_edgar_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT05162027",
+      "citations": [],
+      "raw_data": {
+        "nih_reporter_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe_count": 0,
+        "nih_reporter_Erenumab-Aooe 70 MG in 1 mL Prefilled Syringe_funded": false
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 12,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov"
+      ]
+    },
+    "literature": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "pmc"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "openalex": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 12,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "biorxiv_medrxiv"
+      ]
+    },
+    "sec_edgar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    }
+  }
+}

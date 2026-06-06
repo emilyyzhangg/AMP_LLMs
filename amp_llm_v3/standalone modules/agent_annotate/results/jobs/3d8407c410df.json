@@ -1,0 +1,31 @@
+{
+  "job_id": "3d8407c410df",
+  "nct_ids": [
+    "NCT03069989",
+    "NCT03164486",
+    "NCT05940298",
+    "NCT05968846",
+    "NCT06443762"
+  ],
+  "status": "completed",
+  "created_at": "2026-04-30T10:16:06.475996-07:00",
+  "started_at": "2026-04-30T10:16:06.485094-07:00",
+  "finished_at": "2026-04-30T11:04:09.949259-07:00",
+  "commit_hash": "5f381f88",
+  "resumed": false,
+  "progress": {
+    "total_trials": 5,
+    "completed_trials": 5,
+    "researched_trials": 5,
+    "elapsed_seconds": 2883.4,
+    "avg_seconds_per_trial": 576.7,
+    "current_stage": "done",
+    "current_nct_id": null,
+    "current_field": null,
+    "current_agent": null,
+    "current_model": null,
+    "field_timings": {},
+    "verification_progress": null
+  },
+  "trial_times": []
+}

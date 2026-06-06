@@ -1,0 +1,1032 @@
+{
+  "e46797571504:NCT03199872:outcome": {
+    "job_id": "e46797571504",
+    "nct_id": "NCT03199872",
+    "field_name": "outcome",
+    "original_value": "Positive",
+    "suggested_values": [
+      "Positive",
+      "Terminated"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Terminated",
+        "reasoning": "The trial is listed as COMPLETED in the registry. While results were posted and a publication exists (PMID:33184050), a subsequent publication (PMC:12031432) describes the trial as showing \"no clinical efficacy\" despite inducing immune responses. This indicates a failure of the trial to achieve its primary endpoint, and since the registry status is COMPLETED, the outcome must be 'Terminated' rather than 'Failed - completed trial'.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": true,
+        "suggested_value": "Positive",
+        "reasoning": "The trial was completed, and published results indicate that the primary endpoints were met, demonstrating positive outcomes.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": true,
+        "suggested_value": "Positive",
+        "reasoning": "According to the COMPLETION HEURISTICS rules, since the trial was completed and results were posted, I lean towards a \"Positive\" outcome. The published paper (PMID:33184050) provides evidence that the vaccine induced long-lasting immune responses in patients with prostate cancer, supporting this conclusion.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Dossier] Trial: NCT03199872\nRegistry Status: COMPLETED\nPhase: PHASE1, PHASE2\nCompletion Date: 2018-08-01 (2826 days ago)\nResults Posted: Unknown\nPublications Found: 25 (16 trial-specific, 9 reviews/general)\n  1. Title: Vaccination against RhoC induces long-lasting immune responses in patients with prostate cancer: results from a phase I/II clinical t PMID:33184050 [TRIAL-SPECIFIC]\n  2. Title: CAR-T Cell Th\n[LLM decision] The trial is a vaccine/immunotherapy trial (Phase I/II), and \u22652 trial-specific publications (PMID:33184050, PMC:12031432) report immunogenicity outcomes, specifically \"induces long-lasting immune responses\" and \"induces potent and long-lasting CD4(+) T cell responses.\" Since immunogenicity is the primary endpoint for Phase I vaccine trials and there are no failure or adverse signals, this meets the criteria for a \"Positive\" outcome.",
+    "primary_confidence": 0.8624999999999999,
+    "created_at": "2026-04-27T07:14:54.736463-07:00",
+    "commit_hash": "ff6dc299"
+  },
+  "5a6efc1cd0db:NCT01704781:delivery_mode": {
+    "job_id": "5a6efc1cd0db",
+    "nct_id": "NCT01704781",
+    "field_name": "delivery_mode",
+    "original_value": "Injection/Infusion, Oral",
+    "suggested_values": [
+      "Injection/Infusion, Oral",
+      "Injection/Infusion"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The trial description explicitly states that Vacc-4x is administered intradermally, which is a form of injection.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The trial explicitly states that Vacc-4x is administered intradermally, which falls under the Injection/Infusion category.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "While Vacc-4x is indeed administered intradermally (as a peptide-based vaccine), the presence of Lenalidomide as an oral capsule contradicts the assumption that both drugs are administered via injection/infusion. Therefore, I conclude that the delivery mode for this trial is not entirely consistent with Injection/Infusion.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Deterministic v38] Collected 2 route(s) from all citations",
+    "primary_confidence": 0.95,
+    "created_at": "2026-04-30T06:44:53.404140-07:00",
+    "commit_hash": "b6ba9162"
+  },
+  "5a6efc1cd0db:NCT01704781:outcome": {
+    "job_id": "5a6efc1cd0db",
+    "nct_id": "NCT01704781",
+    "field_name": "outcome",
+    "original_value": "Unknown",
+    "suggested_values": [
+      "Unknown",
+      "Terminated"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Terminated",
+        "reasoning": "The trial is listed as COMPLETED, but without any published results or results posted on ClinicalTrials.gov, I must default to 'Terminated' as per the instructions. The absence of publications suggests a failure, futility, or business decision led to termination, rather than a successful outcome.",
+        "confidence": 0.4,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": true,
+        "suggested_value": "Unknown",
+        "reasoning": "According to the completion heuristics, if no publications, no results posted, and no subsequent trials, the outcome should be \"Unknown.\" The absence of published results or specific outcome descriptions means we cannot determine the trial's outcome definitively.",
+        "confidence": 0.7,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": true,
+        "suggested_value": "Unknown",
+        "reasoning": "Based on the rules for COMPLETED trials without published results, I lean towards 'Unknown' as the outcome. The absence of any evidence of positive or negative results makes it difficult to determine the trial's outcome with confidence.",
+        "confidence": 0.7,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Dossier] Trial: NCT01704781\nRegistry Status: COMPLETED\nPhase: PHASE1, PHASE2\nCompletion Date: 2014-08 (4290 days ago)\nResults Posted: Unknown\nPublications Found: 24 (2 trial-specific, 22 reviews/general)\n  1. Title: Conserved multiepitope vaccine constructs: A potent HIV-1 therapeutic vaccine in clinical trials.\nAuthors: Akbari E, Seyedinkhorasani PMC:10188636 [TRIAL-SPECIFIC]\n  2. Title: Conserved multiep\n[LLM decision] The trial (NCT01704781) is marked as \"COMPLETED\" on CT.gov, but no trial-specific publications explicitly state that the primary endpoint was met, nor do they report statistically significant results on the primary endpoint. While there are trial-specific publications (e.g., PMID:37156468), they do not provide specific evidence of meeting the primary endpoint or regulatory approval for this trial\u2019s specific indication. Additionally, the trial involves a vaccine (Vacc-4X), but the exception for v",
+    "primary_confidence": 0.8150000000000001,
+    "created_at": "2026-04-30T06:44:53.404140-07:00",
+    "commit_hash": "b6ba9162"
+  },
+  "5a6efc1cd0db:NCT01704781:reason_for_failure": {
+    "job_id": "5a6efc1cd0db",
+    "nct_id": "NCT01704781",
+    "field_name": "reason_for_failure",
+    "original_value": "",
+    "suggested_values": [
+      "",
+      "Ineffective for purpose"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Ineffective for purpose",
+        "reasoning": "The published article \"Conserved multiepitope vaccine constructs: A potent HIV-1 therapeutic vaccine in clinical trials\" suggests the trial evaluated Vacc-4x, implying an assessment of its efficacy. While the article doesn't explicitly state the trial failed, the title implies a positive outcome (\"potent vaccine\"), but the trial is listed as COMPLETED, suggesting a lack of further development or publication of positive results. Without further evidence of success, a cautious interpretation is th",
+        "confidence": 0.7,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": true,
+        "suggested_value": "",
+        "reasoning": "The absence of published negative results or safety concerns, combined with the trial being completed without any indication of failure, means the reason for failure is not established. Therefore, the correct value is \"EMPTY.\"",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": true,
+        "suggested_value": "",
+        "reasoning": "Since the trial has completed and there are no published results indicating failure, I conclude that there is insufficient evidence to assign a reason for failure.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: The trial NCT01704781 is associated with Vacc-4x, a therapeutic HIV-1 vaccine. A 2023 paper (PMID:37156468) mentions that Vacc-4x is a potent HIV-1 therapeutic vaccine in clinical trials, suggesting it was tested in multiple phases. However, no specific results from NCT01704781 are detailed in the abstract or cited literature. Other papers from 2013 and 2018 discuss the genetic characterization of the HIV-1 reservoir after\n[Pass 2 classification] The trial status is \"COMPLETED,\" and while the \"whyStopped\" field is not provided, the published literature does not indicate failure, safety concerns, or adverse events. The 2023 paper (PMID:37156468) mentions that Vacc-4x is a \"potent HIV-1 therapeutic vaccine in clinical trials,\" but does not provide specific results from NCT01704781. Other papers from 2013 and 2018 discuss the genetic characterization of the HIV-1 reservoir but do not report on the success or failure of this specific trial. ",
+    "primary_confidence": 0.8150000000000001,
+    "created_at": "2026-04-30T06:44:53.404140-07:00",
+    "commit_hash": "b6ba9162"
+  },
+  "5a6efc1cd0db:NCT03018665:delivery_mode": {
+    "job_id": "5a6efc1cd0db",
+    "nct_id": "NCT03018665",
+    "field_name": "delivery_mode",
+    "original_value": "Injection/Infusion, Oral",
+    "suggested_values": [
+      "Injection/Infusion, Oral",
+      "Injection/Infusion"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The trial explicitly states that both Exenatide and BIAsp30 are administered via subcutaneous injection.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The trial explicitly states that Exenatide is administered via subcutaneous injection, which falls under the Injection/Infusion category.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The use of the term \"injection\" in both cases indicates that the delivery mode is parenteral, which falls under the category of Injection/Infusion.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Deterministic v38] Collected 2 route(s) from all citations",
+    "primary_confidence": 0.9,
+    "created_at": "2026-04-30T06:44:53.404140-07:00",
+    "commit_hash": "b6ba9162"
+  },
+  "5a6efc1cd0db:NCT05096481:classification": {
+    "job_id": "5a6efc1cd0db",
+    "nct_id": "NCT05096481",
+    "field_name": "classification",
+    "original_value": "AMP",
+    "suggested_values": [
+      "AMP",
+      "Other"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Other",
+        "reasoning": "This trial involves a peptide vaccine targeting CMV antigens. Vaccine peptides, regardless of the pathogen target, induce an adaptive immune response (antibody induction) and do not directly kill pathogens. Therefore, it does not meet the criteria for an AMP.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Other",
+        "reasoning": "The trial's description and published results categorize PEP-CMV as a vaccine, which is explicitly excluded from AMP classification. Vaccines are not considered AMPs regardless of their target pathogen.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Other",
+        "reasoning": "The trial involves a vaccine that targets CMV antigens, but it does not directly kill or inhibit pathogens through any of the three modes defined for AMPs. Instead, it aims to induce an adaptive immune response against CMV in pediatric brain tumor patients. This is consistent with the definition of \"Other\" in the decision tree, which includes vaccine peptides that work through adaptive immunity (antibody induction), not direct antimicrobial action.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Pass 1 extraction] Peptide Identity: The intervention is PEP-CMV. It is confirmed as a peptide. No specific amino acid length or molecular class is provided in the evidence.\nDatabase Matches: No evidence found.\nMechanism: PEP-CMV is proposed to serve as an immunotherapeutic approach by targeting CMV antigens, which may stimulate immune responses, including T cell egress and activation. However, no direct antimicrobi\n[Pass 2 decision] Classification: Other  \nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True). Step 2 \u2014 The mechanism of PEP-CMV is related to immune stimulation, specifically targeting CMV antigens to stimulate T cell egress and activation. This is an adaptive immune response (T cell activation), not direct antimicrobial activity or innate immune activation. There is no evidence of dir",
+    "primary_confidence": 0.8550000000000001,
+    "created_at": "2026-04-30T06:44:53.404140-07:00",
+    "commit_hash": "b6ba9162"
+  },
+  "5a6efc1cd0db:NCT05096481:delivery_mode": {
+    "job_id": "5a6efc1cd0db",
+    "nct_id": "NCT05096481",
+    "field_name": "delivery_mode",
+    "original_value": "Injection/Infusion, Oral",
+    "suggested_values": [
+      "Injection/Infusion, Oral",
+      "Injection/Infusion"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The protocol explicitly states the vaccine is administered intradermally (i.d.), which is a form of injection.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The administration method explicitly states \"intradermally,\" which falls under the Injection/Infusion category.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The use of the term \"intradermally administered\" indicates that the vaccine is being injected into the skin, which falls under the category of Injection/Infusion. Specifically, intradermal administration refers to injecting a substance just beneath the epidermis (the outermost layer of the skin), and this route is considered parenteral, meaning it involves injection or infusion of a substance into the body through a route other than the gastrointestinal tract.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Deterministic v38] Collected 2 route(s) from all citations",
+    "primary_confidence": 0.85,
+    "created_at": "2026-04-30T06:44:53.404140-07:00",
+    "commit_hash": "b6ba9162"
+  },
+  "5a6efc1cd0db:NCT05218915:delivery_mode": {
+    "job_id": "5a6efc1cd0db",
+    "nct_id": "NCT05218915",
+    "field_name": "delivery_mode",
+    "original_value": "Injection/Infusion, Oral",
+    "suggested_values": [
+      "Injection/Infusion, Oral",
+      "Injection/Infusion"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "Dulaglutide is administered subcutaneously (once weekly) and insulin degludec is administered once daily, both indicating parenteral routes of administration.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "Both Dulaglutide and Insulin Degludec are administered via subcutaneous and once daily routes, which fall under the Injection/Infusion category.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "While dulaglutide is referred to as a peptide in the name, its mechanism and administration route are consistent with an injectable medication. The fact that it's given \"once weekly\" also suggests a parenteral route, further supporting the classification as Injection/Infusion.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Deterministic v38] Collected 2 route(s) from all citations",
+    "primary_confidence": 0.85,
+    "created_at": "2026-04-30T06:44:53.404140-07:00",
+    "commit_hash": "b6ba9162"
+  },
+  "5a6efc1cd0db:NCT05995704:delivery_mode": {
+    "job_id": "5a6efc1cd0db",
+    "nct_id": "NCT05995704",
+    "field_name": "delivery_mode",
+    "original_value": "Injection/Infusion, Oral",
+    "suggested_values": [
+      "Injection/Infusion, Oral",
+      "Injection/Infusion"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The trial protocol explicitly states that apraglutide and placebo will be administered subcutaneously (SC), which is a form of injection.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The trial explicitly states that apraglutide is administered via subcutaneous (SC) injection, which falls under the Injection/Infusion category.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "Although the name \"apraglutide\" suggests a peptide drug, which could imply oral administration, the specific route of administration mentioned in the trial metadata is subcutaneous (SC), which falls under the category of injection/infusion.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Deterministic v38] Collected 2 route(s) from all citations",
+    "primary_confidence": 0.85,
+    "created_at": "2026-04-30T06:44:53.404140-07:00",
+    "commit_hash": "b6ba9162"
+  },
+  "5a6efc1cd0db:NCT05995704:outcome": {
+    "job_id": "5a6efc1cd0db",
+    "nct_id": "NCT05995704",
+    "field_name": "outcome",
+    "original_value": "Unknown",
+    "suggested_values": [
+      "Unknown",
+      "Positive"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Positive",
+        "reasoning": "The trial is listed as COMPLETED and there are two publications (in Gastroenterology and Clinical Nutrition ESPEN) reporting on the effect of apraglutide on gastric emptying in healthy individuals. These publications indicate that the trial was conducted and results were generated, suggesting a positive outcome.",
+        "confidence": 0.7,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Positive",
+        "reasoning": "The trial was completed, and published results from two sources (Gastroenterology and Clinical Nutrition ESPEN) indicate that apraglutide significantly affected gastric emptying of liquids in healthy subjects, as measured by the pharmacokinetics of acetaminophen mixed with a liquid meal, meeting the primary endpoint.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Positive",
+        "reasoning": "The trial was completed, and the results were published in two separate articles in 2024. Both articles report on a Phase 1 randomized, placebo-controlled, double-blind, single-center trial evaluating the effect of apraglutide on gastric emptying in healthy individuals. The results show that apraglutide significantly improves gastric emptying compared to placebo. This suggests that the trial met its primary objective and had positive outcomes.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Dossier] Trial: NCT05995704\nRegistry Status: COMPLETED\nPhase: PHASE1\nCompletion Date: 2023-07-24 (1011 days ago)\nResults Posted: Unknown\nPublications Found: 36 (3 trial-specific, 33 reviews/general)\n  1. Title: Pharmacological Characterization of Apraglutide, a Novel Long-Acting Peptidic Glucagon-Like Peptide-2 Agonist, for the Treatment of S PMID:32075870 [GENERAL]\n  2. Title: Apraglutide, a novel glucago\n[LLM decision] The trial (NCT05995704) is marked as \"COMPLETED\" with no trial-specific publications registered with CT.gov. While there are some publications mentioning apraglutide, none of them are explicitly tied to this trial's results. The only trial-specific publication (PMID:34287970) refers to a phase 2 trial in patients with short bowel syndrome, not this phase 1 trial in healthy volunteers. No explicit statement about the primary endpoint being met, statistical significance, or regulatory approval for",
+    "primary_confidence": 0.8400000000000001,
+    "created_at": "2026-04-30T06:44:53.404140-07:00",
+    "commit_hash": "b6ba9162"
+  },
+  "43d3739fd0b1:NCT00052026:peptide": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT00052026",
+    "field_name": "peptide",
+    "original_value": "True",
+    "suggested_values": [
+      "True",
+      "False"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "False",
+        "reasoning": "Carvedilol is consistently classified as a small molecule in multiple chemical databases (ChEMBL, IUPHAR). It is an adrenergic receptor antagonist, not a peptide.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "False",
+        "reasoning": "Based on the explicit classification of carvedilol as a small molecule and the absence of any mention of peptides in the trial description, interventions, or drug data, the intervention does not contain a peptide molecule.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "False",
+        "reasoning": "According to the definition provided, peptides are defined as molecules consisting of 2-100 amino acid residues. Carvedilol is classified as a small molecule in the CHEMBL database, which indicates that its molecular structure does not consist of amino acids and therefore does not meet the criteria for a peptide.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Consistency override: 3 AA sequence -> peptide=True] [Pass 1 extraction] Intervention: Carvedilol\nMolecular Class: Small molecule\nDatabase Confirmation: ChEMBL: CHEMBL723 (Small molecule), CHEMBL3798017 (Small molecule), CHEMBL1201167 (Small molecule); PDB: 4AMJ (carvedilol bound to beta1 adrenergic receptor), 4AMI (bucindolol bound to beta1 adrenergic receptor)\nProduct Description: Described as a drug, specifically a beta-blocker and alpha-1 adrenergic receptor antagonist\nInvestigational Drug Role: Investigational drug\n[Pass 2 decision] Peptide: False  \nReasoning: Step 1 \u2014 The Molecular Class is \"Small molecule,\" which is explicitly excluded as a peptide. Step 2 \u2014 The intervention is a small molecule drug (beta-blocker and alpha-1 adrenergic receptor antagonist), not a peptide. Step 3 \u2014 No database hits confirm it as a peptide, and the molecular class is clearly non-peptide.",
+    "primary_confidence": 0.8800000000000001,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT03059615:reason_for_failure": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT03059615",
+    "field_name": "reason_for_failure",
+    "original_value": "Business Reason",
+    "suggested_values": [
+      "Business Reason",
+      "Recruitment issues"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Recruitment issues",
+        "reasoning": "The clinical trial registry explicitly states the trial was withdrawn due to a lack of recruitment.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Recruitment issues",
+        "reasoning": "The trial was withdrawn due to \"No recruitment since initiation,\" which directly corresponds to the \"Recruitment issues\" category.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Recruitment issues",
+        "reasoning": "The trial was withdrawn due to lack of recruitment, which is a clear indication that the study failed to enroll sufficient participants. This is supported by the \"Why stopped\" field on ClinicalTrials.gov, which explicitly states that there was no recruitment since the trial's initiation.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: No direct findings related to the trial NCT03059615 were found in the provided evidence. However, several publications mention Nerofe and Doxorubicin in the context of cancer treatment, particularly in relation to immunomodulatory effects in mtKRAS tumors. For example, a 2023 paper in *Oncotarget* titled \"Transformation of immunosuppressive mtKRAS tumors into immunostimulatory tumors by Nerofe and Doxorubicin\" suggests that Nerofe and Doxorubicin may have therapeutic potential in reprogramming the immune microenvironment. However, no specific results from NCT03059615 are reported in these sources.  \nOutcome Signals: The evidence does not provide direct information on the success or failure of NCT03059615. No mention of primary endpoints being met or not, adverse events, or reasons for discontinuation is found in the provided literature.  \nIs This A Failure: Unclear\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Withdrawn, Pass 2 returned empty, inferred 'Business Reason'] The trial status is \"COMPLETED,\" but there is no published evidence of negative outcomes (e.g., failure to meet endpoints, adverse events, or safety concerns) directly related to NCT03059615. While some publications mention Nerofe and Doxorubicin in the context of cancer treatment, they do not reference the specific trial or its outcomes. According to the rules, absence of published evidence of failure means the default is \"EMPTY.\" The trial may have completed successfully, or it may have completed without published results \u2014 either way, there is insufficient evidence to classify it as a failure.",
+    "primary_confidence": 0.8300000000000001,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT03166254:peptide": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT03166254",
+    "field_name": "peptide",
+    "original_value": "True",
+    "suggested_values": [
+      "True",
+      "False"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": true,
+        "suggested_value": "True",
+        "reasoning": "The trial involves a personalized anti-tumor vaccine (NEO-PV-01). Given the context of personalized cancer vaccines and the description of NEO-PV-01, it is highly likely that this vaccine contains peptide components.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": true,
+        "suggested_value": "True",
+        "reasoning": "The trial's metadata and published results explicitly reference \"NEO-PV-01 vaccine\" as a personalized neoantigen peptide vaccine, which falls under the category of peptide vaccines as defined in the guidelines. This is strong evidence that the intervention contains a peptide component.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "False",
+        "reasoning": "Although NEO-PV-01 is a personalized neoantigen peptide vaccine, the primary focus of the trial is on the combination therapy with pembrolizumab and standard of care chemotherapy. The presence of \"peptide\" in the name of the vaccine does not automatically classify it as a peptide drug.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Consistency override: 3 AA sequence -> peptide=True] [Pass 1 extraction] Intervention: Pembrolizumab\nMolecular Class: Monoclonal antibody or antibody fragment\nDatabase Confirmation: ChEMBL: molecule type is antibody; UniProt: entry found (e.g., P01584 for pembrolizumab heavy chain, P01585 for light chain); PDB: structural data available (e.g., PDB ID 9LIV and 9LIX are not related to pembrolizumab, but other structures exist for pembrolizumab in the PDB database)\nProduct Description: Described as a \"drug\" and \"immune checkpoint inhibitor\"\nInvestigational Drug Role: Investigational drug\n[Pass 2 decision] Peptide: False  \nReasoning: Step 1 \u2014 The Molecular Class is \"Monoclonal antibody or antibody fragment,\" which is explicitly excluded as a peptide (False). Step 2 \u2014 Since the intervention is a monoclonal antibody, it is not a peptide molecule. Step 3 \u2014 No evidence suggests the intervention contains a peptide component; the drug is classified as an antibody, not a peptide.",
+    "primary_confidence": 0.85,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT03166254:reason_for_failure": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT03166254",
+    "field_name": "reason_for_failure",
+    "original_value": "Toxic/Unsafe",
+    "suggested_values": [
+      "Toxic/Unsafe",
+      "Business Reason"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Business Reason",
+        "reasoning": "The clinical trial was withdrawn due to lost funding, as explicitly stated in the clinicaltrials.gov record. The publications listed do not indicate a failure of the trial itself, only discuss the broader field of cancer vaccines.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Business Reason",
+        "reasoning": "The trial was withdrawn due to lost funding, which falls under the \"Business Reason\" category. There is no indication of failure due to efficacy, safety, or other reasons.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Business Reason",
+        "reasoning": "The most direct and clear evidence of failure is the reason provided by the sponsor themselves, which is a business-related issue (lost funding). This information is also not contradicted or disputed by any of the published results.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: The published findings do not directly reference the specific trial NCT03166254. However, several articles discuss the use of pembrolizumab in combination with personalized cancer vaccines, particularly in the context of neoantigens and immune checkpoint inhibitors. For example, one article notes that \"the combination of personalized cancer vaccines with immune checkpoint inhibitors has shown promise in enhancing antitumor immune responses\" (PMC:8193725). Another article highlights that \"neoantigen-based vaccines may improve the efficacy of PD-1/PD-L1 inhibitors in small cell lung cancer\" (PMC:7653153). No specific results, adverse events, or failure reasons for NCT03166254 are mentioned in the provided literature.  \nOutcome Signals: The evidence suggests that the trial may have been part of a broader investigation into the combination of pembrolizumab with personalized vaccines, but no direct outcome signals (e.g., failure to meet endpoints, safety issues, or recruitment problems) are explicitly mentioned in the available literature.  \nIs This A Failure: Unclear\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Withdrawn, Pass 2 returned empty, inferred 'Toxic/Unsafe'] The trial status is \"COMPLETED,\" and while the \"whyStopped\" field is not provided, there is no published evidence of failure (e.g., no significant difference, adverse events, or recruitment issues). The absence of negative outcome data in the literature means that the trial cannot be classified as a failure based on the provided evidence. The default for completed trials without published evidence of failure is \"EMPTY.\"",
+    "primary_confidence": 0.86,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT03285737:peptide": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT03285737",
+    "field_name": "peptide",
+    "original_value": "True",
+    "suggested_values": [
+      "True",
+      "False"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": true,
+        "suggested_value": "True",
+        "reasoning": "The trial involves whey protein supplementation, which is derived from milk proteins containing peptides. Additionally, collagen supplementation is also included, which is a peptide. The presence of these peptide-containing supplements qualifies the trial as containing a peptide molecule.",
+        "confidence": 0.7,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "False",
+        "reasoning": "The trial's interventions are classified as dietary supplements, not peptide-based drugs. The evidence explicitly states that these are nutritional products, not peptide therapeutics.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "False",
+        "reasoning": "The definition of a peptide is 2-100 amino acid residues. Since the administered supplements contain whole proteins with precursor lengths exceeding 100 amino acids, they do not meet the criteria for being considered peptides.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Consistency override: 3 AA sequence -> peptide=True] [Pass 1 extraction] Intervention: Protein supplementation\nMolecular Class: Nutritional product/dietary supplement\nDatabase Confirmation: Not found in UniProt, DRAMP/DBAASP, ChEMBL, or PDB\nProduct Description: Described as a \"nutritional formula\" and \"protein supplementation\"\nInvestigational Drug Role: Food ingredient (hydrolyzed protein for easier digestion)\n[Pass 2 decision] Peptide: False  \nReasoning: Step 1 \u2014 The Molecular Class is \"Nutritional product/dietary supplement,\" which is excluded as a peptide. Step 2 \u2014 The Investigational Drug Role is \"Food ingredient (hydrolyzed protein for easier digestion),\" which falls under nutritional formulas containing hydrolyzed proteins and is explicitly excluded as a peptide. Step 3 \u2014 No database hits confirm it as a peptide, and the description aligns with a nutritional product, not a peptide drug.",
+    "primary_confidence": 0.865,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT03285737:outcome": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT03285737",
+    "field_name": "outcome",
+    "original_value": "Unknown",
+    "suggested_values": [
+      "Unknown",
+      "Positive"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Positive",
+        "reasoning": "The trial is listed as COMPLETED and a published article (PMID:30289425) describes a randomized controlled trial investigating the impact of protein supplementation on muscle mass and protein synthesis in older adults. This suggests a positive outcome, even if the specific results aren't detailed in the provided metadata.",
+        "confidence": 0.7,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": true,
+        "suggested_value": "Unknown",
+        "reasoning": "According to the completion heuristics, if no publications or results are posted, and no subsequent trials are found, the outcome is \"Unknown.\" The absence of published results or results posted does not allow for a determination of success or failure.",
+        "confidence": 0.7,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Positive",
+        "reasoning": "The trial was completed, and published results show that the protein supplementation (whey protein) had a positive effect on leg lean mass and integrated muscle protein synthesis in older adults. This suggests that the trial met its primary endpoints, indicating a positive outcome.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Dossier] Trial: NCT03285737\nRegistry Status: COMPLETED\nPhase: NA\nCompletion Date: 2016-12-15 (3429 days ago)\nResults Posted: Unknown\nPublications Found: 55 (2 trial-specific, 53 reviews/general)\n  1. Title: A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis durin PMID:30289425 [TRIAL-SPECIFIC]\n  2. Title: Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial.\nAuthors: Oi PMC:7278031 [GENERAL]\n  3. Title: A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis durin PMID:30289425 [TRIAL-SPECIFIC]\n  4. Title: Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial\nYear: 2019\nC PMID:30794431 [GENERAL]\n  5. Title: The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults\nYear: 2019\nAbstract: Recent rec [GENERAL]\nTrial Drugs: Whey, Collagen\nRegistered Trial Publications: 1 CT.gov-registered PMID(s) \u2014 these are proven trial-specific [PMID:30289425]\n[LLM decision] The trial is marked as \"COMPLETED\" on CT.gov, and there are no results posted. While there are trial-specific publications (e.g., PMID:30289425), they do not explicitly state that the primary endpoint was met, nor do they report a statistically significant result on the primary endpoint with a p-value < 0.05. The publications focus on muscle protein synthesis and effects of protein supplementation but do not provide conclusive evidence of success or failure. Therefore, the outcome remains \"Unknown\" due to insufficient evidence to determine a positive or failed result.",
+    "primary_confidence": 0.85,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT03285737:reason_for_failure": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT03285737",
+    "field_name": "reason_for_failure",
+    "original_value": "",
+    "suggested_values": [
+      "",
+      "Ineffective for purpose"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": true,
+        "suggested_value": "",
+        "reasoning": "The trial is completed, but there is no indication of failure based on published results. Therefore, the default is EMPTY.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": true,
+        "suggested_value": "",
+        "reasoning": "The absence of published evidence of failure, combined with the trial being completed, means the reason for failure cannot be determined. The trial's completion does not imply failure unless there is explicit evidence of negative outcomes, which is not present here.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Ineffective for purpose",
+        "reasoning": "Although the trial is completed, there is no published evidence of negative outcomes or failure to meet endpoints. The abstract suggests that the trial was designed to assess the effectiveness of protein supplementation on muscle loss during inactivity and energy restriction, but it does not provide any information about whether the intervention was successful or not. Therefore, based on the available evidence, I conclude that the reason for failure is \"Ineffective for purpose\".",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Pass 1] No failure detected. Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: The trial, titled \"A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons\" (PMID:30289425), inv",
+    "primary_confidence": 0.8,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT03569007:reason_for_failure": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT03569007",
+    "field_name": "reason_for_failure",
+    "original_value": "Business Reason",
+    "suggested_values": [
+      "Business Reason"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": true,
+        "suggested_value": "Business Reason",
+        "reasoning": "The clinical trial metadata explicitly states the trial was terminated by the sponsor. This indicates a business reason for termination, overriding any potential assumptions about efficacy or safety based on the lack of published negative results.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "",
+        "reasoning": "The absence of published evidence showing the trial failed to meet its endpoints or had safety concerns means we cannot assign a failure reason. The termination was attributed to the sponsor, but without published evidence of negative outcomes, the reason for failure remains unknown.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": true,
+        "suggested_value": "Business Reason",
+        "reasoning": "There is no published evidence of negative outcomes or failure to meet endpoints. The trial was simply terminated by the Sponsor, which suggests a business decision rather than a failure due to efficacy or safety concerns.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: No specific results or findings related to the trial NCT03569007 (larazotide acetate for celiac disease) were found in the provided PubMed, PMC, or other literature sources. The cited articles discuss general topics related to celiac disease, zonulin, intestinal barrier function, and therapeutic approaches, but none directly reference the outcomes of this trial.  \nOutcome Signals: No direct evidence of trial success or failure was found in the published literature. No mention of primary endpoints, adverse events, or reasons for discontinuation were identified.  \nIs This A Failure: Unclear\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Terminated, Pass 2 returned empty, inferred 'Business Reason'] The trial status is \"COMPLETED,\" but there is no published evidence of negative outcomes, adverse events, or failure to meet primary endpoints. The absence of specific findings related to the trial in the literature means that there is no basis to classify it as a failure. Per the rules, completed trials must have explicit published evidence of failure to be classified as such. Since no such evidence exists, the default is \"EMPTY.\"",
+    "primary_confidence": 0.86,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT03591614:delivery_mode": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT03591614",
+    "field_name": "delivery_mode",
+    "original_value": "Other",
+    "suggested_values": [
+      "Other",
+      "Injection/Infusion"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The description explicitly states the vaccine is dispensed in Plasma-Lyte A + HSA, indicating a parenteral route of administration.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The description explicitly states that the vaccine is administered as an injection, which falls under the Injection/Infusion category.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "While the title of the trial mentions \"vaccine\", which might suggest oral administration, the description of the investigational agent as a peptide-loaded autologous dendritic cell vaccine indicates that it is administered via injection. The use of Plasma-Lyte A + 5% HSA as a diluent also supports this conclusion. However, I rate my confidence as Medium because the term \"vaccine\" can sometimes be used to refer to oral or topical formulations, and there may be other delivery modes not mentioned i",
+        "confidence": 0.7,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Pass 1 route extraction] Protocol Route: \"Dendritic cells are immune cells that are collected from the blood of the patient at Case Western Reserve Medical Center and... [the trial description does not explicitly state the route of administration for the dendritic cell DKK1 vaccine in the experimental arm].\"\nFDA/Label Route: not found\nLiterature Route: not found\nDatabase Route: not found\nDrug Formulation: not specified\nMost Specific Route: Other\n[Pass 2 classification] Delivery Mode: Other  \nEvidence: Protocol text  \nReasoning: The trial description does not explicitly state the route of administration for the dendritic cell DKK1 vaccine in the experimental arm, and no more specific route information is available from other sources. Based on the classification rules, when no route evidence is found, the classification is \"Other\".",
+    "primary_confidence": 0.7899999999999999,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT03591614:reason_for_failure": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT03591614",
+    "field_name": "reason_for_failure",
+    "original_value": "Business Reason",
+    "suggested_values": [
+      "Business Reason"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "",
+        "reasoning": "The trial was withdrawn due to a PI leaving their institution. There is no evidence of failure or negative outcomes published.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "",
+        "reasoning": "The reason for withdrawal is attributed to the principal investigator leaving the institution, which is a personnel-related issue, not a failure of the trial itself. There is no published evidence of the trial failing to meet its endpoints, safety concerns, or other failure criteria. Therefore, the reason for failure is \"EMPTY.\"",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "",
+        "reasoning": "Since the trial was withdrawn due to a personnel issue (PI leaving) rather than any indication of failure or safety concerns, and there is no published evidence of negative outcomes, I conclude that the reason for withdrawal is not related to the efficacy or safety of the treatment. Therefore, the correct answer is EMPTY.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: No specific results from the trial NCT03591614 are directly reported in the provided literature. However, several relevant papers discuss dendritic cell-based immunotherapy in multiple myeloma and the role of DKK1 in cancer. For example, a 2022 review titled \"Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions\" discusses the potential of dendritic cell vaccines but notes challenges in clinical translation. Another paper from 2020, \"WNT Signaling in Hematological Malignancies,\" highlights the role of the WNT pathway, which is modulated by DKK1, in hematological malignancies. These papers do not specifically mention the outcome of NCT03591614, but they provide context about the biological mechanisms involved.  \nOutcome Signals: The trial status is listed as \"COMPLETED,\" but no specific findings or reasons for completion are provided in the available literature. There is no direct mention of whether the trial met its primary endpoints, encountered safety issues, or faced recruitment challenges.  \nIs This A Failure: Unclear\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Withdrawn, Pass 2 returned empty, inferred 'Business Reason'] The trial status is \"COMPLETED,\" and while the \"whyStopped\" field is not provided, the published literature does not contain any evidence of failure, ineffectiveness, or safety concerns related to NCT03591614. The available papers discuss the biological context of dendritic cell-based immunotherapy and DKK1 in multiple myeloma but do not mention the trial's outcomes. According to the rules, absence of published evidence of negative outcomes means the trial cannot be classified as a failure. Therefore, the correct classification is \"EMPTY.\"",
+    "primary_confidence": 0.86,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT05269381:delivery_mode": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT05269381",
+    "field_name": "delivery_mode",
+    "original_value": "Injection/Infusion, Oral",
+    "suggested_values": [
+      "Injection/Infusion, Oral",
+      "Injection/Infusion"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The trial description explicitly states the neoantigen peptide vaccine is administered subcutaneously (SC), which is a form of injection. Additionally, cyclophosphamide and pembrolizumab are administered intravenously (IV), also a form of injection/infusion.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "The trial explicitly states that the neoantigen peptide vaccine is administered subcutaneously (SC), which falls under Injection/Infusion, and pembrolizumab and cyclophosphamide are given intravenously (IV), which also falls under Injection/Infusion.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Injection/Infusion",
+        "reasoning": "While the Neoantigen Peptide Vaccine is administered via a subcutaneous route, it is still an injection mode of delivery. The majority of trials in this dataset have a delivery mode of 'Injection/Infusion', which suggests that there may be a systematic bias towards this delivery method. However, based on the specific details provided for NCT05269381, the most accurate classification would be Injection/Infusion due to the IV administration of Cyclophosphamide and Pembrolizumab.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Deterministic v38] Collected 2 route(s) from all citations",
+    "primary_confidence": 0.85,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT05284019:peptide": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT05284019",
+    "field_name": "peptide",
+    "original_value": "True",
+    "suggested_values": [
+      "True",
+      "False"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "False",
+        "reasoning": "Eptinezumab and Erenumab are explicitly classified as antibodies, which are excluded from the definition of peptides (>100 AA). The other interventions (Onabotulinumtoxin-A, Fremanezumab) are also not peptides.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "False",
+        "reasoning": "Based on the explicit classification of the drugs as monoclonal antibodies and the absence of any peptide-related terminology or structural evidence, the interventions in this trial do not contain a peptide molecule.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "False",
+        "reasoning": "According to the definition provided, antibodies are excluded from being considered peptides. Specifically, the CHEMBL entry for eptinezumab lists its type as \"Antibody\", and the IUPHAR entry confirms this classification with an approved status for both FDA (2020) and EMA (2022).",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Consistency override: 3 AA sequence -> peptide=True] [Pass 1 extraction] Intervention: Erenumab\nMolecular Class: Monoclonal antibody or antibody fragment\nDatabase Confirmation: ChEMBL: molecule type is antibody; PDB: structural data available (PDB IDs 6UMH and 6UMI)\nProduct Description: Described as a drug, specifically a monoclonal antibody\nInvestigational Drug Role: Investigational drug\n\nIntervention: Eptinezumab\nMolecular Class: Monoclonal antibody or antibody fragment\nDatabase Confirmation: ChEMBL: molecule type is antibody; IUPHAR/GtoPdb: confirmed as antibody; PDB: no structural data found\nProduct Description: Described as a drug, specifically a monoclonal antibody\nInvestigational Drug Role: Investigational drug\n\nIntervention: Rimegepant\nMolecular Class: Small molecule\nDatabase Confirmation: No evidence found\nProduct Description: Described as a drug, specifically a small molecule calcitonin gene-related peptide (CGRP) receptor antagonist\nInvestigational Drug Role: Investigational drug\n[Pass 2 decision] Peptide: False  \nReasoning: Step 1 \u2014 The Molecular Class is \"Monoclonal antibody or antibody fragment,\" which is explicitly excluded as a peptide (False). Step 2 \u2014 Since the intervention is a monoclonal antibody, it is not a peptide molecule. Step 3 \u2014 No database hits confirm it as a peptide; instead, ChEMBL and PDB confirm it as an antibody. Therefore, the answer is False.",
+    "primary_confidence": 0.885,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT05284019:outcome": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT05284019",
+    "field_name": "outcome",
+    "original_value": "Terminated",
+    "suggested_values": [
+      "Terminated",
+      "Positive"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": true,
+        "suggested_value": "Terminated",
+        "reasoning": "The trial registry status is TERMINATED, and the reason provided is enrollment challenges. Since the reason is not a safety or efficacy failure, and there are no publications indicating otherwise, the trial is classified as Terminated.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": true,
+        "suggested_value": "Terminated",
+        "reasoning": "The trial was explicitly stated as terminated due to enrolment challenges, which falls under the category of reasons for termination. According to the rules provided, if the registry says TERMINATED, the outcome is \"Terminated\" unless there is evidence of positive results or advancement to later phases, which is not the case here.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Positive",
+        "reasoning": "The trial was terminated due to enrollment challenges, but the published results show positive outcomes for eptinezumab in preventing high-frequency episodic migraine and chronic migraine. The studies demonstrate its effectiveness and safety in real-world settings, which is consistent with the trial's objectives. Additionally, a recent publication (DOI:10.1007/s15016-025-3971-6) further supports the positive outcomes of eptinezumab in treating patients with migraine resistant to conventional pre",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Dossier] Trial: NCT05284019\nRegistry Status: TERMINATED\nPhase: PHASE4\nCompletion Date: 2023-02-17 (1174 days ago)\nResults Posted: Unknown\nWhy Stopped: The study was terminated due to enrolment challenges.\nPublications Found: 36 (2 trial-specific, 34 reviews/general)\n  1. Title: A 24-week prospective, multicenter, real-world study on eptinezumab's effectiveness and safety in migraine prevention (EMBRACE II).\nA PMID:40332560 [GENERAL]\n  2. Title: Real-world effectiveness of eptinezumab in chronic migraine-increase in good days in three subgroups: psychiatric comorbidities, prio PMID:41310425 [GENERAL]\n  3. Title: First real-world study on the effectiveness and tolerability of rimegepant for acute migraine therapy in Chinese patients.\nAuthors: Y PMID:39333875 [GENERAL]\n  4. Title: A prospective real-world analysis of intravenous eptinezumab in migraine management: the first UK experience.\nAuthors: Andreou Anna P PMID:41168777 [TRIAL-SPECIFIC]\n  5. Title: Effectiveness and tolerability of eptinezumab in treating patients with migraine resistant to conventional preventive medications and PMID:38755541 [TRIAL-SPECIFIC]\nEfficacy Signals: efficacy, effective\nTrial Drugs: Eptinezumab, Erenumab, Onab\n[LLM decision] The trial was terminated due to enrollment challenges, and no trial-specific publications or results were posted. According to the rules, when a trial is terminated with no publications and no results posted, the outcome is \"Terminated.\"",
+    "primary_confidence": 0.875,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  },
+  "43d3739fd0b1:NCT05284019:reason_for_failure": {
+    "job_id": "43d3739fd0b1",
+    "nct_id": "NCT05284019",
+    "field_name": "reason_for_failure",
+    "original_value": "Toxic/Unsafe",
+    "suggested_values": [
+      "Toxic/Unsafe",
+      "Recruitment issues"
+    ],
+    "opinions": [
+      {
+        "model_name": "verifier_1",
+        "agrees": false,
+        "suggested_value": "Recruitment issues",
+        "reasoning": "The clinical trial registry explicitly states the trial was terminated due to enrollment challenges. Published results do not contradict this finding.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_2",
+        "agrees": false,
+        "suggested_value": "Recruitment issues",
+        "reasoning": "The trial was terminated specifically due to difficulties in recruiting participants, which directly corresponds to the \"Recruitment issues\" category.",
+        "confidence": 0.9,
+        "parse_failed": false
+      },
+      {
+        "model_name": "verifier_3",
+        "agrees": false,
+        "suggested_value": "Recruitment issues",
+        "reasoning": "While the published results show positive outcomes for eptinezumab in various real-world studies, there is no evidence that these studies were related to the specific trial NCT05284019. The termination of the trial due to enrolment challenges suggests that recruitment issues were a significant problem, leading to the trial's termination.",
+        "confidence": 0.9,
+        "parse_failed": false
+      }
+    ],
+    "status": "pending",
+    "reviewer_value": null,
+    "reviewer_note": null,
+    "primary_reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: Multiple real-world studies have evaluated the effectiveness and safety of eptinezumab in migraine prevention. For example, a 24-week prospective, multicenter, real-world study (EMBRACE II) evaluated eptinezumab's effectiveness and safety in migraine prevention, but specific outcomes related to primary endpoints (e.g., change in quality of life) were not explicitly detailed in the abstract. Other studies have reported improvements in migraine-related outcomes, such as an increase in \"good days\" in subgroups of patients with psychiatric comorbidities or prior subcutaneous anti-CGRP therapy. Adverse events were not prominently highlighted in the abstracts reviewed, and no specific safety concerns were mentioned. No published findings indicate that the trial failed to meet its primary endpoint or encountered significant safety issues.  \nOutcome Signals: The trial appears to have completed successfully, with real-world evidence suggesting effectiveness in migraine prevention. No evidence of failure, safety concerns, or recruitment issues was found.  \nIs This A Failure: No\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Terminated, Pass 2 returned empty, inferred 'Toxic/Unsafe'] The trial status is \"COMPLETED,\" and there is no published evidence indicating that the trial failed to meet its primary endpoint, encountered safety issues, or faced recruitment challenges. Multiple real-world studies, including EMBRACE II, have reported positive outcomes related to migraine prevention, such as improvements in \"good days\" and tolerability. Since there is no explicit evidence of failure in the published literature, the default for completed trials applies, and the answer is EMPTY.",
+    "primary_confidence": 0.875,
+    "created_at": "2026-05-06T10:06:29.009703-07:00",
+    "commit_hash": "dcc5b2c0"
+  }
+}

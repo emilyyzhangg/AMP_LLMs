@@ -1,0 +1,15 @@
+{
+  "run_id": "preview_2026_04_17_10nct",
+  "nct": "NCT01653249",
+  "legacy_outcome": "Unknown",
+  "atomic": {
+    "value": "Positive",
+    "confidence": 0.9,
+    "rule": "R1",
+    "reasoning": "[ATOMIC R1] Positive (conf=0.90)\n  rule: 1 POSITIVE pub(s), 0 FAILED\n  registry: status=COMPLETED phase=PHASE1 has_results=None completion=2015-07 days_since=3943 stale=False drug_max_phase=None\n  pubs: 13 total (0 ts, 3 gen, 10 amb)\n  voting: 1 pub(s) (1 POS, 0 FAIL)\n    - POSITIVE      PMC:8515132 (ambiguous) q1=YES q2=NOT_REPORTED q3=YES q4=NO q5=UNCLEAR \"whose Cervical High-Grade Squamous Intraepithelial Lesion Regressed.\"\n  aggregator trace:\n    registry: status=COMPLETED has_results=None phase=PHASE1 days_since=3943 stale=False drug_max_phase=None\n    pubs: total=13 trial_specific=0 voting=1 pos=1 fail=0\n    R1 fired: 1 POSITIVE pub(s), 0 FAILED\n      - POSITIVE      PMC:8515132 (ambiguous) [q1=YES q2=NOT_REPORTED q3=YES q4=NO]",
+    "model_name": "atomic-gemma3:12b",
+    "skip_verification": true
+  },
+  "source_annotation_path": "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results/annotations/f6535916f390/NCT01653249.json",
+  "elapsed_sec": 417.2
+}

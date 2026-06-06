@@ -1,0 +1,1627 @@
+{
+  "nct_id": "NCT05568017",
+  "metadata": {
+    "nct_id": "NCT05568017",
+    "title": "Neoadjuvant Peptide Receptor Radionuclide Therapy (PRRT) With 90Y-DOTATOC in Pancreatic Neuroendocrine Tumours.",
+    "phase": "PHASE2",
+    "status": "TERMINATED",
+    "conditions": [
+      "Pancreatic Neuroendocrine Tumor"
+    ],
+    "interventions": [
+      "DRUG: peptide receptor radionuclide therapy with Y-90-DOTATOC"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v35] Known peptide drug: 'peptide receptor radionuclide therapy with y-90-dotatoc' matched 'dotatoc'",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.765,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: The intervention is confirmed as a peptide (peptide receptor radionuclide therapy with Y-90-DOTATOC). However, the specific amino acid sequence or molecular class is not provided in the evidence.\n\nDatabase Matches: No evidence found.\n\nMechanism: The peptide is used in peptide receptor radionuclide therapy (PRRT), which involves targeting somatostatin receptors on tumor cells with radiolabeled peptides. This mechanism is not antimicrobial; it is a targeted cancer therapy. There is no evidence that it directly kills or inhibits microorganisms, disrupts biofilms, or stimulates innate immune defense. It does not act via a non-antimicrobial mechanism such as metabolic hormone or immunosuppression in the context of antimicrobial activity.\n\nTherapeutic Target: The trial is targeting neuroendocrine tumors (NETs), which are a type of cancer, not an infection or infectious disease.\n\nImmune Direction: The peptide is not directly involved in promoting or suppressing immune responses; its mechanism is related to targeted cancer therapy rather than immune modulation.\n[Pass 2 decision] Classification: Other  \nReasoning: Step 1 \u2014 The intervention is confirmed as a peptide (Peptide determination = True). Step 2 \u2014 The mechanism of the peptide is peptide receptor radionuclide therapy (PRRT), which targets somatostatin receptors on tumor cells with radiolabeled peptides. This is a targeted cancer therapy, not an antimicrobial mechanism. There is no evidence that the peptide directly kills or inhibits microorganisms, disrupts biofilms, or stimulates innate immune defense. The therapeutic target is neuroendocrine tumors (a type of cancer), not an infection or infectious disease. The immune direction is not related to promoting or suppressing immune responses in the context of antimicrobial activity. Therefore, this peptide is not an AMP.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Brief Summary",
+          "snippet": "Neuroendocrine tumors (NETs) are relatively rare tumors, mainly originating from the digestive system, that tend to be slow growing and are often diagnosed when metastatic. Surgery is the sole curative option, but is feasible only in a minority of patients.\n\nPeptide Receptor Radionuclide Therapy (PRRT) has been experimented for almost 20 years and is an established effective therapeutic modality for well/moderately differentiated, inoperable or metastasized gastro-entero-pancreatic (GEP) and bro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843404"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/37296936/",
+          "identifier": "PMID:37296936",
+          "title": "Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.",
+          "snippet": "Title: Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.\nAuthors: Merola Elettra, Grana Chiara Maria\nJournal: Cancers (2023)\nAbstract: Neuroendocrine neoplasms (NENs) are tumors originating from neuroendocrine cells distributed throughout the human body. With an increasing incidence over the past few decades, they represent a highly heterogeneous group of neoplasms, mostly expressing somatostatin receptors (SSTRs) on their cell sur",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:08:15.669181"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10425600/",
+          "identifier": "PMC:10425600",
+          "title": "Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer.",
+          "snippet": "Title: Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer.\nAuthors: Henderson EA, Lukomski S, Boone BA\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435305"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11364144/",
+          "identifier": "PMC:11364144",
+          "title": "Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.",
+          "snippet": "Title: Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.\nAuthors: Hallet J, S\u00f8reide K\nJournal: Br J Surg",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435202"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10610335/",
+          "identifier": "PMC:10610335",
+          "title": "Radiometals in Imaging and Therapy: Highlighting Two Decades of Research.",
+          "snippet": "Title: Radiometals in Imaging and Therapy: Highlighting Two Decades of Research.\nAuthors: Sharma S, Pandey MK\nJournal: Pharmaceuticals (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435278"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3390/diagnostics11071216",
+          "identifier": "DOI:10.3390/diagnostics11071216",
+          "title": "The Dependence of Renal 68Ga[Ga]-DOTATOC Uptake on Kidney Function and Its Relevance for Peptide Receptor Radionuclide Therapy with 177Lu[Lu]-DOTATOC",
+          "snippet": "Title: The Dependence of Renal 68Ga[Ga]-DOTATOC Uptake on Kidney Function and Its Relevance for Peptide Receptor Radionuclide Therapy with 177Lu[Lu]-DOTATOC\nJournal: Diagnostics\nYear: 2021\nAbstract: Background: In addition to its SSTR-specific binding in tumors and healthy tissues, DOTATOC analogues accumulate in kidney parenchyma. Renal tracer uptake might be a surrogate of kidney function or dysfunction. This study aimed to evaluate if kidney ",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789942"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3109/9781420016727-11",
+          "identifier": "DOI:10.3109/9781420016727-11",
+          "title": "Receptor Radionuclide Therapy with 90Y-[DOTA0]-Tyr3-Octreotide (90Y-DOTATOC): The IEO Experience",
+          "snippet": "Title: Receptor Radionuclide Therapy with 90Y-[DOTA0]-Tyr3-Octreotide (90Y-DOTATOC): The IEO Experience\nJournal: Radionuclide Peptide Cancer Therapy\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789901"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3109/9781420016727-8",
+          "identifier": "DOI:10.3109/9781420016727-8",
+          "title": "Peptide Receptor Therapy with 90Y-Dotatoc: The Emerging Experience in Chile",
+          "snippet": "Title: Peptide Receptor Therapy with 90Y-Dotatoc: The Emerging Experience in Chile\nJournal: Radionuclide Peptide Cancer Therapy\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789874"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:5R01CA076287-26",
+          "title": "Radioimmunotherapy Combinations for B-cell Malignancy (GREEN, DAMIAN J.)",
+          "snippet": "Project: 5R01CA076287-26\nPI: GREEN, DAMIAN J.\nOrganization: \nFiscal year: 2025\nAward: $386,220\nStart: 1998-01-01\nEnd: 2026-07-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554328"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:7R01CA076287-25",
+          "title": "Radioimmunotherapy Combinations for B-cell Malignancy (GREEN, DAMIAN J.)",
+          "snippet": "Project: 7R01CA076287-25\nPI: GREEN, DAMIAN J.\nOrganization: \nFiscal year: 2024\nAward: $301,797\nStart: 1998-01-01\nEnd: 2026-07-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554424"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "Other",
+      "confidence": 0.8,
+      "reasoning": "[ATOMIC-CLS R5] Other (conf=0.80)\n  rule: 2/3 NO, 0 YES\n  registry: dramp=0 apd=0 dbaasp=0 uniprot_amp=0\n  atomic: q1=UNCLEAR q2=NO q3=NO\n  R5 fired: 2 NO, 0 YES",
+      "evidence": [],
+      "model_name": "atomic-cls-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion",
+      "confidence": 0.76875,
+      "reasoning": "[Pass 1 route extraction] Protocol Route: \"Patients receive Lu-177 DOTATATE intravenously (IV) over 30 minutes on day 1 of cycle 1 and every 6 weeks thereafter for up to 6 cycles.\"\nFDA/Label Route: \"not found\"\nLiterature Route: \"not found\"\nDatabase Route: \"not found\"\nDrug Formulation: \"not specified\"\nMost Specific Route: Injection/Infusion\n[Pass 2 classification] Delivery Mode: Injection/Infusion  \nEvidence: Protocol Route  \nReasoning: The Protocol Route explicitly states that Lu-177 DOTATATE is administered intravenously (IV), which falls under the \"Injection/Infusion\" category. No conflicting or more specific information was found in other sources.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Brief Summary",
+          "snippet": "Neuroendocrine tumors (NETs) are relatively rare tumors, mainly originating from the digestive system, that tend to be slow growing and are often diagnosed when metastatic. Surgery is the sole curative option, but is feasible only in a minority of patients.\n\nPeptide Receptor Radionuclide Therapy (PRRT) has been experimented for almost 20 years and is an established effective therapeutic modality for well/moderately differentiated, inoperable or metastasized gastro-entero-pancreatic (GEP) and bro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843404"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/37296936/",
+          "identifier": "PMID:37296936",
+          "title": "Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.",
+          "snippet": "Title: Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.\nAuthors: Merola Elettra, Grana Chiara Maria\nJournal: Cancers (2023)\nAbstract: Neuroendocrine neoplasms (NENs) are tumors originating from neuroendocrine cells distributed throughout the human body. With an increasing incidence over the past few decades, they represent a highly heterogeneous group of neoplasms, mostly expressing somatostatin receptors (SSTRs) on their cell sur",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:08:15.669181"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10425600/",
+          "identifier": "PMC:10425600",
+          "title": "Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer.",
+          "snippet": "Title: Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer.\nAuthors: Henderson EA, Lukomski S, Boone BA\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435305"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11364144/",
+          "identifier": "PMC:11364144",
+          "title": "Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.",
+          "snippet": "Title: Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.\nAuthors: Hallet J, S\u00f8reide K\nJournal: Br J Surg",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435202"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10610335/",
+          "identifier": "PMC:10610335",
+          "title": "Radiometals in Imaging and Therapy: Highlighting Two Decades of Research.",
+          "snippet": "Title: Radiometals in Imaging and Therapy: Highlighting Two Decades of Research.\nAuthors: Sharma S, Pandey MK\nJournal: Pharmaceuticals (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435278"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3390/diagnostics11071216",
+          "identifier": "DOI:10.3390/diagnostics11071216",
+          "title": "The Dependence of Renal 68Ga[Ga]-DOTATOC Uptake on Kidney Function and Its Relevance for Peptide Receptor Radionuclide Therapy with 177Lu[Lu]-DOTATOC",
+          "snippet": "Title: The Dependence of Renal 68Ga[Ga]-DOTATOC Uptake on Kidney Function and Its Relevance for Peptide Receptor Radionuclide Therapy with 177Lu[Lu]-DOTATOC\nJournal: Diagnostics\nYear: 2021\nAbstract: Background: In addition to its SSTR-specific binding in tumors and healthy tissues, DOTATOC analogues accumulate in kidney parenchyma. Renal tracer uptake might be a surrogate of kidney function or dysfunction. This study aimed to evaluate if kidney ",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789942"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:5R01CA076287-26",
+          "title": "Radioimmunotherapy Combinations for B-cell Malignancy (GREEN, DAMIAN J.)",
+          "snippet": "Project: 5R01CA076287-26\nPI: GREEN, DAMIAN J.\nOrganization: \nFiscal year: 2025\nAward: $386,220\nStart: 1998-01-01\nEnd: 2026-07-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554328"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:7R01CA076287-25",
+          "title": "Radioimmunotherapy Combinations for B-cell Malignancy (GREEN, DAMIAN J.)",
+          "snippet": "Project: 7R01CA076287-25\nPI: GREEN, DAMIAN J.\nOrganization: \nFiscal year: 2024\nAward: $301,797\nStart: 1998-01-01\nEnd: 2026-07-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554424"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Terminated",
+      "confidence": 0.765,
+      "reasoning": "[Dossier] Trial: NCT05568017\nRegistry Status: TERMINATED\nPhase: PHASE2\nCompletion Date: 2022-09-23 (1321 days ago)\nResults Posted: Unknown\nWhy Stopped: Difficulty in recruiting patients also due to the pandemic period, presence of competitive studies.\nPublications Found: 21 (1 trial-specific, 20 reviews/general)\n  1. Title: Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.\nAuthors: Merola Elettra, Grana Chiara Maria\nJournal: Canc PMID:37296936 [GENERAL]\n  2. Title: Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.\nAuthors: Hallet J, S\u00f8reide K\nJo PMC:11364144 [GENERAL]\n  3. Title: Radiometals in Imaging and Therapy: Highlighting Two Decades of Research.\nAuthors: Sharma S, Pandey MK\nJournal: Pharmaceuticals (Base PMC:10610335 [GENERAL]\n  4. Title: Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer.\nAuthors: Henderson EA, Lukomski S, Boone BA\nJ PMC:10425600 [GENERAL]\n  5. Title: Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.\nAuthors: Merola E, Grana CM\nJournal: Cancers (Basel) PMC:10251822 [GENERAL]\nTrial Drugs: peptide receptor radionuclide therapy with\n[LLM decision] The trial's registry status is explicitly listed as \"TERMINATED,\" and no trial-specific publications or results are available to indicate a different outcome. The reason for termination (difficulty in recruiting patients and competitive studies) does not alter the outcome classification, which defaults to \"Terminated\" under these conditions.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Brief Summary",
+          "snippet": "Neuroendocrine tumors (NETs) are relatively rare tumors, mainly originating from the digestive system, that tend to be slow growing and are often diagnosed when metastatic. Surgery is the sole curative option, but is feasible only in a minority of patients.\n\nPeptide Receptor Radionuclide Therapy (PRRT) has been experimented for almost 20 years and is an established effective therapeutic modality for well/moderately differentiated, inoperable or metastasized gastro-entero-pancreatic (GEP) and bro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843404"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4385411881",
+          "identifier": "PMID:37588093",
+          "title": "Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer",
+          "snippet": "Title: Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer\nYear: 2023\nCitations: 9\nAbstract: known as Coley's toxin. Since then, several bacteria have gained recognition for possible roles in potentiating treatment response, enhancing anti-tumor immunity, and alleviating adverse effects to standard treatment options. This review highlights k",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:17.108254"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4387638719",
+          "identifier": "PMID:37895931",
+          "title": "Radiometals in Imaging and Therapy: Highlighting Two Decades of Research",
+          "snippet": "Title: Radiometals in Imaging and Therapy: Highlighting Two Decades of Research\nYear: 2023\nCitations: 31\nAbstract: ) and alpha (\u03b1)-emitting radionuclides are discussed by highlighting their production routes, targeted radiopharmaceuticals, and current clinical translation stage.",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:17.108181"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/37296936/",
+          "identifier": "PMID:37296936",
+          "title": "Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.",
+          "snippet": "Title: Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.\nAuthors: Merola Elettra, Grana Chiara Maria\nJournal: Cancers (2023)\nAbstract: Neuroendocrine neoplasms (NENs) are tumors originating from neuroendocrine cells distributed throughout the human body. With an increasing incidence over the past few decades, they represent a highly heterogeneous group of neoplasms, mostly expressing somatostatin receptors (SSTRs) on their cell sur",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:08:15.669181"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3390/diagnostics11071216",
+          "identifier": "DOI:10.3390/diagnostics11071216",
+          "title": "The Dependence of Renal 68Ga[Ga]-DOTATOC Uptake on Kidney Function and Its Relevance for Peptide Receptor Radionuclide Therapy with 177Lu[Lu]-DOTATOC",
+          "snippet": "Title: The Dependence of Renal 68Ga[Ga]-DOTATOC Uptake on Kidney Function and Its Relevance for Peptide Receptor Radionuclide Therapy with 177Lu[Lu]-DOTATOC\nJournal: Diagnostics\nYear: 2021\nAbstract: Background: In addition to its SSTR-specific binding in tumors and healthy tissues, DOTATOC analogues accumulate in kidney parenchyma. Renal tracer uptake might be a surrogate of kidney function or dysfunction. This study aimed to evaluate if kidney ",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789942"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3109/9781420016727-11",
+          "identifier": "DOI:10.3109/9781420016727-11",
+          "title": "Receptor Radionuclide Therapy with 90Y-[DOTA0]-Tyr3-Octreotide (90Y-DOTATOC): The IEO Experience",
+          "snippet": "Title: Receptor Radionuclide Therapy with 90Y-[DOTA0]-Tyr3-Octreotide (90Y-DOTATOC): The IEO Experience\nJournal: Radionuclide Peptide Cancer Therapy\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789901"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11364144/",
+          "identifier": "PMC:11364144",
+          "title": "Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.",
+          "snippet": "Title: Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.\nAuthors: Hallet J, S\u00f8reide K\nJournal: Br J Surg",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435202"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3109/9781420016727-8",
+          "identifier": "DOI:10.3109/9781420016727-8",
+          "title": "Peptide Receptor Therapy with 90Y-Dotatoc: The Emerging Experience in Chile",
+          "snippet": "Title: Peptide Receptor Therapy with 90Y-Dotatoc: The Emerging Experience in Chile\nJournal: Radionuclide Peptide Cancer Therapy\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789874"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:5R01CA076287-26",
+          "title": "Radioimmunotherapy Combinations for B-cell Malignancy (GREEN, DAMIAN J.)",
+          "snippet": "Project: 5R01CA076287-26\nPI: GREEN, DAMIAN J.\nOrganization: \nFiscal year: 2025\nAward: $386,220\nStart: 1998-01-01\nEnd: 2026-07-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554328"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:7R01CA076287-25",
+          "title": "Radioimmunotherapy Combinations for B-cell Malignancy (GREEN, DAMIAN J.)",
+          "snippet": "Project: 7R01CA076287-25\nPI: GREEN, DAMIAN J.\nOrganization: \nFiscal year: 2024\nAward: $301,797\nStart: 1998-01-01\nEnd: 2026-07-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554424"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Positive",
+      "confidence": 0.9,
+      "reasoning": "[ATOMIC R1] Positive (conf=0.90)\n  rule: 1 POSITIVE pub(s), 0 FAILED\n  registry: status=TERMINATED phase=PHASE2 has_results=None completion=2022-09-23 days_since=1321 stale=False drug_max_phase=4\n  pubs: 16 total (0 ts, 10 gen, 6 amb)\n  voting: 1 pub(s) (1 POS, 0 FAIL)\n    - POSITIVE      DOI:10.21203/rs.3.rs-3189834/v1 (ambiguous) q1=YES q2=NOT_REPORTED q3=YES q4=NO q5=UNCLEAR \"Mid-PRRT Response Predicts Overall Outcome in Patients with Neuroendocrine Neopl\"\n  aggregator trace:\n    registry: status=TERMINATED has_results=None phase=PHASE2 days_since=1321 stale=False drug_max_phase=4\n    pubs: total=16 trial_specific=0 voting=1 pos=1 fail=0\n    R1 fired: 1 POSITIVE pub(s), 0 FAILED\n      - POSITIVE      DOI:10.21203/rs.3.rs-3189834/v1 (ambiguous) [q1=YES q2=NOT_REPORTED q3=YES q4=NO]",
+      "evidence": [],
+      "model_name": "atomic-gemma3:12b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "sequence",
+      "value": "FCYWKTCT",
+      "confidence": 0.95,
+      "reasoning": "[Known sequence] octreotide \u2192 FCYWKTCT... (8 aa). Matched intervention '90Y-DOTA-Tyr3-Octreotide therapy'.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "Business Reason",
+      "confidence": 0.765,
+      "reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: No specific findings related to trial NCT05568017 were found in the provided literature. The published results and abstracts focus on general topics such as peptide receptor radionuclide therapy (PRRT), radiometals in imaging and therapy, and neoadjuvant therapy for pancreatic neuroendocrine tumors. None of these directly reference the trial in question or its outcomes.  \nOutcome Signals: No direct evidence of success or failure was found. The trial is listed as completed, but no specific results, adverse events, or reasons for completion were identified in the literature.  \nIs This A Failure: Unclear\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Terminated, Pass 2 returned empty, inferred 'Business Reason'] The trial is marked as \"COMPLETED,\" but there is no published evidence of failure, adverse events, or negative outcomes. According to the rules, completed trials cannot be classified as failed without explicit published evidence of negative results. The absence of specific findings related to this trial means that there is no basis to assign a failure reason. The default for completed trials without published evidence of failure is \"EMPTY.\"",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Brief Summary",
+          "snippet": "Neuroendocrine tumors (NETs) are relatively rare tumors, mainly originating from the digestive system, that tend to be slow growing and are often diagnosed when metastatic. Surgery is the sole curative option, but is feasible only in a minority of patients.\n\nPeptide Receptor Radionuclide Therapy (PRRT) has been experimented for almost 20 years and is an established effective therapeutic modality for well/moderately differentiated, inoperable or metastasized gastro-entero-pancreatic (GEP) and bro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843404"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/37296936/",
+          "identifier": "PMID:37296936",
+          "title": "Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.",
+          "snippet": "Title: Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.\nAuthors: Merola Elettra, Grana Chiara Maria\nJournal: Cancers (2023)\nAbstract: Neuroendocrine neoplasms (NENs) are tumors originating from neuroendocrine cells distributed throughout the human body. With an increasing incidence over the past few decades, they represent a highly heterogeneous group of neoplasms, mostly expressing somatostatin receptors (SSTRs) on their cell sur",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:08:15.669181"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4385411881",
+          "identifier": "PMID:37588093",
+          "title": "Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer",
+          "snippet": "Title: Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer\nYear: 2023\nCitations: 9\nAbstract: known as Coley's toxin. Since then, several bacteria have gained recognition for possible roles in potentiating treatment response, enhancing anti-tumor immunity, and alleviating adverse effects to standard treatment options. This review highlights k",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:17.108254"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4387638719",
+          "identifier": "PMID:37895931",
+          "title": "Radiometals in Imaging and Therapy: Highlighting Two Decades of Research",
+          "snippet": "Title: Radiometals in Imaging and Therapy: Highlighting Two Decades of Research\nYear: 2023\nCitations: 31\nAbstract: ) and alpha (\u03b1)-emitting radionuclides are discussed by highlighting their production routes, targeted radiopharmaceuticals, and current clinical translation stage.",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:17.108181"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11364144/",
+          "identifier": "PMC:11364144",
+          "title": "Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.",
+          "snippet": "Title: Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.\nAuthors: Hallet J, S\u00f8reide K\nJournal: Br J Surg",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435202"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3390/diagnostics11071216",
+          "identifier": "DOI:10.3390/diagnostics11071216",
+          "title": "The Dependence of Renal 68Ga[Ga]-DOTATOC Uptake on Kidney Function and Its Relevance for Peptide Receptor Radionuclide Therapy with 177Lu[Lu]-DOTATOC",
+          "snippet": "Title: The Dependence of Renal 68Ga[Ga]-DOTATOC Uptake on Kidney Function and Its Relevance for Peptide Receptor Radionuclide Therapy with 177Lu[Lu]-DOTATOC\nJournal: Diagnostics\nYear: 2021\nAbstract: Background: In addition to its SSTR-specific binding in tumors and healthy tissues, DOTATOC analogues accumulate in kidney parenchyma. Renal tracer uptake might be a surrogate of kidney function or dysfunction. This study aimed to evaluate if kidney ",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789942"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3109/9781420016727-11",
+          "identifier": "DOI:10.3109/9781420016727-11",
+          "title": "Receptor Radionuclide Therapy with 90Y-[DOTA0]-Tyr3-Octreotide (90Y-DOTATOC): The IEO Experience",
+          "snippet": "Title: Receptor Radionuclide Therapy with 90Y-[DOTA0]-Tyr3-Octreotide (90Y-DOTATOC): The IEO Experience\nJournal: Radionuclide Peptide Cancer Therapy\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789901"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3109/9781420016727-8",
+          "identifier": "DOI:10.3109/9781420016727-8",
+          "title": "Peptide Receptor Therapy with 90Y-Dotatoc: The Emerging Experience in Chile",
+          "snippet": "Title: Peptide Receptor Therapy with 90Y-Dotatoc: The Emerging Experience in Chile\nJournal: Radionuclide Peptide Cancer Therapy\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789874"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:5R01CA076287-26",
+          "title": "Radioimmunotherapy Combinations for B-cell Malignancy (GREEN, DAMIAN J.)",
+          "snippet": "Project: 5R01CA076287-26\nPI: GREEN, DAMIAN J.\nOrganization: \nFiscal year: 2025\nAward: $386,220\nStart: 1998-01-01\nEnd: 2026-07-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554328"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:7R01CA076287-25",
+          "title": "Radioimmunotherapy Combinations for B-cell Malignancy (GREEN, DAMIAN J.)",
+          "snippet": "Project: 7R01CA076287-25\nPI: GREEN, DAMIAN J.\nOrganization: \nFiscal year: 2024\nAward: $301,797\nStart: 1998-01-01\nEnd: 2026-07-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554424"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "",
+      "confidence": 0.0,
+      "reasoning": "[ATOMIC-FR gated] outcome_atomic=Positive not in ['Failed - completed trial', 'Terminated']",
+      "evidence": [],
+      "model_name": "atomic-fr-gated",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT05568017",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification_atomic",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "sequence",
+        "original_value": "FCYWKTCT",
+        "final_value": "FCYWKTCT",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The intervention utilizes a peptide to deliver a radionuclide for targeted cancer therapy. This does not fit the definition of an antimicrobial peptide as it does not directly kill or inhibit pathogens, recruit immune cells, or disrupt biofilms.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The intervention is not an antimicrobial peptide (AMP) as defined. It is a peptide used for targeted radionuclide therapy, which is a form of cancer treatment, not an antimicrobial agent. The classification is \"Other\" as per the guidelines provided.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial is focused on treating pancreatic neuroendocrine tumors using PRRT, which is a form of targeted therapy that uses a radiolabeled peptide to target specific receptors on tumor cells. While the name \"peptide\" might suggest an antimicrobial peptide, the mechanism of action described in the trial metadata and published results indicates that it is not an AMP. The peptides used in this treatment are designed to bind to somatostatin receptors on tumor cells, making it a targeted therapy rath",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.765,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion",
+        "final_value": "Injection/Infusion",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "Peptide receptor radionuclide therapy (PRRT) utilizes radiolabeled peptides, which are typically administered via injection or infusion. The trial specifically mentions administering 90Y-DOTATOC, a radiolabeled peptide, indicating an injection/infusion route.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "Peptide receptor radionuclide therapy (PRRT) with 90Y-DOTATOC is administered via injection/infusion, as it involves the use of radiolabeled peptides, which are typically delivered through intravenous (IV) routes.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "The use of the term \"radionuclide therapy\" and the mention of a specific radiolabeled compound (90Y-DOTATOC) indicates that the treatment involves the administration of radioactive material, which is typically done through an injection or infusion route. Additionally, the fact that the trial is focused on pancreatic neuroendocrine tumors (pNETs), which are often treated with targeted therapies, further supports the conclusion that the delivery mode is injection/infusion.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.76875,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Terminated",
+        "final_value": "Terminated",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Terminated",
+            "reasoning": "The trial was terminated due to recruitment difficulties and the presence of competitive studies. Since the registry status is TERMINATED and there is no indication of positive results or advancement to later phases, the appropriate outcome is 'Terminated'.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Terminated",
+            "reasoning": "The trial was explicitly marked as \"TERMINATED\" in the registry, and the reason provided is related to recruitment difficulties and competitive studies. According to the rules, when a trial is marked as TERMINATED, the outcome is either \"Positive\" (if the trial advanced to later phases or had published positive results) or \"Terminated\" (for any other reason, including safety failure, futility, efficacy failure, business reasons, or unclear reasons). Since no evidence of positive results or advan",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Terminated",
+            "reasoning": "According to the critical rules, if a trial is TERMINATED, then only two outcomes are valid: either there were published positive results or the drug advanced to later phases/approval, in which case the outcome would be \"Positive\", or any other reason for termination (safety failure, futility, efficacy failure, business reasons, etc.), in which case the outcome would be \"Terminated\". Since there is no evidence of published positive results or advancement to later phases/approval, and the trial w",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.765,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "Business Reason",
+        "final_value": "Recruitment issues",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Recruitment issues",
+            "reasoning": "The trial was terminated due to difficulties in recruiting patients, exacerbated by the pandemic and the presence of competing studies. This directly indicates a recruitment issue as the reason for termination.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Recruitment issues",
+            "reasoning": "The trial was terminated due to difficulty in recruiting patients, which is explicitly stated in the trial metadata. This is a direct citation for the reason for failure.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Recruitment issues",
+            "reasoning": "While the pandemic period may have contributed to recruitment difficulties, it is not the sole reason for termination. The presence of competitive studies suggests that there were other factors at play, making recruitment challenging.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.765,
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial's official reason for termination explicitly states \"Difficulty in recruiting patients also due to the pandemic period, presence of competitive studies,\" which directly supports the conclusion that the reason for failure was recruitment issues. This is corroborated by three independent verifiers who all cited this specific evidence in their reasoning. The primary annotator's answer of \"Business Reason\" is not supported by the available evidence, and the verifiers' consensus, based on d",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT05568017",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Neoadjuvant Peptide Receptor Radionuclide Therapy (PRRT) With 90Y-DOTATOC in Pancreatic Neuroendocrine Tumours.",
+          "snippet": "Title: Neoadjuvant Peptide Receptor Radionuclide Therapy (PRRT) With 90Y-DOTATOC in Pancreatic Neuroendocrine Tumours.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843360"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Brief Summary",
+          "snippet": "Neuroendocrine tumors (NETs) are relatively rare tumors, mainly originating from the digestive system, that tend to be slow growing and are often diagnosed when metastatic. Surgery is the sole curative option, but is feasible only in a minority of patients.\n\nPeptide Receptor Radionuclide Therapy (PRRT) has been experimented for almost 20 years and is an established effective therapeutic modality for well/moderately differentiated, inoperable or metastasized gastro-entero-pancreatic (GEP) and bro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843404"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Detailed Description",
+          "snippet": "GEP-NETs tend to be slow growing (although aggressive forms exist) and are often diagnosed when they have already metastasized, when a radical treatment is no longer possible.\n\nTreatment of NETs is typically multidisciplinary and should be individualized according to tumor type, burden, and symptoms. Therapeutic tools include surgery, interventional radiology and medical treatments such as somatostatin analogues, interferon, chemotherapy, new targeted drugs and peptide receptor radionuclide ther",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843422"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Study Status",
+          "snippet": "Status: TERMINATED | Why stopped: Difficulty in recruiting patients also due to the pandemic period, presence of competitive studies.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843440"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Pancreatic Neuroendocrine Tumor",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843459"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Intervention: peptide receptor radionuclide therapy with Y-90-DOTATOC",
+          "snippet": "DRUG: peptide receptor radionuclide therapy with Y-90-DOTATOC - Patients with unresectable or borderline resectable pNETs will recive PRRT with 90Y-DOTATOC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843479"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Arm Group: Y-90-DOTATOC",
+          "snippet": "Arm: Y-90-DOTATOC - Patients will receive PRRT with Y-90-DOTATOC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843499"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.843527"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT05568017",
+            "orgStudyIdInfo": {
+              "id": "IEO 906"
+            },
+            "organization": {
+              "fullName": "European Institute of Oncology",
+              "class": "OTHER"
+            },
+            "briefTitle": "Neoadjuvant PRRT With Y-90-DOTATOC in pNET",
+            "officialTitle": "Neoadjuvant Peptide Receptor Radionuclide Therapy (PRRT) With 90Y-DOTATOC in Pancreatic Neuroendocrine Tumours.",
+            "acronym": "NeoNet"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2022-09",
+            "overallStatus": "TERMINATED",
+            "whyStopped": "Difficulty in recruiting patients also due to the pandemic period, presence of competitive studies.",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2020-09-15",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2022-09-23",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2024-11-11",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2022-09-23",
+            "studyFirstSubmitQcDate": "2022-09-30",
+            "studyFirstPostDateStruct": {
+              "date": "2022-10-05",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2024-11-18",
+            "lastUpdatePostDateStruct": {
+              "date": "2024-11-20",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "European Institute of Oncology",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Agenzia Italiana del Farmaco",
+                "class": "OTHER_GOV"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": false,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "Neuroendocrine tumors (NETs) are relatively rare tumors, mainly originating from the digestive system, that tend to be slow growing and are often diagnosed when metastatic. Surgery is the sole curative option, but is feasible only in a minority of patients.\n\nPeptide Receptor Radionuclide Therapy (PRRT) has been experimented for almost 20 years and is an established effective therapeutic modality for well/moderately differentiated, inoperable or metastasized gastro-entero-pancreatic (GEP) and bronchial NETs. Clinical studies demonstrated that partial and complete objective responses can be obtained in up to 30% of patients. Side effects may involve the kidneys and the bone marrow and are usually mild. Renal protection is used to minimize the risk of a late decrease of renal function.\n\nA new application for P-NETs is preoperative PRRT. Since surgery is the only curative option for GEPNETs, preoperative PRRT could increase the efficacy of surgery. However, this modality has not been fully explored in dedicated studies and there are just few sporadic case reports that described the preoperative use of PRRT in pancreatic NETs who could then be operated on successfully. Moreover there are few experiences demonstrating the advantage of PRRT associated to surgery in a multidisciplinary setting. In addition, the possibility of detecting the circulating NET transcripts by means of transcriptome analysis could represent an early marker of response to PRRT and improve the patient management.\n\nAim of this study is to evaluate the response and rate of R0 surgery in patients with unresectable or borderline resectable PNETs eligible to PRRT with 90Y-DOTATOC and correlate the response to the variation in circulating NET transcripts measured before and after the end of PRRT. It has been recently shown that a PCR-based 51 transcript signature is significantly more sensitive and efficient than single analytes (e.g. CgA) in NET diagnosis and follow up.\n\n30 patients will be enrolled in the study; each of them will receive 1.85 GBq/cycle of 90Y-DOTATOC with a cumulative activity of 9.25-11.1 GBq in 5-6 cycles (depending on personalized dosimetry). Therapy response will be assessed by morphological (CT/MRI) and functional (PET/CT or Octreoscan) imaging after 3 and 6 months from the completion of PRRT and compared with transcript analysis.\n\nBased on literature reports we expect a response rate of about 35% of patients.",
+            "detailedDescription": "GEP-NETs tend to be slow growing (although aggressive forms exist) and are often diagnosed when they have already metastasized, when a radical treatment is no longer possible.\n\nTreatment of NETs is typically multidisciplinary and should be individualized according to tumor type, burden, and symptoms. Therapeutic tools include surgery, interventional radiology and medical treatments such as somatostatin analogues, interferon, chemotherapy, new targeted drugs and peptide receptor radionuclide therapy (PRRT) with radiolabeled somatostatin analogues \\[Modlin 2008\\]. Several clinical trials have indicated that PRRT with somatostatin analogues 90Y-DOTATOC, 177Lu-DOTATATE and 177Lu-DOTATOC, is an efficient tool in the management of NETs (30% objective responses with a great survival benefit) which compares favorably to classic chemotherapy results (up to 20% responses) \\[Kwekkeboom 2005\\].\n\nDosimetric studies demonstrated that these radiopeptides are able to deliver high radiation doses to somatostatin receptor sst2-expressing tumors and acceptable doses to normal organs \\[Cremonesi 2010\\]. Side effects, usually mild, may involve kidneys and bone marrow. Renal protection is used to minimize the risk of a late function decrease \\[Bodei 2003\\].\n\nPts are selected for PRRT based on molecular imaging with 111In-pentetreotide or, more recently, a 68Ga-SSA-PET, such as 68Ga-DOTATOC/DOTATATE/DOTANOC \\[Virgolini 2010\\], which have revolutionized the NET imaging, with an overall sensitivity of \\>90%, and specificity ranging from 92% to 98% \\[Ambrosini 2012\\].\n\nPRRT is an innovative therapeutic approach for inoperable or metastasized, well/moderately differentiated GEP and bronchial NETs. PRRT in P-NETs has demonstrated efficacy in terms of objective response and impact on survival parameters. Since surgery is the only curative option for patients with GEP-NETs, it is proposed that neoadjuvant treatment will improve outcome by enabling disease regression that will enable surgical resection.\n\nIdentification of disease regression as assessed by a PCR-blood based analysis of circulating neuroendocrine tumor transcripts will provide objective and quantifiable molecular genomic early information that is additive to imaging criteria of regression. This will objectively establish PRRT treatment efficacy and thereby facilitate the identification and selection of individuals that would then benefit from surgical intervention.\n\nThe two most commonly used radiopeptides, 90Y-DOTATOC and 177Lu-DOTATATE, produce overall objective response rates of 15-35%. Particularly relevant is the outcome in terms of both progression-free and overall survivals, which compare favorably with biotherapies. PRRT is generally well tolerated with mild toxicity, if the necessary precautions, such as the co-administration of nephron-protective amino acids or the adjustment of the administered activity, are taken.\n\nPRRT in P-NETs has demonstrated efficacy in terms of objective response and impact on survival parameters. Response rates are \\>35%, higher than in small intestine tumors. In particular, in 342 patients with P-NETs, out of the whole series of 1109 patients treated with 90Y-DOTATOC, 47% objective responses were reported by Imhof in 2011. In 2013, Sansovini reported 39% partial and complete responses using 177Lu-DOTATATE at full dosage, while 60.3% partial responses were reported by Ezziddin in 2014 using the same peptide. Reported progression free survival (PFS) rates are \\> 30 months.\n\nAn interesting new application for P-NETs is the neoadjuvant setting, which was suggested by sporadic case reports that described the successful surgical resection in patients with initially inoperable P-NETs treated with PRRT. However, this treatment modality has not been fully explored in dedicated studies.\n\nMoreover, there are few experiences demonstrating the advantage of PRRT associated to surgery in a multidisciplinary setting \\[Bertani 2014, 2016\\]."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Pancreatic Neuroendocrine Tumor"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "interventionModelDescription": "Patients affected by unresectable or borderline resectable P-NETs and limited liver disease will be enrolled",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 11,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Y-90-DOTATOC",
+                "type": "EXPERIMENTAL",
+                "description": "Patients will receive PRRT with Y-90-DOTATOC",
+                "interventionNames": [
+                  "Drug: peptide receptor radionuclide therapy with Y-90-DOTATOC"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "peptide receptor radionuclide therapy with Y-90-DOTATOC",
+                "description": "Patients with unresectable or borderline resectable pNETs will recive PRRT with 90Y-DOTATOC",
+                "armGroupLabels": [
+                  "Y-90-DOTATOC"
+                ],
+                "otherNames": [
+                  "PRRT",
+                  "Y-90-DOTATOC"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "objective response evaluation",
+                "description": "objective responses (partial and complete responses, stable disease) will be evaluated according to modified RECIST criteria (mRECIST).",
+                "timeFrame": "3 months after end of PRRT"
+              },
+              {
+                "measure": "objective response evaluation",
+                "description": "objective responses (partial and complete responses, stable disease) will be evaluated according to modified RECIST criteria (mRECIST).",
+                "timeFrame": "6 months after end of PRRT"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "rate of operability",
+                "description": "to evaluate the rate of operability 3 months after the end of PRRT.",
+                "timeFrame": "3 months after the end of PRRT."
+              },
+              {
+                "measure": "rate of operability",
+                "description": "to evaluate the rate of operability 6 months after the end of PRRT.",
+                "timeFrame": "3 months after the end of PRRT."
+              },
+              {
+                "measure": "analysis of tumor specific circulating NET transcripts",
+                "description": "Assess the response to PRRT by means of a neuroendocrine tumor specific PCR-blood based multianalyte molecular algorhythmic analysis of circulating NET transcripts",
+                "timeFrame": "before PRRT, and 3 and 6 months after therapy."
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Patients affected by unresectable or borderline resectable P-NETs and limited liver disease\n* Multidisciplinary evaluation in which a global therapy approach is proposed with PRRT in a neoadjuvant setting.\n* Histopathologic diagnosis of WHO G1/G2 P-NET\n* Conserved hematological, liver and renal parameters: hemoglobin \\>/= 10 g/dL, absolute neutrophil count (ANC) \\>/= 1.5 x 109 /L, platelets \\>/= 100 x 109 /L, bilirubin \\</= 1.5 X UNL (upper normal limit), ALT \\< 2.5 X UNL (\\< 5 X UNL in presence of liver metastases), creatinine \\< 2 mg/dL.\n* Age more than 18 years.\n* Patients with documented disease will be admitted to therapeutic phase only if the diagnostic receptor imaging (Ga-68-peptides PET/CT or OctreoScan) demonstrate a significant uptake in the tumor (grade 2 or 3, according to a preset scoring, where grade 1= equal to normal liver, grade2 = higher than normal liver, grade 3= higher than kidneys and spleen), that may allow delivering a low absorbed dose to normal organs and a high dose to the tumor \\[Cremonesi 1999, Cremonesi 2010\\].\n* Disease must be measurable by means of conventional imaging (CT or MRI)\n* Before treatment clinical history data will be collected, physical examination will be performed and diagnostic and laboratory data will be examined.\n* Patients must not receive other treatments (e.g. chemo- or radiotherapy) from one month before to two months after the completion of 90Y-DOTATOC cycles.\n* Patients must be naive from previous radionuclide treatments with radiopeptides (e.g. 111Inpentetreotide, Lu-177-petides) or other radiopharmaceuticals (e.s. 131I-MIBG, 131I).\n\nExclusion Criteria:\n\n* \\- Pregnancy/breastfeeding (a pregnancy test not older than 7 days is mandatory).\n* Assessed bone marrow invasion \\> 25%.\n* Other concomitant neoplasm (excluding in situ basaliomas and radically treated cervical cancers).\n* ECOG score higher than 2.\n* Expectancy of life shorter than 6 months.\n* Patients with psycho-physical conditions that are not suitable for entering this clinical study and fulfilling its requirements.\n* No multidisciplinary indication to surgery after PRRT",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "Chiara Maria Grana",
+                "city": "Milan",
+                "zip": "20141",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 42.78235,
+                  "lon": 12.59836
+                }
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT05568017",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/37296936/",
+          "identifier": "PMID:37296936",
+          "title": "Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.",
+          "snippet": "Title: Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.\nAuthors: Merola Elettra, Grana Chiara Maria\nJournal: Cancers (2023)\nAbstract: Neuroendocrine neoplasms (NENs) are tumors originating from neuroendocrine cells distributed throughout the human body. With an increasing incidence over the past few decades, they represent a highly heterogeneous group of neoplasms, mostly expressing somatostatin receptors (SSTRs) on their cell sur",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:08:15.669181"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11364144/",
+          "identifier": "PMC:11364144",
+          "title": "Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.",
+          "snippet": "Title: Neoadjuvant therapy with peptide receptor radionuclide therapy for pancreatic neuroendocrine tumours.\nAuthors: Hallet J, S\u00f8reide K\nJournal: Br J Surg",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435202"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10610335/",
+          "identifier": "PMC:10610335",
+          "title": "Radiometals in Imaging and Therapy: Highlighting Two Decades of Research.",
+          "snippet": "Title: Radiometals in Imaging and Therapy: Highlighting Two Decades of Research.\nAuthors: Sharma S, Pandey MK\nJournal: Pharmaceuticals (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435278"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10425600/",
+          "identifier": "PMC:10425600",
+          "title": "Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer.",
+          "snippet": "Title: Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer.\nAuthors: Henderson EA, Lukomski S, Boone BA\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435305"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10251822/",
+          "identifier": "PMC:10251822",
+          "title": "Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.",
+          "snippet": "Title: Peptide Receptor Radionuclide Therapy (PRRT): Innovations and Improvements.\nAuthors: Merola E, Grana CM\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:13.435326"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "37296936"
+        ],
+        "pubmed_count": 1,
+        "pmc_ids": [
+          "11364144",
+          "10610335",
+          "10425600",
+          "10251822"
+        ],
+        "pmc_count": 4,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT05568017",
+      "citations": [],
+      "raw_data": {
+        "uniprot_peptide receptor radionuclide therapy with Y-90-DOTATOC_no_structured_match": true,
+        "uniprot_peptide receptor radionuclide therapy with Y-90-DOTATOC_resolved_via": "4",
+        "uniprot_peptide receptor radionuclide therapy with Y-90-DOTATOC": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT05568017",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT05568017?tab=researcher",
+          "identifier": "NCT05568017",
+          "title": "Neoadjuvant PRRT With Y-90-DOTATOC in pNET (NeoNet)",
+          "snippet": "Web result for: NCT05568017 Neoadjuvant PRRT With Y-90-DOTATOC in pNET",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:08:15.202746"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.enets.org/abstract/neoadjuvant-prrt-with-90y-dotatoc-preliminary-results-from-a-monocentric-perspective-study.html",
+          "identifier": "NCT05568017",
+          "title": "Neoadjuvant PRRT with 90Y-DOTATOC: Preliminary results from a ...",
+          "snippet": "Web result for: NCT05568017 Neoadjuvant PRRT With Y-90-DOTATOC in pNET",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:08:15.202793"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://checkorphan.org/clinicaltrial/neoadjuvant-prrt-with-y-90-dotatoc-in-pnet/",
+          "identifier": "NCT05568017",
+          "title": "Neoadjuvant PRRT With Y-90-DOTATOC in pNET - CheckOrphan",
+          "snippet": "Web result for: NCT05568017 Neoadjuvant PRRT With Y-90-DOTATOC in pNET",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:08:15.202810"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://medworm.com/1035135146/neoadjuvant-prrt-with-y-90-dotatoc-in-pnet/",
+          "identifier": "NCT05568017",
+          "title": "Neoadjuvant PRRT With Y-90-DOTATOC in pNET - MedWorm",
+          "snippet": "Web result for: NCT05568017 Neoadjuvant PRRT With Y-90-DOTATOC in pNET",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:08:15.202836"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11364144/",
+          "identifier": "NCT05568017",
+          "title": "Neoadjuvant therapy with peptide receptor radionuclide therapy for ...",
+          "snippet": "Web result for: NCT05568017 Neoadjuvant PRRT With Y-90-DOTATOC in pNET",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:08:15.202851"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 24027
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT05568017",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_peptide receptor radionuclide therapy with Y-90-DOTATOC": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT05568017",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL386768/",
+          "identifier": "CHEMBL386768",
+          "title": "EDOTREOTIDE YTTRIUM - ChEMBL",
+          "snippet": "Molecule: EDOTREOTIDE YTTRIUM\nType: Protein\nMax clinical phase: 2.0\nMolecular weight: 1507.55\nBioactivity: IC50=10000.0 nM (Somatostatin receptor type 1); IC50=11.0 nM (Somatostatin receptor type 2); IC50=389.0 nM (Somatostatin receptor type 3); IC50=10000.0 nM (Somatostatin receptor type 4); IC50=114.0 nM (Somatostatin receptor type 5)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:17.201021"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2108667/",
+          "identifier": "CHEMBL2108667",
+          "title": "YTTRIUM Y 90 IBRITUMOMAB TIUXETAN - ChEMBL",
+          "snippet": "Molecule: YTTRIUM Y 90 IBRITUMOMAB TIUXETAN\nType: Antibody\nMax clinical phase: 4.0\nFirst approval: 2002\nMechanism: B-lymphocyte antigen CD20 binding agent; B-lymphocyte antigen CD20 binding agent",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:18.019381"
+        }
+      ],
+      "raw_data": {
+        "chembl_peptide receptor radionuclide therapy with Y-90-DOTATOC_count": 5,
+        "chembl_peptide receptor radionuclide therapy with Y-90-DOTATOC_molecules": [
+          {
+            "chembl_id": "CHEMBL386768",
+            "pref_name": "EDOTREOTIDE YTTRIUM",
+            "mol_type": "Protein",
+            "helm_notation": null,
+            "max_phase": "2.0"
+          },
+          {
+            "chembl_id": "CHEMBL2108667",
+            "pref_name": "YTTRIUM Y 90 IBRITUMOMAB TIUXETAN",
+            "mol_type": "Antibody",
+            "helm_notation": null,
+            "max_phase": "4.0"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT05568017",
+      "citations": [],
+      "raw_data": {
+        "rcsb_peptide receptor radionuclide therapy with Y-90-DOTATOC": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT05568017",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_peptide receptor radionuclide therapy with Y-90-DOTATOC_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT05568017",
+      "citations": [],
+      "raw_data": {
+        "apd_peptide receptor radionuclide therapy with Y-90-DOTATOC": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT05568017",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT05568017",
+          "identifier": "NCT05568017",
+          "title": "Neoadjuvant PRRT With Y-90-DOTATOC in pNET",
+          "snippet": "Title: Neoadjuvant PRRT With Y-90-DOTATOC in pNET\nStatus: Terminated\nPhase: Phase 2\nCountries: Italy\nConditions: Pancreatic Neuroendocrine Tumor\nInterventions: Drug: peptide receptor radionuclide therapy with Y-90-DOTATOC\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:08:19.398719"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT05568017",
+          "public_title": "Neoadjuvant PRRT With Y-90-DOTATOC in pNET",
+          "scientific_title": "Neoadjuvant Peptide Receptor Radionuclide Therapy (PRRT) With 90Y-DOTATOC in Pancreatic Neuroendocrine Tumours.",
+          "recruitment_status": "Terminated",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Treatment. Masking: None (Open Label).",
+          "countries": [
+            "Italy"
+          ],
+          "conditions": [
+            "Pancreatic Neuroendocrine Tumor"
+          ],
+          "interventions": [
+            "Drug: peptide receptor radionuclide therapy with Y-90-DOTATOC"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT05568017",
+      "citations": [],
+      "raw_data": {
+        "iuphar_peptide receptor radionuclide therapy with Y-90-DOTATOC": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT05568017",
+      "citations": [],
+      "raw_data": {
+        "pdbe_peptide receptor radionuclide therapy with Y-90-DOTATOC_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT05568017",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4387638719",
+          "identifier": "PMID:37895931",
+          "title": "Radiometals in Imaging and Therapy: Highlighting Two Decades of Research",
+          "snippet": "Title: Radiometals in Imaging and Therapy: Highlighting Two Decades of Research\nYear: 2023\nCitations: 31\nAbstract: ) and alpha (\u03b1)-emitting radionuclides are discussed by highlighting their production routes, targeted radiopharmaceuticals, and current clinical translation stage.",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:17.108181"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4385411881",
+          "identifier": "PMID:37588093",
+          "title": "Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer",
+          "snippet": "Title: Emerging applications of cancer bacteriotherapy towards treatment of pancreatic cancer\nYear: 2023\nCitations: 9\nAbstract: known as Coley's toxin. Since then, several bacteria have gained recognition for possible roles in potentiating treatment response, enhancing anti-tumor immunity, and alleviating adverse effects to standard treatment options. This review highlights k",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:08:17.108254"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 2
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT05568017",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT05568017",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3109/9781420016727-8",
+          "identifier": "DOI:10.3109/9781420016727-8",
+          "title": "Peptide Receptor Therapy with 90Y-Dotatoc: The Emerging Experience in Chile",
+          "snippet": "Title: Peptide Receptor Therapy with 90Y-Dotatoc: The Emerging Experience in Chile\nJournal: Radionuclide Peptide Cancer Therapy\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789874"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3109/9781420016727-11",
+          "identifier": "DOI:10.3109/9781420016727-11",
+          "title": "Receptor Radionuclide Therapy with 90Y-[DOTA0]-Tyr3-Octreotide (90Y-DOTATOC): The IEO Experience",
+          "snippet": "Title: Receptor Radionuclide Therapy with 90Y-[DOTA0]-Tyr3-Octreotide (90Y-DOTATOC): The IEO Experience\nJournal: Radionuclide Peptide Cancer Therapy\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789901"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.3390/diagnostics11071216",
+          "identifier": "DOI:10.3390/diagnostics11071216",
+          "title": "The Dependence of Renal 68Ga[Ga]-DOTATOC Uptake on Kidney Function and Its Relevance for Peptide Receptor Radionuclide Therapy with 177Lu[Lu]-DOTATOC",
+          "snippet": "Title: The Dependence of Renal 68Ga[Ga]-DOTATOC Uptake on Kidney Function and Its Relevance for Peptide Receptor Radionuclide Therapy with 177Lu[Lu]-DOTATOC\nJournal: Diagnostics\nYear: 2021\nAbstract: Background: In addition to its SSTR-specific binding in tumors and healthy tissues, DOTATOC analogues accumulate in kidney parenchyma. Renal tracer uptake might be a surrogate of kidney function or dysfunction. This study aimed to evaluate if kidney ",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:08:14.789942"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT05568017",
+      "citations": [
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.07.30.25330817",
+          "identifier": "DOI:10.1101/2025.07.30.25330817",
+          "title": "Peptide receptor radionuclide therapy targeting the cholecystokinin-2 receptor: Preclinical and first clinical experience in small cell lung cancer",
+          "snippet": "PPR ({'publisher': 'medRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.675999"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4009283/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4009283/v1",
+          "title": "Repeat Peptide Receptor Radionuclide Therapy in Neuroendocrine Tumors: A NET Center of Excellence Experience",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.676092"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-2624140/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-2624140/v1",
+          "title": "Impact of administered amount of peptide on tumor dosimetry at the first cycle of peptide receptor radionuclide therapy (PRRT) in relation to total tumor somatostatin receptor expression",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2023})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.676110"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-3189834/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-3189834/v1",
+          "title": "Mid-PRRT Response Predicts Overall Outcome in Patients with Neuroendocrine Neoplasms",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2023})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.676129"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-960403/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-960403/v1",
+          "title": "177Lu-DOTA-0-Tyr3-Octreotate Infusion Modeling for Real-Time Detection and Characterization of Extravasation During PRRT",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.676183"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202105.0445.v1",
+          "identifier": "DOI:10.20944/preprints202105.0445.v1",
+          "title": "Renal and Red Marrow Dosimetry in Peptide Receptor Radionuclide Therapy: 20 Years of History and Ahead",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.676201"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-1083588/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-1083588/v1",
+          "title": "In Patients With Well-Differentiated Neuroendocrine Tumours, There Is No Apparent Benefit of Somatostatin Analogues After Disease Control By Peptide Receptor Radionuclide Therapy",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.676220"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202011.0445.v1",
+          "identifier": "DOI:10.20944/preprints202011.0445.v1",
+          "title": "The Challenge of Evaluating Response to Peptide Receptor Radionuclide Therapy in Gastroenteropancreatic Neuroendocrine Tumors: The Present and the Future.",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.676239"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-111380/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-111380/v1",
+          "title": "Peptide Receptor Radionuclide Therapy with 177Lu-DOTATATE in Advanced Neuroendocrine Tumours (NETs) in a Limited Resource Environment",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.676257"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-36633/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-36633/v1",
+          "title": "Clinical Efficacy of First and Second Series of Peptide Receptor Radionuclide Therapy in Patients With Neuroendocrine Neoplasm: A Cohort Study",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.676275"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-2829731/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-2829731/v1",
+          "title": "Accuracy and uncertainty analysis of reduced time point imaging effect on time-integrated activity for 177Lu-DOTATATE PRRT in clinical patients and realistic simulations",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2023})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:14.753731"
+        }
+      ],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 31,
+        "biorxiv_prefilter_dropped": 20
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT05568017",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT05568017_total": 0,
+        "sec_edgar_peptide receptor radionuclide therapy with Y-90-DOTATOC_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT05568017",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_peptide receptor radionuclide therapy with Y-90-DOTATOC_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT05568017",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:5R01CA076287-26",
+          "title": "Radioimmunotherapy Combinations for B-cell Malignancy (GREEN, DAMIAN J.)",
+          "snippet": "Project: 5R01CA076287-26\nPI: GREEN, DAMIAN J.\nOrganization: \nFiscal year: 2025\nAward: $386,220\nStart: 1998-01-01\nEnd: 2026-07-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554328"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:5R01CA243014-06",
+          "title": "Alpha-Particle Emitter Peptide Receptor Targeted Radionuclide Therapy for Neuroendocrine Tumors (MENDA, YUSUF)",
+          "snippet": "Project: 5R01CA243014-06\nPI: MENDA, YUSUF\nOrganization: \nFiscal year: 2024\nAward: $166,967\nStart: 2024-07-15\nEnd: 2026-05-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554395"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=peptide+receptor+radionuclide+therapy+with+Y-90-DOTATOC",
+          "identifier": "NIH:7R01CA076287-25",
+          "title": "Radioimmunotherapy Combinations for B-cell Malignancy (GREEN, DAMIAN J.)",
+          "snippet": "Project: 7R01CA076287-25\nPI: GREEN, DAMIAN J.\nOrganization: \nFiscal year: 2024\nAward: $301,797\nStart: 1998-01-01\nEnd: 2026-07-31\n(41 total NIH-funded projects matching 'peptide receptor radionuclide therapy with Y-90-DOTATOC')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:08:13.554424"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_peptide receptor radionuclide therapy with Y-90-DOTATOC_count": 41,
+        "nih_reporter_peptide receptor radionuclide therapy with Y-90-DOTATOC_funded": true
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 8,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov"
+      ]
+    },
+    "literature": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.86,
+      "error": null,
+      "source_names": [
+        "pmc",
+        "pubmed"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "chembl": {
+      "citations_count": 2,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "openalex": {
+      "citations_count": 2,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 11,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "biorxiv_medrxiv"
+      ]
+    },
+    "sec_edgar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "nih_reporter"
+      ]
+    }
+  }
+}

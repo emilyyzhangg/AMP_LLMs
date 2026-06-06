@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT05284019",
+  "pmid": "DOI:10.21203/rs.3.rs-1340639/v1",
+  "source": "biorxiv_medrxiv",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "YES",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "YES",
+    "q4_failure": "UNCLEAR",
+    "q5_advanced": "UNCLEAR",
+    "evidence_quote": ""
+  },
+  "verdict": "POSITIVE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

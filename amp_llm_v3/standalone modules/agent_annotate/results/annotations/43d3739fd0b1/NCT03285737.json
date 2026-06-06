@@ -1,0 +1,3020 @@
+{
+  "nct_id": "NCT03285737",
+  "metadata": {
+    "nct_id": "NCT03285737",
+    "title": "Whey Protein Intake in the Amelioration of Skeletal Muscle Quantity and Function During Inactivity in Older Adults",
+    "phase": "NA",
+    "status": "COMPLETED",
+    "conditions": [
+      "Aging",
+      "Muscle Loss"
+    ],
+    "interventions": [
+      "DIETARY_SUPPLEMENT: Whey",
+      "DIETARY_SUPPLEMENT: Collagen"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.865,
+      "reasoning": "[Consistency override: 3 AA sequence -> peptide=True] [Pass 1 extraction] Intervention: Protein supplementation\nMolecular Class: Nutritional product/dietary supplement\nDatabase Confirmation: Not found in UniProt, DRAMP/DBAASP, ChEMBL, or PDB\nProduct Description: Described as a \"nutritional formula\" and \"protein supplementation\"\nInvestigational Drug Role: Food ingredient (hydrolyzed protein for easier digestion)\n[Pass 2 decision] Peptide: False  \nReasoning: Step 1 \u2014 The Molecular Class is \"Nutritional product/dietary supplement,\" which is excluded as a peptide. Step 2 \u2014 The Investigational Drug Role is \"Food ingredient (hydrolyzed protein for easier digestion),\" which falls under nutritional formulas containing hydrolyzed proteins and is explicitly excluded as a peptide. Step 3 \u2014 No database hits confirm it as a peptide, and the description aligns with a nutritional product, not a peptide drug.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Brief Summary",
+          "snippet": "Sarcopenia, the loss in muscle mass with age, is associated with several negative health outcomes including cancer, stroke, cardiovascular disease and diabetes. This loss of muscle mass remains relatively steady following 50 years of age however it can be accelerated with periods of disuse associated with hospitalization, fracture or surgery of the hip or simply influenza. Also associated with periods of disuse, is a lack of energy intake as hospitalizations often result in undernourishment. The",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.458963"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30289425/",
+          "identifier": "PMID:30289425",
+          "title": "A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons.",
+          "snippet": "Title: A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons.\nAuthors: Oikawa Sara Y, McGlory Chris, D'Souza Lisa K et al.\nJournal: The American journal of clinical nutrition (2018)\nAbstract: BACKGROUND: In older persons, muscle loss is accelerated during physical inactivity and hypoenergetic states, both of which are features of hospitalization. Protein supplementation may represent a strategy to offset the loss of muscle during inactivity, and enhance recovery on resumption of activity",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:07:34.095497"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7278031/",
+          "identifier": "PMC:7278031",
+          "title": "Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial.",
+          "snippet": "Title: Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial.\nAuthors: Oikawa SY, Callahan DM, McGlory C et al.\nJournal: Appl Physiol Nutr Metab",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.638501"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2981554976",
+          "identifier": "https://openalex.org/W2981554976",
+          "title": "The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults",
+          "snippet": "Title: The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults\nYear: 2019\nAbstract: Recent recommendations are that older adults increase their dietary protein intake to intakes higher than are currently recommended to mitigate sarcopenia-induced muscle loss caused in part by anabolic resistance. Protein supplementation may serve as",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.644398"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.jnim.2017.04.204",
+          "identifier": "DOI:10.1016/j.jnim.2017.04.204",
+          "title": "Effects of gender on suppression of energy intake by whey protein in older people",
+          "snippet": "Title: Effects of gender on suppression of energy intake by whey protein in older people\nJournal: Journal of Nutrition &amp; Intermediary Metabolism\nYear: 2017",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828967"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.36266/jbsr/206",
+          "identifier": "DOI:10.36266/jbsr/206",
+          "title": "Beneficial Influence of Pre-Prandial Whey Protein Intake on Stable Glucose Variability",
+          "snippet": "Title: Beneficial Influence of Pre-Prandial Whey Protein Intake on Stable Glucose Variability\nJournal: Journal of Biomedical Science and Research\nYear: 2025",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828863"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/Q02388",
+          "identifier": "Q02388",
+          "title": "Collagen alpha-1(VII) chain",
+          "snippet": "Organism: Homo sapiens. Protein: Collagen alpha-1(VII) chain. Accession: Q02388. Precursor length: 2944 aa. Mature form: Collagen alpha-1(VII) chain 2928 aa (2928 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:32.160159"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/P25067",
+          "identifier": "P25067",
+          "title": "Collagen alpha-2(VIII) chain",
+          "snippet": "Organism: Homo sapiens. Protein: Collagen alpha-2(VIII) chain. Accession: P25067. Precursor length: 703 aa. Mature form: Collagen alpha-2(VIII) chain 675 aa (675 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:32.160214"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_10184",
+          "identifier": "DBAASP:DBAASPS_10184",
+          "title": "Collagen-like peptide RR4 - DBAASP",
+          "snippet": "Peptide: Collagen-like peptide RR4\nSequence: RRGRRGPXGPXGPXGPXGPXGPCCY\nLength: 25 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824294"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_10144",
+          "identifier": "DBAASP:DBAASPS_10144",
+          "title": "Collagen-like peptide R3 - DBAASP",
+          "snippet": "Peptide: Collagen-like peptide R3\nSequence: PRGPRGPRGPXGPXGPXGPXGPCCY\nLength: 25 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824245"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "sequence",
+      "value": "N/A",
+      "confidence": 1.0,
+      "reasoning": "[Peptide=False cascade: sequence is peptide-specific]",
+      "evidence": [],
+      "model_name": "cascade",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9,
+      "reasoning": "[Peptide=False cascade: non-peptide \u2192 classification=Other (binary AMP/Other)]",
+      "evidence": [],
+      "model_name": "cascade",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "AMP",
+      "confidence": 0.95,
+      "reasoning": "[ATOMIC-CLS R1] AMP (conf=0.95)\n  rule: registry hit: DBAASP[DBAASP:DBAASPS_8929,DBAASP:DBAASPS_10144,DBAASP:DBAASPS_10145]\n  registry: dramp=0 apd=0 dbaasp=5 uniprot_amp=0\n  atomic: q1=UNCLEAR q2=UNCLEAR q3=UNCLEAR\n  R1 fired: deterministic registry hit",
+      "evidence": [],
+      "model_name": "atomic-cls-deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Oral",
+      "confidence": 0.865,
+      "reasoning": "[Pass 1 route extraction] Protocol Route: \"Participants will receive either 20 g of whey protein isolate or 20 g of casein protein or 20 g of soy protein or 20 g of a placebo (maltodextrin) per day for 12 weeks.\" (from the experimental arm intervention description)\n\nFDA/Label Route: not found\n\nLiterature Route: \"Participants received either 20 g of whey protein isolate, 20 g of casein protein, 20 g of soy protein, or 20 g of maltodextrin (placebo) per day for 12 weeks.\" (from PMID:30289425)\n\nDatabase Route: not found\n\nDrug Formulation: Whey protein isolate, casein protein, soy protein, maltodextrin (placebo)\n\nMost Specific Route: Oral\n[Pass 2 classification] Delivery Mode: Oral  \nEvidence: Literature Route  \nReasoning: The literature route explicitly states that participants received protein supplements (whey, casein, soy) or maltodextrin (placebo) per day, which are all oral forms of administration. No evidence of injection, topical, or other routes was found.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Brief Summary",
+          "snippet": "Sarcopenia, the loss in muscle mass with age, is associated with several negative health outcomes including cancer, stroke, cardiovascular disease and diabetes. This loss of muscle mass remains relatively steady following 50 years of age however it can be accelerated with periods of disuse associated with hospitalization, fracture or surgery of the hip or simply influenza. Also associated with periods of disuse, is a lack of energy intake as hospitalizations often result in undernourishment. The",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.458963"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30289425/",
+          "identifier": "PMID:30289425",
+          "title": "A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons.",
+          "snippet": "Title: A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons.\nAuthors: Oikawa Sara Y, McGlory Chris, D'Souza Lisa K et al.\nJournal: The American journal of clinical nutrition (2018)\nAbstract: BACKGROUND: In older persons, muscle loss is accelerated during physical inactivity and hypoenergetic states, both of which are features of hospitalization. Protein supplementation may represent a strategy to offset the loss of muscle during inactivity, and enhance recovery on resumption of activity",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:07:34.095497"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7278031/",
+          "identifier": "PMC:7278031",
+          "title": "Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial.",
+          "snippet": "Title: Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial.\nAuthors: Oikawa SY, Callahan DM, McGlory C et al.\nJournal: Appl Physiol Nutr Metab",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.638501"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2981554976",
+          "identifier": "https://openalex.org/W2981554976",
+          "title": "The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults",
+          "snippet": "Title: The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults\nYear: 2019\nAbstract: Recent recommendations are that older adults increase their dietary protein intake to intakes higher than are currently recommended to mitigate sarcopenia-induced muscle loss caused in part by anabolic resistance. Protein supplementation may serve as",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.644398"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.jnim.2017.04.204",
+          "identifier": "DOI:10.1016/j.jnim.2017.04.204",
+          "title": "Effects of gender on suppression of energy intake by whey protein in older people",
+          "snippet": "Title: Effects of gender on suppression of energy intake by whey protein in older people\nJournal: Journal of Nutrition &amp; Intermediary Metabolism\nYear: 2017",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828967"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.36266/jbsr/206",
+          "identifier": "DOI:10.36266/jbsr/206",
+          "title": "Beneficial Influence of Pre-Prandial Whey Protein Intake on Stable Glucose Variability",
+          "snippet": "Title: Beneficial Influence of Pre-Prandial Whey Protein Intake on Stable Glucose Variability\nJournal: Journal of Biomedical Science and Research\nYear: 2025",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828863"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/Q02388",
+          "identifier": "Q02388",
+          "title": "Collagen alpha-1(VII) chain",
+          "snippet": "Organism: Homo sapiens. Protein: Collagen alpha-1(VII) chain. Accession: Q02388. Precursor length: 2944 aa. Mature form: Collagen alpha-1(VII) chain 2928 aa (2928 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:32.160159"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/P25067",
+          "identifier": "P25067",
+          "title": "Collagen alpha-2(VIII) chain",
+          "snippet": "Organism: Homo sapiens. Protein: Collagen alpha-2(VIII) chain. Accession: P25067. Precursor length: 703 aa. Mature form: Collagen alpha-2(VIII) chain 675 aa (675 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:32.160214"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_10184",
+          "identifier": "DBAASP:DBAASPS_10184",
+          "title": "Collagen-like peptide RR4 - DBAASP",
+          "snippet": "Peptide: Collagen-like peptide RR4\nSequence: RRGRRGPXGPXGPXGPXGPXGPCCY\nLength: 25 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824294"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_10144",
+          "identifier": "DBAASP:DBAASPS_10144",
+          "title": "Collagen-like peptide R3 - DBAASP",
+          "snippet": "Peptide: Collagen-like peptide R3\nSequence: PRGPRGPRGPXGPXGPXGPXGPCCY\nLength: 25 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824245"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.85,
+      "reasoning": "[Dossier] Trial: NCT03285737\nRegistry Status: COMPLETED\nPhase: NA\nCompletion Date: 2016-12-15 (3429 days ago)\nResults Posted: Unknown\nPublications Found: 55 (2 trial-specific, 53 reviews/general)\n  1. Title: A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis durin PMID:30289425 [TRIAL-SPECIFIC]\n  2. Title: Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial.\nAuthors: Oi PMC:7278031 [GENERAL]\n  3. Title: A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis durin PMID:30289425 [TRIAL-SPECIFIC]\n  4. Title: Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial\nYear: 2019\nC PMID:30794431 [GENERAL]\n  5. Title: The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults\nYear: 2019\nAbstract: Recent rec [GENERAL]\nTrial Drugs: Whey, Collagen\nRegistered Trial Publications: 1 CT.gov-registered PMID(s) \u2014 these are proven trial-specific [PMID:30289425]\n[LLM decision] The trial is marked as \"COMPLETED\" on CT.gov, and there are no results posted. While there are trial-specific publications (e.g., PMID:30289425), they do not explicitly state that the primary endpoint was met, nor do they report a statistically significant result on the primary endpoint with a p-value < 0.05. The publications focus on muscle protein synthesis and effects of protein supplementation but do not provide conclusive evidence of success or failure. Therefore, the outcome remains \"Unknown\" due to insufficient evidence to determine a positive or failed result.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Brief Summary",
+          "snippet": "Sarcopenia, the loss in muscle mass with age, is associated with several negative health outcomes including cancer, stroke, cardiovascular disease and diabetes. This loss of muscle mass remains relatively steady following 50 years of age however it can be accelerated with periods of disuse associated with hospitalization, fracture or surgery of the hip or simply influenza. Also associated with periods of disuse, is a lack of energy intake as hospitalizations often result in undernourishment. The",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.458963"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2917377674",
+          "identifier": "PMID:30794431",
+          "title": "Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial",
+          "snippet": "Title: Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial\nYear: 2019\nCitations: 15\nAbstract: = 9 men) of volunteers. These data highlight the resilience of physical function in healthy older men in the face of an acute period of ER+SR and demonstrate sex-based differences in the ability to recover muscle strength upon resumption of physical ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.644006"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2981554976",
+          "identifier": "https://openalex.org/W2981554976",
+          "title": "The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults",
+          "snippet": "Title: The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults\nYear: 2019\nAbstract: Recent recommendations are that older adults increase their dietary protein intake to intakes higher than are currently recommended to mitigate sarcopenia-induced muscle loss caused in part by anabolic resistance. Protein supplementation may serve as",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.644398"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2894552307",
+          "identifier": "PMID:30289425",
+          "title": "A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons",
+          "snippet": "Title: A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons\nYear: 2018\nCitations: 74",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.643883"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.jnim.2017.04.204",
+          "identifier": "DOI:10.1016/j.jnim.2017.04.204",
+          "title": "Effects of gender on suppression of energy intake by whey protein in older people",
+          "snippet": "Title: Effects of gender on suppression of energy intake by whey protein in older people\nJournal: Journal of Nutrition &amp; Intermediary Metabolism\nYear: 2017",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828967"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.36266/jbsr/206",
+          "identifier": "DOI:10.36266/jbsr/206",
+          "title": "Beneficial Influence of Pre-Prandial Whey Protein Intake on Stable Glucose Variability",
+          "snippet": "Title: Beneficial Influence of Pre-Prandial Whey Protein Intake on Stable Glucose Variability\nJournal: Journal of Biomedical Science and Research\nYear: 2025",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828863"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1039/d4fo06083k/v1/review2",
+          "identifier": "DOI:10.1039/d4fo06083k/v1/review2",
+          "title": "Review for \"Increased Protein Intake in Healthy Males Exposed to a Dairy-Derived Appetite Modulating Whey-Derived Peptide Hydrolysate\"",
+          "snippet": "Title: Review for \"Increased Protein Intake in Healthy Males Exposed to a Dairy-Derived Appetite Modulating Whey-Derived Peptide Hydrolysate\"\nYear: 2025",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828992"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/Q02388",
+          "identifier": "Q02388",
+          "title": "Collagen alpha-1(VII) chain",
+          "snippet": "Organism: Homo sapiens. Protein: Collagen alpha-1(VII) chain. Accession: Q02388. Precursor length: 2944 aa. Mature form: Collagen alpha-1(VII) chain 2928 aa (2928 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:32.160159"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/P25067",
+          "identifier": "P25067",
+          "title": "Collagen alpha-2(VIII) chain",
+          "snippet": "Organism: Homo sapiens. Protein: Collagen alpha-2(VIII) chain. Accession: P25067. Precursor length: 703 aa. Mature form: Collagen alpha-2(VIII) chain 675 aa (675 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:32.160214"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_10184",
+          "identifier": "DBAASP:DBAASPS_10184",
+          "title": "Collagen-like peptide RR4 - DBAASP",
+          "snippet": "Peptide: Collagen-like peptide RR4\nSequence: RRGRRGPXGPXGPXGPXGPXGPCCY\nLength: 25 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824294"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Positive",
+      "confidence": 0.9,
+      "reasoning": "[ATOMIC R1] Positive (conf=0.90)\n  rule: 2 POSITIVE pub(s), 0 FAILED\n  registry: status=COMPLETED phase=NA has_results=None completion=2016-12-15 days_since=3429 stale=False drug_max_phase=4\n  pubs: 49 total (4 ts, 4 gen, 41 amb)\n  voting: 2 pub(s) (2 POS, 0 FAIL)\n    - POSITIVE      DOI:10.21203/rs.3.rs-3138309/v1 (trial_specific) q1=YES q2=NOT_REPORTED q3=YES q4=UNCLEAR q5=UNCLEAR \"Analgesic Efficacy of Collagen Peptide in Knee Osteoarthritis: A Meta-Analysis o\"\n    - POSITIVE      DOI:10.20944/preprints202407.1363.v1 (trial_specific) q1=YES q2=NOT_REPORTED q3=YES q4=NO q5=UNCLEAR \"Outcomes from a Six-Week Randomized, Double-Blind, Placebo-Controlled Trial\"\n  aggregator trace:\n    registry: status=COMPLETED has_results=None phase=NA days_since=3429 stale=False drug_max_phase=4\n    pubs: total=49 trial_specific=4 voting=2 pos=2 fail=0\n    R1 fired: 2 POSITIVE pub(s), 0 FAILED\n      - POSITIVE      DOI:10.21203/rs.3.rs-3138309/v1 (trial_specific) [q1=YES q2=NOT_REPORTED q3=YES]\n      - POSITIVE      DOI:10.20944/preprints202407.1363.v1 (trial_specific) [q1=YES q2=NOT_REPORTED q3=YES q4=NO]",
+      "evidence": [],
+      "model_name": "atomic-gemma3:12b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: The trial, titled \"A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons\" (PMID:30289425), inv",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Brief Summary",
+          "snippet": "Sarcopenia, the loss in muscle mass with age, is associated with several negative health outcomes including cancer, stroke, cardiovascular disease and diabetes. This loss of muscle mass remains relatively steady following 50 years of age however it can be accelerated with periods of disuse associated with hospitalization, fracture or surgery of the hip or simply influenza. Also associated with periods of disuse, is a lack of energy intake as hospitalizations often result in undernourishment. The",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.458963"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30289425/",
+          "identifier": "PMID:30289425",
+          "title": "A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons.",
+          "snippet": "Title: A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons.\nAuthors: Oikawa Sara Y, McGlory Chris, D'Souza Lisa K et al.\nJournal: The American journal of clinical nutrition (2018)\nAbstract: BACKGROUND: In older persons, muscle loss is accelerated during physical inactivity and hypoenergetic states, both of which are features of hospitalization. Protein supplementation may represent a strategy to offset the loss of muscle during inactivity, and enhance recovery on resumption of activity",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:07:34.095497"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2917377674",
+          "identifier": "PMID:30794431",
+          "title": "Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial",
+          "snippet": "Title: Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial\nYear: 2019\nCitations: 15\nAbstract: = 9 men) of volunteers. These data highlight the resilience of physical function in healthy older men in the face of an acute period of ER+SR and demonstrate sex-based differences in the ability to recover muscle strength upon resumption of physical ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.644006"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2981554976",
+          "identifier": "https://openalex.org/W2981554976",
+          "title": "The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults",
+          "snippet": "Title: The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults\nYear: 2019\nAbstract: Recent recommendations are that older adults increase their dietary protein intake to intakes higher than are currently recommended to mitigate sarcopenia-induced muscle loss caused in part by anabolic resistance. Protein supplementation may serve as",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.644398"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.jnim.2017.04.204",
+          "identifier": "DOI:10.1016/j.jnim.2017.04.204",
+          "title": "Effects of gender on suppression of energy intake by whey protein in older people",
+          "snippet": "Title: Effects of gender on suppression of energy intake by whey protein in older people\nJournal: Journal of Nutrition &amp; Intermediary Metabolism\nYear: 2017",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828967"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.36266/jbsr/206",
+          "identifier": "DOI:10.36266/jbsr/206",
+          "title": "Beneficial Influence of Pre-Prandial Whey Protein Intake on Stable Glucose Variability",
+          "snippet": "Title: Beneficial Influence of Pre-Prandial Whey Protein Intake on Stable Glucose Variability\nJournal: Journal of Biomedical Science and Research\nYear: 2025",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828863"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1039/d4fo06083k/v1/review2",
+          "identifier": "DOI:10.1039/d4fo06083k/v1/review2",
+          "title": "Review for \"Increased Protein Intake in Healthy Males Exposed to a Dairy-Derived Appetite Modulating Whey-Derived Peptide Hydrolysate\"",
+          "snippet": "Title: Review for \"Increased Protein Intake in Healthy Males Exposed to a Dairy-Derived Appetite Modulating Whey-Derived Peptide Hydrolysate\"\nYear: 2025",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828992"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/Q02388",
+          "identifier": "Q02388",
+          "title": "Collagen alpha-1(VII) chain",
+          "snippet": "Organism: Homo sapiens. Protein: Collagen alpha-1(VII) chain. Accession: Q02388. Precursor length: 2944 aa. Mature form: Collagen alpha-1(VII) chain 2928 aa (2928 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:32.160159"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/P25067",
+          "identifier": "P25067",
+          "title": "Collagen alpha-2(VIII) chain",
+          "snippet": "Organism: Homo sapiens. Protein: Collagen alpha-2(VIII) chain. Accession: P25067. Precursor length: 703 aa. Mature form: Collagen alpha-2(VIII) chain 675 aa (675 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:32.160214"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_10184",
+          "identifier": "DBAASP:DBAASPS_10184",
+          "title": "Collagen-like peptide RR4 - DBAASP",
+          "snippet": "Peptide: Collagen-like peptide RR4\nSequence: RRGRRGPXGPXGPXGPXGPXGPCCY\nLength: 25 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824294"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "llm"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "",
+      "confidence": 0.0,
+      "reasoning": "[ATOMIC-FR gated] outcome_atomic=Positive not in ['Failed - completed trial', 'Terminated']",
+      "evidence": [],
+      "model_name": "atomic-fr-gated",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT03285737",
+    "fields": [
+      {
+        "field_name": "sequence",
+        "original_value": "N/A",
+        "final_value": "N/A",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification_atomic",
+        "original_value": "AMP",
+        "final_value": "AMP",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Oral",
+        "final_value": "Oral",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Oral",
+            "reasoning": "The trial description explicitly states that the whey protein supplement is delivered twice daily, indicating oral consumption.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Oral",
+            "reasoning": "The trial explicitly states that the supplements (whey and collagen) are provided twice daily in 30g doses, which is consistent with oral delivery through dietary supplementation.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Oral",
+            "reasoning": "The fact that the supplements are described as being delivered \"twice daily\" in 30g doses implies that they are taken orally, rather than through an injection or infusion route. Additionally, there is no mention of any parenteral administration method (e.g., IV, IM, SC) or topical application.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.865,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "False",
+        "consensus_reached": false,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial involves whey protein supplementation, which is derived from milk proteins containing peptides. Additionally, collagen supplementation is also included, which is a peptide. The presence of these peptide-containing supplements qualifies the trial as containing a peptide molecule.",
+            "confidence": 0.7,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "The trial's interventions are classified as dietary supplements, not peptide-based drugs. The evidence explicitly states that these are nutritional products, not peptide therapeutics.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "False",
+            "reasoning": "The definition of a peptide is 2-100 amino acid residues. Since the administered supplements contain whole proteins with precursor lengths exceeding 100 amino acids, they do not meet the criteria for being considered peptides.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.865,
+        "reconciler_used": true,
+        "reconciler_reasoning": "**",
+        "flag_reason": "reconciler_deferred"
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Positive",
+        "consensus_reached": false,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is listed as COMPLETED and a published article (PMID:30289425) describes a randomized controlled trial investigating the impact of protein supplementation on muscle mass and protein synthesis in older adults. This suggests a positive outcome, even if the specific results aren't detailed in the provided metadata.",
+            "confidence": 0.7,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "According to the completion heuristics, if no publications or results are posted, and no subsequent trials are found, the outcome is \"Unknown.\" The absence of published results or results posted does not allow for a determination of success or failure.",
+            "confidence": 0.7,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial was completed, and published results show that the protein supplementation (whey protein) had a positive effect on leg lean mass and integrated muscle protein synthesis in older adults. This suggests that the trial met its primary endpoints, indicating a positive outcome.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.85,
+        "reconciler_used": true,
+        "reconciler_reasoning": "**",
+        "flag_reason": "reconciler_deferred"
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": false,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The trial is completed, but there is no indication of failure based on published results. Therefore, the default is EMPTY.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The absence of published evidence of failure, combined with the trial being completed, means the reason for failure cannot be determined. The trial's completion does not imply failure unless there is explicit evidence of negative outcomes, which is not present here.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "Although the trial is completed, there is no published evidence of negative outcomes or failure to meet endpoints. The abstract suggests that the trial was designed to assess the effectiveness of protein supplementation on muscle loss during inactivity and energy restriction, but it does not provide any information about whether the intervention was successful or not. Therefore, based on the available evidence, I conclude that the reason for failure is \"Ineffective for purpose\".",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.8,
+        "reconciler_used": true,
+        "reconciler_reasoning": "**PRIMARY ANSWER:** EMPTY  \n**PRIMARY CONFIDENCE:** 0.80  \n\n**REASONING:**  \nThe trial (NCT03285737) is marked as \"COMPLETED\" on ClinicalTrials.gov, and there is no published evidence of failure or negative outcomes in the provided evidence. The abstract and related publications (e.g., PMID:30289425) describe the trial as assessing the impact of protein supplementation on muscle loss during inactivity and energy restriction in older adults, but they do not indicate that the trial failed to meet ",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "Unresolved disagreements: peptide, outcome, reason_for_failure"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Whey Protein Intake in the Amelioration of Skeletal Muscle Quantity and Function During Inactivity in Older Adults",
+          "snippet": "Title: Whey Protein Intake in the Amelioration of Skeletal Muscle Quantity and Function During Inactivity in Older Adults",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.458876"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Brief Summary",
+          "snippet": "Sarcopenia, the loss in muscle mass with age, is associated with several negative health outcomes including cancer, stroke, cardiovascular disease and diabetes. This loss of muscle mass remains relatively steady following 50 years of age however it can be accelerated with periods of disuse associated with hospitalization, fracture or surgery of the hip or simply influenza. Also associated with periods of disuse, is a lack of energy intake as hospitalizations often result in undernourishment. The",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.458963"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Detailed Description",
+          "snippet": "The age-related decline in skeletal muscle mass, termed sarcopenia, is associated with a host of metabolic disease states including, but not limited to, cancer, stroke, microvascular disease, type 2 diabetes, Parkinson's and Alzheimer's. Moreover, declines in skeletal muscle mass also are accompanied by an even more precipitous reduction in skeletal muscle strength, known as dynapenia, which is a predisposition for disability and falls.\n\nSarcopenia begins in the 5th decade of life and proceeds, ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.458980"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.458997"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Aging, Muscle Loss | Keywords: Protein ingestion, Muscle protein synthesis",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.459015"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Intervention: Whey",
+          "snippet": "DIETARY_SUPPLEMENT: Whey - Supplement provided twice daily in 30g doses",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.459031"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Intervention: Collagen",
+          "snippet": "DIETARY_SUPPLEMENT: Collagen - Supplement provided twice daily in 30g doses",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.459048"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Arm Group: Whey protein supplement",
+          "snippet": "Arm: Whey protein supplement - Supplement will be delivered twice daily (30g per supplement) of whey protein isolate",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.459063"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Arm Group: Collagen peptide supplement",
+          "snippet": "Arm: Collagen peptide supplement - Supplement will be delivered twice daily (30g per supplement) of hydrolyzed collagen peptides.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.459078"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Phase",
+          "snippet": "Phase: NA",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.459092"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "Whey",
+          "title": "FDA Label: Whey",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:06:29.697491"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "Collagen",
+          "title": "FDA Label: Collagen",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:06:30.174965"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT03285737",
+            "orgStudyIdInfo": {
+              "id": "HIREB 0574"
+            },
+            "organization": {
+              "fullName": "McMaster University",
+              "class": "OTHER"
+            },
+            "briefTitle": "Protein Intake and Step Reduction in Older Adults",
+            "officialTitle": "Whey Protein Intake in the Amelioration of Skeletal Muscle Quantity and Function During Inactivity in Older Adults",
+            "acronym": "DRI"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2017-09",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2016-03-23",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2016-12-15",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2017-11",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2017-09-12",
+            "studyFirstSubmitQcDate": "2017-09-14",
+            "studyFirstPostDateStruct": {
+              "date": "2017-09-18",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2018-03-20",
+            "lastUpdatePostDateStruct": {
+              "date": "2018-03-22",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "McMaster University",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "National Dairy Council",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": false,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "Sarcopenia, the loss in muscle mass with age, is associated with several negative health outcomes including cancer, stroke, cardiovascular disease and diabetes. This loss of muscle mass remains relatively steady following 50 years of age however it can be accelerated with periods of disuse associated with hospitalization, fracture or surgery of the hip or simply influenza. Also associated with periods of disuse, is a lack of energy intake as hospitalizations often result in undernourishment. The consumption of protein has been shown to stimulate muscle growth and therefore the investigators are wondering whether it is able to offset the loss of muscle mass associated with disuse. Therefore, the purpose of the study is to examine the effects of protein consumption combined with mild caloric restriction on changes in muscle mass and function during a period of disuse as well as during a period of recovery .",
+            "detailedDescription": "The age-related decline in skeletal muscle mass, termed sarcopenia, is associated with a host of metabolic disease states including, but not limited to, cancer, stroke, microvascular disease, type 2 diabetes, Parkinson's and Alzheimer's. Moreover, declines in skeletal muscle mass also are accompanied by an even more precipitous reduction in skeletal muscle strength, known as dynapenia, which is a predisposition for disability and falls.\n\nSarcopenia begins in the 5th decade of life and proceeds, at least based on population- derived estimates, at a \\~0.8% loss annually, with strength losses being greater and more variable at 2-5% year past the age of 50. However, these rates of muscle and strength loss are not linear. Rather, the steady decline in muscle mass loss is punctuated by short-term periods of muscle disuse, which accelerate strength and muscle loss and from which older, as compared to younger, persons have a difficult time recovering. These acute periods of muscle disuse have been shown to result in a transient accelerated decline in strength and skeletal muscle mass effectively accelerating sarcopenia. Such episodes of muscle inactivity manifest from a variety of circumstances such as hospitalization requiring short-term bed rest, immobilization of limbs due to fracture or surgery, and periods of inactive convalescence from illnesses. For example, influenza is the second most common cause of short-term hospitalization in persons 65y with an average hospital stay of 3-4d in duration during which substantial muscle disuse occurs. In addition, many surgeries in older persons (e.g., cholecystectomy), are followed by a hospital stay averaging 3d with a 6-9d period of recovery, or an average of \\~10 d of convalescence and minimal activity before a return to normal activity. Given that physical strength is a predictor of all-cause mortality, strategies that prevent the decline in, or enhance the recovery of, skeletal muscle strength and functional mass following periods of inactivity in the elderly are critical.\n\nData from our lab and others have shown that reduced ambulation (i.e., reduced daily steps), a model of a remarkably common but seemingly benign state of muscle disuse, leads to a significant loss of skeletal muscle in both young and older individuals. The investigators propose that a period of disuse induced through step reduction provides an excellent model by which to study disuse-induced dynapenia and atrophy. In older persons, 2wk of reduced activity has been shown to decrease leg lean mass by 3.9% and increase in trunk adipose tissue by 7.3%. Interestingly, others have demonstrated that older individuals lose the same amount of muscle with only 10d of bed rest as compared to that lost with 28d of bed rest in young persons. During the same 10d period there is shocking loss of lower extremity strength, power, and aerobic capacity, and a reduction in physical activity. These data demonstrate just how susceptible older persons are to even short-term periods of disuse. Different results were observed by Suetta et al, who reported, in response to 14d of leg casting, an 8.9% and a 5.2% decline in quadriceps femoris muscle volume in young (n=9) and old men (n=9), respectively. What needs to be appreciated, however, is that the older subjects had an 11% lower muscle volume prior to immobilization (i.e., sarcopenia) so the loss in muscle mass may have even more dire consequences for the older subjects . More importantly, older men showed recovery of only 63% of their muscle mass and \\~78% of their strength with 4wk of intensive resistance training (which is not standard rehabilitation), versus a complete recovery in young men. The investigators also have preliminary data that shows 2wk of step reduction results in a significant decline in skeletal muscle strength in older men.\n\nOne potential strategy to alleviate disuse-induced muscle atrophy that occurs during physical inactivity would be to increase dietary protein intake. Indeed, some studies show that high doses of amino acid ingestion slow the rate of disuse atrophy during bed rest. However, more recently, Dirks et al reported that increasing protein intake from 1.1g/kg/d to 1.6g/kg/d, using a twice daily supplement of 20g of protein, had no impact on skeletal muscle disuse atrophy during 5d of immobilization by means of a full leg cast. The lack of agreement between studies has been highlighted as being related to differences in the protein intake between the control groups. Indeed, in the studies that did show attenuation in muscle mass loss during bed rest, the control groups were consuming protein at a rate no higher than 0.8g/kg/d whereas in the latter study participants in the control group consumed 1.1g/kg/d and it is also hypothesized that the protein dose used by Dirks et al was suboptimal since our work shows that higher protein doses of whey protein are required by older men to optimally stimulate protein synthesis. The investigators have recently showed, using a retrospective pooled analysis of muscle protein synthetic rates, that older men had a higher per meal protein requirement to optimally stimulate protein synthesis. Importantly, this work also showed that with a sufficiently high dose of whey protein (\\~30g) older men had rates of muscle protein synthesis not different from those in young men. Thus, while it is appreciated that twice daily consumption of a 30g supplement would substantially elevate protein intake, this intake would still be well within the Acceptable Macronutrient Distribution Ranges and appropriate for older individuals who are inactive and hypoenergetic. Moreover, the study by Dirks et al was conducted in a 'free-living' setting insofar as diet was concerned. The investigators propose that during periods of hospitalization and convalescence, elderly individuals often experience an energy deficit and are undernourished, specifically with respect to protein intake . Indeed, a study of 102 hospital patients demonstrated that 21% were consuming only 50% of their daily energy requirements and this under-nutrition was associated with a higher incidence of in-hospital and 90d post-discharge mortality. Similar findings have been corroborated by other reports that also show that under-nutrition is largely driven by inadequate protein intake. This latter point is highly relevant to our application as during times of energy deficit up to 25% of body mass loss can be accounted for by losses of lean body mass. Taken together, these data show that periods of muscle disuse are often accompanied by periods of energy deficit in the elderly. This situation also is highly likely to be the case during, for example, wintertime in Northern regions of Canada and the US when older adults, particularly those who live in single occupancy households, may be homebound and thus drastically reduce their activity levels and are less likely to walk to retail outlets.\n\nThe mechanistic basis of the age-related loss of skeletal muscle mass and function Losses of skeletal muscle mass are underpinned by an imbalance between rates of muscle protein synthesis (MPS) and muscle protein breakdown (MPB). In healthy humans it is known that the change in the rate of MPS in response to contractile activity and protein feeding is the primary locus of control for human muscle mass. In this regard, the investigators have recently shown that postprandial MPS in response to protein ingestion is reduced by approximately \\~20% following 14d of step reduction in older men and women, and this reduction in postprandial MPS - coined 'anabolic resistance' - was associated with a \\~3.9% loss in fat free leg mass over the 14d period. Thus, it is proposed that reduced anabolic sensitivity to protein ingestion is primarily responsible for skeletal muscle disuse atrophy in humans. Relevant to the setting of hospitalization, short-term energy deficits also reduce postprandial MPS in young and the investigators have preliminary data to show that 14d of a controlled hypoenergetic diet also reduces MPS by approximately \\~9% in middle-aged men and women. It therefore appears that both reduced ambulation and a state of energy restriction independently (and possibly synergistically) have a deleterious impact on MPS in response to protein ingestion that may explain the rapid and punctuated losses of skeletal muscle mass and strength that can occur with advancing age. Our laboratory has published data to show that increased consumption of dairy foods and protein during diet and exercise-induced weight loss results in lean mass gain whilst concomitantly promoting fat mass loss in overweight and premenopausal women. Yet, how increasing dietary dairy-based protein intake during, and in recovery from, a period of combined reduced ambulation and hypoenergetic diet influences muscle anabolism in older men and women remains unknown. Another discerning feature of protein metabolism with aging is that although there are no apparent differences in protein turnover between young healthy males and females, older females demonstrate elevated rates of resting MPS versus older males (\\>70y) but are less sensitive to the anabolic effects of protein feeding and exercise. The implication of this phenomenon is that elderly women may be at even greater risk from disuse atrophy during periods of physical inactivity and sub-optimal protein intake compared with men.\n\nMany of the aforementioned studies that assessed acute changes in rates of MPS in response to protein intake did so by infusing a labeled amino acid tracer and calculating the incorporation of that tracer into skeletal muscle over a period of hours (for extended discussion see). While this approach provides important information, especially when coupled with quantitative measures of changes in muscle mass such a MRI, the assessment of tracer-infusion measured MPS is limited to \\~5-6h. More recent developments of analytical techniques have enabled the use of a deuterated water methodology that enables assessment of MPS with much longer periods of incorporation i.e., days-to-weeks. Indeed, this method has been recently validated and its use is now becoming the interest of many researchers. However, only a few laboratories have demonstrated the ability to competently perform this measurement. In fact, the investigators have recently conducted two studies using this methodology, and the MPS values that have been obtained are entirely consistent with published reports. It is proposed that the use of the deuterated water methodology, which allows measurement of MPS in a free-living situation and incorporates all dietary and activity measures, would be a substantial advance in determining mechanisms underpinning disuse-mediated muscle protein loss. Thus, the investigators aim to build on these findings by using the deuterated water methodology to study how increasing dietary protein intake during, and in recovery from, a period of combined reduced ambulation and energy deficit, influences long-term rates of MPS in older men and women.\n\nThe molecular mechanisms that underpin MPS in response to stimulation are complex, multifactorial and remain largely unknown. However, what is known is that proteins contained within the Akt-mTORC1-p70S6K1 signalling axis appear key. In a study conducted by the investigators involving reduced steps, it demonstrated a reduction in Akt phosphorylation as well as a \\~12% reduction in insulin sensitivity. Thus, the investigators propose to examine how the content of proteins contained within the Akt-mTORC1-p70S6K1 signalling axis change during our intervention. The investigators will also will examine changes in the DNA-protein ratio (an indicator of cell size) as well as mRNA expression of myogenin, MAFBx and MuRF1, some of which have been shown to change in response to a period of disuse atrophy, using real-time PCR. Thus, our molecular analysis coupled with the use of the deuterated water methodology, and a real-world model of disuse atrophy and negative energy balance, provides a mechanism-based clinical approach to study the impact of increased protein intake on age-related myopenia and dynapenia.\n\nThe investigators have previously shown that 14d of reduced steps induces a reduction in postprandial MPS by approximately \\~20% following in older men and women, and this reduction in postprandial MPS was associated with a \\~3.9% loss in fat free leg mass. It has been demonstrated that increased consumption of dairy foods and protein during diet and exercise-induced weight loss results in lean mass gain whilst concomitantly promoting fat mass loss in overweight and premenopausal women. Building on these findings, the investigators have recently generated pilot data to show that 14d of step reduction results in a significant decrease in muscle strength. In addition, it showed an \\~18% reduction in postprandial MPS in response to 3 separate 25g servings of whey protein over an 11 h periods following 14d of mild energy restriction (-300 kcal) in healthy older males (\\~65y). Moreover, the investigators have preliminary data to show that 14 d of a hypoenergetic diet (-750 kcal/d) induces a significant decrease of 9% in postprandial MPS in obese, overweight men and women aged 35-65y . Finally, the investigators have just successfully completed a complex human trial in older men (65-75y) who completed a single bout of either resistance exercise; high-intensity interval exercise or traditional low-intensity aerobic exercise aimed that utilized the D2O tracer methodology to directly assess MPS over a 24h and 48h period. These MPS values are entirely consistent with previously published data."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Aging",
+              "Muscle Loss"
+            ],
+            "keywords": [
+              "Protein ingestion",
+              "Muscle protein synthesis"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "NA"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "interventionModelDescription": "Parallel group design (with repeated measurements within each group)",
+              "primaryPurpose": "PREVENTION",
+              "maskingInfo": {
+                "masking": "DOUBLE",
+                "maskingDescription": "Double blind",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 32,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Whey protein supplement",
+                "type": "EXPERIMENTAL",
+                "description": "Supplement will be delivered twice daily (30g per supplement) of whey protein isolate",
+                "interventionNames": [
+                  "Dietary Supplement: Whey"
+                ]
+              },
+              {
+                "label": "Collagen peptide supplement",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "Supplement will be delivered twice daily (30g per supplement) of hydrolyzed collagen peptides.",
+                "interventionNames": [
+                  "Dietary Supplement: Collagen"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DIETARY_SUPPLEMENT",
+                "name": "Whey",
+                "description": "Supplement provided twice daily in 30g doses",
+                "armGroupLabels": [
+                  "Whey protein supplement"
+                ]
+              },
+              {
+                "type": "DIETARY_SUPPLEMENT",
+                "name": "Collagen",
+                "description": "Supplement provided twice daily in 30g doses",
+                "armGroupLabels": [
+                  "Collagen peptide supplement"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Integrated myofibrillar muscle protein synthesis with use of deuterated water, measured by GCMS",
+                "description": "Measured with ingestion of deuterated water, looking at enrichments in total body water versus muscle",
+                "timeFrame": "5 weeks"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Rockport walk test (submaximal VO2 test)",
+                "description": "Participants will walk around a 200m track at a self selected pace for a total of 1 mile. Submaximla VO2 will be calculated using their age, sex, time to complete the test and heart rate with the use of a heart rate monitor",
+                "timeFrame": "5 weeks"
+              },
+              {
+                "measure": "Marker of systemic inflammation (TNF-a)",
+                "description": "Will be measured from a fasted serum sample using commercially available kits",
+                "timeFrame": "5 weeks"
+              },
+              {
+                "measure": "Fasted glucose",
+                "description": "Will be measured from fasted serum sample using commercially available kits",
+                "timeFrame": "5 weeks"
+              },
+              {
+                "measure": "Fasted insulin",
+                "description": "Will be measured from fasted plasma samples using commercially available kits",
+                "timeFrame": "5 Weeks"
+              },
+              {
+                "measure": "Timed up and go test",
+                "description": "A clinical measure where participants are asked to rise from a chair, walk 3 metres and then return back to their original position and sit in the chair without using their arms as aids.",
+                "timeFrame": "5 weeks"
+              },
+              {
+                "measure": "30 second chair stand test",
+                "description": "Participants are asked to rise and sit in a chair without the use of their arms, as many times as possible in 30 seconds in a controlled fashion",
+                "timeFrame": "5 weeks"
+              },
+              {
+                "measure": "Maximum isometric voluntary strength of the knee extensors",
+                "description": "Participants will be seated in a biodex dynamometer with knee angle set at 110 degrees. They will be asked to perform an MVC for 5 seconds and will be provided with a 2 minute rest in between each measurement for a total of 3 measurements.",
+                "timeFrame": "5 weeks"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Free of any chronic conditions\n* Non smoker\n* Non diabetic\n* No consumption of medications known to affect protein metabolism\n* No allergies to dairy proteins\n* Moderately active (3500-10,000 steps per day)\n* No use of a walker or assistive walking device\n\nExclusion Criteria:\n\n* Cigarette use, diabetic, non active, use of a walker, consumption of drugs known to affect protein metabolism",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "65 Years",
+            "maximumAge": "80 Years",
+            "stdAges": [
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Stuart M Phillips, Ph.D.",
+                "affiliation": "McMaster University",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Exercise Metabolism Research Laboratory, McMaster Univeristy",
+                "city": "Hamilton",
+                "state": "Ontario",
+                "zip": "L8S 4K1",
+                "country": "Canada",
+                "geoPoint": {
+                  "lat": 43.25011,
+                  "lon": -79.84963
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "30289425",
+                "type": "DERIVED",
+                "citation": "Oikawa SY, McGlory C, D'Souza LK, Morgan AK, Saddler NI, Baker SK, Parise G, Phillips SM. A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons. Am J Clin Nutr. 2018 Nov 1;108(5):1060-1068. doi: 10.1093/ajcn/nqy193."
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        },
+        "openfda_Whey": {
+          "spl_product_data_elements": [
+            "Psora Miasm Eggshell Membrane, Whey Protein, Calcarea Carbonica, Lycopodium Clavatum, Sulphur, Arsenicum Album, Croton Tiglium, Graphites, Hydrocotyle Asiatica, Natrum Muriaticum EGG SHELL MEMBRANE EGG SHELL MEMBRANE WHEY WHEY OYSTER SHELL CALCIUM CARBONATE, CRUDE OYSTER SHELL CALCIUM CARBONATE, CRUDE LYCOPODIUM CLAVATUM SPORE LYCOPODIUM CLAVATUM SPORE SULFUR SULFUR ARSENIC TRIOXIDE ARSENIC CATION (3+) CROTON TIGLIUM SEED CROTON TIGLIUM SEED GRAPHITE GRAPHITE CENTELLA ASIATICA WHOLE CENTELLA ASIATICA SODIUM CHLORIDE CHLORIDE ION WATER ALCOHOL"
+          ],
+          "active_ingredient": [
+            "ACTIVE INGREDIENTS: (in each drop) Arsenicum Album 12C 12.48%, Calcarea Carbonica 30X 12.48%, Croton Tiglium 12C 12.48%, Graphites 12C 12.48%, Hydrocotyle Asiatica 12C 12.48%, Lycopodium Clavatum 30X 12.48%, Natrum Muriaticum 12C 12.48%, Sulphur 30X 12.48%, Eggshell Membrane 6X 0.10%, Whey Protein 6X 0.10%."
+          ],
+          "purpose": [
+            "PURPOSE: Arsenicum Album \u2013 burning pains,** Calcarea Carbonica - chilliness,** Croton Tiglium - itching,** Graphites \u2013 weight gain,** Hydrocotyle Asiatica \u2013 dry skin,** Lycopodium Clavatum - anxiety,** Natrum Muriaticum - sadness,** Sulphur - eczema,** Eggshell Membrane \u2013 joint pain,** Whey Protein \u2013 skin eruptions** **Claims based on traditional homeopathic practice, not accepted medical evidence. Not FDA evaluated."
+          ],
+          "indications_and_usage": [
+            "USES: May temporarily relieve: \u2022 itching of the skin \u2022 eruption on the scalp and bends of joints with itching \u2022 skin that is dry, scaly \u2022 general exhaustion.** **Claims based on traditional homeopathic practice, not accepted medical evidence. Not FDA evaluated."
+          ],
+          "warnings": [
+            "WARNINGS: Stop use and ask a doctor if symptoms persist for more than 7 days. If pregnant or breast-feeding, ask a health professional before use. Keep out of reach of children. In case of overdose, get medical help or contact a Poison Control Center right away. DO NOT USE IF TAMPER EVIDENT SEAL IS BROKEN OR MISSING Store in a cool, dry place."
+          ],
+          "keep_out_of_reach_of_children": [
+            "KEEP OUT OF REACH OF CHILDREN: In case of overdose, get medical help or contact a Poison Control Center right away."
+          ],
+          "dosage_and_administration": [
+            "DIRECTIONS: \u2022 Adults and children 5 to 10 drops orally, 3 times daily or as otherwise directed by a health care professional. \u2022 Consult a physician for use in children under 12 years of age."
+          ],
+          "inactive_ingredient": [
+            "INACTIVE INGREDIENTS: Demineralized water, 20% ethanol."
+          ],
+          "questions": [
+            "QUESTIONS: Dist. by Energique, Inc. 201 Apple Blvd. Woodbine, IA 51579 800.869.8078"
+          ],
+          "package_label_principal_display_panel": [
+            "PACKAGE LABEL DISPLAY: ENERGIQUE SINCE 1987 HOMEOPATHIC REMEDY PSORA MIASM 1 fl. oz. (30 ml) PSORA MIASM"
+          ],
+          "set_id": "6a12aa49-35fc-41f4-bec8-6f9a20a97caa",
+          "id": "c631231e-4cae-4cc9-8045-25a609d41e5b",
+          "effective_time": "20250313",
+          "version": "1",
+          "openfda": {
+            "brand_name": [
+              "Psora Miasm"
+            ],
+            "generic_name": [
+              "EGGSHELL MEMBRANE, WHEY PROTEIN, CALCAREA CARBONICA, LYCOPODIUM CLAVATUM, SULPHUR, ARSENICUM ALBUM, CROTON TIGLIUM, GRAPHITES, HYDROCOTYLE ASIATICA, NATRUM MURIATICUM"
+            ],
+            "manufacturer_name": [
+              "Energique, Inc."
+            ],
+            "product_ndc": [
+              "44911-0733"
+            ],
+            "product_type": [
+              "HUMAN OTC DRUG"
+            ],
+            "route": [
+              "ORAL"
+            ],
+            "substance_name": [
+              "ARSENIC TRIOXIDE",
+              "CENTELLA ASIATICA WHOLE",
+              "CROTON TIGLIUM SEED",
+              "EGG SHELL MEMBRANE",
+              "GRAPHITE",
+              "LYCOPODIUM CLAVATUM SPORE",
+              "OYSTER SHELL CALCIUM CARBONATE, CRUDE",
+              "SODIUM CHLORIDE",
+              "SULFUR",
+              "WHEY"
+            ],
+            "spl_id": [
+              "c631231e-4cae-4cc9-8045-25a609d41e5b"
+            ],
+            "spl_set_id": [
+              "6a12aa49-35fc-41f4-bec8-6f9a20a97caa"
+            ],
+            "package_ndc": [
+              "44911-0733-1"
+            ],
+            "is_original_packager": [
+              true
+            ],
+            "upc": [
+              "0363113701036"
+            ],
+            "nui": [
+              "N0000185371",
+              "N0000175629",
+              "N0000184306",
+              "M0000728",
+              "M0006342",
+              "M0013890"
+            ],
+            "pharm_class_epc": [
+              "Non-Standardized Food Allergenic Extract [EPC]"
+            ],
+            "pharm_class_pe": [
+              "Increased Histamine Release [PE]",
+              "Cell-mediated Immunity [PE]"
+            ],
+            "pharm_class_cs": [
+              "Allergens [CS]",
+              "Dietary Proteins [CS]",
+              "Milk Proteins [CS]"
+            ],
+            "unii": [
+              "S7V92P67HO",
+              "7M867G6T1U",
+              "0HK2GZK66E",
+              "N7QBR4212V",
+              "4QQN74LH4O",
+              "C88X29Y479",
+              "2E32821G6I",
+              "451W47IQ8X",
+              "70FD1KFU70",
+              "8617Z5FMF6"
+            ]
+          }
+        },
+        "openfda_Collagen": {
+          "spl_product_data_elements": [
+            "JBA Collagen-B Chicken Essence Chicken powder, HYDROLYSED BOVINE COLLAGEN ENZYMATIC 3500 MW STARCH, CORN CHICKEN BONE CHICKEN BONE HYDROLYSED BOVINE COLLAGEN (ENZYMATIC; 3500 MW) HYDROLYSED BOVINE COLLAGEN (ENZYMATIC; 3500 MW)"
+          ],
+          "statement_of_identity": [
+            "Identity Dietary Supplement"
+          ],
+          "dosage_and_administration": [
+            "Direction How to Use: - Mix one packet with 120 ml (4oz) of boiling water. - Stir well until fully dissolved and enjoy while warm."
+          ],
+          "warnings": [
+            "Usage warnings : - Do not use the product if it is expired - Keep out of the reach of children"
+          ],
+          "active_ingredient": [
+            "Ingredients Chicken Powder (76%), Collagen Peptides (24%) (85% collagen) (from bovine)"
+          ],
+          "purpose": [
+            ""
+          ],
+          "inactive_ingredient": [
+            ""
+          ],
+          "keep_out_of_reach_of_children": [
+            ""
+          ],
+          "spl_unclassified_section": [
+            "Storage Store in a cool, dry place, avoid moisture and light."
+          ],
+          "indications_and_usage": [
+            ""
+          ],
+          "package_label_principal_display_panel": [
+            "Product label image description image description image description image description"
+          ],
+          "set_id": "02095fb4-70d0-4871-b6b2-e058e75351d4",
+          "id": "509df3be-f7b9-1f7d-e063-6394a90a5ca7",
+          "effective_time": "20260429",
+          "version": "1",
+          "openfda": {
+            "brand_name": [
+              "JBA Collagen-B Chicken Essence"
+            ],
+            "generic_name": [
+              "CHICKEN POWDER, HYDROLYSED BOVINE COLLAGEN ENZYMATIC 3500 MW"
+            ],
+            "manufacturer_name": [
+              "Advanced Pharmaceutical Services, Inc. Dba Affordable Quality Pharmaceuticals"
+            ],
+            "product_ndc": [
+              "13411-893"
+            ],
+            "product_type": [
+              "HUMAN OTC DRUG"
+            ],
+            "route": [
+              "ORAL"
+            ],
+            "substance_name": [
+              "CHICKEN BONE",
+              "HYDROLYSED BOVINE COLLAGEN (ENZYMATIC",
+              "3500 MW)"
+            ],
+            "spl_id": [
+              "509df3be-f7b9-1f7d-e063-6394a90a5ca7"
+            ],
+            "spl_set_id": [
+              "02095fb4-70d0-4871-b6b2-e058e75351d4"
+            ],
+            "package_ndc": [
+              "13411-893-05",
+              "13411-893-15",
+              "13411-893-30"
+            ],
+            "is_original_packager": [
+              true
+            ],
+            "unii": [
+              "68W3SD800Q"
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30289425/",
+          "identifier": "PMID:30289425",
+          "title": "A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons.",
+          "snippet": "Title: A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons.\nAuthors: Oikawa Sara Y, McGlory Chris, D'Souza Lisa K et al.\nJournal: The American journal of clinical nutrition (2018)\nAbstract: BACKGROUND: In older persons, muscle loss is accelerated during physical inactivity and hypoenergetic states, both of which are features of hospitalization. Protein supplementation may represent a strategy to offset the loss of muscle during inactivity, and enhance recovery on resumption of activity",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:07:34.095497"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7278031/",
+          "identifier": "PMC:7278031",
+          "title": "Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial.",
+          "snippet": "Title: Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial.\nAuthors: Oikawa SY, Callahan DM, McGlory C et al.\nJournal: Appl Physiol Nutr Metab",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.638501"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "30289425"
+        ],
+        "pubmed_count": 1,
+        "pmc_ids": [
+          "7278031"
+        ],
+        "pmc_count": 1,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/Q8WWY7",
+          "identifier": "Q8WWY7",
+          "title": "WAP four-disulfide core domain protein 12",
+          "snippet": "Organism: Homo sapiens. Protein: WAP four-disulfide core domain protein 12. Accession: Q8WWY7. Precursor length: 111 aa. Mature form: WAP four-disulfide core domain protein 12 88 aa (88 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:31.843750"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/Q02388",
+          "identifier": "Q02388",
+          "title": "Collagen alpha-1(VII) chain",
+          "snippet": "Organism: Homo sapiens. Protein: Collagen alpha-1(VII) chain. Accession: Q02388. Precursor length: 2944 aa. Mature form: Collagen alpha-1(VII) chain 2928 aa (2928 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:32.160159"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/P25067",
+          "identifier": "P25067",
+          "title": "Collagen alpha-2(VIII) chain",
+          "snippet": "Organism: Homo sapiens. Protein: Collagen alpha-2(VIII) chain. Accession: P25067. Precursor length: 703 aa. Mature form: Collagen alpha-2(VIII) chain 675 aa (675 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:07:32.160214"
+        }
+      ],
+      "raw_data": {
+        "uniprot_Whey": [
+          {
+            "entryType": "UniProtKB reviewed (Swiss-Prot)",
+            "primaryAccession": "Q8WWY7",
+            "organism": {
+              "scientificName": "Homo sapiens",
+              "commonName": "Human",
+              "taxonId": 9606,
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Mammalia",
+                "Eutheria",
+                "Euarchontoglires",
+                "Primates",
+                "Haplorrhini",
+                "Catarrhini",
+                "Hominidae",
+                "Homo"
+              ]
+            },
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "value": "WAP four-disulfide core domain protein 12"
+                }
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "value": "Putative protease inhibitor WAP12"
+                  }
+                },
+                {
+                  "fullName": {
+                    "value": "Whey acidic protein 2"
+                  }
+                }
+              ],
+              "flag": "Precursor"
+            },
+            "features": [
+              {
+                "type": "Chain",
+                "location": {
+                  "start": {
+                    "value": 24,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 111,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "WAP four-disulfide core domain protein 12",
+                "featureId": "PRO_0000041390"
+              }
+            ],
+            "sequence": {
+              "value": "MGSSSFLVLMVSLVLVTLVAVEGVKEGIEKAGVCPADNVRCFKSDPPQCHTDQDCLGERKCCYLHCGFKCVIPVKELEEGGNKDEDVSRPYPEPGWEAKCPGSSSTRCPQK",
+              "length": 111,
+              "molWeight": 12050,
+              "crc64": "2DFB39043F1A0997",
+              "md5": "10353DCDD79E59E61AC484A40EA30733"
+            },
+            "extraAttributes": {
+              "uniParcId": "UPI0000049DFB"
+            },
+            "_verified_relevance": 1.0
+          }
+        ],
+        "uniprot_Collagen": [
+          {
+            "entryType": "UniProtKB reviewed (Swiss-Prot)",
+            "primaryAccession": "Q02388",
+            "organism": {
+              "scientificName": "Homo sapiens",
+              "commonName": "Human",
+              "taxonId": 9606,
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Mammalia",
+                "Eutheria",
+                "Euarchontoglires",
+                "Primates",
+                "Haplorrhini",
+                "Catarrhini",
+                "Hominidae",
+                "Homo"
+              ]
+            },
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "value": "Collagen alpha-1(VII) chain"
+                }
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "value": "Long-chain collagen"
+                  },
+                  "shortNames": [
+                    {
+                      "value": "LC collagen"
+                    }
+                  ]
+                }
+              ],
+              "flag": "Precursor"
+            },
+            "features": [
+              {
+                "type": "Chain",
+                "location": {
+                  "start": {
+                    "value": 17,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 2944,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Collagen alpha-1(VII) chain",
+                "featureId": "PRO_0000005761"
+              }
+            ],
+            "sequence": {
+              "value": "MTLRLLVAALCAGILAEAPRVRAQHRERVTCTRLYAADIVFLLDGSSSIGRSNFREVRSFLEGLVLPFSGAASAQGVRFATVQYSDDPRTEFGLDALGSGGDVIRAIRELSYKGGNTRTGAAILHVADHVFLPQLARPGVPKVCILITDGKSQDLVDTAAQRLKGQGVKLFAVGIKNADPEELKRVASQPTSDFFFFVNDFSILRTLLPLVSRRVCTTAGGVPVTRPPDDSTSAPRDLVLSEPSSQSLRVQWTAASGPVTGYKVQYTPLTGLGQPLPSERQEVNVPAGETSVRLRGLRPLTEYQVTVIALYANSIGEAVSGTARTTALEGPELTIQNTTAHSLLVAWRSVPGATGYRVTWRVLSGGPTQQQELGPGQGSVLLRDLEPGTDYEVTVSTLFGRSVGPATSLMARTDASVEQTLRPVILGPTSILLSWNLVPEARGYRLEWRRETGLEPPQKVVLPSDVTRYQLDGLQPGTEYRLTLYTLLEGHEVATPATVVPTGPELPVSPVTDLQATELPGQRVRVSWSPVPGATQYRIIVRSTQGVERTLVLPGSQTAFDLDDVQAGLSYTVRVSARVGPREGSASVLTVRREPETPLAVPGLRVVVSDATRVRVAWGPVPGASGFRISWSTGSGPESSQTLPPDSTATDITGLQPGTTYQVAVSVLRGREEGPAAVIVARTDPLGPVRTVHVTQASSSSVTITWTRVPGATGYRVSWHSAHGPEKSQLVSGEATVAELDGLEPDTEYTVHVRAHVAGVDGPPASVVVRTAPEPVGRVSRLQILNASSDVLRITWVGVTGATAYRLAWGRSEGGPMRHQILPGNTDSAEIRGLEGGVSYSVRVTALVGDREGTPVSIVVTTPPEAPPALGTLHVVQRGEHSLRLRWEPVPRAQGFLLHWQPEGGQEQSRVLGPELSSYHLDGLEPATQYRVRLSVLGPAGEGPSAEVTARTESPRVPSIELRVVDTSIDSVTLAWTPVSRASSYILSWRPLRGPGQEVPGSPQTLPGISSSQRVTGLEPGVSYIFSLTPVLDGVRGPEASVTQTPVCPRGLADVVFLPHATQDNAHRAEATRRVLERLVLALGPLGPQAVQVGLLSYSHRPSPLFPLNGSHDLGIILQRIRDMPYMDPSGNNLGTAVVTAHRYMLAPDAPGRRQHVPGVMVLLVDEPLRGDIFSPIREAQASGLNVVMLGMAGADPEQLRRLAPGMDSVQTFFAVDDGPSLDQAVSGLATALCQASFTTQPRPEPCPVYCPKGQKGEPGEMGLRGQVGPPGDPGLPGRTGAPGPQGPPGSATAKGERGFPGADGRPGSPGRAGNPGTPGAPGLKGSPGLPGPRGDPGERGPRGPKGEPGAPGQVIGGEGPGLPGRKGDPGPSGPPGPRGPLGDPGPRGPPGLPGTAMKGDKGDRGERGPPGPGEGGIAPGEPGLPGLPGSPGPQGPVGPPGKKGEKGDSEDGAPGLPGQPGSPGEQGPRGPPGAIGPKGDRGFPGPLGEAGEKGERGPPGPAGSRGLPGVAGRPGAKGPEGPPGPTGRQGEKGEPGRPGDPAVVGPAVAGPKGEKGDVGPAGPRGATGVQGERGPPGLVLPGDPGPKGDPGDRGPIGLTGRAGPPGDSGPPGEKGDPGRPGPPGPVGPRGRDGEVGEKGDEGPPGDPGLPGKAGERGLRGAPGVRGPVGEKGDQGDPGEDGRNGSPGSSGPKGDRGEPGPPGPPGRLVDTGPGAREKGEPGDRGQEGPRGPKGDPGLPGAPGERGIEGFRGPPGPQGDPGVRGPAGEKGDRGPPGLDGRSGLDGKPGAAGPSGPNGAAGKAGDPGRDGLPGLRGEQGLPGPSGPPGLPGKPGEDGKPGLNGKNGEPGDPGEDGRKGEKGDSGASGREGRDGPKGERGAPGILGPQGPPGLPGPVGPPGQGFPGVPGGTGPKGDRGETGSKGEQGLPGERGLRGEPGSVPNVDRLLETAGIKASALREIVETWDESSGSFLPVPERRRGPKGDSGEQGPPGKEGPIGFPGERGLKGDRGDPGPQGPPGLALGERGPPGPSGLAGEPGKPGIPGLPGRAGGVGEAGRPGERGERGEKGERGEQGRDGPPGLPGTPGPPGPPGPKVSVDEPGPGLSGEQGPPGLKGAKGEPGSNGDQGPKGDRGVPGIKGDRGEPGPRGQDGNPGLPGERGMAGPEGKPGLQGPRGPPGPVGGHGDPGPPGAPGLAGPAGPQGPSGLKGEPGETGPPGRGLTGPTGAVGLPGPPGPSGLVGPQGSPGLPGQVGETGKPGAPGRDGASGKDGDRGSPGVPGSPGLPGPVGPKGEPGPTGAPGQAVVGLPGAKGEKGAPGGLAGDLVGEPGAKGDRGLPGPRGEKGEAGRAGEPGDPGEDGQKGAPGPKGFKGDPGVGVPGSPGPPGPPGVKGDLGLPGLPGAPGVVGFPGQTGPRGEMGQPGPSGERGLAGPPGREGIPGPLGPPGPPGSVGPPGASGLKGDKGDPGVGLPGPRGERGEPGIRGEDGRPGQEGPRGLTGPPGSRGERGEKGDVGSAGLKGDKGDSAVILGPPGPRGAKGDMGERGPRGLDGDKGPRGDNGDPGDKGSKGEPGDKGSAGLPGLRGLLGPQGQPGAAGIPGDPGSPGKDGVPGIRGEKGDVGFMGPRGLKGERGVKGACGLDGEKGDKGEAGPPGRPGLAGHKGEMGEPGVPGQSGAPGKEGLIGPKGDRGFDGQPGPKGDQGEKGERGTPGIGGFPGPSGNDGSAGPPGPPGSVGPRGPEGLQGQKGERGPPGERVVGAPGVPGAPGERGEQGRPGPAGPRGEKGEAALTEDDIRGFVRQEMSQHCACQGQFIASGSRPLPSYAADTAGSQLHAVPVLRVSHAEEEERVPPEDDEYSEYSEYSVEEYQDPEAPWDSDDPCSLPLDEGSCTAYTLRWYHRAVTGSTEACHPFVYGGCGGNANRFGTREACERRCPPRVVQSQGTGTAQD",
+              "length": 2944,
+              "molWeight": 295220,
+              "crc64": "96D8BF6D0FD387DB",
+              "md5": "5FEE08B99008BD3AD21B01CD193D49A7"
+            },
+            "extraAttributes": {
+              "uniParcId": "UPI0000126D20"
+            },
+            "_verified_relevance": 1.0
+          },
+          {
+            "entryType": "UniProtKB reviewed (Swiss-Prot)",
+            "primaryAccession": "P25067",
+            "organism": {
+              "scientificName": "Homo sapiens",
+              "commonName": "Human",
+              "taxonId": 9606,
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Mammalia",
+                "Eutheria",
+                "Euarchontoglires",
+                "Primates",
+                "Haplorrhini",
+                "Catarrhini",
+                "Hominidae",
+                "Homo"
+              ]
+            },
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "value": "Collagen alpha-2(VIII) chain"
+                }
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "value": "Endothelial collagen"
+                  }
+                }
+              ],
+              "flag": "Precursor"
+            },
+            "features": [
+              {
+                "type": "Chain",
+                "location": {
+                  "start": {
+                    "value": 29,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 703,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Collagen alpha-2(VIII) chain",
+                "featureId": "PRO_0000005835"
+              }
+            ],
+            "sequence": {
+              "value": "MLGTLTPLSSLLLLLLVLVLGCGPRASSGGGAGGAAGYAPVKYIQPMQKGPVGPPFREGKGQYLEMPLPLLPMDLKGEPGPPGKPGPRGPPGPPGFPGKPGMGKPGLHGQPGPAGPPGFSRMGKAGPPGLPGKVGPPGQPGLRGEPGIRGDQGLRGPPGPPGLPGPSGITIPGKPGAQGVPGPPGFQGEPGPQGEPGPPGDRGLKGDNGVGQPGLPGAPGQGGAPGPPGLPGPAGLGKPGLDGLPGAPGDKGESGPPGVPGPRGEPGAVGPKGPPGVDGVGVPGAAGLPGPQGPSGAKGEPGTRGPPGLIGPTGYGMPGLPGPKGDRGPAGVPGLLGDRGEPGEDGEPGEQGPQGLGGPPGLPGSAGLPGRRGPPGPKGEAGPGGPPGVPGIRGDQGPSGLAGKPGVPGERGLPGAHGPPGPTGPKGEPGFTGRPGGPGVAGALGQKGDLGLPGQPGLRGPSGIPGLQGPAGPIGPQGLPGLKGEPGLPGPPGEGRAGEPGTAGPTGPPGVPGSPGITGPPGPPGPPGPPGAPGAFDETGIAGLHLPNGGVEGAVLGKGGKPQFGLGELSAHATPAFTAVLTSPFPASGMPVKFDRTLYNGHSGYNPATGIFTCPVGGVYYFAYHVHVKGTNVWVALYKNNVPATYTYDEYKKGYLDQASGGAVLQLRPNDQVWVQMPSDQANGLYSTEYIHSSFSGFLLCPT",
+              "length": 703,
+              "molWeight": 67244,
+              "crc64": "84BD7CBDBDECD466",
+              "md5": "4F7228C426D8B1344F3DAFEA08AB34A8"
+            },
+            "extraAttributes": {
+              "uniParcId": "UPI00001B2F2D"
+            },
+            "_verified_relevance": 1.0
+          },
+          {
+            "entryType": "UniProtKB reviewed (Swiss-Prot)",
+            "primaryAccession": "P27658",
+            "organism": {
+              "scientificName": "Homo sapiens",
+              "commonName": "Human",
+              "taxonId": 9606,
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Mammalia",
+                "Eutheria",
+                "Euarchontoglires",
+                "Primates",
+                "Haplorrhini",
+                "Catarrhini",
+                "Hominidae",
+                "Homo"
+              ]
+            },
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "value": "Collagen alpha-1(VIII) chain"
+                }
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "value": "Endothelial collagen"
+                  }
+                }
+              ],
+              "contains": [
+                {
+                  "recommendedName": {
+                    "fullName": {
+                      "value": "Vastatin"
+                    }
+                  }
+                }
+              ],
+              "flag": "Precursor"
+            },
+            "features": [
+              {
+                "type": "Chain",
+                "location": {
+                  "start": {
+                    "value": 28,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 744,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Collagen alpha-1(VIII) chain",
+                "featureId": "PRO_0000005762"
+              },
+              {
+                "type": "Chain",
+                "location": {
+                  "start": {
+                    "value": 572,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 744,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Vastatin",
+                "featureId": "PRO_0000390484"
+              }
+            ],
+            "sequence": {
+              "value": "MAVLPGPLQLLGVLLTISLSSIRLIQAGAYYGIKPLPPQIPPQMPPQIPQYQPLGQQVPHMPLAKDGLAMGKEMPHLQYGKEYPHLPQYMKEIQPAPRMGKEAVPKKGKEIPLASLRGEQGPRGEPGPRGPPGPPGLPGHGIPGIKGKPGPQGYPGVGKPGMPGMPGKPGAMGMPGAKGEIGQKGEIGPMGIPGPQGPPGPHGLPGIGKPGGPGLPGQPGPKGDRGPKGLPGPQGLRGPKGDKGFGMPGAPGVKGPPGMHGPPGPVGLPGVGKPGVTGFPGPQGPLGKPGAPGEPGPQGPIGVPGVQGPPGIPGIGKPGQDGIPGQPGFPGGKGEQGLPGLPGPPGLPGIGKPGFPGPKGDRGMGGVPGALGPRGEKGPIGAPGIGGPPGEPGLPGIPGPMGPPGAIGFPGPKGEGGIVGPQGPPGPKGEPGLQGFPGKPGFLGEVGPPGMRGLPGPIGPKGEAGQKGVPGLPGVPGLLGPKGEPGIPGDQGLQGPPGIPGIGGPSGPIGPPGIPGPKGEPGLPGPPGFPGIGKPGVAGLHGPPGKPGALGPQGQPGLPGPPGPPGPPGPPAVMPPTPPPQGEYLPDMGLGIDGVKPPHAYGAKKGKNGGPAYEMPAFTAELTAPFPPVGAPVKFNKLLYNGRQNYNPQTGIFTCEVPGVYYFAYHVHCKGGNVWVALFKNNEPVMYTYDEYKKGFLDQASGSAVLLLRPGDRVFLQMPSEQAAGLYAGQYVHSSFSGYLLYPM",
+              "length": 744,
+              "molWeight": 73364,
+              "crc64": "2BC1B0955DE2C9A3",
+              "md5": "0B38EBA5307FB5A1DB981DEBDD2A4190"
+            },
+            "extraAttributes": {
+              "uniParcId": "UPI0000126D21"
+            },
+            "_verified_relevance": 1.0
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://trial.medpath.com/clinical-trial/0ffd0a1f2cdf5759/nct03285737-whey-protein-intake-amelioration-skeletal-muscle",
+          "identifier": "NCT03285737",
+          "title": "Protein Intake and Step Reduction in Older Adults | MedPath",
+          "snippet": "Web result for: NCT03285737 Protein Intake and Step Reduction in Older Adults",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:32.932161"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://aging.networkofcare.org/riverside/CommunityResources/ClinicalTrials/Detail/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Protein Intake and Step Reduction in Older Adults",
+          "snippet": "Web result for: NCT03285737 Protein Intake and Step Reduction in Older Adults",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:32.932205"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://deltatrials.com/trial/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Protein Intake and Step Reduction in Older Adults (DRI)",
+          "snippet": "Web result for: NCT03285737 Protein Intake and Step Reduction in Older Adults",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:32.932223"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.patlynk.com/trial/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "DRI | Protein Intake and Step Reduction in Older Adults",
+          "snippet": "Web result for: NCT03285737 Protein Intake and Step Reduction in Older Adults",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:32.932237"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.smartpatients.com/trials/NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Protein Intake and Step Reduction in Older Adults",
+          "snippet": "Web result for: NCT03285737 Protein Intake and Step Reduction in Older Adults",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:32.932251"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 9,
+        "duckduckgo_html_length": 24575
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_8929",
+          "identifier": "DBAASP:DBAASPS_8929",
+          "title": "Collagencin - DBAASP",
+          "snippet": "Peptide: Collagencin\nSequence: GLPGPLGPAGPK\nLength: 12 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824185"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_10144",
+          "identifier": "DBAASP:DBAASPS_10144",
+          "title": "Collagen-like peptide R3 - DBAASP",
+          "snippet": "Peptide: Collagen-like peptide R3\nSequence: PRGPRGPRGPXGPXGPXGPXGPCCY\nLength: 25 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824245"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_10145",
+          "identifier": "DBAASP:DBAASPS_10145",
+          "title": "Collagen-like triple-helical peptide R3  - DBAASP",
+          "snippet": "Peptide: Collagen-like triple-helical peptide R3 ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824272"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_10184",
+          "identifier": "DBAASP:DBAASPS_10184",
+          "title": "Collagen-like peptide RR4 - DBAASP",
+          "snippet": "Peptide: Collagen-like peptide RR4\nSequence: RRGRRGPXGPXGPXGPXGPXGPCCY\nLength: 25 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824294"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_10185",
+          "identifier": "DBAASP:DBAASPS_10185",
+          "title": "Collagen-like triple-helical peptide RR4 - DBAASP",
+          "snippet": "Peptide: Collagen-like triple-helical peptide RR4",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.824314"
+        }
+      ],
+      "raw_data": {
+        "dbaasp_Whey": {
+          "found": false
+        },
+        "dbaasp_Collagen_match": "eq",
+        "dbaasp_Collagen": {
+          "total": 12,
+          "entries": [
+            {
+              "id": 8929,
+              "dbaaspId": "DBAASPS_8929",
+              "name": "Collagencin",
+              "nTerminus": null,
+              "sequence": "GLPGPLGPAGPK",
+              "sequenceLength": 12,
+              "pdb": "",
+              "pubchemCid": null,
+              "cTerminus": null,
+              "complexity": "monomer",
+              "synthesisType": "Synthetic"
+            },
+            {
+              "id": 10144,
+              "dbaaspId": "DBAASPS_10144",
+              "name": "Collagen-like peptide R3",
+              "nTerminus": null,
+              "sequence": "PRGPRGPRGPXGPXGPXGPXGPCCY",
+              "sequenceLength": 25,
+              "pdb": "",
+              "pubchemCid": null,
+              "cTerminus": "AMD",
+              "complexity": "monomer",
+              "synthesisType": "Synthetic"
+            },
+            {
+              "id": 10145,
+              "dbaaspId": "DBAASPS_10145",
+              "name": "Collagen-like triple-helical peptide R3 ",
+              "nTerminus": null,
+              "sequence": "",
+              "sequenceLength": 0,
+              "pdb": "",
+              "pubchemCid": null,
+              "cTerminus": null,
+              "complexity": "multimer",
+              "monomers": [
+                {
+                  "id": 10144,
+                  "dbaaspId": null,
+                  "name": "Collagen-like peptide R3",
+                  "nTerminus": null,
+                  "sequence": "PRGPRGPRGPXGPXGPXGPXGPCCY",
+                  "sequenceLength": 25,
+                  "pdb": null,
+                  "pubchemCid": null,
+                  "cTerminus": "AMD",
+                  "complexity": "monomer",
+                  "synthesisType": null
+                },
+                {
+                  "id": 10144,
+                  "dbaaspId": null,
+                  "name": "Collagen-like peptide R3",
+                  "nTerminus": null,
+                  "sequence": "PRGPRGPRGPXGPXGPXGPXGPCCY",
+                  "sequenceLength": 25,
+                  "pdb": null,
+                  "pubchemCid": null,
+                  "cTerminus": "AMD",
+                  "complexity": "monomer",
+                  "synthesisType": null
+                },
+                {
+                  "id": 10144,
+                  "dbaaspId": null,
+                  "name": "Collagen-like peptide R3",
+                  "nTerminus": null,
+                  "sequence": "PRGPRGPRGPXGPXGPXGPXGPCCY",
+                  "sequenceLength": 25,
+                  "pdb": null,
+                  "pubchemCid": null,
+                  "cTerminus": "AMD",
+                  "complexity": "monomer",
+                  "synthesisType": null
+                }
+              ],
+              "synthesisType": "Synthetic"
+            },
+            {
+              "id": 10184,
+              "dbaaspId": "DBAASPS_10184",
+              "name": "Collagen-like peptide RR4",
+              "nTerminus": null,
+              "sequence": "RRGRRGPXGPXGPXGPXGPXGPCCY",
+              "sequenceLength": 25,
+              "pdb": "",
+              "pubchemCid": null,
+              "cTerminus": "AMD",
+              "complexity": "monomer",
+              "synthesisType": "Synthetic"
+            },
+            {
+              "id": 10185,
+              "dbaaspId": "DBAASPS_10185",
+              "name": "Collagen-like triple-helical peptide RR4",
+              "nTerminus": null,
+              "sequence": "",
+              "sequenceLength": 0,
+              "pdb": "",
+              "pubchemCid": null,
+              "cTerminus": null,
+              "complexity": "multimer",
+              "monomers": [
+                {
+                  "id": 10184,
+                  "dbaaspId": null,
+                  "name": "Collagen-like peptide RR4",
+                  "nTerminus": null,
+                  "sequence": "RRGRRGPXGPXGPXGPXGPXGPCCY",
+                  "sequenceLength": 25,
+                  "pdb": null,
+                  "pubchemCid": null,
+                  "cTerminus": "AMD",
+                  "complexity": "monomer",
+                  "synthesisType": null
+                },
+                {
+                  "id": 10184,
+                  "dbaaspId": null,
+                  "name": "Collagen-like peptide RR4",
+                  "nTerminus": null,
+                  "sequence": "RRGRRGPXGPXGPXGPXGPXGPCCY",
+                  "sequenceLength": 25,
+                  "pdb": null,
+                  "pubchemCid": null,
+                  "cTerminus": "AMD",
+                  "complexity": "monomer",
+                  "synthesisType": null
+                },
+                {
+                  "id": 10184,
+                  "dbaaspId": null,
+                  "name": "Collagen-like peptide RR4",
+                  "nTerminus": null,
+                  "sequence": "RRGRRGPXGPXGPXGPXGPXGPCCY",
+                  "sequenceLength": 25,
+                  "pdb": null,
+                  "pubchemCid": null,
+                  "cTerminus": "AMD",
+                  "complexity": "monomer",
+                  "synthesisType": null
+                }
+              ],
+              "synthesisType": "Synthetic"
+            }
+          ]
+        },
+        "dbaasp_Collagen_sequences": [
+          {
+            "name": "Collagencin",
+            "sequence": "GLPGPLGPAGPK",
+            "length": 12,
+            "dbaasp_id": "DBAASPS_8929"
+          },
+          {
+            "name": "Collagen-like peptide R3",
+            "sequence": "PRGPRGPRGPXGPXGPXGPXGPCCY",
+            "length": 25,
+            "dbaasp_id": "DBAASPS_10144"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1235017/",
+          "identifier": "CHEMBL1235017",
+          "title": "OROTIC ACID - ChEMBL",
+          "snippet": "Molecule: OROTIC ACID\nType: Small molecule\nMax clinical phase: 2.0\nMolecular weight: 156.10\nBioactivity: Potency=1258.9 nM (Prelamin-A/C); Potency=39810.7 nM (Aldehyde dehydrogenase 1A1); Potency=39810.7 nM (4'-phosphopantetheinyl transferase ffp); Ki=72210.0 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:33.644246"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1560/",
+          "identifier": "CHEMBL1560",
+          "title": "CAPTOPRIL - ChEMBL",
+          "snippet": "Molecule: CAPTOPRIL\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 217.29\nFirst approval: 1981\nMechanism: Angiotensin-converting enzyme inhibitor\nBioactivity: Log K'=2.69 (Albumin); IC50=23.0 nM (Angiotensin-converting enzyme); IC50=12.0 nM (Angiotensin-converting enzyme); IC50=70.0 nM (Leukotriene A-4 hydrolase); IC50=20.0 nM (Angiotensin-converting enzyme)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:35.282067"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL704/",
+          "identifier": "CHEMBL704",
+          "title": "MESALAMINE - ChEMBL",
+          "snippet": "Molecule: MESALAMINE\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 153.14\nFirst approval: 1987\nMechanism: Arachidonate 5-lipoxygenase inhibitor; Peroxisome proliferator-activated receptor gamma agonist; Cyclooxygenase inhibitor\nBioactivity: Inhibition=5.0 % (Beta-lactamase); Inhibition=5.0 % (Chymotrypsin-C); Inhibition=18.0 % (Malate dehydrogenase, mitochondrial); Fecal recovery=5.08 % (Rattus norvegicus); Fecal recovery=4.32 % (Rattus norvegicus)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:35.842543"
+        }
+      ],
+      "raw_data": {
+        "chembl_Whey_count": 1,
+        "chembl_Whey_molecules": [
+          {
+            "chembl_id": "CHEMBL1235017",
+            "pref_name": "OROTIC ACID",
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": "2.0"
+          }
+        ],
+        "chembl_Collagen_count": 4,
+        "chembl_Collagen_molecules": [
+          {
+            "chembl_id": "CHEMBL1560",
+            "pref_name": "CAPTOPRIL",
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": "4.0"
+          },
+          {
+            "chembl_id": "CHEMBL704",
+            "pref_name": "MESALAMINE",
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": "4.0"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/2R73",
+          "identifier": "PDB:2R73",
+          "title": "Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 8.2",
+          "snippet": "PDB ID: 2R73\nTitle: Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 8.2\nMethod: X-RAY DIFFRACTION\nResolution: 2.5 A\nDeposited: 2007-09-07\nReleased: 2007-11-20\nCitation: Three-dimensional structure and ligand binding properties of trichosurin, a metatherian lipocalin from the milk whey of the common brushtail possum Trichosurus vulpecula. Watson, R.P., Demmer, J., Baker, E.N. et al.. Biochem.J. (2007)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:31.514324"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/2R74",
+          "identifier": "PDB:2R74",
+          "title": "Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 4.6",
+          "snippet": "PDB ID: 2R74\nTitle: Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 4.6\nMethod: X-RAY DIFFRACTION\nResolution: 1.9 A\nDeposited: 2007-09-07\nReleased: 2007-11-20\nCitation: Three-dimensional structure and ligand binding properties of trichosurin, a metatherian lipocalin from the milk whey of the common brushtail possum Trichosurus vulpecula. Watson, R.P., Demmer, J., Baker, E.N. et al.. Biochem.J. (2007)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:31.556456"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/2RA6",
+          "identifier": "PDB:2RA6",
+          "title": "Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 4.6 with Bound 4-ethylphenol",
+          "snippet": "PDB ID: 2RA6\nTitle: Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 4.6 with Bound 4-ethylphenol\nMethod: X-RAY DIFFRACTION\nResolution: 1.5 A\nDeposited: 2007-09-14\nReleased: 2007-11-20\nCitation: Three-dimensional structure and ligand binding properties of trichosurin, a metatherian lipocalin from the milk whey of the common brushtail possum Trichosurus vulpecula. Watson, R.P., Demmer, J., Baker, E.N. et al.. Biochem.J. (2007)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:31.598568"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/1K6F",
+          "identifier": "PDB:1K6F",
+          "title": "Crystal Structure of the Collagen Triple Helix Model [(Pro-Pro-Gly)10]3",
+          "snippet": "PDB ID: 1K6F\nTitle: Crystal Structure of the Collagen Triple Helix Model [(Pro-Pro-Gly)10]3\nMethod: X-RAY DIFFRACTION\nResolution: 1.3 A\nDeposited: 2001-10-16\nReleased: 2002-01-30\nCitation: Crystal structure of the collagen triple helix model [(Pro-Pro-Gly)(10)](3). Berisio, R., Vitagliano, L., Mazzarella, L. et al.. Protein Sci. (2002)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:31.687002"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/1V4F",
+          "identifier": "PDB:1V4F",
+          "title": "Crystal structures of collagen model peptides with pro-hyp-gly sequence at 1.3A",
+          "snippet": "PDB ID: 1V4F\nTitle: Crystal structures of collagen model peptides with pro-hyp-gly sequence at 1.3A\nMethod: X-RAY DIFFRACTION\nResolution: 1.26 A\nDeposited: 2003-11-13\nReleased: 2004-08-03\nCitation: Crystal structures of collagen model peptides with Pro-Hyp-Gly repeating sequence at 1.26 A resolution: implications for proline ring puckering. Okuyama, K., Hongo, C., Fukushima, R. et al.. Biopolymers (2004)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:31.726808"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/1V6Q",
+          "identifier": "PDB:1V6Q",
+          "title": "Crystal Structures of Collagen Model Peptides with Pro-Hyp-Gly Sequence at 1.3 A",
+          "snippet": "PDB ID: 1V6Q\nTitle: Crystal Structures of Collagen Model Peptides with Pro-Hyp-Gly Sequence at 1.3 A\nMethod: X-RAY DIFFRACTION\nResolution: 1.25 A\nDeposited: 2003-12-03\nReleased: 2004-08-03\nCitation: Crystal structures of collagen model peptides with Pro-Hyp-Gly repeating sequence at 1.26 A resolution: implications for proline ring puckering. Okuyama, K., Hongo, C., Fukushima, R. et al.. Biopolymers (2004)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:31.767303"
+        }
+      ],
+      "raw_data": {
+        "rcsb_Whey_count": 18,
+        "rcsb_Collagen_count": 3334
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A061IHJ5",
+          "identifier": "A0A061IHJ5",
+          "title": "Whey acidic protein - EBI Proteins",
+          "snippet": "Protein: Whey acidic protein\nOrganism: Cricetulus griseus\nLength: 185 aa\nMass: 19698 Da\nDomains: WAP",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.977897"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A061IP18",
+          "identifier": "A0A061IP18",
+          "title": "Whey acidic protein - EBI Proteins",
+          "snippet": "Protein: Whey acidic protein\nOrganism: Cricetulus griseus\nLength: 212 aa\nMass: 22687 Da\nDomains: WAP",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:32.118925"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A087R2M2",
+          "identifier": "A0A087R2M2",
+          "title": "Whey acidic protein - EBI Proteins",
+          "snippet": "Protein: Whey acidic protein\nOrganism: Aptenodytes forsteri\nLength: 126 aa\nMass: 14390 Da\nDomains: WAP",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:32.259283"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A010RFR1",
+          "identifier": "A0A010RFR1",
+          "title": "Collagen-like protein Mcl1 - EBI Proteins",
+          "snippet": "Protein: Collagen-like protein Mcl1\nOrganism: Colletotrichum fioriniae PJ7\nLength: 246 aa\nMass: 24222 Da\nDomains: Disordered",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:32.587380"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A010RQG6",
+          "identifier": "A0A010RQG6",
+          "title": "Collagen pro alpha-chain - EBI Proteins",
+          "snippet": "Protein: Collagen pro alpha-chain\nOrganism: Pseudomonas fluorescens HK44\nLength: 252 aa\nMass: 25260 Da\nDomains: Disordered, Disordered",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:33.135920"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A011TAF6",
+          "identifier": "A0A011TAF6",
+          "title": "Collagen triple helix repeat protein - EBI Proteins",
+          "snippet": "Protein: Collagen triple helix repeat protein\nOrganism: Aquamicrobium defluvii\nLength: 104 aa\nMass: 10536 Da\nDomains: Disordered",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:33.276266"
+        }
+      ],
+      "raw_data": {
+        "ebi_proteins_Whey_count": 5,
+        "ebi_proteins_Whey_entries": [
+          {
+            "accession": "A0A061IHJ5",
+            "protein_name": "Whey acidic protein",
+            "sequence": "MAVPDITVSAEHRWPVFLGTRKLSSSLPEGSWAAISHLPAIVTMRCFISLALSLLALEVALAQHPLEQVINSVLCAEASSGEKTGCSNCLTNAECAQNTLCCSSSCGAICKTPVNADVPKAGHCPWNPVHMLPAGPCLEKSSCSRDSECTGNMKCCRDGCVMKCKNPQAGFWVLDMATHSRNECQ",
+            "seq_length": 185,
+            "features": []
+          },
+          {
+            "accession": "A0A061IP18",
+            "protein_name": "Whey acidic protein",
+            "sequence": "MAVPDITVSAEHRWPVFLGTRKLSSSLPEGSWAAISHLPAIVTMRCFISLALSLLALEVALAQHPLEQVINSVLCAEASSGEKTGCSNCLTNAECAQNTLCCSSSCGAICKTPVNADVPKAGHCPWNPVHMLPAGPCLEKSSCSRDSECTGNMKCCRDGCVMKCKNPQAGVTSPSLFSKNLHSWIQREHNTFYLLLIKIHLALCLCLSVLSS",
+            "seq_length": 212,
+            "features": []
+          },
+          {
+            "accession": "A0A087R2M2",
+            "protein_name": "Whey acidic protein",
+            "sequence": "ECRAWCRHDAECPGEEKCCLHGCDYACLPPSRDKPGECPKVRPRQTPEPCAEEDSCTHDRDCPRQEKCCFSGCAMRCARPAREHPGECPRAEPCWDPRRRHGSRCLDDSICRREEKCCNTGCGWEC",
+            "seq_length": 126,
+            "features": []
+          }
+        ],
+        "ebi_proteins_Collagen_count": 5,
+        "ebi_proteins_Collagen_entries": [
+          {
+            "accession": "A0A010RFR1",
+            "protein_name": "Collagen-like protein Mcl1",
+            "sequence": "MLPSTAQAWSIPAILDIRQTSRPYQDVVCKPQTGSGAQLPPCVQIENIELACQPNGTNPIDYEAHAQCICGGSFFAEKLACERCLTIHGLRSERNLAFYSGVLSSASNALCTGTPTAVFASIYSGIEAAATPVTTGATATSDQAPSNTAISLYYTASGPQGPGTITGAAASATAVTSRTTTSPSTAATGSASGANGSSSTRASTATTGTASGAAAPSTTAGSGAMPTYAVGGLLMGAAGIAILAGL",
+            "seq_length": 246,
+            "features": []
+          },
+          {
+            "accession": "A0A010RQG6",
+            "protein_name": "Collagen pro alpha-chain",
+            "sequence": "MRKLCLLAALISPMAMAQVVTVETNSLLRLPNTASTLQLERLEVADNGTLLIPSNVTELSVGELRLGREARIAIVPSEQALQLNISRAQLASGSQITSRGAPGTYFKAARAGRNLNLRIVSLNAPELSVDARGGAGAPGYVGLDGGNGQEPGCTWGQAGHGADGDKGGDGHAGAPGAQVRVELPRDYPARQIKVLVDGGAGGVAGAGGKPGAGGKAKGCFVYRADGGKSGRAGAQGQPGPAGAAGAVTVQRL",
+            "seq_length": 252,
+            "features": [
+              {
+                "type": "CHAIN",
+                "category": "MOLECULE_PROCESSING",
+                "ftId": "PRO_5001455983",
+                "description": "Collagen pro alpha-chain",
+                "begin": "18",
+                "end": "252",
+                "molecule": "",
+                "evidences": [
+                  {
+                    "code": "ECO:0000256",
+                    "source": {
+                      "name": "SAM",
+                      "id": "SignalP",
+                      "url": "https://www.uniprot.org/help/sam"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "accession": "A0A011TAF6",
+            "protein_name": "Collagen triple helix repeat protein",
+            "sequence": "MSKIVINNTTRKVEVHSTGRQGIQGPQGEPGPANTLTIGTVDAGETAGASITGDSPNQTLNLTLPIGPKGDTGDQGPIGPEPDPEPIIDAAVRRSIALNIVFGG",
+            "seq_length": 104,
+            "features": []
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT03285737",
+      "citations": [],
+      "raw_data": {
+        "apd_Whey": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Collagen": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03285737",
+          "identifier": "NCT03285737",
+          "title": "Protein Intake and Step Reduction in Older Adults",
+          "snippet": "Title: Protein Intake and Step Reduction in Older Adults\nStatus: Completed\nPhase: N/A\nCountries: Canada\nConditions: Aging, Muscle Loss\nInterventions: Dietary Supplement: Collagen, Dietary Supplement: Whey\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:36.787884"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT03285737",
+          "public_title": "Protein Intake and Step Reduction in Older Adults",
+          "scientific_title": "Whey Protein Intake in the Amelioration of Skeletal Muscle Quantity and Function During Inactivity in Older Adults",
+          "recruitment_status": "Completed",
+          "phase": "N/A",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized. Intervention model: Parallel Assignment. Primary purpose: Prevention. Masking: Double (Participant, Outcomes Assessor).",
+          "countries": [
+            "Canada"
+          ],
+          "conditions": [
+            "Aging",
+            "Muscle Loss"
+          ],
+          "interventions": [
+            "Dietary Supplement: Collagen",
+            "Dietary Supplement: Whey"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT03285737",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Whey": {
+          "found": false
+        },
+        "iuphar_Collagen": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/2r73",
+          "identifier": "PDB:2r73",
+          "title": "Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 8.2",
+          "snippet": "PDB ID: 2r73\nTitle: Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 8.2\nExperimental method: X-ray diffraction\nQuality: Resolution: 2.5 A, R-factor: 0.2170, R-free: 0.2690\nMolecules: Trichosurin\nMolecule type: Protein\nOrganisms: Trichosurus vulpecula\nAssembly: dimer (homo)\nDeposited: 2007-09-07\nReleased: 2007-11-20\nCitation: Three-dimensional structure and ligand binding properties of trichosurin, a metatherian lipocalin from the milk whey of the common brushtail possum Trichosurus vulpecula.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:32.004055"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/2ra6",
+          "identifier": "PDB:2ra6",
+          "title": "Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 4.6 with Bound 4-ethylphenol",
+          "snippet": "PDB ID: 2ra6\nTitle: Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 4.6 with Bound 4-ethylphenol\nExperimental method: X-ray diffraction\nQuality: Resolution: 1.5 A, R-factor: 0.2260, R-free: 0.2410\nMolecules: Trichosurin\nMolecule type: Protein\nOrganisms: Trichosurus vulpecula\nBound entities: 4\nAssembly: dimer (homo)\nDeposited: 2007-09-14\nReleased: 2007-11-20\nCitation: Three-dimensional structure and ligand binding properties of trichosurin, a metatherian lipocalin from the milk whey of the common brushtail possum Trichosurus vulpecula.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:32.156915"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/2r74",
+          "identifier": "PDB:2r74",
+          "title": "Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 4.6",
+          "snippet": "PDB ID: 2r74\nTitle: Crystal Structure of the Possum Milk Whey Lipocalin Trichosurin at pH 4.6\nExperimental method: X-ray diffraction\nQuality: Resolution: 1.9 A, R-factor: 0.2140, R-free: 0.2420\nMolecules: Trichosurin\nMolecule type: Protein\nOrganisms: Trichosurus vulpecula\nBound entities: 3\nAssembly: dimer (homo)\nDeposited: 2007-09-07\nReleased: 2007-11-20\nCitation: Three-dimensional structure and ligand binding properties of trichosurin, a metatherian lipocalin from the milk whey of the common brushtail possum Trichosurus vulpecula.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:32.306920"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/3hr2",
+          "identifier": "PDB:3hr2",
+          "title": "Low resolution, molecular envelope structure of type I collagen in situ determined by fiber diffraction. Single type I collagen molecule, post rigid body refinement, 'relaxed'",
+          "snippet": "PDB ID: 3hr2\nTitle: Low resolution, molecular envelope structure of type I collagen in situ determined by fiber diffraction. Single type I collagen molecule, post rigid body refinement, 'relaxed'\nExperimental method: Fiber diffraction\nQuality: Resolution: 5.16 A, R-factor: 0.0420\nMolecules: Collagen alpha-2(I) chain\nMolecule type: Protein\nOrganisms: Rattus norvegicus\nAssembly: 27-mer (hetero)\nDeposited: 2009-06-08\nReleased: 2009-07-14\nCitation: Microfibrillar structure of type I collagen in situ.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:32.639425"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/3hqv",
+          "identifier": "PDB:3hqv",
+          "title": "Low resolution, molecular envelope structure of type I collagen in situ determined by fiber diffraction. Single type I collagen molecule, rigid body refinement",
+          "snippet": "PDB ID: 3hqv\nTitle: Low resolution, molecular envelope structure of type I collagen in situ determined by fiber diffraction. Single type I collagen molecule, rigid body refinement\nExperimental method: Fiber diffraction\nQuality: Resolution: 5.16 A, R-factor: 0.0660\nMolecules: Collagen alpha-2(I) chain\nMolecule type: Protein\nOrganisms: Rattus norvegicus\nAssembly: 27-mer (hetero)\nDeposited: 2009-06-08\nReleased: 2009-07-14\nCitation: Microfibrillar structure of type I collagen in situ.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:32.793112"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/3hr2",
+          "identifier": "PDB:3hr2",
+          "title": "Low resolution, molecular envelope structure of type I collagen in situ determined by fiber diffraction. Single type I collagen molecule, post rigid body refinement, 'relaxed'",
+          "snippet": "PDB ID: 3hr2\nTitle: Low resolution, molecular envelope structure of type I collagen in situ determined by fiber diffraction. Single type I collagen molecule, post rigid body refinement, 'relaxed'\nExperimental method: Fiber diffraction\nQuality: Resolution: 5.16 A, R-factor: 0.0420\nMolecules: Collagen alpha-1(I) chain\nMolecule type: Protein\nOrganisms: Rattus norvegicus\nAssembly: 27-mer (hetero)\nDeposited: 2009-06-08\nReleased: 2009-07-14\nCitation: Microfibrillar structure of type I collagen in situ.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:32.933383"
+        }
+      ],
+      "raw_data": {
+        "pdbe_Whey_count": 6,
+        "pdbe_Collagen_count": 1082
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2894552307",
+          "identifier": "PMID:30289425",
+          "title": "A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons",
+          "snippet": "Title: A randomized controlled trial of the impact of protein supplementation on leg lean mass and integrated muscle protein synthesis during inactivity and energy restriction in older persons\nYear: 2018\nCitations: 74",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.643883"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2917377674",
+          "identifier": "PMID:30794431",
+          "title": "Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial",
+          "snippet": "Title: Maintenance of skeletal muscle function following reduced daily physical activity in healthy older adults: a pilot trial\nYear: 2019\nCitations: 15\nAbstract: = 9 men) of volunteers. These data highlight the resilience of physical function in healthy older men in the face of an acute period of ER+SR and demonstrate sex-based differences in the ability to recover muscle strength upon resumption of physical ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.644006"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2981554976",
+          "identifier": "https://openalex.org/W2981554976",
+          "title": "The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults",
+          "snippet": "Title: The Role of Protein Quality and Physical Activity in Skeletal Muscle Protein Turnover in Older Adults\nYear: 2019\nAbstract: Recent recommendations are that older adults increase their dietary protein intake to intakes higher than are currently recommended to mitigate sarcopenia-induced muscle loss caused in part by anabolic resistance. Protein supplementation may serve as",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:31.644398"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 3
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT03285737",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.36266/jbsr/206",
+          "identifier": "DOI:10.36266/jbsr/206",
+          "title": "Beneficial Influence of Pre-Prandial Whey Protein Intake on Stable Glucose Variability",
+          "snippet": "Title: Beneficial Influence of Pre-Prandial Whey Protein Intake on Stable Glucose Variability\nJournal: Journal of Biomedical Science and Research\nYear: 2025",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828863"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.jnim.2017.04.204",
+          "identifier": "DOI:10.1016/j.jnim.2017.04.204",
+          "title": "Effects of gender on suppression of energy intake by whey protein in older people",
+          "snippet": "Title: Effects of gender on suppression of energy intake by whey protein in older people\nJournal: Journal of Nutrition &amp; Intermediary Metabolism\nYear: 2017",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828967"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1039/d4fo06083k/v1/review2",
+          "identifier": "DOI:10.1039/d4fo06083k/v1/review2",
+          "title": "Review for \"Increased Protein Intake in Healthy Males Exposed to a Dairy-Derived Appetite Modulating Whey-Derived Peptide Hydrolysate\"",
+          "snippet": "Title: Review for \"Increased Protein Intake in Healthy Males Exposed to a Dairy-Derived Appetite Modulating Whey-Derived Peptide Hydrolysate\"\nYear: 2025",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:33.828992"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT03285737",
+      "citations": [
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2024.03.06.583701",
+          "identifier": "DOI:10.1101/2024.03.06.583701",
+          "title": "Effects of Hydrolyzed Collagen as a Dietary Supplement on Fibroblast Activation: A Systematic Review",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.822844"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-3138309/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-3138309/v1",
+          "title": "Analgesic Efficacy of Collagen Peptide in Knee Osteoarthritis: A Meta-Analysis of Randomized Controlled Trials",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2023})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.822875"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202306.0880.v1",
+          "identifier": "DOI:10.20944/preprints202306.0880.v1",
+          "title": "Effect of the Use of Collagen on Bioactive and Technological Properties of Emulsion Surimi Gel from Bullfrog Back (<em>Lithobathes Catesbeianus</em>)",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2023})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.822885"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202511.2126.v1",
+          "identifier": "DOI:10.20944/preprints202511.2126.v1",
+          "title": "A Comparative Study of the Impact of Two Bioactive Collagen Peptides on Skin Properties and Aging Hallmarks",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827046"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202604.0117.v1",
+          "identifier": "DOI:10.20944/preprints202604.0117.v1",
+          "title": "Collagen Hydrolysates, from Beauty Supplements to Supporting Wound Healing: How Solid Is the Rationale? An Overview and Insights for Regenerative Medicine Practitioners",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827075"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.06.05.25329025",
+          "identifier": "DOI:10.1101/2025.06.05.25329025",
+          "title": "Urinary collagen peptides predict mortality",
+          "snippet": "PPR ({'publisher': 'medRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827086"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.07.01.660922",
+          "identifier": "DOI:10.1101/2025.07.01.660922",
+          "title": "Spatial Proteomics of the Normal Breast Collagen Stroma: Links to BI-RADS Categories and Body Mass Index",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827094"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202407.1363.v1",
+          "identifier": "DOI:10.20944/preprints202407.1363.v1",
+          "title": "Anti-aging Effects of Low Molecular Weight Collagen Peptides Supplementation on Facial Wrinkles and Skin Hydration: Outcomes from a Six-Week Randomized, Double-Blind, Placebo-Controlled Trial",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827102"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4512011/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4512011/v1",
+          "title": "Preparation and tissue structure analysis of horse bone collagen peptide",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827110"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2024.09.30.24314592",
+          "identifier": "DOI:10.1101/2024.09.30.24314592",
+          "title": "Investigation of the urinary peptidome to unravel collagen degradation in health and kidney disease",
+          "snippet": "PPR ({'publisher': 'medRxiv', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827126"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-3913650/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-3913650/v1",
+          "title": "An evaluation of collagen peptide for transdermal delivery using Strat-M \u00ae membrane and excised mouse skin",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827163"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-2153159/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-2153159/v1",
+          "title": "Comparation of in vitro fibril-forming properties and antioxidant activities of collagen extracted from four by-products (skin, fin, cartilage, notochord) of sturgeon (Acipenser gueldenstaedti)",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2022})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827172"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2024.12.17.628954",
+          "identifier": "DOI:10.1101/2024.12.17.628954",
+          "title": "Structural basis for collagen recognition by the  <i>Streptococcus pyogenes</i>  M3 protein and its involvement in biofilm",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827180"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.08.05.668786",
+          "identifier": "DOI:10.1101/2025.08.05.668786",
+          "title": "Evidence for the major role of PH4\u03b1EFB in the prolyl 4-hydroxylation of <i>Drosophila</i> collagen IV",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827195"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2022.05.13.491741",
+          "identifier": "DOI:10.1101/2022.05.13.491741",
+          "title": "Species identification of early colonial bone artefacts excavated from Pyrmont, Australia, by mass spectrometric identification of collagen peptides",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2022})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827210"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2022.02.15.22270979",
+          "identifier": "DOI:10.1101/2022.02.15.22270979",
+          "title": "Urinary collagen-derived peptides as sensitive markers for bone resorption and bisphosphonate treatment in kidney transplant patients",
+          "snippet": "PPR ({'publisher': 'medRxiv', 'yearOfPublication': 2022})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827216"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-611326/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-611326/v1",
+          "title": "Collagen-Derived Dipeptide Pro-Hyp Administration Accelerates Muscle Regenerative Healing Accompanied by Less Scarring After Wounding on the Abdominal Wall in Mice",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827223"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2022.03.13.483627",
+          "identifier": "DOI:10.1101/2022.03.13.483627",
+          "title": "Parchment Glutamine Index (PQI): A novel method to estimate glutamine deamidation levels in parchment collagen obtained from low-quality MALDI-TOF data",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2022})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827230"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2021.02.11.430827",
+          "identifier": "DOI:10.1101/2021.02.11.430827",
+          "title": "Contribution of quasi-fibrillar superstructures in peroxide quenching by collagen peptides derived from fish processing by-products and their application as natural food additives",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827237"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2020.07.15.20154120",
+          "identifier": "DOI:10.1101/2020.07.15.20154120",
+          "title": "Oral Collagen for the treatment of Dermal Atrophy: A systematic review of human trials",
+          "snippet": "PPR ({'publisher': 'medRxiv', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.827244"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202505.2280.v1",
+          "identifier": "DOI:10.20944/preprints202505.2280.v1",
+          "title": "The Effect of \u03b2-Glucans from Oats and Yeasts on the Dynamics of Ice Crystal Growth in Acidophilic Ice Cream Based on Liquid Hy-Drolyzed Whey Concentrate",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:32.625680"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4297536/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4297536/v1",
+          "title": "Effects of Lactobacillus salivary on spleen T cells and inflammatory factors in a rat model of type II collagen induced arthritis Running title: Effects exploration of Lactobacillus salivary",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.708849"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4173286/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4173286/v1",
+          "title": "Continuous mild stimulation with advanced glycation end products reduce aggrecan and type II collagen production via the RAGE without inducing cell death in human OUMS-27 chondrosarcoma cells",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.708867"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-9103237/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-9103237/v1",
+          "title": "Effect of Subcutaneous Tissue Transglutaminase on Growth Factors and Type I Collagen in Surgical Incision Wound Model",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019075"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-8609085/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-8609085/v1",
+          "title": "Ablation-Induced Collagen Exposure Enables Dual-Modal Nuclear Imaging\u2013Guided Local Radionuclide Therapy",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019153"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.11.10.687474",
+          "identifier": "DOI:10.1101/2025.11.10.687474",
+          "title": "Modulation of Neutrophil Function by Foetal Bovine Serum and Type I Collagen",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019183"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-7985426/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-7985426/v1",
+          "title": "Expression and Identification of a Novel High-Activity Recombinant Humanized Type I Collagen SynthCol1 in Pichia Pastoris",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019228"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-8458222/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-8458222/v1",
+          "title": "All-trans retinoic acid mitigates ethanol-induced human PSC activation and type I collagen synthesis by downregulating TGF-\u03b21/pSmad2/3 pathway",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019253"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.12688/f1000research.152876.2",
+          "identifier": "DOI:10.12688/f1000research.152876.2",
+          "title": "Effect of human platelet-rich fibrin lysate on collagen type I, collagen type III, and matrix metalloproteinase 1: a protocol study on rat models with pelvic organ prolapse",
+          "snippet": "PPR ({'publisher': 'F1000Res', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019342"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.07.07.663453",
+          "identifier": "DOI:10.1101/2025.07.07.663453",
+          "title": "Assessing the role of collagen to improve understanding of disease pathophysiology in patients with acute recurrent tonsillitis",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019362"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.07.23.666332",
+          "identifier": "DOI:10.1101/2025.07.23.666332",
+          "title": "Characterising Type I Collagen Architecture in Human Bone and Osteosarcoma with Second Harmonic Generation Microscopy",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019455"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.04.03.646381",
+          "identifier": "DOI:10.1101/2025.04.03.646381",
+          "title": "Molecular dynamics simulations reveal a mechanism of calcium homeostasis driving homotrimerisation and heterotrimerization of type I collagen",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019496"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.03.10.642521",
+          "identifier": "DOI:10.1101/2025.03.10.642521",
+          "title": "Type I collagen gels for assessing the combined effects of ligand concentration-dependent elasticity and fibril density on cells",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019610"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-6178515/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-6178515/v1",
+          "title": "Type I collagen enhances biofilm formation of Staphylococcus epidermidis",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:34.019647"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-9059249/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-9059249/v1",
+          "title": "Preoperative Whey Protein Supplementation and Early Postoperative Outcomes in Older Adults Undergoing Total Hip Arthroplasty",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568036"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-8098210/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-8098210/v1",
+          "title": "Effects of Protein yogurts vs. Whey protein on body composition, strength, and gut microbiome changes in untrained older adults during 8 weeks of supervised strength training: a randomized trial.",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568087"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-8192028/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-8192028/v1",
+          "title": "Induced Electric Field Acceleration of Whey Protein-Oligosaccharide Maillard Reaction: Structural and Functional Characteristics",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568107"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202510.1619.v1",
+          "identifier": "DOI:10.20944/preprints202510.1619.v1",
+          "title": "Effects of Whey Protein, <em>Aloe vera</em>, and Carnauba Wax Biofilms on the Internal Quality of Eggs from 86-Week-Old Hens",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568118"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202603.1623.v1",
+          "identifier": "DOI:10.20944/preprints202603.1623.v1",
+          "title": "Advances in the Purification of Lactoferrin and Lactoperoxidase from Dairy Whey",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568138"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202604.1391.v1",
+          "identifier": "DOI:10.20944/preprints202604.1391.v1",
+          "title": "Effects of Collagen Hydrolysate-Based Protein Complexes on Physical Endurance, Glucose Metabolism, and Renal Function in Rats",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568147"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202510.0054.v1",
+          "identifier": "DOI:10.20944/preprints202510.0054.v1",
+          "title": "The Effect of Leucine-Enriched Beta-Lactoglobulin Versus an Isonitrogenous Whey Protein Isolate on Skeletal Muscle Protein Anabolism in Young Healthy Males",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568157"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-8026920/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-8026920/v1",
+          "title": "Development and Characterization of a Functional Whey-Based Beverage Enriched with Encapsulated Elderberry (Sambucus nigra) Anthocyanins, Bacillus coagulans GBI-30, and Inulin",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568167"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-7899609/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-7899609/v1",
+          "title": "Functional characteristics of peptides from whey proteins fermented with lactic acid bacteria isolated from Dongchimi",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568177"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-7525311/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-7525311/v1",
+          "title": "Antifungal efficacy of microencapsulated miR166 and miR159 oligoDNAs through whey protein concentrate (WPC) as coated protein against Verticillium dahliae",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568187"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-6456956/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-6456956/v1",
+          "title": "Comparative Analysis of Alkaline and Enzymatic Whey Protein Isolate-Chlorogenic Acid Complexes: Structural Modifications, Antioxidant Enhancement, and Antimicrobial Activity",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568244"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.04.29.647813",
+          "identifier": "DOI:10.1101/2025.04.29.647813",
+          "title": "Whey Protein Phospholipid Concentrate Supplementation Prevents High-Fat Diet Induced Cognitive Impairment in Wistar Rats by Promoting Brain Neuronal Connectivity and Sphingolipid Clearance",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568254"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202504.0794.v1",
+          "identifier": "DOI:10.20944/preprints202504.0794.v1",
+          "title": "Goat Whey Protein Hydrolysate Mitigates High-Fructose Corn Syrup-Induced Hepatic Steatosis in a Murine Model",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:33.568264"
+        }
+      ],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 102,
+        "biorxiv_prefilter_dropped": 55
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT03285737",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT03285737_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT03285737",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT03285737",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 12,
+      "has_data": true,
+      "quality_avg": 0.933,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov",
+        "openfda"
+      ]
+    },
+    "literature": {
+      "citations_count": 2,
+      "has_data": true,
+      "quality_avg": 0.875,
+      "error": null,
+      "source_names": [
+        "pmc",
+        "pubmed"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "uniprot"
+      ]
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "dbaasp"
+      ]
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "rcsb_pdb"
+      ]
+    },
+    "ebi_proteins": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "ebi_proteins"
+      ]
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "pdbe": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "pdbe"
+      ]
+    },
+    "openalex": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 47,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "biorxiv_medrxiv"
+      ]
+    },
+    "sec_edgar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    }
+  }
+}

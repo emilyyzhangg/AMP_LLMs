@@ -1,0 +1,15 @@
+{
+  "run_id": "bakeoff_gemma3_12b_post_a2",
+  "nct": "NCT02660008",
+  "legacy_outcome": "Positive",
+  "atomic": {
+    "value": "Unknown",
+    "confidence": 0.5,
+    "rule": "R8",
+    "reasoning": "[ATOMIC R8] Unknown (conf=0.50)\n  rule: no rule fired \u2014 insufficient evidence\n  registry: status=COMPLETED phase=PHASE2 has_results=None completion=2016-06 days_since=3611 stale=False drug_max_phase=None\n  pubs: 3 total (1 ts, 1 gen, 1 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=COMPLETED has_results=None phase=PHASE2 days_since=3611 stale=False drug_max_phase=None\n    pubs: total=3 trial_specific=1 voting=0 pos=0 fail=0\n    R8 fired: default Unknown",
+    "model_name": "atomic-gemma3:12b",
+    "skip_verification": true
+  },
+  "source_annotation_path": "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results/annotations/f6535916f390/NCT02660008.json",
+  "elapsed_sec": 21.1
+}

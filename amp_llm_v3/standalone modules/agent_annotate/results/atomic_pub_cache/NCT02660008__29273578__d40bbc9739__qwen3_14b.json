@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT02660008",
+  "pmid": "PMID:29273578",
+  "source": "pubmed",
+  "specificity": "trial_specific",
+  "answers": {
+    "q1_reports_results": "UNCLEAR",
+    "q2_primary_met": "NA",
+    "q3_efficacy": "NA",
+    "q4_failure": "NA",
+    "q5_advanced": "UNCLEAR",
+    "evidence_quote": ""
+  },
+  "verdict": "INDETERMINATE",
+  "model": "qwen3:14b",
+  "error": "",
+  "cached": false
+}

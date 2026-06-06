@@ -1,0 +1,1606 @@
+{
+  "nct_id": "NCT05940298",
+  "metadata": {
+    "nct_id": "NCT05940298",
+    "title": "SPECT Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetium-99m DB8 ([99mTc]Tc- DB8) in Prostate Cancer and Breast Cancer Patients",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "Prostate Cancer",
+      "Breast Cancer"
+    ],
+    "interventions": [
+      "DRUG: Intravenous injection of [99mTc]Tc-DB8"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.775,
+      "reasoning": "[Pass 1 extraction] Intervention: [99mTc]Tc-DB8  \nMolecular Class: Peptide / peptide hormone  \nDatabase Confirmation: UniProt: entry found? Amino acid length? - Not found in UniProt. DRAMP/DBAASP: antimicrobial peptide database entry? - Not found in DRAMP/DBAASP. ChEMBL: molecule type? (peptide, small molecule, protein, antibody) - Not found in ChEMBL. PDB: structural data available? - Not found in PDB.  \nProduct Des\n[Pass 2 decision] Peptide: True  \nReasoning: Step 1 \u2014 The Molecular Class is \"Peptide / peptide hormone,\" which falls within the definition of a peptide. Step 2 \u2014 The intervention is described as a \"drug\" and a \"GRPR-antagonist\" used for imaging, which suggests it is a peptide-based imaging agent. Although the AA Length is unknown and there are no database hits, the product description and molecular class strongly ",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Brief Summary",
+          "snippet": "The study should evaluate the biological distribution of 99mTc-DB8 in patients with prostate cancer and breast cancer.\n\nThe primary objective are:\n\n1. To assess the distribution of \\[99mTc\\]Tc- DB8 in normal tissues and tumors at different time intervals.\n2. To evaluate dosimetry of \\[99mTc\\]Tc- DB8.\n3. To study the safety and tolerability of the drug \\[99mTc\\]Tc- DB8 after a single injection in a diagnostic dosage.\n\nThe secondary objective are:\n\n1\\. To compare the obtained \\[99mTc\\]Tc- DB8 SPEC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675134"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12389326/",
+          "identifier": "PMC:12389326",
+          "title": "The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [(99m)Tc]Tc-DB8.",
+          "snippet": "Title: The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [(99m)Tc]Tc-DB8.\nAuthors: Bragina O, Chernov V, Larkina M et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661831"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12567192/",
+          "identifier": "PMC:12567192",
+          "title": "Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass Make a Difference?",
+          "snippet": "Title: Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass Make a Difference?\nAuthors: Orlova A, Rybina A, Medvedeva A et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661783"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12314183/",
+          "identifier": "PMC:12314183",
+          "title": "RM2 and DB15 analogues bearing [(177)Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study.",
+          "snippet": "Title: RM2 and DB15 analogues bearing [(177)Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study.\nAuthors: Kanellopoulos P, Bitzios A, Zelepukin I et al.\nJournal: EJNMMI Radiopharm Chem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661850"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12249193/",
+          "identifier": "PMC:12249193",
+          "title": "Current Approaches of Nuclear Molecular Imaging in Breast Cancer.",
+          "snippet": "Title: Current Approaches of Nuclear Molecular Imaging in Breast Cancer.\nAuthors: Sch\u00e4fer L, Altunay B, Heesch A et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661868"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4412799010",
+          "identifier": "PMID:40745236",
+          "title": "RM2 and DB15 analogues bearing [177Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study",
+          "snippet": "Title: RM2 and DB15 analogues bearing [177Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study\nYear: 2025\nCitations: 2\nAbstract: BACKGROUND: ) or on DB15 (DOTAGA-X-SAR; SAR: DPhe-Gln-Trp-Ala-Val-NMe-Gly-His-Leu-NHEt) motifs, which were preclinically screened after labelling with In-111. In the current study, we aimed to evaluate in vitro and in vivo the four best-performing ag",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822118"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:5R01AI155922-05",
+          "title": "Inhaled tigecycline therapy for pulmonary M. abscessus infections (GONZALEZ-JUARRERO, MERCEDES)",
+          "snippet": "Project: 5R01AI155922-05\nPI: GONZALEZ-JUARRERO, MERCEDES\nOrganization: \nFiscal year: 2025\nAward: $623,786\nStart: 2021-06-29\nEnd: 2026-05-31\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728498"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:5R01AI155922-04",
+          "title": "Inhaled tigecycline therapy for pulmonary M. abscessus infections (GONZALEZ-JUARRERO, MERCEDES)",
+          "snippet": "Project: 5R01AI155922-04\nPI: GONZALEZ-JUARRERO, MERCEDES\nOrganization: \nFiscal year: 2024\nAward: $627,834\nStart: 2021-06-29\nEnd: 2026-05-31\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728572"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.7899999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: The intervention is [99mTc]Tc-DB8, confirmed as a peptide. No specific amino acid length or molecular class is provided in the evidence.\nDatabase Matches: No evidence found.\nMechanism: The peptide is a gastrin-releasing peptide receptor (GRPR) antagonist, used for SPECT imaging in prostate and breast cancer. It does not directly kill or inhibit microorganisms, nor does it stimula\n[Pass 2 decision] Classification: Other  \nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True). Step 2 \u2014 The mechanism of the peptide is as a gastrin-releasing peptide receptor (GRPR) antagonist, used for SPECT imaging in cancer. It does not directly kill or inhibit microorganisms, nor does it stimulate innate immune defense, disrupt biofilms, or act as a metabolic hormone or immunosuppr",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Brief Summary",
+          "snippet": "The study should evaluate the biological distribution of 99mTc-DB8 in patients with prostate cancer and breast cancer.\n\nThe primary objective are:\n\n1. To assess the distribution of \\[99mTc\\]Tc- DB8 in normal tissues and tumors at different time intervals.\n2. To evaluate dosimetry of \\[99mTc\\]Tc- DB8.\n3. To study the safety and tolerability of the drug \\[99mTc\\]Tc- DB8 after a single injection in a diagnostic dosage.\n\nThe secondary objective are:\n\n1\\. To compare the obtained \\[99mTc\\]Tc- DB8 SPEC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675134"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12389326/",
+          "identifier": "PMC:12389326",
+          "title": "The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [(99m)Tc]Tc-DB8.",
+          "snippet": "Title: The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [(99m)Tc]Tc-DB8.\nAuthors: Bragina O, Chernov V, Larkina M et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661831"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12567192/",
+          "identifier": "PMC:12567192",
+          "title": "Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass Make a Difference?",
+          "snippet": "Title: Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass Make a Difference?\nAuthors: Orlova A, Rybina A, Medvedeva A et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661783"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12314183/",
+          "identifier": "PMC:12314183",
+          "title": "RM2 and DB15 analogues bearing [(177)Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study.",
+          "snippet": "Title: RM2 and DB15 analogues bearing [(177)Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study.\nAuthors: Kanellopoulos P, Bitzios A, Zelepukin I et al.\nJournal: EJNMMI Radiopharm Chem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661850"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12249193/",
+          "identifier": "PMC:12249193",
+          "title": "Current Approaches of Nuclear Molecular Imaging in Breast Cancer.",
+          "snippet": "Title: Current Approaches of Nuclear Molecular Imaging in Breast Cancer.\nAuthors: Sch\u00e4fer L, Altunay B, Heesch A et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661868"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4412799010",
+          "identifier": "PMID:40745236",
+          "title": "RM2 and DB15 analogues bearing [177Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study",
+          "snippet": "Title: RM2 and DB15 analogues bearing [177Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study\nYear: 2025\nCitations: 2\nAbstract: BACKGROUND: ) or on DB15 (DOTAGA-X-SAR; SAR: DPhe-Gln-Trp-Ala-Val-NMe-Gly-His-Leu-NHEt) motifs, which were preclinically screened after labelling with In-111. In the current study, we aimed to evaluate in vitro and in vivo the four best-performing ag",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822118"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W7128045583",
+          "identifier": "https://doi.org/10.33266/1024-6177-2026-71-1-33-38",
+          "title": "Evaluation of the Safety and Pharmacokinetic Analysis of the Radiopharmaceutical [99mTc]Tc-DB8 in Breast Cancer Patients",
+          "snippet": "Title: Evaluation of the Safety and Pharmacokinetic Analysis of the Radiopharmaceutical [99mTc]Tc-DB8 in Breast Cancer Patients\nYear: 2026\nAbstract: Purpose: To evaluate the safety and pharmacokinetics of the radiopharmaceutical agent [99mTc]Tc-DB8 in patients with breast cancer. Material and methods: The study included 15 patients diagnosed with breast cancer (T2\u20124 N0\u20123 M0\u20121) prior to any system",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822551"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4391723713",
+          "identifier": "PMID:38342656",
+          "title": "Gastrin-releasing peptide receptor as a theranostic target in breast cancer: a systematic scoping review",
+          "snippet": "Title: Gastrin-releasing peptide receptor as a theranostic target in breast cancer: a systematic scoping review\nYear: 2024\nCitations: 14\nAbstract: The gastrin-releasing peptide receptor (GRPR) is known to be overexpressed in breast cancer, making it a promising target for both imaging and therapy within a theranostic framework. Various radioligands targeting GRPR have undergone investigation in",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.821931"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:5R01AI155922-05",
+          "title": "Inhaled tigecycline therapy for pulmonary M. abscessus infections (GONZALEZ-JUARRERO, MERCEDES)",
+          "snippet": "Project: 5R01AI155922-05\nPI: GONZALEZ-JUARRERO, MERCEDES\nOrganization: \nFiscal year: 2025\nAward: $623,786\nStart: 2021-06-29\nEnd: 2026-05-31\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728498"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:5R01AI155922-04",
+          "title": "Inhaled tigecycline therapy for pulmonary M. abscessus infections (GONZALEZ-JUARRERO, MERCEDES)",
+          "snippet": "Project: 5R01AI155922-04\nPI: GONZALEZ-JUARRERO, MERCEDES\nOrganization: \nFiscal year: 2024\nAward: $627,834\nStart: 2021-06-29\nEnd: 2026-05-31\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728572"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "Other",
+      "confidence": 0.8,
+      "reasoning": "[ATOMIC-CLS R5] Other (conf=0.80)\n  rule: 2/3 NO, 0 YES\n  registry: dramp=0 apd=0 dbaasp=0 uniprot_amp=0\n  atomic: q1=UNCLEAR q2=NO q3=NO\n  R5 fired: 2 NO, 0 YES",
+      "evidence": [],
+      "model_name": "atomic-cls-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion",
+      "confidence": 0.92,
+      "reasoning": "[Deterministic v42.7.23] Radiotracer with explicit injection signal in intervention name/description: 'intravenous injection of [99mtc]tc-db8'",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.7899999999999999,
+      "reasoning": "[Dossier] Trial: NCT05940298\nRegistry Status: COMPLETED\nPhase: PHASE1\nCompletion Date: 2024-06-01 (698 days ago)\nResults Posted: Unknown\nPublications Found: 12 (3 trial-specific, 9 reviews/general)\n  1. Title: Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass  PMC:12567192 [TRIAL-SPECIFIC]\n  2. Title: The Impact of the Inject\n[LLM decision] The trial is marked as \"COMPLETED\" with no registered trial-specific publications (Registered Trial Publications: 0). While there are some publications that may be related to the drug (e.g., PMID:40871022, PMC:12567192), they are not explicitly confirmed as trial-specific by CT.gov. Additionally, none of the publications provide an explicit statement that the primary endpoint was met, nor do they report statistically significant results on the primary endpoint. Therefore, based on the rules, the",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Brief Summary",
+          "snippet": "The study should evaluate the biological distribution of 99mTc-DB8 in patients with prostate cancer and breast cancer.\n\nThe primary objective are:\n\n1. To assess the distribution of \\[99mTc\\]Tc- DB8 in normal tissues and tumors at different time intervals.\n2. To evaluate dosimetry of \\[99mTc\\]Tc- DB8.\n3. To study the safety and tolerability of the drug \\[99mTc\\]Tc- DB8 after a single injection in a diagnostic dosage.\n\nThe secondary objective are:\n\n1\\. To compare the obtained \\[99mTc\\]Tc- DB8 SPEC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675134"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4412845196",
+          "identifier": "PMID:40871022",
+          "title": "The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [99mTc]Tc-DB8",
+          "snippet": "Title: The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [99mTc]Tc-DB8\nYear: 2025\nCitations: 2\nAbstract: Tc]Tc-DB8 is safe, tolerable, and associated with low absorbed doses. The tumor uptake is dependent on the injected peptide mass. The injection of an optimal mass (80 \u00b5g) provides the highest uptake in ER-positive tumors. At optimal dosing, the uptak",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822033"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4412799010",
+          "identifier": "PMID:40745236",
+          "title": "RM2 and DB15 analogues bearing [177Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study",
+          "snippet": "Title: RM2 and DB15 analogues bearing [177Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study\nYear: 2025\nCitations: 2\nAbstract: BACKGROUND: ) or on DB15 (DOTAGA-X-SAR; SAR: DPhe-Gln-Trp-Ala-Val-NMe-Gly-His-Leu-NHEt) motifs, which were preclinically screened after labelling with In-111. In the current study, we aimed to evaluate in vitro and in vivo the four best-performing ag",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822118"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W7128045583",
+          "identifier": "https://doi.org/10.33266/1024-6177-2026-71-1-33-38",
+          "title": "Evaluation of the Safety and Pharmacokinetic Analysis of the Radiopharmaceutical [99mTc]Tc-DB8 in Breast Cancer Patients",
+          "snippet": "Title: Evaluation of the Safety and Pharmacokinetic Analysis of the Radiopharmaceutical [99mTc]Tc-DB8 in Breast Cancer Patients\nYear: 2026\nAbstract: Purpose: To evaluate the safety and pharmacokinetics of the radiopharmaceutical agent [99mTc]Tc-DB8 in patients with breast cancer. Material and methods: The study included 15 patients diagnosed with breast cancer (T2\u20124 N0\u20123 M0\u20121) prior to any system",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822551"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4391723713",
+          "identifier": "PMID:38342656",
+          "title": "Gastrin-releasing peptide receptor as a theranostic target in breast cancer: a systematic scoping review",
+          "snippet": "Title: Gastrin-releasing peptide receptor as a theranostic target in breast cancer: a systematic scoping review\nYear: 2024\nCitations: 14\nAbstract: The gastrin-releasing peptide receptor (GRPR) is known to be overexpressed in breast cancer, making it a promising target for both imaging and therapy within a theranostic framework. Various radioligands targeting GRPR have undergone investigation in",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.821931"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4411611309",
+          "identifier": "PMID:40647404",
+          "title": "Current Approaches of Nuclear Molecular Imaging in Breast Cancer",
+          "snippet": "Title: Current Approaches of Nuclear Molecular Imaging in Breast Cancer\nYear: 2025\nAbstract: In this narrative review, we aim to summarize recent advancements in nuclear molecular imaging techniques and their applications in BCa management. The main focus of this review is on the most relevant clinical investigations from the past 2-3 years ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822199"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12567192/",
+          "identifier": "PMC:12567192",
+          "title": "Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass Make a Difference?",
+          "snippet": "Title: Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass Make a Difference?\nAuthors: Orlova A, Rybina A, Medvedeva A et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661783"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12314183/",
+          "identifier": "PMC:12314183",
+          "title": "RM2 and DB15 analogues bearing [(177)Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study.",
+          "snippet": "Title: RM2 and DB15 analogues bearing [(177)Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study.\nAuthors: Kanellopoulos P, Bitzios A, Zelepukin I et al.\nJournal: EJNMMI Radiopharm Chem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661850"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:5R01AI155922-05",
+          "title": "Inhaled tigecycline therapy for pulmonary M. abscessus infections (GONZALEZ-JUARRERO, MERCEDES)",
+          "snippet": "Project: 5R01AI155922-05\nPI: GONZALEZ-JUARRERO, MERCEDES\nOrganization: \nFiscal year: 2025\nAward: $623,786\nStart: 2021-06-29\nEnd: 2026-05-31\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728498"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:5R01AI155922-04",
+          "title": "Inhaled tigecycline therapy for pulmonary M. abscessus infections (GONZALEZ-JUARRERO, MERCEDES)",
+          "snippet": "Project: 5R01AI155922-04\nPI: GONZALEZ-JUARRERO, MERCEDES\nOrganization: \nFiscal year: 2024\nAward: $627,834\nStart: 2021-06-29\nEnd: 2026-05-31\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728572"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Unknown",
+      "confidence": 0.5,
+      "reasoning": "[ATOMIC R8] Unknown (conf=0.50)\n  rule: no rule fired \u2014 insufficient evidence\n  registry: status=COMPLETED phase=PHASE1 has_results=None completion=2024-06-01 days_since=698 stale=False drug_max_phase=None\n  pubs: 4 total (0 ts, 4 gen, 0 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=COMPLETED has_results=None phase=PHASE1 days_since=698 stale=False drug_max_phase=None\n    pubs: total=4 trial_specific=0 voting=0 pos=0 fail=0\n    R8 fired: default Unknown",
+      "evidence": [],
+      "model_name": "atomic-gemma3:12b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "sequence",
+      "value": "N/A",
+      "confidence": 0.0,
+      "reasoning": "[Structured v23] No amino acid sequence found in research data.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: The trial results indicate that [99mTc]Tc-DB8 is safe and tolerable, with no significant adverse events reported. The study evaluated the biological distribution of [99mTc]Tc-DB8 in patients with prostate cancer and breast can",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Brief Summary",
+          "snippet": "The study should evaluate the biological distribution of 99mTc-DB8 in patients with prostate cancer and breast cancer.\n\nThe primary objective are:\n\n1. To assess the distribution of \\[99mTc\\]Tc- DB8 in normal tissues and tumors at different time intervals.\n2. To evaluate dosimetry of \\[99mTc\\]Tc- DB8.\n3. To study the safety and tolerability of the drug \\[99mTc\\]Tc- DB8 after a single injection in a diagnostic dosage.\n\nThe secondary objective are:\n\n1\\. To compare the obtained \\[99mTc\\]Tc- DB8 SPEC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675134"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4412845196",
+          "identifier": "PMID:40871022",
+          "title": "The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [99mTc]Tc-DB8",
+          "snippet": "Title: The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [99mTc]Tc-DB8\nYear: 2025\nCitations: 2\nAbstract: Tc]Tc-DB8 is safe, tolerable, and associated with low absorbed doses. The tumor uptake is dependent on the injected peptide mass. The injection of an optimal mass (80 \u00b5g) provides the highest uptake in ER-positive tumors. At optimal dosing, the uptak",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822033"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4412799010",
+          "identifier": "PMID:40745236",
+          "title": "RM2 and DB15 analogues bearing [177Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study",
+          "snippet": "Title: RM2 and DB15 analogues bearing [177Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study\nYear: 2025\nCitations: 2\nAbstract: BACKGROUND: ) or on DB15 (DOTAGA-X-SAR; SAR: DPhe-Gln-Trp-Ala-Val-NMe-Gly-His-Leu-NHEt) motifs, which were preclinically screened after labelling with In-111. In the current study, we aimed to evaluate in vitro and in vivo the four best-performing ag",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822118"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W7128045583",
+          "identifier": "https://doi.org/10.33266/1024-6177-2026-71-1-33-38",
+          "title": "Evaluation of the Safety and Pharmacokinetic Analysis of the Radiopharmaceutical [99mTc]Tc-DB8 in Breast Cancer Patients",
+          "snippet": "Title: Evaluation of the Safety and Pharmacokinetic Analysis of the Radiopharmaceutical [99mTc]Tc-DB8 in Breast Cancer Patients\nYear: 2026\nAbstract: Purpose: To evaluate the safety and pharmacokinetics of the radiopharmaceutical agent [99mTc]Tc-DB8 in patients with breast cancer. Material and methods: The study included 15 patients diagnosed with breast cancer (T2\u20124 N0\u20123 M0\u20121) prior to any system",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822551"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4391723713",
+          "identifier": "PMID:38342656",
+          "title": "Gastrin-releasing peptide receptor as a theranostic target in breast cancer: a systematic scoping review",
+          "snippet": "Title: Gastrin-releasing peptide receptor as a theranostic target in breast cancer: a systematic scoping review\nYear: 2024\nCitations: 14\nAbstract: The gastrin-releasing peptide receptor (GRPR) is known to be overexpressed in breast cancer, making it a promising target for both imaging and therapy within a theranostic framework. Various radioligands targeting GRPR have undergone investigation in",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.821931"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4411611309",
+          "identifier": "PMID:40647404",
+          "title": "Current Approaches of Nuclear Molecular Imaging in Breast Cancer",
+          "snippet": "Title: Current Approaches of Nuclear Molecular Imaging in Breast Cancer\nYear: 2025\nAbstract: In this narrative review, we aim to summarize recent advancements in nuclear molecular imaging techniques and their applications in BCa management. The main focus of this review is on the most relevant clinical investigations from the past 2-3 years ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822199"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12567192/",
+          "identifier": "PMC:12567192",
+          "title": "Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass Make a Difference?",
+          "snippet": "Title: Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass Make a Difference?\nAuthors: Orlova A, Rybina A, Medvedeva A et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661783"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12314183/",
+          "identifier": "PMC:12314183",
+          "title": "RM2 and DB15 analogues bearing [(177)Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study.",
+          "snippet": "Title: RM2 and DB15 analogues bearing [(177)Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study.\nAuthors: Kanellopoulos P, Bitzios A, Zelepukin I et al.\nJournal: EJNMMI Radiopharm Chem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661850"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:5R01AI155922-05",
+          "title": "Inhaled tigecycline therapy for pulmonary M. abscessus infections (GONZALEZ-JUARRERO, MERCEDES)",
+          "snippet": "Project: 5R01AI155922-05\nPI: GONZALEZ-JUARRERO, MERCEDES\nOrganization: \nFiscal year: 2025\nAward: $623,786\nStart: 2021-06-29\nEnd: 2026-05-31\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728498"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:5R01AI155922-04",
+          "title": "Inhaled tigecycline therapy for pulmonary M. abscessus infections (GONZALEZ-JUARRERO, MERCEDES)",
+          "snippet": "Project: 5R01AI155922-04\nPI: GONZALEZ-JUARRERO, MERCEDES\nOrganization: \nFiscal year: 2024\nAward: $627,834\nStart: 2021-06-29\nEnd: 2026-05-31\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728572"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "llm"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "",
+      "confidence": 0.0,
+      "reasoning": "[ATOMIC-FR gated] outcome_atomic=Unknown not in ['Failed - completed trial', 'Terminated']",
+      "evidence": [],
+      "model_name": "atomic-fr-gated",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT05940298",
+    "fields": [
+      {
+        "field_name": "classification_atomic",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion",
+        "final_value": "Injection/Infusion",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "sequence",
+        "original_value": "N/A",
+        "final_value": "N/A",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The intervention, [99mTc]Tc-DB8, is a radiolabeled peptide analog targeting gastrin-releasing peptide receptors. The presence of \"peptide\" in the trial description and associated publications confirms the presence of a peptide molecule.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The intervention in the trial is clearly a radiolabeled peptide, as it is described as a GRPR antagonist and is used for molecular imaging. The use of \"DB8\" as a peptide analog and its association with a radiolabeled peptide backbone confirms that the intervention contains a peptide component.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The intervention name includes \"peptide\" in its description, specifically mentioning it as a \"gastrin-releasing peptide receptor antagonist\". This suggests that the DB8 component of Tc-DB8 is a peptide. Additionally, the CHEMBL entry for this molecule does not explicitly classify it as a protein or peptide, but given the context and the fact that it's a radiolabeled compound targeting a peptide receptor, it's reasonable to conclude that DB8 is indeed a peptide.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.775,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The intervention is a peptide (DB8) conjugated to technetium-99m. However, the trial focuses on SPECT imaging of gastrin-releasing peptide receptors and evaluates the biodistribution and dosimetry of the labeled peptide. The peptide acts as a targeting agent for imaging, not as an antimicrobial agent. It is an antagonist, not an antimicrobial. Therefore, it does not meet the criteria for AMP classification.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The intervention is a peptide, but it is not classified as an antimicrobial peptide (AMP) because it does not contribute to pathogen defense through any of the three modes (killing pathogens, recruiting innate immune cells, or disrupting biofilms). Instead, it is a radiolabeled peptide used for imaging purposes, which falls under the \"Other\" category as per the provided classification criteria.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial involves administering a single intravenous injection of [99mTc]Tc-DB8 for diagnostic purposes, followed by gamma camera imaging at different time intervals. There is no indication that the peptide has any direct antimicrobial action or mode of pathogen defense (Mode A, B, or C). The focus is on molecular imaging and targeting gastrin-releasing peptide receptors in cancer cells, which does not imply an antimicrobial mechanism.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7899999999999999,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is listed as COMPLETED and there are multiple published results (PMC:12567192, PMC:12389326) describing Phase I studies and evaluations of the radiopharmaceutical [99mTc]Tc-DB8. The presence of published results, even if limited to Phase I studies, indicates a successful completion of at least the initial safety and feasibility assessment.",
+            "confidence": 0.7,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "According to the completion heuristics, if no publications or results are posted, the outcome is \"Unknown.\" The trial's completion does not provide sufficient evidence to determine whether it was successful or failed.",
+            "confidence": 0.7,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial was completed, which suggests that it met its primary objectives. Additionally, multiple publications were found that reported on the results, indicating a positive outcome. The studies published in Pharmaceutics discussed the safety and efficacy of [99mTc]Tc-DB8, suggesting that the trial was successful in achieving its goals.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7899999999999999,
+        "reconciler_used": true,
+        "reconciler_reasoning": "The completion of the trial, combined with the existence of published results that describe the evaluation of [99mTc]Tc-DB8, supports the conclusion that the trial had a positive outcome. The verifiers who cited these publications and the trial's completion status provided strong, evidence-based reasoning for the \"Positive\" outcome. While the primary annotator marked the outcome as \"Unknown,\" the majority of verifiers, supported by specific published evidence, concluded \"Positive,\" which is the ",
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Ineffective for purpose",
+            "reasoning": "The trial is listed as COMPLETED. Two publications (PMC12567192 and PMC12389326) describe Phase I clinical studies using [99mTc]Tc-DB8 for SPECT imaging of prostate and breast cancer, respectively. These publications, while reporting on the study, do not indicate the trial met its objectives or demonstrated effectiveness. The publications focus on aspects like peptide mass impact on uptake, suggesting ongoing refinement rather than conclusive success. Since there's no evidence of positive outcom",
+            "confidence": 0.7,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "According to the rules, COMPLETED trials require published evidence of negative outcomes to be classified as a failure. Since no such evidence exists, the reason for failure is \"EMPTY.\"",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "While the trial has completed, there is no evidence in the provided data or publications to suggest that it failed to meet its objectives. The publications focus on the results and outcomes of the trial, including the distribution of 99mTc-DB8 in normal tissues and tumors, dosimetry, and safety and tolerability. Without any indication of negative outcomes or failure to meet endpoints, the most likely conclusion is that the trial was completed successfully.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.8,
+        "reconciler_used": true,
+        "reconciler_reasoning": "According to the rules, trials marked as \"COMPLETED\" require published evidence of negative outcomes to be classified as a failure. Since no such evidence is present in the provided data, the most accurate classification for the \"reason_for_failure\" field is \"EMPTY.\" Verifier_2 and Verifier_3 correctly applied this rule, while Verifier_1 incorrectly inferred failure without sufficient evidence.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT05940298",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "SPECT Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetium-99m DB8 ([99mTc]Tc- DB8) in Prostate Cancer and Breast Cancer Patients",
+          "snippet": "Title: SPECT Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetium-99m DB8 ([99mTc]Tc- DB8) in Prostate Cancer and Breast Cancer Patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675126"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Brief Summary",
+          "snippet": "The study should evaluate the biological distribution of 99mTc-DB8 in patients with prostate cancer and breast cancer.\n\nThe primary objective are:\n\n1. To assess the distribution of \\[99mTc\\]Tc- DB8 in normal tissues and tumors at different time intervals.\n2. To evaluate dosimetry of \\[99mTc\\]Tc- DB8.\n3. To study the safety and tolerability of the drug \\[99mTc\\]Tc- DB8 after a single injection in a diagnostic dosage.\n\nThe secondary objective are:\n\n1\\. To compare the obtained \\[99mTc\\]Tc- DB8 SPEC",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675134"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Detailed Description",
+          "snippet": "The overall goal is to study the effectiveness of SPECT imaging prostate cancer and breast cancer patients Using technetium-99m labeled DB8.\n\nPhase I of the study:\n\nBiodistribution of 99mTc-DB8 in patients with prostate cancer and breast cancer.\n\nThe main objectives of the study:\n\n1. To evaluate the distribution of 99mTc-DB8 in normal tissues and tumors in patients with prostate cancer and breast cancer at different time intervals.\n2. To evaluate dosimetry of 99mTc-DB8 based on the pharmacokinet",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675139"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675144"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Prostate Cancer, Breast Cancer | Keywords: Prostate cancer, Breast cancer, Gastrin releasing peptide receptors, [99mTc]Tc-DB8, SPECT",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675150"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Intervention: Intravenous injection of [99mTc]Tc-DB8",
+          "snippet": "DRUG: Intravenous injection of [99mTc]Tc-DB8 - One single intravenous injection of \\[99mTc\\]Tc-DB8, followed by gamma camera imaging after 2, 4, 6 and 24 hours.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675156"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Arm Group: Prostate cancer",
+          "snippet": "Arm: Prostate cancer - At least five (5) evaluable subjects with prostate cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675162"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Arm Group: Breast cancer",
+          "snippet": "Arm: Breast cancer - At least five (5) evaluable subjects with breast cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675168"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.675174"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT05940298",
+            "orgStudyIdInfo": {
+              "id": "[99mTc]Tc- DB8"
+            },
+            "organization": {
+              "fullName": "Tomsk National Research Medical Center of the Russian Academy of Sciences",
+              "class": "OTHER"
+            },
+            "briefTitle": "Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetium-99m DB8",
+            "officialTitle": "SPECT Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetium-99m DB8 ([99mTc]Tc- DB8) in Prostate Cancer and Breast Cancer Patients"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2025-04",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2023-07-03",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2024-06-01",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2024-12-31",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2023-07-04",
+            "studyFirstSubmitQcDate": "2023-07-04",
+            "studyFirstPostDateStruct": {
+              "date": "2023-07-11",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2025-04-07",
+            "lastUpdatePostDateStruct": {
+              "date": "2025-04-09",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Tomsk National Research Medical Center of the Russian Academy of Sciences",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Uppsala University",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": false,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The study should evaluate the biological distribution of 99mTc-DB8 in patients with prostate cancer and breast cancer.\n\nThe primary objective are:\n\n1. To assess the distribution of \\[99mTc\\]Tc- DB8 in normal tissues and tumors at different time intervals.\n2. To evaluate dosimetry of \\[99mTc\\]Tc- DB8.\n3. To study the safety and tolerability of the drug \\[99mTc\\]Tc- DB8 after a single injection in a diagnostic dosage.\n\nThe secondary objective are:\n\n1\\. To compare the obtained \\[99mTc\\]Tc- DB8 SPECT imaging results with the data of CT and/or MRI and/or ultrasound examination and immunohistochemical (IHC) studies in prostate cancer and breast cancer patients.",
+            "detailedDescription": "The overall goal is to study the effectiveness of SPECT imaging prostate cancer and breast cancer patients Using technetium-99m labeled DB8.\n\nPhase I of the study:\n\nBiodistribution of 99mTc-DB8 in patients with prostate cancer and breast cancer.\n\nThe main objectives of the study:\n\n1. To evaluate the distribution of 99mTc-DB8 in normal tissues and tumors in patients with prostate cancer and breast cancer at different time intervals.\n2. To evaluate dosimetry of 99mTc-DB8 based on the pharmacokinetic parameters of the drug after a single intravenous administration.\n3. To study the safety of use and tolerability of the drug 99mTc-DB8 after a single intravenous administration in a diagnostic dosage.\n\nAdditional research tasks:\n\n1\\. To conduct a comparative analysis of the diagnostic information obtained in the visualization of prostate cancer and breast cancer by SPECT using 99mTc-DB8 with data obtained by CT and/or MRI and/or ultrasound examination and immunohistochemical (IHC) research of postoperative material.\n\nMethodology:\n\nOpen-label, exploratory, single centre study. The subjects will receive a single injection of the labeled tracer."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Prostate Cancer",
+              "Breast Cancer"
+            ],
+            "keywords": [
+              "Prostate cancer",
+              "Breast cancer",
+              "Gastrin releasing peptide receptors",
+              "[99mTc]Tc-DB8",
+              "SPECT"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "interventionModelDescription": "Parallel Assignment",
+              "primaryPurpose": "DIAGNOSTIC",
+              "maskingInfo": {
+                "masking": "SINGLE",
+                "maskingDescription": "Single (Participant)",
+                "whoMasked": [
+                  "PARTICIPANT"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 10,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Prostate cancer",
+                "type": "EXPERIMENTAL",
+                "description": "At least five (5) evaluable subjects with prostate cancer",
+                "interventionNames": [
+                  "Drug: Intravenous injection of [99mTc]Tc-DB8"
+                ]
+              },
+              {
+                "label": "Breast cancer",
+                "type": "EXPERIMENTAL",
+                "description": "At least five (5) evaluable subjects with breast cancer",
+                "interventionNames": [
+                  "Drug: Intravenous injection of [99mTc]Tc-DB8"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Intravenous injection of [99mTc]Tc-DB8",
+                "description": "One single intravenous injection of \\[99mTc\\]Tc-DB8, followed by gamma camera imaging after 2, 4, 6 and 24 hours.",
+                "armGroupLabels": [
+                  "Breast cancer",
+                  "Prostate cancer"
+                ],
+                "otherNames": [
+                  "[99mTc]Tc-DB8"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Gamma camera-based whole-body [99mTc]Tc-DB8 uptake value (%)",
+                "description": "Whole-body \\[99mTc\\]Tc-DB8 uptake coinciding with normal organs and tissues will be assessed using gamma camera and calculated as percentage (%) of the injected dose of the radiopharmaceutical",
+                "timeFrame": "24 hours"
+              },
+              {
+                "measure": "SPECT-based [99mTc]Tc-DB8 value in tumor lesions (counts)",
+                "description": "\\[99mTc\\]Tc-DB8 uptake coinciding with tumor lesions will be assessed using single-photon emission computed tomography and measured in counts",
+                "timeFrame": "6 hours"
+              },
+              {
+                "measure": "SPECT-based [99mTc]Tc-DB8 background uptake value (counts)",
+                "description": "Focal uptake of \\[99mTc\\]Tc-DB8 in the regions without pathological findings will be assessed with SPECT and measured in counts",
+                "timeFrame": "6 hours"
+              },
+              {
+                "measure": "Tumor-to-background ratio (SPECT)",
+                "description": "The SPECT-based tumor-to-background ratio will be calculated as follows: the value of \\[99mTc\\]Tc-DB8 uptake coinciding with tumor lesions (counts) will be divided by the value of \\[99mTc\\]Tc-DB8 uptake coinciding with the regions without pathological findings (counts)",
+                "timeFrame": "6 hours"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Safety attributable to [99mTc]Tc-DB8 injections (physical findings)",
+                "description": "The safety attributable to \\[99mTc\\]Tc-DB8 injections will be evaluated based on the assessments of physical examination, vital signs, and ECG (percent of cases with abnormal findings relative to baseline).",
+                "timeFrame": "24 hours"
+              },
+              {
+                "measure": "Safety attributable to [99mTc]Tc-DB8 injections (laboratory tests)",
+                "description": "The safety attributable to \\[99mTc\\]Tc-DB8 injections will be evaluated based on the blood and urine laboratory tests (percent of cases with abnormal findings relative to baseline).",
+                "timeFrame": "24 hors"
+              },
+              {
+                "measure": "Safety attributable to [99mTc]Tc-DB8 injections (incidence of adverse events)",
+                "description": "The safety attributable to \\[99mTc\\]Tc-DB8 injections will be evaluated based on the rate of adverse events (percent).",
+                "timeFrame": "24 hours"
+              },
+              {
+                "measure": "Safety attributable to [99mTc]Tc-DB8 injections (concomitant medication)",
+                "description": "The safety attributable to \\[99mTc\\]Tc-DB8 injections will be evaluated based on the rate of administration of concomitant medication (percent).",
+                "timeFrame": "24 hours"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Subject is \\> 18 years of age\n* Clinical and radiological diagnosis of prostate cancer and breast cancer with histological verification.\n* White blood cell count: \\> 2.0 x 10\\^9/L\n* Haemoglobin: \\> 80 g/L\n* Platelets: \\> 50.0 x 10\\^9/L\n* Bilirubin =\\< 2.0 times Upper Limit of Normal\n* Serum creatinine: Within Normal Limits\n* Blood glucose level not more than 5.9 mmol/L\n* A negative pregnancy test (serum beta-human chorionic gonadotropin, beta-HCG) at screening for all patients of childbearing potential. Sexually active women of childbearing potential participating in the study must use a medically acceptable form of contraception for at least 30 days after study termination\n* Subject is capable to undergo the diagnostic investigations to be performed in the study\n* Informed consent\n\nExclusion Criteria:\n\n* Active current autoimmune disease or history of autoimmune disease\n* Active infection or history of severe infection within the previous 3 months (if clinically relevant at screening)\n* Known HIV positive or chronically active hepatitis B or C\n* Administration of other investigational medicinal product within 30 days of screening\n* Ongoing toxicity \\> grade 2 from previous standard or investigational therapies, according to US National Cancer Institute's",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "75 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Vladimir I Chernov, MD,Prof",
+                "affiliation": "TomskNRMC Tomsk, Russia",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "TomskNRMC",
+                "city": "Tomsk",
+                "country": "Russia",
+                "geoPoint": {
+                  "lat": 56.50049,
+                  "lon": 84.98216
+                }
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT05940298",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12567192/",
+          "identifier": "PMC:12567192",
+          "title": "Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass Make a Difference?",
+          "snippet": "Title: Phase I Clinical Study with the GRPR-Antagonist [(99m)Tc]Tc-DB8 for SPECT Imaging of Prostate Cancer: Does the Injected Peptide Mass Make a Difference?\nAuthors: Orlova A, Rybina A, Medvedeva A et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661783"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12389326/",
+          "identifier": "PMC:12389326",
+          "title": "The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [(99m)Tc]Tc-DB8.",
+          "snippet": "Title: The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [(99m)Tc]Tc-DB8.\nAuthors: Bragina O, Chernov V, Larkina M et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661831"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12314183/",
+          "identifier": "PMC:12314183",
+          "title": "RM2 and DB15 analogues bearing [(177)Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study.",
+          "snippet": "Title: RM2 and DB15 analogues bearing [(177)Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study.\nAuthors: Kanellopoulos P, Bitzios A, Zelepukin I et al.\nJournal: EJNMMI Radiopharm Chem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661850"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12249193/",
+          "identifier": "PMC:12249193",
+          "title": "Current Approaches of Nuclear Molecular Imaging in Breast Cancer.",
+          "snippet": "Title: Current Approaches of Nuclear Molecular Imaging in Breast Cancer.\nAuthors: Sch\u00e4fer L, Altunay B, Heesch A et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.661868"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12567192",
+          "12389326",
+          "12314183",
+          "12249193"
+        ],
+        "pmc_count": 4,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Intravenous injection of [99mTc]Tc-DB8_no_structured_match": true,
+        "uniprot_Intravenous injection of [99mTc]Tc-DB8": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT05940298",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled ...",
+          "snippet": "Web result for: NCT05940298 Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetiu",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:35.096117"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.patlynk.com/trial/NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled ...",
+          "snippet": "Web result for: NCT05940298 Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetiu",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:35.096167"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ctv.veeva.com/study/molecular-imaging-of-gastrin-releasing-peptide-receptors-using-labeled-technetium-99m-db8",
+          "identifier": "NCT05940298",
+          "title": "Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled ...",
+          "snippet": "Web result for: NCT05940298 Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetiu",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:35.096185"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT05940298?tab=history",
+          "identifier": "NCT05940298",
+          "title": "Record History | NCT05940298 | ClinicalTrials.gov",
+          "snippet": "Web result for: NCT05940298 Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetiu",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:35.096201"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://trial.medpath.com/clinical-trial/d7e568240d9d6376/nct05940298-spect-imaging-gastrin-receptor-cancer",
+          "identifier": "NCT05940298",
+          "title": "Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled ...",
+          "snippet": "Web result for: NCT05940298 Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetiu",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:35.096216"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 22178
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Intravenous injection of [99mTc]Tc-DB8": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT05940298",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2107894/",
+          "identifier": "CHEMBL2107894",
+          "title": "TECHNETIUM (99MTC) PHYTATE [INJECTION] - ChEMBL",
+          "snippet": "Molecule: TECHNETIUM (99MTC) PHYTATE [INJECTION]\nType: Unknown\nMax clinical phase: -1.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:34.917106"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2107893/",
+          "identifier": "CHEMBL2107893",
+          "title": "TECHNETIUM (99MTC) HUMAN SERUM ALBUMIN [INJECTION] - ChEMBL",
+          "snippet": "Molecule: TECHNETIUM (99MTC) HUMAN SERUM ALBUMIN [INJECTION]\nType: Protein\nMax clinical phase: -1.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:35.333573"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2108490/",
+          "identifier": "CHEMBL2108490",
+          "title": "INSULIN, NEUTRAL [INJECTION] OF PURIFIED PORCINE - ChEMBL",
+          "snippet": "Molecule: INSULIN, NEUTRAL [INJECTION] OF PURIFIED PORCINE\nType: Protein\nMax clinical phase: -1.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:35.744015"
+        }
+      ],
+      "raw_data": {
+        "chembl_Intravenous injection of [99mTc]Tc-DB8_count": 5,
+        "chembl_Intravenous injection of [99mTc]Tc-DB8_molecules": [
+          {
+            "chembl_id": "CHEMBL2107894",
+            "pref_name": "TECHNETIUM (99MTC) PHYTATE [INJECTION]",
+            "mol_type": "Unknown",
+            "helm_notation": null,
+            "max_phase": "-1.0"
+          },
+          {
+            "chembl_id": "CHEMBL2107893",
+            "pref_name": "TECHNETIUM (99MTC) HUMAN SERUM ALBUMIN [INJECTION]",
+            "mol_type": "Protein",
+            "helm_notation": null,
+            "max_phase": "-1.0"
+          },
+          {
+            "chembl_id": "CHEMBL2108490",
+            "pref_name": "INSULIN, NEUTRAL [INJECTION] OF PURIFIED PORCINE",
+            "mol_type": "Protein",
+            "helm_notation": null,
+            "max_phase": "-1.0"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "rcsb_Intravenous injection of [99mTc]Tc-DB8": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Intravenous injection of [99mTc]Tc-DB8_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "apd_Intravenous injection of [99mTc]Tc-DB8": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT05940298",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT05940298",
+          "identifier": "NCT05940298",
+          "title": "Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetium-99m DB8",
+          "snippet": "Title: Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetium-99m DB8\nStatus: Completed\nPhase: Phase 1\nCountries: Russian Federation\nConditions: Prostate Cancer, Breast Cancer\nInterventions: Drug: Intravenous injection of [99mTc]Tc-DB8\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T17:16:35.035478"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT05940298",
+          "public_title": "Molecular Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetium-99m DB8",
+          "scientific_title": "SPECT Imaging of Gastrin Releasing Peptide Receptors Using Labeled Technetium-99m DB8 ([99mTc]Tc- DB8) in Prostate Cancer and Breast Cancer Patients",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Non-Randomized. Intervention model: Parallel Assignment. Primary purpose: Diagnostic. Masking: Single (Participant).",
+          "countries": [
+            "Russian Federation"
+          ],
+          "conditions": [
+            "Prostate Cancer",
+            "Breast Cancer"
+          ],
+          "interventions": [
+            "Drug: Intravenous injection of [99mTc]Tc-DB8"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Intravenous injection of [99mTc]Tc-DB8": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Intravenous injection of [99mTc]Tc-DB8_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT05940298",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4391723713",
+          "identifier": "PMID:38342656",
+          "title": "Gastrin-releasing peptide receptor as a theranostic target in breast cancer: a systematic scoping review",
+          "snippet": "Title: Gastrin-releasing peptide receptor as a theranostic target in breast cancer: a systematic scoping review\nYear: 2024\nCitations: 14\nAbstract: The gastrin-releasing peptide receptor (GRPR) is known to be overexpressed in breast cancer, making it a promising target for both imaging and therapy within a theranostic framework. Various radioligands targeting GRPR have undergone investigation in",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.821931"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4412845196",
+          "identifier": "PMID:40871022",
+          "title": "The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [99mTc]Tc-DB8",
+          "snippet": "Title: The Impact of the Injected Mass of the Gastrin-Releasing Peptide Receptor Antagonist on Uptake in Breast Cancer: Lessons from a Phase I Trial of [99mTc]Tc-DB8\nYear: 2025\nCitations: 2\nAbstract: Tc]Tc-DB8 is safe, tolerable, and associated with low absorbed doses. The tumor uptake is dependent on the injected peptide mass. The injection of an optimal mass (80 \u00b5g) provides the highest uptake in ER-positive tumors. At optimal dosing, the uptak",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822033"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4412799010",
+          "identifier": "PMID:40745236",
+          "title": "RM2 and DB15 analogues bearing [177Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study",
+          "snippet": "Title: RM2 and DB15 analogues bearing [177Lu]Lu-DOTAGA via different linkers, as radiotherapeutics: a head-to-head comparative study\nYear: 2025\nCitations: 2\nAbstract: BACKGROUND: ) or on DB15 (DOTAGA-X-SAR; SAR: DPhe-Gln-Trp-Ala-Val-NMe-Gly-His-Leu-NHEt) motifs, which were preclinically screened after labelling with In-111. In the current study, we aimed to evaluate in vitro and in vivo the four best-performing ag",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822118"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4411611309",
+          "identifier": "PMID:40647404",
+          "title": "Current Approaches of Nuclear Molecular Imaging in Breast Cancer",
+          "snippet": "Title: Current Approaches of Nuclear Molecular Imaging in Breast Cancer\nYear: 2025\nAbstract: In this narrative review, we aim to summarize recent advancements in nuclear molecular imaging techniques and their applications in BCa management. The main focus of this review is on the most relevant clinical investigations from the past 2-3 years ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822199"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W7128045583",
+          "identifier": "https://doi.org/10.33266/1024-6177-2026-71-1-33-38",
+          "title": "Evaluation of the Safety and Pharmacokinetic Analysis of the Radiopharmaceutical [99mTc]Tc-DB8 in Breast Cancer Patients",
+          "snippet": "Title: Evaluation of the Safety and Pharmacokinetic Analysis of the Radiopharmaceutical [99mTc]Tc-DB8 in Breast Cancer Patients\nYear: 2026\nAbstract: Purpose: To evaluate the safety and pharmacokinetics of the radiopharmaceutical agent [99mTc]Tc-DB8 in patients with breast cancer. Material and methods: The study included 15 patients diagnosed with breast cancer (T2\u20124 N0\u20123 M0\u20121) prior to any system",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:33.822551"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT05940298",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1021/acs.jmedchem.8b00177.s002",
+          "identifier": "DOI:10.1021/acs.jmedchem.8b00177.s002",
+          "title": "New Gastrin Releasing Peptide Receptor-Directed [99mTc]Demobesin 1 Mimics: Synthesis and Comparative Evaluation",
+          "snippet": "Title: New Gastrin Releasing Peptide Receptor-Directed [99mTc]Demobesin 1 Mimics: Synthesis and Comparative Evaluation",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:33.773486"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1021/acs.jmedchem.8b00177.s001",
+          "identifier": "DOI:10.1021/acs.jmedchem.8b00177.s001",
+          "title": "New Gastrin Releasing Peptide Receptor-Directed [99mTc]Demobesin 1 Mimics: Synthesis and Comparative Evaluation",
+          "snippet": "Title: New Gastrin Releasing Peptide Receptor-Directed [99mTc]Demobesin 1 Mimics: Synthesis and Comparative Evaluation",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:33.773522"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1007/3-540-29719-0_657",
+          "identifier": "DOI:10.1007/3-540-29719-0_657",
+          "title": "Gastrin Releasing Peptide",
+          "snippet": "Title: Gastrin Releasing Peptide\nJournal: Encyclopedic Reference of Molecular Pharmacology",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:33.773537"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 0,
+        "biorxiv_prefilter_dropped": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT05940298_total": 0,
+        "sec_edgar_Intravenous injection of [99mTc]Tc-DB8_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT05940298",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_Intravenous injection of [99mTc]Tc-DB8_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT05940298",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:5R01AI155922-05",
+          "title": "Inhaled tigecycline therapy for pulmonary M. abscessus infections (GONZALEZ-JUARRERO, MERCEDES)",
+          "snippet": "Project: 5R01AI155922-05\nPI: GONZALEZ-JUARRERO, MERCEDES\nOrganization: \nFiscal year: 2025\nAward: $623,786\nStart: 2021-06-29\nEnd: 2026-05-31\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728498"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:5R01AI155922-04",
+          "title": "Inhaled tigecycline therapy for pulmonary M. abscessus infections (GONZALEZ-JUARRERO, MERCEDES)",
+          "snippet": "Project: 5R01AI155922-04\nPI: GONZALEZ-JUARRERO, MERCEDES\nOrganization: \nFiscal year: 2024\nAward: $627,834\nStart: 2021-06-29\nEnd: 2026-05-31\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728572"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Intravenous+injection+of+[99mTc]Tc-DB8",
+          "identifier": "NIH:1R01AI177624-01A1",
+          "title": "Engineered exosomes carrying synthetic gRNA/Cas9 targeting HBV-infected cells (YAO, ZHI Q.)",
+          "snippet": "Project: 1R01AI177624-01A1\nPI: YAO, ZHI Q.\nOrganization: \nFiscal year: 2024\nAward: $362,222\nStart: 2024-04-15\nEnd: 2029-02-28\n(64 total NIH-funded projects matching 'Intravenous injection of [99mTc]Tc-DB8')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:33.728607"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_Intravenous injection of [99mTc]Tc-DB8_count": 64,
+        "nih_reporter_Intravenous injection of [99mTc]Tc-DB8_funded": true
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 9,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov"
+      ]
+    },
+    "literature": {
+      "citations_count": 4,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "pmc"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "openalex": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "sec_edgar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "nih_reporter"
+      ]
+    }
+  }
+}

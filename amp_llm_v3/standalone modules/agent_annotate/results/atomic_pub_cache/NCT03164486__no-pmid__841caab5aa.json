@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT03164486",
+  "pmid": "PMC:8679627",
+  "source": "pmc",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "UNCLEAR",
+    "q2_primary_met": "NA",
+    "q3_efficacy": "NA",
+    "q4_failure": "NA",
+    "q5_advanced": "NO",
+    "evidence_quote": ""
+  },
+  "verdict": "INDETERMINATE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

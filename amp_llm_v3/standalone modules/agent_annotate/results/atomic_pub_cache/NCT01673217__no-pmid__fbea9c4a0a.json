@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT01673217",
+  "pmid": "PMC:6513204",
+  "source": "pmc",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "YES",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "UNCLEAR",
+    "q4_failure": "UNCLEAR",
+    "q5_advanced": "NO",
+    "evidence_quote": ""
+  },
+  "verdict": "INDETERMINATE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

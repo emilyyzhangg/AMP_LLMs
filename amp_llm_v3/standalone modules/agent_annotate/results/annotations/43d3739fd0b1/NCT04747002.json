@@ -1,0 +1,1730 @@
+{
+  "nct_id": "NCT04747002",
+  "metadata": {
+    "nct_id": "NCT04747002",
+    "title": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"DSP-7888\" for Acute Myeloid Leukemia Patients.",
+    "phase": "PHASE2",
+    "status": "UNKNOWN",
+    "conditions": [
+      "Acute Myeloid Leukemia in Remission"
+    ],
+    "interventions": [
+      "DRUG: DSP-7888"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.775,
+      "reasoning": "[Pass 1 extraction] Intervention: DSP-7888  \nMolecular Class: Peptide / peptide hormone  \nDatabase Confirmation: Not found in UniProt, DRAMP/DBAASP, ChEMBL, or PDB (specific hits not found in these databases)  \nProduct Description: Described as a \"novel cocktail peptide vaccine\" designed to induce cytotoxic T lymphocytes that recognize WT1 peptides  \nInvestigational Drug Role: Investigational drug\n[Pass 2 decision] Peptide: True  \nReasoning: Step 1 \u2014 The Molecular Class is \"Peptide / peptide hormone,\" which falls within the definition of a peptide. Step 2 \u2014 The Product Description explicitly refers to a \"novel cocktail peptide vaccine,\" confirming that the intervention contains a peptide component. Step 3 \u2014 Although there are no database hits, the trial description clearly identifies the intervention as a peptide vaccine, which qualifies as a peptide molecule. Therefore, the answer is True.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Detailed Description",
+          "snippet": "This study is an investigator-initiated clinical trial (Phase II) using DSP-7888 for acute myeloid leukemia patients with 1st hematological CR. DSP-7888 is a novel cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize WT1 peptides. Primary endpoint is relapse-free survival, and 2nd endpoint is hematological relapse-free survival, overall survival and adverse event.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686511"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11053579/",
+          "identifier": "PMC:11053579",
+          "title": "Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.",
+          "snippet": "Title: Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.\nAuthors: Katopodi T, Petanidis S, Grigoriadou E et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720711"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9217071/",
+          "identifier": "PMC:9217071",
+          "title": "Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.",
+          "snippet": "Title: Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.\nAuthors: Sobhani N, Scaggiante B, Morris R et al.\nJournal: Cancer Treat Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720859"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.",
+          "snippet": "Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo JC et al.\nJournal: NPJ Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720683"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12067400/",
+          "identifier": "PMC:12067400",
+          "title": "Breaking barriers: Smart vaccine platforms for cancer immunomodulation.",
+          "snippet": "Title: Breaking barriers: Smart vaccine platforms for cancer immunomodulation.\nAuthors: Gomari MM, Ghantabpour T, Pourgholam N et al.\nJournal: Cancer Commun (Lond)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720624"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10154606/",
+          "identifier": "PMC:10154606",
+          "title": "A perspective of immunotherapy for acute myeloid leukemia: Current advances and challenges.",
+          "snippet": "Title: A perspective of immunotherapy for acute myeloid leukemia: Current advances and challenges.\nAuthors: Chen Y, Wang J, Zhang F et al.\nJournal: Front Pharmacol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720775"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL167450-04",
+          "title": "Desmosomes in cardiomyocyte homeostasis and disease (PU, WILLIAM TSWENCHING)",
+          "snippet": "Project: 5R01HL167450-04\nPI: PU, WILLIAM TSWENCHING\nOrganization: \nFiscal year: 2026\nAward: $690,026\nStart: 2022-12-15\nEnd: 2026-11-30\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219686"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL163092-04",
+          "title": "Desmoplakinopathies: Integrated Pathophysiology and Therapeutics (CAMPBELL, STUART G)",
+          "snippet": "Project: 5R01HL163092-04\nPI: CAMPBELL, STUART G\nOrganization: \nFiscal year: 2026\nAward: $660,080\nStart: 2023-04-15\nEnd: 2027-03-31\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219658"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.7899999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: DSP-7888 is confirmed as a peptide. It is described as a novel cocktail peptide vaccine, but its specific amino acid length or molecular class is not provided in the evidence.\nDatabase Matches: No evidence found.\nMechanism: DSP-7888 is designed to induce cytotoxic T lymphocytes that recognize... (the specific mechanism is not detailed in the evidence). It does not directly kill or inhibit microorganisms, nor is there evidence it disrupts biofilms or stimulates innate immune defense. It is proposed to work via a non-antimicrobial mechanism, specifically related to cancer immunotherapy.\nTherapeutic Target: Acute myeloid leukemia (a cancer, not an infection or infectious disease).\nImmune Direction: DSP-7888 promotes immune defense by inducing cytotoxic T lymphocytes.\n[Pass 2 decision] Classification: Other  \nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True). Step 2 \u2014 The mechanism of DSP-7888 is related to inducing cytotoxic T lymphocytes, which is a form of adaptive immunity (specifically, T-cell activation). There is no evidence that DSP-7888 directly kills, inhibits the growth of, or disrupts microorganisms, nor does it stimulate innate immune defense or act against biofilms. Since the mechanism is related to adaptive immunity and cancer immunotherapy, and not direct antimicrobial action or innate immune activation, it does not qualify as an AMP. Therefore, the classification is \"Other\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Detailed Description",
+          "snippet": "This study is an investigator-initiated clinical trial (Phase II) using DSP-7888 for acute myeloid leukemia patients with 1st hematological CR. DSP-7888 is a novel cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize WT1 peptides. Primary endpoint is relapse-free survival, and 2nd endpoint is hematological relapse-free survival, overall survival and adverse event.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686511"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11053579/",
+          "identifier": "PMC:11053579",
+          "title": "Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.",
+          "snippet": "Title: Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.\nAuthors: Katopodi T, Petanidis S, Grigoriadou E et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720711"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9217071/",
+          "identifier": "PMC:9217071",
+          "title": "Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.",
+          "snippet": "Title: Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.\nAuthors: Sobhani N, Scaggiante B, Morris R et al.\nJournal: Cancer Treat Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720859"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.",
+          "snippet": "Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo JC et al.\nJournal: NPJ Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720683"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12067400/",
+          "identifier": "PMC:12067400",
+          "title": "Breaking barriers: Smart vaccine platforms for cancer immunomodulation.",
+          "snippet": "Title: Breaking barriers: Smart vaccine platforms for cancer immunomodulation.\nAuthors: Gomari MM, Ghantabpour T, Pourgholam N et al.\nJournal: Cancer Commun (Lond)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720624"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10154606/",
+          "identifier": "PMC:10154606",
+          "title": "A perspective of immunotherapy for acute myeloid leukemia: Current advances and challenges.",
+          "snippet": "Title: A perspective of immunotherapy for acute myeloid leukemia: Current advances and challenges.\nAuthors: Chen Y, Wang J, Zhang F et al.\nJournal: Front Pharmacol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720775"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8279810/",
+          "identifier": "PMC:8279810",
+          "title": "Beyond Just Peptide Antigens: The Complex World of Peptide-Based Cancer Vaccines.",
+          "snippet": "Title: Beyond Just Peptide Antigens: The Complex World of Peptide-Based Cancer Vaccines.\nAuthors: Stephens AJ, Burgess-Brown NA, Jiang S\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720900"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10762788/",
+          "identifier": "PMC:10762788",
+          "title": "Immunotherapy, targeted therapy, and their cross talks in hepatocellular carcinoma.",
+          "snippet": "Title: Immunotherapy, targeted therapy, and their cross talks in hepatocellular carcinoma.\nAuthors: Liu J, Park K, Shen Z et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720754"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL167450-04",
+          "title": "Desmosomes in cardiomyocyte homeostasis and disease (PU, WILLIAM TSWENCHING)",
+          "snippet": "Project: 5R01HL167450-04\nPI: PU, WILLIAM TSWENCHING\nOrganization: \nFiscal year: 2026\nAward: $690,026\nStart: 2022-12-15\nEnd: 2026-11-30\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219686"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL163092-04",
+          "title": "Desmoplakinopathies: Integrated Pathophysiology and Therapeutics (CAMPBELL, STUART G)",
+          "snippet": "Project: 5R01HL163092-04\nPI: CAMPBELL, STUART G\nOrganization: \nFiscal year: 2026\nAward: $660,080\nStart: 2023-04-15\nEnd: 2027-03-31\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219658"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "Other",
+      "confidence": 0.8,
+      "reasoning": "[ATOMIC-CLS R5] Other (conf=0.80)\n  rule: 2/3 NO, 0 YES\n  registry: dramp=0 apd=0 dbaasp=0 uniprot_amp=0\n  atomic: q1=UNCLEAR q2=NO q3=NO\n  R5 fired: 2 NO, 0 YES",
+      "evidence": [],
+      "model_name": "atomic-cls-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Other",
+      "confidence": 0.775,
+      "reasoning": "[Pass 1 route extraction] Protocol Route: \"not specified\"  \nFDA/Label Route: \"not found\"  \nLiterature Route: \"not found\"  \nDatabase Route: \"not found\"  \nDrug Formulation: \"not specified\"  \nMost Specific Route: \"not specified\"\n[Pass 2 classification] Delivery Mode: Other  \nEvidence: None  \nReasoning: No specific route-of-administration information was found in any of the provided sources (Protocol, FDA/Label, Literature, Database). The drug is described as a \"peptide vaccine,\" but no evidence specifies the delivery mode. Per rule 8, if no route evidence is found, classify as \"Other.\"",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Detailed Description",
+          "snippet": "This study is an investigator-initiated clinical trial (Phase II) using DSP-7888 for acute myeloid leukemia patients with 1st hematological CR. DSP-7888 is a novel cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize WT1 peptides. Primary endpoint is relapse-free survival, and 2nd endpoint is hematological relapse-free survival, overall survival and adverse event.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686511"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11053579/",
+          "identifier": "PMC:11053579",
+          "title": "Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.",
+          "snippet": "Title: Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.\nAuthors: Katopodi T, Petanidis S, Grigoriadou E et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720711"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9217071/",
+          "identifier": "PMC:9217071",
+          "title": "Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.",
+          "snippet": "Title: Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.\nAuthors: Sobhani N, Scaggiante B, Morris R et al.\nJournal: Cancer Treat Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720859"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.",
+          "snippet": "Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo JC et al.\nJournal: NPJ Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720683"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12067400/",
+          "identifier": "PMC:12067400",
+          "title": "Breaking barriers: Smart vaccine platforms for cancer immunomodulation.",
+          "snippet": "Title: Breaking barriers: Smart vaccine platforms for cancer immunomodulation.\nAuthors: Gomari MM, Ghantabpour T, Pourgholam N et al.\nJournal: Cancer Commun (Lond)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720624"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10154606/",
+          "identifier": "PMC:10154606",
+          "title": "A perspective of immunotherapy for acute myeloid leukemia: Current advances and challenges.",
+          "snippet": "Title: A perspective of immunotherapy for acute myeloid leukemia: Current advances and challenges.\nAuthors: Chen Y, Wang J, Zhang F et al.\nJournal: Front Pharmacol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720775"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL167450-04",
+          "title": "Desmosomes in cardiomyocyte homeostasis and disease (PU, WILLIAM TSWENCHING)",
+          "snippet": "Project: 5R01HL167450-04\nPI: PU, WILLIAM TSWENCHING\nOrganization: \nFiscal year: 2026\nAward: $690,026\nStart: 2022-12-15\nEnd: 2026-11-30\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219686"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL163092-04",
+          "title": "Desmoplakinopathies: Integrated Pathophysiology and Therapeutics (CAMPBELL, STUART G)",
+          "snippet": "Project: 5R01HL163092-04\nPI: CAMPBELL, STUART G\nOrganization: \nFiscal year: 2026\nAward: $660,080\nStart: 2023-04-15\nEnd: 2027-03-31\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219658"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.77,
+      "reasoning": "[Dossier] Trial: NCT04747002\nRegistry Status: UNKNOWN\nPhase: PHASE2\nCompletion Date: 2024-03 (796 days ago)\nResults Posted: Unknown\nPublications Found: 17 (2 trial-specific, 15 reviews/general)\n  1. Title: Breaking barriers: Smart vaccine platforms for cancer immunomodulation.\nAuthors: Gomari MM, Ghantabpour T, Pourgholam N et al.\nJourna PMC:12067400 [GENERAL]\n  2. Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo PMC:11982186 [GENERAL]\n  3. Title: Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing The PMC:11053579 [GENERAL]\n  4. Title: Recent Findings on Therapeutic Cancer Vaccines: An Updated Review.\nAuthors: Sheikhlary S, Lopez DH, Moghimi S et al.\nJournal: Biomole PMC:11048403 [GENERAL]\n  5. Title: Immunotherapy, targeted therapy, and their cross talks in hepatocellular carcinoma.\nAuthors: Liu J, Park K, Shen Z et al.\nJournal: Fr PMC:10762788 [GENERAL]\nTrial Type: VACCINE / IMMUNOTHERAPY (immunogenicity is the Phase I primary endpoint)\nTrial Drugs: DSP-7888\nSEC EDGAR: sponsor 10-K/10-Q/8-K filing(s) reference this NCT or\n[LLM decision] The trial is listed as completed, but no trial-specific publications are registered, and no explicit statement about meeting the primary endpoint or achieving statistical significance is present in the provided evidence. The available publications are general reviews and do not report trial-specific results. Therefore, the outcome remains \"Unknown\" due to insufficient evidence.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Detailed Description",
+          "snippet": "This study is an investigator-initiated clinical trial (Phase II) using DSP-7888 for acute myeloid leukemia patients with 1st hematological CR. DSP-7888 is a novel cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize WT1 peptides. Primary endpoint is relapse-free survival, and 2nd endpoint is hematological relapse-free survival, overall survival and adverse event.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686511"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4220679821",
+          "identifier": "PMID:35303904",
+          "title": "Cancer vaccines as promising immuno-therapeutics: platforms and current progress",
+          "snippet": "Title: Cancer vaccines as promising immuno-therapeutics: platforms and current progress\nYear: 2022\nCitations: 680\nAbstract: Research on tumor immunotherapy has made tremendous progress in the past decades, with numerous studies entering the clinical evaluation. The cancer vaccine is considered a promising therapeutic strategy in the immunotherapy of solid tumors. Cancer v",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.313471"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4394999916",
+          "identifier": "PMID:38672519",
+          "title": "Recent Findings on Therapeutic Cancer Vaccines: An Updated Review",
+          "snippet": "Title: Recent Findings on Therapeutic Cancer Vaccines: An Updated Review\nYear: 2024\nCitations: 16\nAbstract: Cancer remains one of the global leading causes of death and various vaccines have been developed over the years against it, including cell-based, nucleic acid-based, and viral-based cancer vaccines. Although many vaccines have been effective in in v",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.313562"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1007/s44402-026-00089-1",
+          "identifier": "DOI:10.1007/s44402-026-00089-1",
+          "title": "Effects of HP-Guar Nano-emulsion Artificial Tears on Symptoms and Severity of Meibomian Gland Dysfunction in Evaporative Dry Eye During a 90-Day Longitudinal Study",
+          "snippet": "Title: Effects of HP-Guar Nano-emulsion Artificial Tears on Symptoms and Severity of Meibomian Gland Dysfunction in Evaporative Dry Eye During a 90-Day Longitudinal Study\nJournal: Ophthalmic and Physiological Optics\nYear: 2026\nAbstract: Abstract\n                  \n                    Background\n                    To evaluate whether hydroxypropyl-guar (HP-Guar) nano-emulsion artificial tears improve symptoms, quality of life, severity of meibomian gland dysfunction (MGD) and evapor",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:54.785037"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11053579/",
+          "identifier": "PMC:11053579",
+          "title": "Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.",
+          "snippet": "Title: Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.\nAuthors: Katopodi T, Petanidis S, Grigoriadou E et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720711"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9217071/",
+          "identifier": "PMC:9217071",
+          "title": "Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.",
+          "snippet": "Title: Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.\nAuthors: Sobhani N, Scaggiante B, Morris R et al.\nJournal: Cancer Treat Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720859"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.",
+          "snippet": "Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo JC et al.\nJournal: NPJ Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720683"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.annonc.2021.05.275",
+          "identifier": "DOI:10.1016/j.annonc.2021.05.275",
+          "title": "P-221 Repurposing disulfiram as treatment for metastatic colorectal cancer: An investigator-initiated clinical phase II trial",
+          "snippet": "Title: P-221 Repurposing disulfiram as treatment for metastatic colorectal cancer: An investigator-initiated clinical phase II trial\nJournal: Annals of Oncology\nYear: 2021",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:54.784946"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL167450-04",
+          "title": "Desmosomes in cardiomyocyte homeostasis and disease (PU, WILLIAM TSWENCHING)",
+          "snippet": "Project: 5R01HL167450-04\nPI: PU, WILLIAM TSWENCHING\nOrganization: \nFiscal year: 2026\nAward: $690,026\nStart: 2022-12-15\nEnd: 2026-11-30\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219686"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL163092-04",
+          "title": "Desmoplakinopathies: Integrated Pathophysiology and Therapeutics (CAMPBELL, STUART G)",
+          "snippet": "Project: 5R01HL163092-04\nPI: CAMPBELL, STUART G\nOrganization: \nFiscal year: 2026\nAward: $660,080\nStart: 2023-04-15\nEnd: 2027-03-31\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219658"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Unknown",
+      "confidence": 0.5,
+      "reasoning": "[ATOMIC R8] Unknown (conf=0.50)\n  rule: no rule fired \u2014 insufficient evidence\n  registry: status=UNKNOWN phase=PHASE2 has_results=None completion=2024-03 days_since=796 stale=False drug_max_phase=3\n  pubs: 12 total (0 ts, 12 gen, 0 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=UNKNOWN has_results=None phase=PHASE2 days_since=796 stale=False drug_max_phase=3\n    pubs: total=12 trial_specific=0 voting=0 pos=0 fail=0\n    R8 fired: default Unknown",
+      "evidence": [],
+      "model_name": "atomic-gemma3:12b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "sequence",
+      "value": "N/A",
+      "confidence": 0.0,
+      "reasoning": "[Structured v23] No amino acid sequence found in research data.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8,
+      "reasoning": "[Pass 1] No failure detected. Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: No specific findings related to the trial NCT04747002 were found in the provided PubMed, PMC, or web sources. The literature reviewed discusses general topics related to cancer vaccines, peptide vaccines, and immunotherapy for",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Detailed Description",
+          "snippet": "This study is an investigator-initiated clinical trial (Phase II) using DSP-7888 for acute myeloid leukemia patients with 1st hematological CR. DSP-7888 is a novel cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize WT1 peptides. Primary endpoint is relapse-free survival, and 2nd endpoint is hematological relapse-free survival, overall survival and adverse event.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686511"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4220679821",
+          "identifier": "PMID:35303904",
+          "title": "Cancer vaccines as promising immuno-therapeutics: platforms and current progress",
+          "snippet": "Title: Cancer vaccines as promising immuno-therapeutics: platforms and current progress\nYear: 2022\nCitations: 680\nAbstract: Research on tumor immunotherapy has made tremendous progress in the past decades, with numerous studies entering the clinical evaluation. The cancer vaccine is considered a promising therapeutic strategy in the immunotherapy of solid tumors. Cancer v",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.313471"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4394999916",
+          "identifier": "PMID:38672519",
+          "title": "Recent Findings on Therapeutic Cancer Vaccines: An Updated Review",
+          "snippet": "Title: Recent Findings on Therapeutic Cancer Vaccines: An Updated Review\nYear: 2024\nCitations: 16\nAbstract: Cancer remains one of the global leading causes of death and various vaccines have been developed over the years against it, including cell-based, nucleic acid-based, and viral-based cancer vaccines. Although many vaccines have been effective in in v",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.313562"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11053579/",
+          "identifier": "PMC:11053579",
+          "title": "Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.",
+          "snippet": "Title: Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.\nAuthors: Katopodi T, Petanidis S, Grigoriadou E et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720711"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9217071/",
+          "identifier": "PMC:9217071",
+          "title": "Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.",
+          "snippet": "Title: Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.\nAuthors: Sobhani N, Scaggiante B, Morris R et al.\nJournal: Cancer Treat Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720859"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.",
+          "snippet": "Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo JC et al.\nJournal: NPJ Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720683"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12067400/",
+          "identifier": "PMC:12067400",
+          "title": "Breaking barriers: Smart vaccine platforms for cancer immunomodulation.",
+          "snippet": "Title: Breaking barriers: Smart vaccine platforms for cancer immunomodulation.\nAuthors: Gomari MM, Ghantabpour T, Pourgholam N et al.\nJournal: Cancer Commun (Lond)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720624"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10154606/",
+          "identifier": "PMC:10154606",
+          "title": "A perspective of immunotherapy for acute myeloid leukemia: Current advances and challenges.",
+          "snippet": "Title: A perspective of immunotherapy for acute myeloid leukemia: Current advances and challenges.\nAuthors: Chen Y, Wang J, Zhang F et al.\nJournal: Front Pharmacol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720775"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL167450-04",
+          "title": "Desmosomes in cardiomyocyte homeostasis and disease (PU, WILLIAM TSWENCHING)",
+          "snippet": "Project: 5R01HL167450-04\nPI: PU, WILLIAM TSWENCHING\nOrganization: \nFiscal year: 2026\nAward: $690,026\nStart: 2022-12-15\nEnd: 2026-11-30\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219686"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL163092-04",
+          "title": "Desmoplakinopathies: Integrated Pathophysiology and Therapeutics (CAMPBELL, STUART G)",
+          "snippet": "Project: 5R01HL163092-04\nPI: CAMPBELL, STUART G\nOrganization: \nFiscal year: 2026\nAward: $660,080\nStart: 2023-04-15\nEnd: 2027-03-31\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219658"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "llm"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "",
+      "confidence": 0.0,
+      "reasoning": "[ATOMIC-FR gated] outcome_atomic=Unknown not in ['Failed - completed trial', 'Terminated']",
+      "evidence": [],
+      "model_name": "atomic-fr-gated",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT04747002",
+    "fields": [
+      {
+        "field_name": "classification_atomic",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "sequence",
+        "original_value": "N/A",
+        "final_value": "N/A",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial description explicitly states that DSP-7888 is a \"cocktail peptide vaccine.\"",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The term \"peptide vaccine\" in the trial description is strong evidence that the intervention contains a peptide molecule, as defined.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The presence of \"peptide\" in the intervention name and description strongly suggests that DSP-7888 contains peptide molecules.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.775,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial involves a peptide vaccine designed to induce cytotoxic T lymphocytes, which is a mechanism of adaptive immunity. Vaccine peptides, regardless of the pathogen target, are classified as 'Other' as they do not directly kill pathogens through antimicrobial mechanisms (Modes A, B, or C).",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "According to the provided criteria, all vaccine peptides, regardless of their target pathogen, are classified as \"Other\" because they work through adaptive immunity (antibody/T-cell induction), not direct antimicrobial action. This trial is a cancer vaccine, and thus, it is not an AMP.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "This trial involves a peptide vaccine designed to target cancer cells, not pathogens. The mechanism of action is based on inducing an immune response against tumor cells, rather than directly killing or inhibiting pathogens. Therefore, it does not meet the criteria for an Antimicrobial Peptide (AMP).",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7899999999999999,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial status is \"UNKNOWN,\" indicating a lack of definitive information regarding its outcome. Without published results or other conclusive evidence, it is impossible to determine whether the trial was successful or not.",
+            "confidence": 0.4,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "Since the trial status is unknown and there is no published evidence of outcomes, the outcome cannot be determined. The completion heuristics suggest that without published results or results posted, the outcome is \"Unknown.\"",
+            "confidence": 0.4,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Unknown",
+            "reasoning": "The trial status is unknown, and there are no published results or Results Posted=Yes to indicate whether the trial was successful or failed. While the trial is mentioned in several web sources, these sources do not provide any specific information about the trial's outcome. Therefore, I cannot determine a positive or negative outcome for this trial.",
+            "confidence": 0.7,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.77,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The trial status is unknown, and there is no published evidence indicating a failure. Therefore, based on the provided data, there is no reason to classify this trial as having failed.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "Since the trial status is unknown and there is no published evidence of failure, termination, or withdrawal, the reason for failure cannot be determined. The absence of published negative results or termination evidence means the answer is \"EMPTY.\"",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The trial status is UNKNOWN, which suggests that it may still be ongoing or have been terminated without publication of results. Without any indication of negative outcomes or failure to meet endpoints in the published literature, I conclude that there is no evidence of failure.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.8,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Other",
+        "final_value": "Injection/Infusion",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "The trial protocol explicitly states that patients in the administration group are \"injected\" with the vaccine.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "The trial explicitly states that the administration group receives the vaccine via injection, which falls under the Injection/Infusion category.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "The language used in the trial title and description is consistent with the administration of a vaccine via injection, rather than oral or topical routes. The fact that the authors refer to DSP-7888 as a \"vaccine\" also supports an injectable form, as vaccines are typically administered via injection.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.775,
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial explicitly states that the administration group receives the vaccine via injection, which falls under the \"Injection/Infusion\" category. This is directly supported by the trial data, and three independent verifiers have consistently cited this evidence to support the \"Injection/Infusion\" answer. The primary annotator's choice of \"Other\" is not supported by the available evidence, which clearly specifies the route of administration as injection.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT04747002",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"DSP-7888\" for Acute Myeloid Leukemia Patients.",
+          "snippet": "Title: Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"DSP-7888\" for Acute Myeloid Leukemia Patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686421"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Brief Summary",
+          "snippet": "This study is an investigator-initiated clinical trial (Phase II) using DSP-7888 for acute myeloid leukemia patients with 1st hematological complete remission (CR). DSP-7888 is a novel cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize Wilms Tumor Gene 1 (WT1) peptides.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686491"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Detailed Description",
+          "snippet": "This study is an investigator-initiated clinical trial (Phase II) using DSP-7888 for acute myeloid leukemia patients with 1st hematological CR. DSP-7888 is a novel cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize WT1 peptides. Primary endpoint is relapse-free survival, and 2nd endpoint is hematological relapse-free survival, overall survival and adverse event.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686511"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Study Status",
+          "snippet": "Status: UNKNOWN",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686528"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Acute Myeloid Leukemia in Remission",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686546"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Intervention: DSP-7888",
+          "snippet": "DRUG: DSP-7888 - Cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize WT1 peptides",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686568"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Arm Group: Administration Group",
+          "snippet": "Arm: Administration Group - Patients who are injected with DSP-7888.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686587"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Arm Group: Non-administration Group",
+          "snippet": "Arm: Non-administration Group - Patients who are only under observation.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686604"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.686622"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT04747002",
+            "orgStudyIdInfo": {
+              "id": "WT1-AM-05"
+            },
+            "organization": {
+              "fullName": "Osaka University",
+              "class": "OTHER"
+            },
+            "briefTitle": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"Dainippon Sumitomo Phama(DSP)-7888\" for Acute Myeloid Leukemia Patients.",
+            "officialTitle": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"DSP-7888\" for Acute Myeloid Leukemia Patients."
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2021-02",
+            "overallStatus": "UNKNOWN",
+            "lastKnownStatus": "RECRUITING",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2020-06-12",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2024-03",
+              "type": "ESTIMATED"
+            },
+            "completionDateStruct": {
+              "date": "2024-04",
+              "type": "ESTIMATED"
+            },
+            "studyFirstSubmitDate": "2021-02-05",
+            "studyFirstSubmitQcDate": "2021-02-05",
+            "studyFirstPostDateStruct": {
+              "date": "2021-02-10",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2021-02-28",
+            "lastUpdatePostDateStruct": {
+              "date": "2021-03-03",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Yoichi Yamamoto",
+              "investigatorTitle": "Professor",
+              "investigatorAffiliation": "Osaka University"
+            },
+            "leadSponsor": {
+              "name": "Osaka University",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Japan Agency for Medical Research and Development",
+                "class": "OTHER_GOV"
+              }
+            ]
+          },
+          "oversightModule": {
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "This study is an investigator-initiated clinical trial (Phase II) using DSP-7888 for acute myeloid leukemia patients with 1st hematological complete remission (CR). DSP-7888 is a novel cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize Wilms Tumor Gene 1 (WT1) peptides.",
+            "detailedDescription": "This study is an investigator-initiated clinical trial (Phase II) using DSP-7888 for acute myeloid leukemia patients with 1st hematological CR. DSP-7888 is a novel cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize WT1 peptides. Primary endpoint is relapse-free survival, and 2nd endpoint is hematological relapse-free survival, overall survival and adverse event."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Acute Myeloid Leukemia in Remission"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 100,
+              "type": "ESTIMATED"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Administration Group",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "Patients who are injected with DSP-7888.",
+                "interventionNames": [
+                  "Drug: DSP-7888"
+                ]
+              },
+              {
+                "label": "Non-administration Group",
+                "type": "NO_INTERVENTION",
+                "description": "Patients who are only under observation."
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "DSP-7888",
+                "description": "Cocktail peptide vaccine designed to induce cytotoxic T lymphocytes that recognize WT1 peptides",
+                "armGroupLabels": [
+                  "Administration Group"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Relapse-free survival",
+                "timeFrame": "2 year"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Hematological relapse-free survival",
+                "timeFrame": "2 year"
+              },
+              {
+                "measure": "Overall survival",
+                "timeFrame": "2 year"
+              },
+              {
+                "measure": "Adverse event",
+                "timeFrame": "2 year"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n1. acute myeloid leukemia defined by World Health Organization (WHO) 2016 classification\n2. favorable or intermediate risk based on European Leukemia Net (ELN) 2017 risk classification\n3. 1st hematological after chemotherapy\n4. Human Leukocyte Antigen (HLA)-A\\*02:01, 02:06, 24:02\n5. 20-80 years old\n6. Eastern Cooperative Oncology Group (ECOG) performance Status 0-2\n7. within 35 days after White Blood Cell (WBC) and Neutrophil recovers over 1500 and 500, respectively\n8. sufficient organ function as below within 7 days\n\n(1) Neutrophil : \\>= 1000 (2) Cr : \\>= 3.0mg/dl (3) Aspartate aminotransferase (AST), Alanine transaminase (ALT) : 5 x the upper limit of normal (ULN) for the reference lab (4) Percutaneous oxygen saturation (SpO2): \\>= 95% 9) patients who agree contraception until 6 months after the last injection 10) non-candidate for hematopoietic stem cell transplantation.\n\n1. illegible for hematopoietic stem cell transplantation (HSCT)\n2. lack of appropriate donor\n3. patients who don't select HSCT at the 1st hematological complete remission (hCR) timing\n\nExclusion Criteria:\n\n1. multiple primary cancer\n2. autoimmune disease\n3. usage of investigational or unapproved drug within 28 days\n4. severe organ failure\n5. Human Immunodeficiency Virus (HIV) antibody / Hepatitis B surface (HBs) antigen / Hepatitis C Virus (HCV) antibody positive\n6. pregnant woman\n7. lactating woman\n8. under treatment against active infection\n9. difficult to enroll because of mental problem\n10. other reasons which investigator judge appropriate for enrollment",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "20 Years",
+            "maximumAge": "80 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "centralContacts": [
+              {
+                "name": "Jun Nakata, M.D., Ph.D.",
+                "role": "CONTACT",
+                "phone": "+81668793676",
+                "email": "mogura@sahs.med.osaka-u.ac.jp"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Osaka University",
+                "status": "RECRUITING",
+                "city": "Suita",
+                "state": "Osaka",
+                "zip": "565-0871",
+                "country": "Japan",
+                "contacts": [
+                  {
+                    "name": "Jun Nakata",
+                    "role": "CONTACT",
+                    "phone": "+81668793676",
+                    "email": "mogura@sahs.med.osaka-u.ac.jp"
+                  }
+                ],
+                "geoPoint": {
+                  "lat": 34.76143,
+                  "lon": 135.51567
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "seeAlsoLinks": [
+              {
+                "label": "Related Info",
+                "url": "http://sahswww.med.osaka-u.ac.jp/~hmtonc/vaccine/AM05.html"
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT04747002",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12067400/",
+          "identifier": "PMC:12067400",
+          "title": "Breaking barriers: Smart vaccine platforms for cancer immunomodulation.",
+          "snippet": "Title: Breaking barriers: Smart vaccine platforms for cancer immunomodulation.\nAuthors: Gomari MM, Ghantabpour T, Pourgholam N et al.\nJournal: Cancer Commun (Lond)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720624"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.",
+          "snippet": "Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo JC et al.\nJournal: NPJ Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720683"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11053579/",
+          "identifier": "PMC:11053579",
+          "title": "Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.",
+          "snippet": "Title: Immune Specific and Tumor-Dependent mRNA Vaccines for Cancer Immunotherapy: Reprogramming Clinical Translation into Tumor Editing Therapy.\nAuthors: Katopodi T, Petanidis S, Grigoriadou E et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720711"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11048403/",
+          "identifier": "PMC:11048403",
+          "title": "Recent Findings on Therapeutic Cancer Vaccines: An Updated Review.",
+          "snippet": "Title: Recent Findings on Therapeutic Cancer Vaccines: An Updated Review.\nAuthors: Sheikhlary S, Lopez DH, Moghimi S et al.\nJournal: Biomolecules",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720733"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10762788/",
+          "identifier": "PMC:10762788",
+          "title": "Immunotherapy, targeted therapy, and their cross talks in hepatocellular carcinoma.",
+          "snippet": "Title: Immunotherapy, targeted therapy, and their cross talks in hepatocellular carcinoma.\nAuthors: Liu J, Park K, Shen Z et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720754"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10154606/",
+          "identifier": "PMC:10154606",
+          "title": "A perspective of immunotherapy for acute myeloid leukemia: Current advances and challenges.",
+          "snippet": "Title: A perspective of immunotherapy for acute myeloid leukemia: Current advances and challenges.\nAuthors: Chen Y, Wang J, Zhang F et al.\nJournal: Front Pharmacol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720775"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9498256/",
+          "identifier": "PMC:9498256",
+          "title": "Emerging Trends in Immunotherapy for Cancer.",
+          "snippet": "Title: Emerging Trends in Immunotherapy for Cancer.\nAuthors: Mishra AK, Ali A, Dutta S et al.\nJournal: Diseases",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720796"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9406446/",
+          "identifier": "PMC:9406446",
+          "title": "Recent Advances and Challenges in Cancer Immunotherapy.",
+          "snippet": "Title: Recent Advances and Challenges in Cancer Immunotherapy.\nAuthors: Peterson C, Denlinger N, Yang Y\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720817"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9221207/",
+          "identifier": "PMC:9221207",
+          "title": "Vaccination Therapy for Acute Myeloid Leukemia: Where Do We Stand?",
+          "snippet": "Title: Vaccination Therapy for Acute Myeloid Leukemia: Where Do We Stand?\nAuthors: Barbullushi K, Rampi N, Serpenti F et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720838"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9217071/",
+          "identifier": "PMC:9217071",
+          "title": "Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.",
+          "snippet": "Title: Therapeutic cancer vaccines: From biological mechanisms and engineering to ongoing clinical trials.\nAuthors: Sobhani N, Scaggiante B, Morris R et al.\nJournal: Cancer Treat Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720859"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8931585/",
+          "identifier": "PMC:8931585",
+          "title": "Cancer vaccines as promising immuno-therapeutics: platforms and current progress.",
+          "snippet": "Title: Cancer vaccines as promising immuno-therapeutics: platforms and current progress.\nAuthors: Liu J, Fu M, Wang M et al.\nJournal: J Hematol Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720880"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8279810/",
+          "identifier": "PMC:8279810",
+          "title": "Beyond Just Peptide Antigens: The Complex World of Peptide-Based Cancer Vaccines.",
+          "snippet": "Title: Beyond Just Peptide Antigens: The Complex World of Peptide-Based Cancer Vaccines.\nAuthors: Stephens AJ, Burgess-Brown NA, Jiang S\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.720900"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12067400",
+          "11982186",
+          "11053579",
+          "11048403",
+          "10762788",
+          "10154606",
+          "9498256",
+          "9406446",
+          "9221207",
+          "9217071",
+          "8931585",
+          "8279810"
+        ],
+        "pmc_count": 12,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT04747002",
+      "citations": [],
+      "raw_data": {
+        "uniprot_DSP-7888_no_structured_match": true,
+        "uniprot_DSP-7888": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT04747002",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine ...",
+          "snippet": "Web result for: NCT04747002 Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"Dainippon Su",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:54.519096"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine ...",
+          "snippet": "Web result for: NCT04747002 Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"Dainippon Su",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:54.519150"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://trial.medpath.com/clinical-trial/1445ad6e39c05091/nct04747002-cancer-vaccine-dsp-7888-acute-myeloid-leukemia",
+          "identifier": "NCT04747002",
+          "title": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine ...",
+          "snippet": "Web result for: NCT04747002 Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"Dainippon Su",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:54.519163"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://inclinicaltrials.com/other/NCT04747002/",
+          "identifier": "NCT04747002",
+          "title": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine ...",
+          "snippet": "Web result for: NCT04747002 Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"Dainippon Su",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:54.519171"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.trialx.com/clinical-trials/listings/254051/investigator-initiated-clinical-trial-phase-ii-of-cancer-vaccine-dainippon-sumitomo-phamadsp-7888-for-acute-myeloid-leukemia-patients/",
+          "identifier": "NCT04747002",
+          "title": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine ...",
+          "snippet": "Web result for: NCT04747002 Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"Dainippon Su",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:54.519177"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 9,
+        "duckduckgo_html_length": 20756
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT04747002",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_DSP-7888": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT04747002",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297235/",
+          "identifier": "CHEMBL4297235",
+          "title": "OMBIPEPIMUT-S - ChEMBL",
+          "snippet": "Molecule: OMBIPEPIMUT-S\nType: Unknown\nMax clinical phase: 3.0\nMechanism: Wilms tumor protein vaccine antigen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:54.701724"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4226281/",
+          "identifier": "CHEMBL4226281",
+          "title": "CHEMBL4226281 - ChEMBL",
+          "snippet": "Molecule: CHEMBL4226281\nType: Small molecule\nMolecular weight: 502.45\nBioactivity: Ki=1.02 nM (Sodium-dependent serotonin transporter); Ki=5.05 nM (5-hydroxytryptamine receptor 1A); Drug metabolism=0.0 % (Cytochrome P450 2D6); IC50=2.71 nM (Sodium-dependent serotonin transporter); Intrinsic activity=70.0 % (5-hydroxytryptamine receptor 1A)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:55.087220"
+        }
+      ],
+      "raw_data": {
+        "chembl_DSP-7888_count": 5,
+        "chembl_DSP-7888_molecules": [
+          {
+            "chembl_id": "CHEMBL4297235",
+            "pref_name": "OMBIPEPIMUT-S",
+            "mol_type": "Unknown",
+            "helm_notation": null,
+            "max_phase": "3.0"
+          },
+          {
+            "chembl_id": "CHEMBL4226281",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT04747002",
+      "citations": [],
+      "raw_data": {
+        "rcsb_DSP-7888": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT04747002",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_DSP-7888_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT04747002",
+      "citations": [],
+      "raw_data": {
+        "apd_DSP-7888": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT04747002",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT04747002",
+          "identifier": "NCT04747002",
+          "title": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"Dainippon Sumitomo Phama(DSP)-7888\" for Acute Myeloid Leukemia Patients.",
+          "snippet": "Title: Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"Dainippon Sumitomo Phama(DSP)-7888\" for Acute Myeloid Leukemia Patients.\nStatus: Recruiting\nPhase: Phase 2\nCountries: Japan\nConditions: Acute Myeloid Leukemia in Remission\nInterventions: Drug: DSP-7888\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:59.313554"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT04747002",
+          "public_title": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"Dainippon Sumitomo Phama(DSP)-7888\" for Acute Myeloid Leukemia Patients.",
+          "scientific_title": "Investigator-initiated Clinical Trial (Phase II) of Cancer Vaccine \"DSP-7888\" for Acute Myeloid Leukemia Patients.",
+          "recruitment_status": "Recruiting",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized. Intervention model: Parallel Assignment. Primary purpose: Treatment. Masking: None (Open Label).",
+          "countries": [
+            "Japan"
+          ],
+          "conditions": [
+            "Acute Myeloid Leukemia in Remission"
+          ],
+          "interventions": [
+            "Drug: DSP-7888"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT04747002",
+      "citations": [],
+      "raw_data": {
+        "iuphar_DSP-7888": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT04747002",
+      "citations": [],
+      "raw_data": {
+        "pdbe_DSP-7888_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT04747002",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4220679821",
+          "identifier": "PMID:35303904",
+          "title": "Cancer vaccines as promising immuno-therapeutics: platforms and current progress",
+          "snippet": "Title: Cancer vaccines as promising immuno-therapeutics: platforms and current progress\nYear: 2022\nCitations: 680\nAbstract: Research on tumor immunotherapy has made tremendous progress in the past decades, with numerous studies entering the clinical evaluation. The cancer vaccine is considered a promising therapeutic strategy in the immunotherapy of solid tumors. Cancer v",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.313471"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4394999916",
+          "identifier": "PMID:38672519",
+          "title": "Recent Findings on Therapeutic Cancer Vaccines: An Updated Review",
+          "snippet": "Title: Recent Findings on Therapeutic Cancer Vaccines: An Updated Review\nYear: 2024\nCitations: 16\nAbstract: Cancer remains one of the global leading causes of death and various vaccines have been developed over the years against it, including cell-based, nucleic acid-based, and viral-based cancer vaccines. Although many vaccines have been effective in in v",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:53.313562"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 2
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT04747002",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT04747002",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.annonc.2021.05.275",
+          "identifier": "DOI:10.1016/j.annonc.2021.05.275",
+          "title": "P-221 Repurposing disulfiram as treatment for metastatic colorectal cancer: An investigator-initiated clinical phase II trial",
+          "snippet": "Title: P-221 Repurposing disulfiram as treatment for metastatic colorectal cancer: An investigator-initiated clinical phase II trial\nJournal: Annals of Oncology\nYear: 2021",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:54.784946"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.2217/fon-2021-1450",
+          "identifier": "DOI:10.2217/fon-2021-1450",
+          "title": "PALVEN: Phase Ib Trial of Palbociclib, Letrozole and Venetoclax in Estrogen Receptor- and BCL2-Positive Advanced Breast Cancer",
+          "snippet": "Title: PALVEN: Phase Ib Trial of Palbociclib, Letrozole and Venetoclax in Estrogen Receptor- and BCL2-Positive Advanced Breast Cancer\nJournal: Future Oncology\nYear: 2022",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:54.784990"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1007/s44402-026-00089-1",
+          "identifier": "DOI:10.1007/s44402-026-00089-1",
+          "title": "Effects of HP-Guar Nano-emulsion Artificial Tears on Symptoms and Severity of Meibomian Gland Dysfunction in Evaporative Dry Eye During a 90-Day Longitudinal Study",
+          "snippet": "Title: Effects of HP-Guar Nano-emulsion Artificial Tears on Symptoms and Severity of Meibomian Gland Dysfunction in Evaporative Dry Eye During a 90-Day Longitudinal Study\nJournal: Ophthalmic and Physiological Optics\nYear: 2026\nAbstract: Abstract\n                  \n                    Background\n                    To evaluate whether hydroxypropyl-guar (HP-Guar) nano-emulsion artificial tears improve symptoms, quality of life, severity of meibomian gland dysfunction (MGD) and evapor",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:54.785037"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT04747002",
+      "citations": [],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 0,
+        "biorxiv_prefilter_dropped": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT04747002",
+      "citations": [
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1390478/000139047822000006/0001390478-22-000006-index.htm",
+          "identifier": "SEC:0001390478-22-000006",
+          "title": "SELLAS Life Sciences Group, Inc.  (SLS)  (CIK 0001390478) 10-K (2022-03-31) \u2014 references 'DSP-7888'",
+          "snippet": "Filing: 10-K\nSponsor: SELLAS Life Sciences Group, Inc.  (SLS)  (CIK 0001390478)\nDate: 2022-03-31\nSearch term: 'DSP-7888'",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:56.049164"
+        }
+      ],
+      "raw_data": {
+        "sec_edgar_NCT04747002_total": 0,
+        "sec_edgar_DSP-7888_total": 1
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT04747002",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_DSP-7888_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT04747002",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:1R01DE035506-01",
+          "title": "Dentin Sialophosphoprotein (DSPP) Preprotein Signal Peptide Removal and Dentinogenesis Imperfecta (DGI) (LU, YONGBO)",
+          "snippet": "Project: 1R01DE035506-01\nPI: LU, YONGBO\nOrganization: \nFiscal year: 2026\nAward: $346,500\nStart: 2026-04-01\nEnd: 2031-03-31\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219598"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL163092-04",
+          "title": "Desmoplakinopathies: Integrated Pathophysiology and Therapeutics (CAMPBELL, STUART G)",
+          "snippet": "Project: 5R01HL163092-04\nPI: CAMPBELL, STUART G\nOrganization: \nFiscal year: 2026\nAward: $660,080\nStart: 2023-04-15\nEnd: 2027-03-31\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219658"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DSP-7888",
+          "identifier": "NIH:5R01HL167450-04",
+          "title": "Desmosomes in cardiomyocyte homeostasis and disease (PU, WILLIAM TSWENCHING)",
+          "snippet": "Project: 5R01HL167450-04\nPI: PU, WILLIAM TSWENCHING\nOrganization: \nFiscal year: 2026\nAward: $690,026\nStart: 2022-12-15\nEnd: 2026-11-30\n(768 total NIH-funded projects matching 'DSP-7888')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.219686"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_DSP-7888_count": 768,
+        "nih_reporter_DSP-7888_funded": true
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 9,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov"
+      ]
+    },
+    "literature": {
+      "citations_count": 12,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "pmc"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "chembl": {
+      "citations_count": 2,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "openalex": {
+      "citations_count": 2,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "sec_edgar": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "sec_edgar"
+      ]
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "nih_reporter"
+      ]
+    }
+  }
+}

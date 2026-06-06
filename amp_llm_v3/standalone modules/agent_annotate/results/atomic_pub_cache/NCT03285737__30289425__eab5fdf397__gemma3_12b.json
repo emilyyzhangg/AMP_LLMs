@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT03285737",
+  "pmid": "PMID:30289425",
+  "source": "pubmed",
+  "specificity": "trial_specific",
+  "answers": {
+    "q1_reports_results": "YES",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "UNCLEAR",
+    "q4_failure": "UNCLEAR",
+    "q5_advanced": "NO",
+    "evidence_quote": ""
+  },
+  "verdict": "INDETERMINATE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

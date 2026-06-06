@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT00052026",
+  "pmid": "PMID:39701300",
+  "source": "pubmed",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "UNCLEAR",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "UNCLEAR",
+    "q4_failure": "UNCLEAR",
+    "q5_advanced": "UNCLEAR",
+    "evidence_quote": ""
+  },
+  "verdict": "INDETERMINATE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

@@ -1,0 +1,867 @@
+{
+  "nct_id": "NCT03164486",
+  "completed_at": "2026-04-30 10:16:55 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT03164486",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26-Binding-Peptide",
+          "snippet": "Title: First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26-Binding-Peptide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.673651"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "Brief Summary",
+          "snippet": "This clinical trial studies the side effects of 18F-alphavbeta6-binding-peptide and how well it works in imaging patients with primary or cancer that has spread to the breast, colorectal, lung, or pancreatic. Radiotracers, such as 18F-alphavbeta6-binding-peptide, may improve the ability to locate cancer in the body.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.673659"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "Detailed Description",
+          "snippet": "PRIMARY OBJECTIVES:\n\nI. To determine the safety, biodistribution and dosimetric properties of 18F-alphavbeta6-binding peptide (BP) in normal tissues and malignancies in cancer patients and correlate concordance with alphavbeta6 expression.\n\nOUTLINE:\n\nPatients receive 18F-alphavbeta6-BP intravenously (IV) and then undergo positron emission tomography (PET) scans over 30 minutes each at 30, 60, 120, and 180 minutes post-injection.\n\nAfter completion of study, patients are followed up for up to 6 mo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.673665"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "Study Status",
+          "snippet": "Status: ACTIVE_NOT_RECRUITING",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.673670"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Breast Carcinoma, Colorectal Carcinoma, Lung Carcinoma, Metastatic Malignant Neoplasm in the Breast, Metastatic Malignant Neoplasm in the Colon, Metastatic Malignant Neoplasm in the Lung, Metastatic Malignant Neoplasm in the Rectum, Pancreatic Carcinoma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.673676"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "Intervention: 18F-\u03b1v\u03b26-BP",
+          "snippet": "DRUG: 18F-\u03b1v\u03b26-BP - Subjects will be injected once with up to 10 mCi of 18F-\u03b1v\u03b26-BP as a rapid intravenous bolus (within 30 seconds).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.673682"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "Arm Group: 18F-\u03b1v\u03b26-BP",
+          "snippet": "Arm: 18F-\u03b1v\u03b26-BP - Patients receive 18F-alphavbeta6-BP IV and then undergo 4 PET scans over 30 minutes each at 30, 60, 120, and 180 minutes post-injection.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.673688"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "Phase",
+          "snippet": "Phase: EARLY_PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.673694"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT03164486",
+            "orgStudyIdInfo": {
+              "id": "970652"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "NCI-2017-00411",
+                "type": "REGISTRY",
+                "domain": "CTRP (Clinical Trial Reporting Program)"
+              },
+              {
+                "id": "CCHO028",
+                "type": "OTHER",
+                "domain": "University of California Davis Comprehensive Cancer Center"
+              },
+              {
+                "id": "P30CA093373",
+                "type": "NIH",
+                "link": "https://reporter.nih.gov/quickSearch/P30CA093373"
+              }
+            ],
+            "organization": {
+              "fullName": "University of California, Davis",
+              "class": "OTHER"
+            },
+            "briefTitle": "First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26-Binding-Peptide",
+            "officialTitle": "First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26-Binding-Peptide"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2026-02",
+            "overallStatus": "ACTIVE_NOT_RECRUITING",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2016-11"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2026-12",
+              "type": "ESTIMATED"
+            },
+            "completionDateStruct": {
+              "date": "2026-12",
+              "type": "ESTIMATED"
+            },
+            "studyFirstSubmitDate": "2017-05-22",
+            "studyFirstSubmitQcDate": "2017-05-22",
+            "studyFirstPostDateStruct": {
+              "date": "2017-05-23",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2026-02-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2026-02-27",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR_INVESTIGATOR",
+              "investigatorFullName": "Julie L. Sutcliffe, Ph.D",
+              "investigatorTitle": "Principal Investigator",
+              "investigatorAffiliation": "University of California, Davis"
+            },
+            "leadSponsor": {
+              "name": "Julie L. Sutcliffe, Ph.D",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "National Cancer Institute (NCI)",
+                "class": "NIH"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "This clinical trial studies the side effects of 18F-alphavbeta6-binding-peptide and how well it works in imaging patients with primary or cancer that has spread to the breast, colorectal, lung, or pancreatic. Radiotracers, such as 18F-alphavbeta6-binding-peptide, may improve the ability to locate cancer in the body.",
+            "detailedDescription": "PRIMARY OBJECTIVES:\n\nI. To determine the safety, biodistribution and dosimetric properties of 18F-alphavbeta6-binding peptide (BP) in normal tissues and malignancies in cancer patients and correlate concordance with alphavbeta6 expression.\n\nOUTLINE:\n\nPatients receive 18F-alphavbeta6-BP intravenously (IV) and then undergo positron emission tomography (PET) scans over 30 minutes each at 30, 60, 120, and 180 minutes post-injection.\n\nAfter completion of study, patients are followed up for up to 6 months."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Breast Carcinoma",
+              "Colorectal Carcinoma",
+              "Lung Carcinoma",
+              "Metastatic Malignant Neoplasm in the Breast",
+              "Metastatic Malignant Neoplasm in the Colon",
+              "Metastatic Malignant Neoplasm in the Lung",
+              "Metastatic Malignant Neoplasm in the Rectum",
+              "Pancreatic Carcinoma"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "EARLY_PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 27,
+              "type": "ESTIMATED"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "18F-\u03b1v\u03b26-BP",
+                "type": "EXPERIMENTAL",
+                "description": "Patients receive 18F-alphavbeta6-BP IV and then undergo 4 PET scans over 30 minutes each at 30, 60, 120, and 180 minutes post-injection.",
+                "interventionNames": [
+                  "Drug: 18F-\u03b1v\u03b26-BP"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "18F-\u03b1v\u03b26-BP",
+                "description": "Subjects will be injected once with up to 10 mCi of 18F-\u03b1v\u03b26-BP as a rapid intravenous bolus (within 30 seconds).",
+                "armGroupLabels": [
+                  "18F-\u03b1v\u03b26-BP"
+                ],
+                "otherNames": [
+                  "Image Enhancement Agent"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Assessment of safe administration of 18F-\u03b1v\u03b26-BP",
+                "description": "Assessed by measures and/or changes in a given vital sign",
+                "timeFrame": "Up to 6 months"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Measurement of 18F-\u03b1v\u03b26-BP accumulation in tumors",
+                "description": "Assessed by PET",
+                "timeFrame": "Up to 6 months"
+              },
+              {
+                "measure": "Level of \u03b1v\u03b26-BP expression in tumors",
+                "description": "Immunohistochemistry (IHC) staining for the cell surface receptor integrin",
+                "timeFrame": "Up to 6 months"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Diagnosed with primary or metastatic cancer in one or more of the following locations: breast, colorectal, lung, pancreas\n* Eastern Cooperative Oncology Group (ECOG) performance score of 0-1\n* Will sign the Institutional Review Board (IRB)-approved consent form\n* Able to remain motionless for up to 30-60 minutes per scan\n\nExclusion Criteria:\n\n* Creatinine \\> 2 x upper limit of normal\n* Aspartate aminotransferase (AST)/alanine aminotransferase (ALT) \\> 2 x upper limit of normal\n* Life expectancy \\< 3 months (mo)\n* Women who are pregnant or breast-feeding\n* Patients who cannot undergo PET/compute tomography (CT) scanning\n* Lack of availability for follow-up assessments\n* Participation in another clinical trial involving an investigational agent within 4 weeks of enrollment",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Julie Sutcliffe",
+                "affiliation": "University of California, Davis",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "University of California Davis Comprehensive Cancer Center",
+                "city": "Sacramento",
+                "state": "California",
+                "zip": "95817",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.58157,
+                  "lon": -121.4944
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT03164486",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12134401/",
+          "identifier": "PMC:12134401",
+          "title": "Targeted Lung Premetastasis Niche: Mechanisms, Strategies, and Application.",
+          "snippet": "Title: Targeted Lung Premetastasis Niche: Mechanisms, Strategies, and Application.\nAuthors: Cao C, Lu D, Li H et al.\nJournal: MedComm (2020)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043281"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11816423/",
+          "identifier": "PMC:11816423",
+          "title": "Integrins as Key Mediators of Metastasis.",
+          "snippet": "Title: Integrins as Key Mediators of Metastasis.\nAuthors: C\u00e1ceres-Calle D, Torre-Cea I, Marcos-Zazo L et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043344"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9805914/",
+          "identifier": "PMC:9805914",
+          "title": "Targeting integrin pathways: mechanisms and advances in therapy.",
+          "snippet": "Title: Targeting integrin pathways: mechanisms and advances in therapy.\nAuthors: Pang X, He X, Qiu Z et al.\nJournal: Signal Transduct Target Ther",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043373"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9603893/",
+          "identifier": "PMC:9603893",
+          "title": "Integrin Alpha v Beta 6 (\u03b1v\u03b26) and Its Implications in Cancer Treatment.",
+          "snippet": "Title: Integrin Alpha v Beta 6 (\u03b1v\u03b26) and Its Implications in Cancer Treatment.\nAuthors: Brzozowska E, Deshmukh S\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043396"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8679627/",
+          "identifier": "PMC:8679627",
+          "title": "\u03b1(v)\u03b2(6)-Targeted Molecular PET/CT Imaging of the Lungs After SARS-CoV-2 Infection.",
+          "snippet": "Title: \u03b1(v)\u03b2(6)-Targeted Molecular PET/CT Imaging of the Lungs After SARS-CoV-2 Infection.\nAuthors: Foster CC, Davis RA, Hausner SH et al.\nJournal: J Nucl Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043418"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8634653/",
+          "identifier": "PMC:8634653",
+          "title": "Roles of Integrins in Gastrointestinal Cancer Metastasis.",
+          "snippet": "Title: Roles of Integrins in Gastrointestinal Cancer Metastasis.\nAuthors: Hou S, Wang J, Li W et al.\nJournal: Front Mol Biosci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043442"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7647958/",
+          "identifier": "PMC:7647958",
+          "title": "The Effects of an Albumin Binding Moiety on the Targeting and Pharmacokinetics of an Integrin \u03b1(v)\u03b2(6)-Selective Peptide Labeled with Aluminum [(18)F]Fluoride.",
+          "snippet": "Title: The Effects of an Albumin Binding Moiety on the Targeting and Pharmacokinetics of an Integrin \u03b1(v)\u03b2(6)-Selective Peptide Labeled with Aluminum [(18)F]Fluoride.\nAuthors: Hausner SH, Bauer N, Davis RA et al.\nJournal: Mol Imaging Biol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043466"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8446727/",
+          "identifier": "PMC:8446727",
+          "title": "Emerging therapeutic opportunities for integrin inhibitors.",
+          "snippet": "Title: Emerging therapeutic opportunities for integrin inhibitors.\nAuthors: Slack RJ, Macdonald SJF, Roper JA et al.\nJournal: Nat Rev Drug Discov",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043488"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8419040/",
+          "identifier": "PMC:8419040",
+          "title": "Targeting of promising transmembrane proteins for diagnosis and treatment of pancreatic ductal adenocarcinoma.",
+          "snippet": "Title: Targeting of promising transmembrane proteins for diagnosis and treatment of pancreatic ductal adenocarcinoma.\nAuthors: Mashayekhi V, Mocellin O, Fens MHAM et al.\nJournal: Theranostics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043510"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8426704/",
+          "identifier": "PMC:8426704",
+          "title": "\u03b1(V) \u03b2(6) Integrin: An Intriguing Target for COVID-19 and Related Diseases.",
+          "snippet": "Title: \u03b1(V) \u03b2(6) Integrin: An Intriguing Target for COVID-19 and Related Diseases.\nAuthors: Bugatti K\nJournal: Chembiochem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043531"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8155634/",
+          "identifier": "PMC:8155634",
+          "title": "Identify. Quantify. Predict. Why Immunologists Should Widely Use Molecular Imaging for Coronavirus Disease 2019.",
+          "snippet": "Title: Identify. Quantify. Predict. Why Immunologists Should Widely Use Molecular Imaging for Coronavirus Disease 2019.\nAuthors: Juengling FD, Maldonado A, Wuest F et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043555"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7335757/",
+          "identifier": "PMC:7335757",
+          "title": "Application of PET Tracers in Molecular Imaging for Breast Cancer.",
+          "snippet": "Title: Application of PET Tracers in Molecular Imaging for Breast Cancer.\nAuthors: Boers J, de Vries EFJ, Glaudemans AWJM et al.\nJournal: Curr Oncol Rep",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043578"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6377828/",
+          "identifier": "PMC:6377828",
+          "title": "Preclinical Development and First-in-Human Imaging of the Integrin \u03b1(v)\u03b2(6) with [(18)F]\u03b1(v)\u03b2(6)-Binding Peptide in Metastatic Carcinoma.",
+          "snippet": "Title: Preclinical Development and First-in-Human Imaging of the Integrin \u03b1(v)\u03b2(6) with [(18)F]\u03b1(v)\u03b2(6)-Binding Peptide in Metastatic Carcinoma.\nAuthors: Hausner SH, Bold RJ, Cheuy LY et al.\nJournal: Clin Cancer Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043600"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5615331/",
+          "identifier": "PMC:5615331",
+          "title": "Exploring the Role of RGD-Recognizing Integrins in Cancer.",
+          "snippet": "Title: Exploring the Role of RGD-Recognizing Integrins in Cancer.\nAuthors: Nieberler M, Reuning U, Reichart F et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.043623"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12134401",
+          "11816423",
+          "9805914",
+          "9603893",
+          "8679627",
+          "8634653",
+          "7647958",
+          "8446727",
+          "8419040",
+          "8426704",
+          "8155634",
+          "7335757",
+          "6377828",
+          "5615331"
+        ],
+        "pmc_count": 14,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT03164486",
+      "citations": [],
+      "raw_data": {
+        "uniprot_18F-\u03b1v\u03b26-BP_no_structured_match": true,
+        "uniprot_18F-\u03b1v\u03b26-BP": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT03164486",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26 ...",
+          "snippet": "Web result for: NCT03164486 First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26-Binding-Pep",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:45.357336"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.patlynk.com/trial/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26 ...",
+          "snippet": "Web result for: NCT03164486 First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26-Binding-Pep",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:45.357354"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.survivornet.com/clinical-trials/breast-cancer/first-in-human-positron-emission-tomography-study-using-the-18f-%CE%B1v%CE%B26-binding-peptide/",
+          "identifier": "NCT03164486",
+          "title": "First-in-Human Positron Emission Tomography Study Using the 18F-\u00ce\u00b1v\u00ce\u00b26 ...",
+          "snippet": "Web result for: NCT03164486 First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26-Binding-Pep",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:45.357361"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://meddatax.com/clinical-trials/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26 ...",
+          "snippet": "Web result for: NCT03164486 First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26-Binding-Pep",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:45.357366"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clin.larvol.com/trial-detail/NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26 ...",
+          "snippet": "Web result for: NCT03164486 First-in-Human Positron Emission Tomography Study Using the 18F-\u03b1v\u03b26-Binding-Pep",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:45.357372"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 22290
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT03164486",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_18F-\u03b1v\u03b26-BP": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT03164486",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1401324/",
+          "identifier": "CHEMBL1401324",
+          "title": "CHEMBL1401324 - ChEMBL",
+          "snippet": "Molecule: CHEMBL1401324\nType: Small molecule\nMolecular weight: 340.42\nBioactivity: Potency=12589.3 nM (Thyrotropin receptor); Potency=28183.8 nM (Tyrosyl-DNA phosphodiesterase 1); Potency=63095.7 nM (Tyrosyl-DNA phosphodiesterase 1); Potency=5011.9 nM (Cytochrome P450 2C19); Potency=11220.2 nM (Microtubule-associated protein tau)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:45.356165"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL6012010/",
+          "identifier": "CHEMBL6012010",
+          "title": "CHEMBL6012010 - ChEMBL",
+          "snippet": "Molecule: CHEMBL6012010\nMolecular weight: 486.32\nBioactivity: IC50=5500.0 nM (Nuclear receptor ROR-gamma)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:45.750365"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL540612/",
+          "identifier": "CHEMBL540612",
+          "title": "CHEMBL540612 - ChEMBL",
+          "snippet": "Molecule: CHEMBL540612\nType: Small molecule\nMolecular weight: 454.01\nBioactivity: Ki=760.0 nM (D(1A) dopamine receptor); EC50=2.7 nM (D(3) dopamine receptor); Agonist=22.0 % (D(4) dopamine receptor); EC50=49.0 nM (D(4) dopamine receptor)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:46.250089"
+        }
+      ],
+      "raw_data": {
+        "chembl_18F-\u03b1v\u03b26-BP_count": 5,
+        "chembl_18F-\u03b1v\u03b26-BP_molecules": [
+          {
+            "chembl_id": "CHEMBL1401324",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL6012010",
+            "pref_name": null,
+            "mol_type": null,
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL540612",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT03164486",
+      "citations": [],
+      "raw_data": {
+        "rcsb_18F-\u03b1v\u03b26-BP": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT03164486",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_18F-\u03b1v\u03b26-BP_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT03164486",
+      "citations": [],
+      "raw_data": {
+        "apd_18F-\u03b1v\u03b26-BP_status": 500
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT03164486",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03164486",
+          "identifier": "NCT03164486",
+          "title": "First-in-Human Positron Emission Tomography Study Using the 18F-av\u00df6-Binding-Peptide",
+          "snippet": "Title: First-in-Human Positron Emission Tomography Study Using the 18F-av\u00df6-Binding-Peptide\nStatus: Active, not recruiting\nPhase: Early Phase 1\nCountries: United States\nConditions: Metastatic Malignant Neoplasm in the Breast, Colorectal Carcinoma, Metastatic Malignant Neoplasm in the Rectum, Pancreatic Carcinoma, Metastatic Malignant Neoplasm in the Colon, Lung Carcinoma, Breast Carcinoma, Metastatic Malignant Neoplasm in the Lung\nInterventions: Drug: 18F-av\u00df6-BP\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T17:16:45.566106"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT03164486",
+          "public_title": "First-in-Human Positron Emission Tomography Study Using the 18F-av\u00df6-Binding-Peptide",
+          "scientific_title": "First-in-Human Positron Emission Tomography Study Using the 18F-av\u00df6-Binding-Peptide",
+          "recruitment_status": "Active, not recruiting",
+          "phase": "Early Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Treatment. Masking: None (Open Label).",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Metastatic Malignant Neoplasm in the Breast",
+            "Colorectal Carcinoma",
+            "Metastatic Malignant Neoplasm in the Rectum",
+            "Pancreatic Carcinoma",
+            "Metastatic Malignant Neoplasm in the Colon",
+            "Lung Carcinoma",
+            "Breast Carcinoma",
+            "Metastatic Malignant Neoplasm in the Lung"
+          ],
+          "interventions": [
+            "Drug: 18F-av\u00df6-BP"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT03164486",
+      "citations": [],
+      "raw_data": {
+        "iuphar_18F-\u03b1v\u03b26-BP": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT03164486",
+      "citations": [],
+      "raw_data": {
+        "pdbe_18F-\u03b1v\u03b26-BP_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT03164486",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2753110021",
+          "identifier": "PMID:28869579",
+          "title": "Exploring the Role of RGD-Recognizing Integrins in Cancer",
+          "snippet": "Title: Exploring the Role of RGD-Recognizing Integrins in Cancer\nYear: 2017\nCitations: 437\nAbstract: Integrins are key regulators of communication between cells and with their microenvironment. Eight members of the integrin superfamily recognize the tripeptide motif Arg-Gly-Asp (RGD) within extracelluar matrix (ECM) proteins. These integrins constit",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.367658"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3211680079",
+          "identifier": "PMID:34869579",
+          "title": "Roles of Integrins in Gastrointestinal Cancer Metastasis",
+          "snippet": "Title: Roles of Integrins in Gastrointestinal Cancer Metastasis\nYear: 2021\nCitations: 26\nAbstract: Integrins are a large family of heterodimeric transmembrane receptors which mediate cell adhesion and transmit signals to the cell interior. The mechanistic roles of integrins have long been an enigma in cancer, given its complexity in regulating dif",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.367771"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3087310667",
+          "identifier": "PMID:32948681",
+          "title": "\u03b1<sub>v</sub>\u03b2<sub>6</sub>-Targeted Molecular PET/CT Imaging of the Lungs After SARS-CoV-2 Infection",
+          "snippet": "Title: \u03b1<sub>v</sub>\u03b2<sub>6</sub>-Targeted Molecular PET/CT Imaging of the Lungs After SARS-CoV-2 Infection\nYear: 2020\nCitations: 19\nAbstract: -BP PET/CT is a promising noninvasive approach to identify the presence and potentially monitor the persistence and progression of lung damage.",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.367798"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3162668697",
+          "identifier": "PMID:34054793",
+          "title": "Identify. Quantify. Predict. Why Immunologists Should Widely Use Molecular Imaging for Coronavirus Disease 2019",
+          "snippet": "Title: Identify. Quantify. Predict. Why Immunologists Should Widely Use Molecular Imaging for Coronavirus Disease 2019\nYear: 2021\nCitations: 7\nAbstract: data on cellular and molecular pathomechanisms on a whole-body scale, and eventually, extract imaging biomarkers possibly serving as prognostic indicators. The success of molecular imaging in mapping disease severity on a whole-body scale, and direct",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.367872"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3105965415",
+          "identifier": "https://doi.org/10.1158/1538-7445.panca20-ia-13",
+          "title": "Abstract IA-13: Molecularly targeted imaging and treatment via the integrin \u03b1v\u03b26",
+          "snippet": "Title: Abstract IA-13: Molecularly targeted imaging and treatment via the integrin \u03b1v\u03b26\nYear: 2020\nCitations: 1\nAbstract: Abstract The integrin \u03b1v\u03b26 is an epithelial-specific cell surface receptor that is generally undetectable in healthy adult epithelium but is significantly up-regulated in a wide range of epithelial derived cancers including almost 100% of pancreatic ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:44.368116"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT03164486",
+      "citations": [
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/3577ec15f5d0d4c2c54d650693cf770ea0672021",
+          "identifier": "PMID:40703476",
+          "title": "First\u2010in\u2010human positron emission tomography study of intranasal insulin in aging and MCI",
+          "snippet": "Title: First\u2010in\u2010human positron emission tomography study of intranasal insulin in aging and MCI\nTLDR: A first\u2010in\u2010human positron emission tomography study using a novel radiotracer, [68Ga]Ga\u2010NOTA\u2010insulin administered intranasally with a specialized device (Aptar Cartridge Pump System) to evaluate the kinetics of insulin uptake and distribution in the brain.\nYear: 2025\nCitations: 5",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T17:16:55.981243"
+        },
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/7181a2512487d549278e079fc21ef49d4bfc8727",
+          "identifier": "PMID:40250068",
+          "title": "Biodistribution of [18F]BCPP-BF in humans: a first-in-human positron emission tomography study.",
+          "snippet": "Title: Biodistribution of [18F]BCPP-BF in humans: a first-in-human positron emission tomography study.\nTLDR: [18F]BCPP-BF is safe and acceptable for clinical use owing to its low toxicity and radiation dose and the appropriate selection of these probes can provide a more accurate assessment of human mitochondrial function.\nYear: 2025\nCitations: 1",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T17:16:55.981313"
+        },
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/1c9bbfa47f00740868d146bd6909fd133d71f8af",
+          "identifier": "PMID:38147912",
+          "title": "BIOGUIDE-X: A First-in-Human Study of the Performance of Positron Emission Tomography-Guided Radiotherapy.",
+          "snippet": "Title: BIOGUIDE-X: A First-in-Human Study of the Performance of Positron Emission Tomography-Guided Radiotherapy.\nTLDR: Emmulated SCINTIX therapy dose distributions calculated from continuously acquired real-time PET data were accurate and machine-deliverable in tumors that were 2-5 cm in size with adequate FDG signal characteristics, and no toxicities were attributed to multiple FDG administrations.\nYear: 2023\nCitations: 12",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T17:16:55.981341"
+        }
+      ],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT03164486",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.5772/30326",
+          "identifier": "DOI:10.5772/30326",
+          "title": "[18F]Fluorodeoxyglucose Positron Emission Tomography in Alzheimer Disease and Related Disorders",
+          "snippet": "Title: [18F]Fluorodeoxyglucose Positron Emission Tomography in Alzheimer Disease and Related Disorders\nJournal: Positron Emission Tomography - Current Clinical and Research Aspects\nYear: 2012",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:44.272368"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.17229/jdit.2015-0301-014",
+          "identifier": "DOI:10.17229/jdit.2015-0301-014",
+          "title": "Roles of facilitative glucose transporter GLUT1 in [18F]FDG positron emission tomography (PET) imaging of human diseases",
+          "snippet": "Title: Roles of facilitative glucose transporter GLUT1 in [18F]FDG positron emission tomography (PET) imaging of human diseases\nJournal: Journal of Diagnostic Imaging in Therapy\nYear: 2015",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:44.272428"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/s0084-4071(09)79245-0",
+          "identifier": "DOI:10.1016/s0084-4071(09)79245-0",
+          "title": "[18F]Fluorodeoxyglucose Positron Emission Tomography in Nonseminomatous Germ Cell Tumors After Chemotherapy: The German Multicenter Positron Emission Tomography Study Group",
+          "snippet": "Title: [18F]Fluorodeoxyglucose Positron Emission Tomography in Nonseminomatous Germ Cell Tumors After Chemotherapy: The German Multicenter Positron Emission Tomography Study Group\nJournal: Yearbook of Urology\nYear: 2009",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:44.272454"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT03164486",
+      "citations": [],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 0,
+        "biorxiv_prefilter_dropped": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT03164486",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT03164486_total": 0,
+        "sec_edgar_18F-\u03b1v\u03b26-BP_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT03164486",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_18F-\u03b1v\u03b26-BP_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT03164486",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=18F-\u03b1v\u03b26-BP",
+          "identifier": "NIH:5R01NS130189-04",
+          "title": "Blood Pressure Variability and Ischemic Stroke Outcome (BP-VISO) (DE HAVENON, ADAM H.)",
+          "snippet": "Project: 5R01NS130189-04\nPI: DE HAVENON, ADAM H.\nOrganization: \nFiscal year: 2026\nAward: $472,206\nStart: 2023-01-01\nEnd: 2027-12-31\n(25508 total NIH-funded projects matching '18F-\u03b1v\u03b26-BP')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:43.980134"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=18F-\u03b1v\u03b26-BP",
+          "identifier": "NIH:5R21AI188483-02",
+          "title": "Characterizing circulating and visceral T cells specific for the autoantigen integrin \u03b1v\u03b26 in ulcerative colitis (LORD, JAMES DANIEL)",
+          "snippet": "Project: 5R21AI188483-02\nPI: LORD, JAMES DANIEL\nOrganization: \nFiscal year: 2026\nAward: $216,625\nStart: 2024-12-04\nEnd: 2026-11-30\n(25508 total NIH-funded projects matching '18F-\u03b1v\u03b26-BP')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:43.980197"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=18F-\u03b1v\u03b26-BP",
+          "identifier": "NIH:5R01CA287184-03",
+          "title": "Development of an Efficient 18F labeling technology based on tetrazine trans-cyclooctene ligation (LI, ZIBO)",
+          "snippet": "Project: 5R01CA287184-03\nPI: LI, ZIBO\nOrganization: \nFiscal year: 2026\nAward: $619,001\nStart: 2023-12-05\nEnd: 2027-11-30\n(25508 total NIH-funded projects matching '18F-\u03b1v\u03b26-BP')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T17:16:43.980242"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_18F-\u03b1v\u03b26-BP_count": 25508,
+        "nih_reporter_18F-\u03b1v\u03b26-BP_funded": true
+      },
+      "error": null
+    }
+  ]
+}

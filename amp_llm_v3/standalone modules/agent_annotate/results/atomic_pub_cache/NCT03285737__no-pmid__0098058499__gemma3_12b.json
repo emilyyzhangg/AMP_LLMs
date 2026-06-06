@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT03285737",
+  "pmid": "DOI:10.20944/preprints202407.1363.v1",
+  "source": "biorxiv_medrxiv",
+  "specificity": "trial_specific",
+  "answers": {
+    "q1_reports_results": "YES",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "YES",
+    "q4_failure": "NO",
+    "q5_advanced": "UNCLEAR",
+    "evidence_quote": "Outcomes from a Six-Week Randomized, Double-Blind, Placebo-Controlled Trial"
+  },
+  "verdict": "POSITIVE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

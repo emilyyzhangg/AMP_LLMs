@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT03018665",
+  "pmid": "DOI:10.20944/preprints202604.1715.v1",
+  "source": "biorxiv_medrxiv",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "UNCLEAR",
+    "q2_primary_met": "NA",
+    "q3_efficacy": "NA",
+    "q4_failure": "NA",
+    "q5_advanced": "UNCLEAR",
+    "evidence_quote": ""
+  },
+  "verdict": "INDETERMINATE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

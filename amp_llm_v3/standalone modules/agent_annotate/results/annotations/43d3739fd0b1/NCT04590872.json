@@ -1,0 +1,1684 @@
+{
+  "nct_id": "NCT04590872",
+  "metadata": {
+    "nct_id": "NCT04590872",
+    "title": "A Pilot Study to Evaluate the Safety and Feasibility of Autologous Tolerogenic Dendritic Cells Loaded With Proinsulin Peptide (C19-A3) in Patients With Type 1 Diabetes",
+    "phase": "PHASE1",
+    "status": "ACTIVE_NOT_RECRUITING",
+    "conditions": [
+      "Type 1 Diabetes Mellitus"
+    ],
+    "interventions": [
+      "BIOLOGICAL: Tolerogenic Dendritic Cell Vaccine"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.775,
+      "reasoning": "[Pass 1 extraction] Intervention: PIpepTolDC vaccine  \nMolecular Class: Peptide / peptide hormone  \nDatabase Confirmation: Not found in UniProt, DRAMP/DBAASP, ChEMBL, or PDB  \nProduct Description: Described as a \"vaccine\"  \nInvestigational Drug Role: Investigational drug\n[Pass 2 decision] Peptide: True  \nReasoning: Step 1 \u2014 The Molecular Class is \"Peptide / peptide hormone,\" which falls within the definition of a peptide. Step 2 \u2014 The intervention is described as a \"vaccine,\" which can include peptide vaccines (e.g., neoantigen vaccines, HIV peptide vaccines). Since the trial is administering a peptide-based vaccine, this qualifies as a peptide molecule being administered. Step 3 \u2014 Although the AA Length is unknown, the Molecular Class and Product Description are sufficient to confirm that a peptide is involved. No conflicting evidence is present.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "Brief Summary",
+          "snippet": "This phase I trial investigates the side effects of PIpepTolDC vaccine in treating patients with type 1 diabetes who use insulin and don't have any other diabetes-related health complications. Type 1 diabetes is an autoimmune disease. This means that the immune system, which usually protects against foreign invaders like bacteria and viruses, attacks the body's insulin-producing betacells in the pancreas (autoimmune response). Overtime, the beta cells are destroyed by the immune system. To stay ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702258"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9952924/",
+          "identifier": "PMC:9952924",
+          "title": "Revisiting the Pathogenesis of Type 1 Diabetes: Importance of Neural Input to Pancreatic Islets and the Therapeutic Capability of Stem Cell Educator (TM) Therapy to Restore Their Integrity.",
+          "snippet": "Title: Revisiting the Pathogenesis of Type 1 Diabetes: Importance of Neural Input to Pancreatic Islets and the Therapeutic Capability of Stem Cell Educator (TM) Therapy to Restore Their Integrity.\nAuthors: Zhao Y, Veysman B\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829078"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9911317/",
+          "identifier": "PMC:9911317",
+          "title": "Innovative Designs and Logistical Considerations for Expedited Clinical Development of Combination Disease-Modifying Treatments for Type 1 Diabetes.",
+          "snippet": "Title: Innovative Designs and Logistical Considerations for Expedited Clinical Development of Combination Disease-Modifying Treatments for Type 1 Diabetes.\nAuthors: Anderson RL, DiMeglio LA, Mander AP et al.\nJournal: Diabetes Care",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829098"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11049849/",
+          "identifier": "PMC:11049849",
+          "title": "The Biologic IRL201805 Alters Immune Tolerance Leading to Prolonged Pharmacodynamics and Efficacy in Rheumatoid Arthritis Patients.",
+          "snippet": "Title: The Biologic IRL201805 Alters Immune Tolerance Leading to Prolonged Pharmacodynamics and Efficacy in Rheumatoid Arthritis Patients.\nAuthors: Hall C, Pleasance J, Hickman O et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828925"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8107985/",
+          "identifier": "PMC:8107985",
+          "title": "Current advances in using tolerogenic dendritic cells as a therapeutic alternative in the treatment of type 1 diabetes.",
+          "snippet": "Title: Current advances in using tolerogenic dendritic cells as a therapeutic alternative in the treatment of type 1 diabetes.\nAuthors: R\u00edos-R\u00edos WJ, Sosa-Luis SA, Torres-Aguilar H\nJournal: World J Diabetes",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829250"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12865243/",
+          "identifier": "PMC:12865243",
+          "title": "Nanoparticle-Based Tolerogenic Vaccines: Next-Generation Strategies for Autoimmune and Allergic Disease Therapies.",
+          "snippet": "Title: Nanoparticle-Based Tolerogenic Vaccines: Next-Generation Strategies for Autoimmune and Allergic Disease Therapies.\nAuthors: Nachod BE, Thatte AS, Palanki R et al.\nJournal: Angew Chem Int Ed Engl",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828742"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Tolerogenic+Dendritic+Cell+Vaccine",
+          "identifier": "NIH:5F30CA257291-04",
+          "title": "Discovery of myeloid immune features predictive of response to cancer immunotherapy in prostate cancer (MCCARTHY, ELIZABETH)",
+          "snippet": "Project: 5F30CA257291-04\nPI: MCCARTHY, ELIZABETH\nOrganization: \nFiscal year: 2024\nAward: $53,974\nStart: 2021-01-01\nEnd: 2024-12-31\n(76 total NIH-funded projects matching 'Tolerogenic Dendritic Cell Vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:39.498070"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Tolerogenic+Dendritic+Cell+Vaccine",
+          "identifier": "NIH:1ZIABC012025-05",
+          "title": "Phase I HIV vaccine trial with DNAALVAC-HIV gp120 delta V1 vaccines (FRANCHINI, GENOVEFFA)",
+          "snippet": "Project: 1ZIABC012025-05\nPI: FRANCHINI, GENOVEFFA\nOrganization: \nFiscal year: 2025\nAward: $7,428,773\n(76 total NIH-funded projects matching 'Tolerogenic Dendritic Cell Vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:39.498037"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.7899999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: PIpepTolDC vaccine; confirmed as a peptide; molecular class is a tolerogenic dendritic cell vaccine (not a direct peptide sequence provided, but classified as a peptide-based intervention)\nDatabase Matches: No evidence found\nMechanism: The peptide works via a non-antimicrobial mechanism (immunosuppression, specifically promoting immune tolerance by altering immune responses, including dendritic cell activation and immune cell recruitment)\nTherapeutic Target: Type 1 diabetes (an autoimmune condition)\nImmune Direction: Suppress immune responses (promote immune tolerance, inhibit immune attack on pancreatic islets)\n[Pass 2 decision] Classification: Other  \nReasoning: Step 1 \u2014 Peptide determination is True, so we proceed to Step 2. The Mechanism indicates that the peptide works via a non-antimicrobial mechanism, specifically through immunosuppression and promoting immune tolerance. This does not involve direct antimicrobial activity (killing, inhibiting growth of, or disrupting pathogens) nor does it involve activating innate immune cells to fight pathogens. The Immune Direction is \"Suppress,\" which, according to the rules, always leads to \"Other.\" Additionally, the Therapeutic Target is Type 1 diabetes, an autoimmune condition, and the mechanism is related to immune tolerance, not pathogen defense. Therefore, this is not an AMP.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "Brief Summary",
+          "snippet": "This phase I trial investigates the side effects of PIpepTolDC vaccine in treating patients with type 1 diabetes who use insulin and don't have any other diabetes-related health complications. Type 1 diabetes is an autoimmune disease. This means that the immune system, which usually protects against foreign invaders like bacteria and viruses, attacks the body's insulin-producing betacells in the pancreas (autoimmune response). Overtime, the beta cells are destroyed by the immune system. To stay ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702258"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9952924/",
+          "identifier": "PMC:9952924",
+          "title": "Revisiting the Pathogenesis of Type 1 Diabetes: Importance of Neural Input to Pancreatic Islets and the Therapeutic Capability of Stem Cell Educator (TM) Therapy to Restore Their Integrity.",
+          "snippet": "Title: Revisiting the Pathogenesis of Type 1 Diabetes: Importance of Neural Input to Pancreatic Islets and the Therapeutic Capability of Stem Cell Educator (TM) Therapy to Restore Their Integrity.\nAuthors: Zhao Y, Veysman B\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829078"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9911317/",
+          "identifier": "PMC:9911317",
+          "title": "Innovative Designs and Logistical Considerations for Expedited Clinical Development of Combination Disease-Modifying Treatments for Type 1 Diabetes.",
+          "snippet": "Title: Innovative Designs and Logistical Considerations for Expedited Clinical Development of Combination Disease-Modifying Treatments for Type 1 Diabetes.\nAuthors: Anderson RL, DiMeglio LA, Mander AP et al.\nJournal: Diabetes Care",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829098"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11049849/",
+          "identifier": "PMC:11049849",
+          "title": "The Biologic IRL201805 Alters Immune Tolerance Leading to Prolonged Pharmacodynamics and Efficacy in Rheumatoid Arthritis Patients.",
+          "snippet": "Title: The Biologic IRL201805 Alters Immune Tolerance Leading to Prolonged Pharmacodynamics and Efficacy in Rheumatoid Arthritis Patients.\nAuthors: Hall C, Pleasance J, Hickman O et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828925"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8107985/",
+          "identifier": "PMC:8107985",
+          "title": "Current advances in using tolerogenic dendritic cells as a therapeutic alternative in the treatment of type 1 diabetes.",
+          "snippet": "Title: Current advances in using tolerogenic dendritic cells as a therapeutic alternative in the treatment of type 1 diabetes.\nAuthors: R\u00edos-R\u00edos WJ, Sosa-Luis SA, Torres-Aguilar H\nJournal: World J Diabetes",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829250"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12865243/",
+          "identifier": "PMC:12865243",
+          "title": "Nanoparticle-Based Tolerogenic Vaccines: Next-Generation Strategies for Autoimmune and Allergic Disease Therapies.",
+          "snippet": "Title: Nanoparticle-Based Tolerogenic Vaccines: Next-Generation Strategies for Autoimmune and Allergic Disease Therapies.\nAuthors: Nachod BE, Thatte AS, Palanki R et al.\nJournal: Angew Chem Int Ed Engl",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828742"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9169641/",
+          "identifier": "PMC:9169641",
+          "title": "Preclinical evaluation of a precision medicine approach to DNA vaccination in type 1 diabetes.",
+          "snippet": "Title: Preclinical evaluation of a precision medicine approach to DNA vaccination in type 1 diabetes.\nAuthors: Postigo-Fernandez J, Firdessa-Fite R, Creusot RJ\nJournal: Proc Natl Acad Sci U S A",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829121"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12302071/",
+          "identifier": "PMC:12302071",
+          "title": "Leveraging current insights on IL-10-producing dendritic cells for developing effective immunotherapeutic approaches.",
+          "snippet": "Title: Leveraging current insights on IL-10-producing dendritic cells for developing effective immunotherapeutic approaches.\nAuthors: Morali K, Giacomello G, Vuono M et al.\nJournal: FEBS Lett",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828815"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Tolerogenic+Dendritic+Cell+Vaccine",
+          "identifier": "NIH:5F30CA257291-04",
+          "title": "Discovery of myeloid immune features predictive of response to cancer immunotherapy in prostate cancer (MCCARTHY, ELIZABETH)",
+          "snippet": "Project: 5F30CA257291-04\nPI: MCCARTHY, ELIZABETH\nOrganization: \nFiscal year: 2024\nAward: $53,974\nStart: 2021-01-01\nEnd: 2024-12-31\n(76 total NIH-funded projects matching 'Tolerogenic Dendritic Cell Vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:39.498070"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Tolerogenic+Dendritic+Cell+Vaccine",
+          "identifier": "NIH:1ZIABC012025-05",
+          "title": "Phase I HIV vaccine trial with DNAALVAC-HIV gp120 delta V1 vaccines (FRANCHINI, GENOVEFFA)",
+          "snippet": "Project: 1ZIABC012025-05\nPI: FRANCHINI, GENOVEFFA\nOrganization: \nFiscal year: 2025\nAward: $7,428,773\n(76 total NIH-funded projects matching 'Tolerogenic Dendritic Cell Vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:39.498037"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "Other",
+      "confidence": 0.8,
+      "reasoning": "[ATOMIC-CLS R5] Other (conf=0.80)\n  rule: 2/3 NO, 0 YES\n  registry: dramp=0 apd=0 dbaasp=0 uniprot_amp=0\n  atomic: q1=UNCLEAR q2=NO q3=NO\n  R5 fired: 2 NO, 0 YES",
+      "evidence": [],
+      "model_name": "atomic-cls-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v38] Collected 1 route(s) from all citations",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "Arm Group: Autologous Tolerogenic Dendritic Cell with Proinsulin Peptide (PIpepTolDC)",
+          "snippet": "Arm: Autologous Tolerogenic Dendritic Cell with Proinsulin Peptide (PIpepTolDC) - After completion of leukapheresis, patients receive a prime dose of PIpepTolDC intradermally (ID) on Day 0, followed by a boost dose of PIpepTolDC ID on Day 28.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702301"
+        }
+      ],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Active, not recruiting",
+      "confidence": 0.7899999999999999,
+      "reasoning": "[Dossier] Trial: NCT04590872\nRegistry Status: ACTIVE_NOT_RECRUITING\nPhase: PHASE1\nCompletion Date: 2024-06-03 (702 days ago)\nResults Posted: Unknown\nWARNING: Registry status may be outdated \u2014 completion date was >6 months ago\nPublications Found: 33 (1 trial-specific, 32 reviews/general)\n  1. Title: Modulating immune response for the prevention and treatment of type 1 diabetes.\nAuthors: Vohidova D, Desai P, Moreno Lozano A et al.\n PMC:12950593 [GENERAL]\n  2. Title: Nanoparticle-Based Tolerogenic Vaccines: Next-Generation Strategies for Autoimmune and Allergic Disease Therapies.\nAuthors: Nachod BE PMC:12865243 [GENERAL]\n  3. Title: Decoding immunometabolism with next-generation tools: lessons from dendritic cells and T cells.\nAuthors: Wang YH, Wang L, Ho PC\nJourn PMC:12583481 [GENERAL]\n  4. Title: Clinical translation of quantum dots.\nAuthors: Pallares RM, Kiessling F, Lammers T\nJournal: Nanomedicine (Lond) PMC:11520528 [GENERAL]\n  5. Title: Leveraging current insights on IL-10-producing dendritic cells for developing effective immunotherapeutic approaches.\nAuthors: Morali PMC:12302071 [GENERAL]\nTrial Type: VACCINE / IMMUNOTHERAPY (immunogenicity is the Phase I primary endpoint)\nTrial Drugs: T\n[LLM decision] [v42.6.12 registry-status safety net: Unknown \u2192 Active, not recruiting (CT.gov status=ACTIVE_NOT_RECRUITING)] The trial is marked as \"ACTIVE_NOT_RECRUITING\" on CT.gov, which by default sets the outcome to \"Active, not recruiting.\" However, the rules specify that this status remains \"Active, not recruiting\" unless a trial-specific publication explicitly states the primary endpoint was met or the trial failed. No trial-specific publications are registered with CT.gov, and while there are several publications related to tolerogenic dendritic cells and type 1 diabetes, none explicitly describe the results of this trial. Additionally, the rule for Phase I trials requires an explicit statement that the primary endpoint was met to mark the outcome as \"Positive,\" which is not present here. Therefore, the outcome remains \"Unknown.\"",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "Brief Summary",
+          "snippet": "This phase I trial investigates the side effects of PIpepTolDC vaccine in treating patients with type 1 diabetes who use insulin and don't have any other diabetes-related health complications. Type 1 diabetes is an autoimmune disease. This means that the immune system, which usually protects against foreign invaders like bacteria and viruses, attacks the body's insulin-producing betacells in the pancreas (autoimmune response). Overtime, the beta cells are destroyed by the immune system. To stay ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702258"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4387189818",
+          "identifier": "PMID:37795196",
+          "title": "Exploration of Immune Targets for Type 1 Diabetes and Latent Autoimmune Disease Immunotherapy",
+          "snippet": "Title: Exploration of Immune Targets for Type 1 Diabetes and Latent Autoimmune Disease Immunotherapy\nYear: 2023\nCitations: 29\nAbstract: Type 1 diabetes (T1D) is an autoimmune disease that destroys pancreatic beta cells, which produce insulin in the islets of Langerhans. The risk of developing T1D is influenced by environmental factors, genetics, and autoantibodies. Latent autoimmune ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:40.064078"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4385769482",
+          "identifier": "PMID:37628860",
+          "title": "Current Advances in the Biomedical Applications of Quantum Dots: Promises and Challenges",
+          "snippet": "Title: Current Advances in the Biomedical Applications of Quantum Dots: Promises and Challenges\nYear: 2023\nCitations: 76\nAbstract: Quantum dots (QDs) are a type of nanoparticle with exceptional photobleaching-resistant fluorescence. They are highly sought after for their potential use in various optical-based biomedical applications. However, there are still concerns regarding t",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:40.063896"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4380849056",
+          "identifier": "PMID:37388741",
+          "title": "Tolerogenic dendritic cells in type 1 diabetes: no longer a concept",
+          "snippet": "Title: Tolerogenic dendritic cells in type 1 diabetes: no longer a concept\nYear: 2023\nCitations: 21\nAbstract: . In the context of safety, this yields confidence that the time has come to test the best characterized tDC in phase II clinical trials in T1D, especially given that tDC are already being tested for other autoimmune conditions. The time is also now ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:40.064203"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4406886929",
+          "identifier": "PMID:39873914",
+          "title": "Emerging Immunotherapies for Disease Modification of Type 1 Diabetes",
+          "snippet": "Title: Emerging Immunotherapies for Disease Modification of Type 1 Diabetes\nYear: 2025\nCitations: 9",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:40.064245"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4402990577",
+          "identifier": "PMID:39344871",
+          "title": "Clinical translation of quantum dots",
+          "snippet": "Title: Clinical translation of quantum dots\nYear: 2024\nCitations: 17",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:40.064226"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9952924/",
+          "identifier": "PMC:9952924",
+          "title": "Revisiting the Pathogenesis of Type 1 Diabetes: Importance of Neural Input to Pancreatic Islets and the Therapeutic Capability of Stem Cell Educator (TM) Therapy to Restore Their Integrity.",
+          "snippet": "Title: Revisiting the Pathogenesis of Type 1 Diabetes: Importance of Neural Input to Pancreatic Islets and the Therapeutic Capability of Stem Cell Educator (TM) Therapy to Restore Their Integrity.\nAuthors: Zhao Y, Veysman B\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829078"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9911317/",
+          "identifier": "PMC:9911317",
+          "title": "Innovative Designs and Logistical Considerations for Expedited Clinical Development of Combination Disease-Modifying Treatments for Type 1 Diabetes.",
+          "snippet": "Title: Innovative Designs and Logistical Considerations for Expedited Clinical Development of Combination Disease-Modifying Treatments for Type 1 Diabetes.\nAuthors: Anderson RL, DiMeglio LA, Mander AP et al.\nJournal: Diabetes Care",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829098"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Tolerogenic+Dendritic+Cell+Vaccine",
+          "identifier": "NIH:5F30CA257291-04",
+          "title": "Discovery of myeloid immune features predictive of response to cancer immunotherapy in prostate cancer (MCCARTHY, ELIZABETH)",
+          "snippet": "Project: 5F30CA257291-04\nPI: MCCARTHY, ELIZABETH\nOrganization: \nFiscal year: 2024\nAward: $53,974\nStart: 2021-01-01\nEnd: 2024-12-31\n(76 total NIH-funded projects matching 'Tolerogenic Dendritic Cell Vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:39.498070"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Tolerogenic+Dendritic+Cell+Vaccine",
+          "identifier": "NIH:1ZIABC012025-05",
+          "title": "Phase I HIV vaccine trial with DNAALVAC-HIV gp120 delta V1 vaccines (FRANCHINI, GENOVEFFA)",
+          "snippet": "Project: 1ZIABC012025-05\nPI: FRANCHINI, GENOVEFFA\nOrganization: \nFiscal year: 2025\nAward: $7,428,773\n(76 total NIH-funded projects matching 'Tolerogenic Dendritic Cell Vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:39.498037"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Unknown",
+      "confidence": 0.5,
+      "reasoning": "[ATOMIC R8] Unknown (conf=0.50)\n  rule: no rule fired \u2014 insufficient evidence\n  registry: status=ACTIVE_NOT_RECRUITING phase=PHASE1 has_results=None completion=2024-06-03 days_since=702 stale=True drug_max_phase=3\n  pubs: 25 total (0 ts, 25 gen, 0 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=ACTIVE_NOT_RECRUITING has_results=None phase=PHASE1 days_since=702 stale=True drug_max_phase=3\n    pubs: total=25 trial_specific=0 voting=0 pos=0 fail=0\n    R8 fired: default Unknown",
+      "evidence": [],
+      "model_name": "atomic-gemma3:12b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "sequence",
+      "value": "N/A",
+      "confidence": 0.0,
+      "reasoning": "[Structured v23] No amino acid sequence found in research data.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.9,
+      "reasoning": "[Pre-check skip] Outcome is 'Active, not recruiting' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "",
+      "confidence": 0.0,
+      "reasoning": "[ATOMIC-FR gated] outcome_atomic=Unknown not in ['Failed - completed trial', 'Terminated']",
+      "evidence": [],
+      "model_name": "atomic-fr-gated",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT04590872",
+    "fields": [
+      {
+        "field_name": "classification_atomic",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion",
+        "final_value": "Injection/Infusion",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "sequence",
+        "original_value": "N/A",
+        "final_value": "N/A",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial description explicitly states that the intervention is an \"Autologous Tolerogenic Dendritic Cell with Proinsulin Peptide (PIpepTolDC)\". Proinsulin is a peptide, therefore the intervention contains a peptide component.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The intervention clearly involves a peptide (proinsulin peptide) and is classified as a peptide vaccine, meeting the definition of a peptide molecule as per the provided criteria.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "According to the definition, if the trial description or intervention name says 'peptide', this is strong evidence for True. In this case, both the Proinsulin Peptide (C19-A3) and PIpepTolDC vaccine mention peptide, indicating that the intervention contains a peptide component.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.775,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial involves a vaccine targeting an autoimmune disease. Vaccine peptides, regardless of the pathogen target, induce adaptive immunity and are therefore classified as 'Other' according to the provided guidelines.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The intervention is a vaccine peptide used to induce immune tolerance, not to directly kill or inhibit pathogens. Therefore, it does not meet the criteria for an antimicrobial peptide (AMP) as defined in the classification rules.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial's focus on using autologous tolerogenic dendritic cells loaded with proinsulin peptide to treat type 1 diabetes indicates that the intervention is not intended to directly kill pathogens, but rather to modify the immune system's response. This aligns with the definition of \"Other\" in the classification criteria, which includes therapeutic approaches aimed at modulating the immune response or treating autoimmune diseases.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7899999999999999,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Active, not recruiting",
+        "final_value": "Active, not recruiting",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Recruiting",
+            "reasoning": "The trial registry status is ACTIVE_NOT_RECRUITING, which directly corresponds to the 'Recruiting' outcome.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Active, not recruiting",
+            "reasoning": "The trial's status is explicitly listed as \"ACTIVE_NOT_RECRUITING\" in the ClinicalTrials.gov record, which directly determines the outcome.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Unknown",
+            "reasoning": "Since the trial is still active and not recruiting, it's unclear whether it will be completed successfully or if any results will be published in the future. The lack of published results or Results Posted=Yes makes it difficult to determine the outcome of the trial.",
+            "confidence": 0.7,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7899999999999999,
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial's status is explicitly listed as \"ACTIVE_NOT_RECRUITING\" in both ClinicalTrials.gov and WHO ICTRP records, which directly determines the outcome. This aligns with the primary annotator's answer and is supported by verifier_2. Verifier_1's reasoning is incorrect because \"ACTIVE_NOT_RECRUITING\" does not correspond to \"Recruiting\" \u2014 it is the opposite. Verifier_3's reasoning is speculative and not supported by the evidence, as the trial's status is clearly defined. Therefore, the correct ",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT04590872",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "A Pilot Study to Evaluate the Safety and Feasibility of Autologous Tolerogenic Dendritic Cells Loaded With Proinsulin Peptide (C19-A3) in Patients With Type 1 Diabetes",
+          "snippet": "Title: A Pilot Study to Evaluate the Safety and Feasibility of Autologous Tolerogenic Dendritic Cells Loaded With Proinsulin Peptide (C19-A3) in Patients With Type 1 Diabetes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702222"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "Brief Summary",
+          "snippet": "This phase I trial investigates the side effects of PIpepTolDC vaccine in treating patients with type 1 diabetes who use insulin and don't have any other diabetes-related health complications. Type 1 diabetes is an autoimmune disease. This means that the immune system, which usually protects against foreign invaders like bacteria and viruses, attacks the body's insulin-producing betacells in the pancreas (autoimmune response). Overtime, the beta cells are destroyed by the immune system. To stay ",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702258"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "Study Status",
+          "snippet": "Status: ACTIVE_NOT_RECRUITING",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702270"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Type 1 Diabetes Mellitus",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702280"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "Intervention: Tolerogenic Dendritic Cell Vaccine",
+          "snippet": "BIOLOGICAL: Tolerogenic Dendritic Cell Vaccine - PIpepTolDCs",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702291"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "Arm Group: Autologous Tolerogenic Dendritic Cell with Proinsulin Peptide (PIpepTolDC)",
+          "snippet": "Arm: Autologous Tolerogenic Dendritic Cell with Proinsulin Peptide (PIpepTolDC) - After completion of leukapheresis, patients receive a prime dose of PIpepTolDC intradermally (ID) on Day 0, followed by a boost dose of PIpepTolDC ID on Day 28.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702301"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.702311"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT04590872",
+            "orgStudyIdInfo": {
+              "id": "18279"
+            },
+            "organization": {
+              "fullName": "City of Hope Medical Center",
+              "class": "OTHER"
+            },
+            "briefTitle": "An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients With Type 1 Diabetes",
+            "officialTitle": "A Pilot Study to Evaluate the Safety and Feasibility of Autologous Tolerogenic Dendritic Cells Loaded With Proinsulin Peptide (C19-A3) in Patients With Type 1 Diabetes"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2026-04",
+            "overallStatus": "ACTIVE_NOT_RECRUITING",
+            "startDateStruct": {
+              "date": "2022-06-16",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2024-06-03",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2026-12-15",
+              "type": "ESTIMATED"
+            },
+            "studyFirstSubmitDate": "2020-10-06",
+            "studyFirstSubmitQcDate": "2020-10-09",
+            "studyFirstPostDateStruct": {
+              "date": "2020-10-19",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2026-04-21",
+            "lastUpdatePostDateStruct": {
+              "date": "2026-04-22",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "City of Hope Medical Center",
+              "class": "OTHER"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false,
+            "isUsExport": false
+          },
+          "descriptionModule": {
+            "briefSummary": "This phase I trial investigates the side effects of PIpepTolDC vaccine in treating patients with type 1 diabetes who use insulin and don't have any other diabetes-related health complications. Type 1 diabetes is an autoimmune disease. This means that the immune system, which usually protects against foreign invaders like bacteria and viruses, attacks the body's insulin-producing betacells in the pancreas (autoimmune response). Overtime, the beta cells are destroyed by the immune system. To stay alive, people with type 1 diabetes must use insulin. PIpepTolDC vaccine is a type of immunotherapy (a treatment that uses a person's own immune system) that works like an allergy shot. The vaccine is made using one's own immune cells (dendritic cells) and a beta cell protein. The vaccine may teach the immune system to stop attacking the beta cells, which may help the beta cells recover and make enough insulin to control blood sugar levels. The vaccine may also help reduce future type 1 diabetes related complications."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Type 1 Diabetes Mellitus"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 6,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Autologous Tolerogenic Dendritic Cell with Proinsulin Peptide (PIpepTolDC)",
+                "type": "EXPERIMENTAL",
+                "description": "After completion of leukapheresis, patients receive a prime dose of PIpepTolDC intradermally (ID) on Day 0, followed by a boost dose of PIpepTolDC ID on Day 28.",
+                "interventionNames": [
+                  "Biological: Tolerogenic Dendritic Cell Vaccine"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "Tolerogenic Dendritic Cell Vaccine",
+                "description": "PIpepTolDCs",
+                "armGroupLabels": [
+                  "Autologous Tolerogenic Dendritic Cell with Proinsulin Peptide (PIpepTolDC)"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Incidence of adverse events",
+                "description": "Toxicity and adverse events (except hypoglycemia and diabetic ketoacidosis \\[DKA\\]) will be recorded using the National Cancer Institute Common Terminology Criteria for Adverse Events (CTCAE) version (v) 5.0. Hypoglycemia events and DKA will be defined per American Diabetes Association (ADA) grading systems.Observed toxicities will be summarized by type, severity (by CTCAE v 5.0 and nadir or maximum values for lab measures), date of onset, duration, reversibility, and attribution.",
+                "timeFrame": "Up to 2 years"
+              },
+              {
+                "measure": "Apheresis duration",
+                "description": "Measured in hours.",
+                "timeFrame": "up to 2 years"
+              },
+              {
+                "measure": "Number of CD14+ monocytes",
+                "description": "Number of CD14+ monocytes collected during apheresis",
+                "timeFrame": "up to 2 years"
+              },
+              {
+                "measure": "TolDC recovery after culture",
+                "description": "Number of TolDC generated from CD14+ monocytes",
+                "timeFrame": "up to 2 years"
+              },
+              {
+                "measure": "Number of successful manufactured products",
+                "description": "Number of manufactured products that meet the required cell dose/day, sterility (e.g. endotoxin and gram staining), and viability compared to the total number of products manufactured.",
+                "timeFrame": "Up to 2 years"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Change in stimulated C-peptide area under the curve",
+                "description": "Assessed via 2-hr mixed meal tolerance test (MMTT). C-peptide preservation is defined as the maintenance of baseline C-peptide levels.",
+                "timeFrame": "Baseline up to 2 years of follow up"
+              },
+              {
+                "measure": "Change in interferon (IFN)-gamma and IL-10 producing CD4+ T cells",
+                "description": "Will be assessed in response to pro-insulin peptide C19-A3, and assessed via cytokine enzyme-linked immunosorbent spot assay.",
+                "timeFrame": "Baseline up to 2 years of follow up"
+              },
+              {
+                "measure": "Change in T cell responsiveness",
+                "description": "Will assess for changes in T cell responsiveness to pro-insulin peptide C19-A3 compared to other antigens. Assessed via Lymphocyte Simulation Test.",
+                "timeFrame": "Baseline up to 2 years of follow up"
+              },
+              {
+                "measure": "Change in the number of CD8+ autoreactive T cells",
+                "description": "Assessed via quantum dot (Q-DOT) nanotechnology assay.",
+                "timeFrame": "Baseline up to 2 years of follow up"
+              },
+              {
+                "measure": "Change in immune phenotype",
+                "description": "Will analyze for changes in immune cell populations via flow cytometry",
+                "timeFrame": "Baseline up to 2 years of follow up"
+              },
+              {
+                "measure": "Change in islet autoantibodies",
+                "description": "Will analyze for changes in IAA, GAA, IA-2A, ZnT8A via enzyme-linked immunosorbent assay.",
+                "timeFrame": "Baseline up to 2 years of follow up"
+              },
+              {
+                "measure": "Change in glycosylated hemoglobin A1c (HbA1c) levels",
+                "description": "HbA1c levels will be assessed via blood test",
+                "timeFrame": "Baseline up to 2 years of follow up"
+              },
+              {
+                "measure": "Change in exogenous insulin use (units/kg)",
+                "description": "Insulin usage will be recorded daily from the insulin pump and/or participant insulin use logs. The mean daily insulin usage over the 10 consecutive days (IU units/kg body weight/day) preceding the clinic visit will be calculated for each participant.",
+                "timeFrame": "Baseline up to 2 years of follow up"
+              },
+              {
+                "measure": "Change in blood glucose levels",
+                "description": "Will include clinically important/severe hypoglycemia, hyperglycemia and DKA events as assessed by ADA grading systems. Levels of glucose will be assessed from bloods samples taken during the MMTT and from insulin pump/participant insulin logs",
+                "timeFrame": "Baseline up to 2 years of follow up"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Willingness to undergo leukapheresis\n* Willingness to be followed for about 2 years post-prime dose\n* For participants who have a personal continuous glucose monitoring device (CGMD): Willingness to wear a second CGMD during mandated study CGMD visits\n* Diagnosis of type 1 diabetes based on American Diabetes Association (ADA) criteria\n* Historical presence of at least one type-1 diabetes associated autoantibody\n\n  * GAD specific autoantibodies (glutamic acid decarboxylase autoantibodies \\[GADA\\])\n  * Islet cell cytoplasmic autoantibodies (ICA)\n  * Islet-antigen 2 specific autoantibody (IA-2A)\n  * Zinc transporter 8 specific autoantibody (ZNT8A); and/or\n  * Insulin autoantibody (IAA) (must have been obtained within 7 days of initiating exogenous insulin replacement therapy)\n* Time from diagnosis to screening mixed meal tolerance test (MMTT) must be \\>= 1 year but =\\< 4 years\n* Stable glycemic control per participant's physician\n* HbA1c =\\< 7.5% (=\\< 58 mmol/mol)\n* Non-fasting C-peptide \\> 0.017 nmol/L\n* Stimulated peak C-peptide levels \\> 0.2 nmol/L from a 2-hour screening MMTT\n* Positive for \\*04:01 allele, \\*04:02 allele and/or \\*04:04 allele at the human leukocyte antigen (HLA)-DRB1 gene locus\n* Does not possess the protective HLA-DRB1\\*15:01-DQA1\\*01:02-DQB1\\*06:02 haplotype\n* Adequate self-assessment of blood glucose values and recording of glucose values, and administered insulin doses as deemed sufficient by the participant's physician\n* No diagnosis of type 1 diabetes related microvascular/macrovascular complications (e.g. nephropathy, retinopathy and neuropathy)\n* Deemed acceptable for autologous cell collection (i.e. leukapheresis)\n* Only for those who are naive to CGMD use: Deemed able to correctly use a CGM device following training session with a certified diabetes educator and manufacturer representative\n* Must meet organ function criteria\n\nExclusion Criteria:\n\n* Other investigational agents, biologics\n* Anti-inflammatory therapy\n\n  * Exception: Over-the-counter (OTC) anti-inflammatory agents (e.g. ibuprofen, Tylenol) are generally allowed. However, those requiring chronic OTC anti-inflammatory agents and unable to stop during mandated CGMD study visits will be excluded\n* Systemic corticosteroids within 28 days prior to leukapheresis\n* Systemic immunosuppressive therapy (e.g. cyclosporine-A, cyclophosphamide)\n* Monoclonal antibody therapy\n* Allergen immunotherapy within 28 days prior to leukapheresis\n* Vaccine(s) within 28 days prior to leukapheresis\n* Prior allogeneic organ transplant\n* Beta-cell stimulants (e.g. sulfonylureas such as glimepiride), glucagon-like peptide-1 agonists, dipeptidyl peptidase-IV inhibitors (exception: Those with acute exposure to these agents during T1D misdiagnosis may be permitted per PI discretion)\n* Insulin sensitizers (e.g. metformin, thiazolidinediones) within 2 months of leukapheresis\n* History of insulin sensitizer use (e.g. metformin, thiazolidinediones) \u2265 2 months\n* Other autoimmune/inflammatory disorders (exceptions: (i) Type 1 diabetes. (ii) Asymptomatic patients with incidental autoantibody titres may be permitted per PI discretion)\n* Other autoimmune/inflammatory disorders (exception type 1 diabetes)\n* Active infection requiring antibiotics and/or anti-virals\n* Known history of HIV, HBV, HCV, HTLV, syphilis\n* History of positive purified protein derivative (PPD) skin test\n* History of atopy requiring systemic treatment and/or history of severe allergic reactions\n* History or current malignancy\n* Unstable cardiac disease\n* History of vascular disease (e.g. deep vein thrombosis, stroke)\n* Clinically significant uncontrolled illness\n* Females only: pregnant or breastfeeding",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "45 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Behrouz Salehian-Dardashti, MD",
+                "affiliation": "City of Hope Medical Center",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "City of Hope Medical Center",
+                "city": "Duarte",
+                "state": "California",
+                "zip": "91010",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.13945,
+                  "lon": -117.97729
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT04590872",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12950593/",
+          "identifier": "PMC:12950593",
+          "title": "Modulating immune response for the prevention and treatment of type 1 diabetes.",
+          "snippet": "Title: Modulating immune response for the prevention and treatment of type 1 diabetes.\nAuthors: Vohidova D, Desai P, Moreno Lozano A et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828682"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12865243/",
+          "identifier": "PMC:12865243",
+          "title": "Nanoparticle-Based Tolerogenic Vaccines: Next-Generation Strategies for Autoimmune and Allergic Disease Therapies.",
+          "snippet": "Title: Nanoparticle-Based Tolerogenic Vaccines: Next-Generation Strategies for Autoimmune and Allergic Disease Therapies.\nAuthors: Nachod BE, Thatte AS, Palanki R et al.\nJournal: Angew Chem Int Ed Engl",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828742"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12583481/",
+          "identifier": "PMC:12583481",
+          "title": "Decoding immunometabolism with next-generation tools: lessons from dendritic cells and T cells.",
+          "snippet": "Title: Decoding immunometabolism with next-generation tools: lessons from dendritic cells and T cells.\nAuthors: Wang YH, Wang L, Ho PC\nJournal: EMBO J",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828769"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11520528/",
+          "identifier": "PMC:11520528",
+          "title": "Clinical translation of quantum dots.",
+          "snippet": "Title: Clinical translation of quantum dots.\nAuthors: Pallares RM, Kiessling F, Lammers T\nJournal: Nanomedicine (Lond)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828791"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12302071/",
+          "identifier": "PMC:12302071",
+          "title": "Leveraging current insights on IL-10-producing dendritic cells for developing effective immunotherapeutic approaches.",
+          "snippet": "Title: Leveraging current insights on IL-10-producing dendritic cells for developing effective immunotherapeutic approaches.\nAuthors: Morali K, Giacomello G, Vuono M et al.\nJournal: FEBS Lett",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828815"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12117014/",
+          "identifier": "PMC:12117014",
+          "title": "Advances in Regulatory Cell Therapy for Type 1 Diabetes: Emerging Strategies and Future Directions.",
+          "snippet": "Title: Advances in Regulatory Cell Therapy for Type 1 Diabetes: Emerging Strategies and Future Directions.\nAuthors: Passerini L, Forlani A, Gregori S\nJournal: Eur J Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828839"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11951698/",
+          "identifier": "PMC:11951698",
+          "title": "Immunotherapies for prevention and treatment of type 1 diabetes.",
+          "snippet": "Title: Immunotherapies for prevention and treatment of type 1 diabetes.\nAuthors: Jeun R\nJournal: Immunotherapy",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828858"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11739237/",
+          "identifier": "PMC:11739237",
+          "title": "Current advancements in cellular immunotherapy for autoimmune disease.",
+          "snippet": "Title: Current advancements in cellular immunotherapy for autoimmune disease.\nAuthors: Berry CT, Frazee CS, Herman PJ et al.\nJournal: Semin Immunopathol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828879"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11145724/",
+          "identifier": "PMC:11145724",
+          "title": "Therapeutic induction of antigen-specific immune tolerance.",
+          "snippet": "Title: Therapeutic induction of antigen-specific immune tolerance.\nAuthors: Kenison JE, Stevens NA, Quintana FJ\nJournal: Nat Rev Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828902"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11049849/",
+          "identifier": "PMC:11049849",
+          "title": "The Biologic IRL201805 Alters Immune Tolerance Leading to Prolonged Pharmacodynamics and Efficacy in Rheumatoid Arthritis Patients.",
+          "snippet": "Title: The Biologic IRL201805 Alters Immune Tolerance Leading to Prolonged Pharmacodynamics and Efficacy in Rheumatoid Arthritis Patients.\nAuthors: Hall C, Pleasance J, Hickman O et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828925"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11019573/",
+          "identifier": "PMC:11019573",
+          "title": "Dendritic Cell-Based Immunotherapy: The Importance of Dendritic Cell Migration.",
+          "snippet": "Title: Dendritic Cell-Based Immunotherapy: The Importance of Dendritic Cell Migration.\nAuthors: Song MS, Nam JH, Noh KE et al.\nJournal: J Immunol Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828946"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10546931/",
+          "identifier": "PMC:10546931",
+          "title": "Exploration of Immune Targets for Type 1 Diabetes and Latent Autoimmune Disease Immunotherapy.",
+          "snippet": "Title: Exploration of Immune Targets for Type 1 Diabetes and Latent Autoimmune Disease Immunotherapy.\nAuthors: Siddiqui K, Nawaz SS\nJournal: Immunotargets Ther",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828967"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10403757/",
+          "identifier": "PMC:10403757",
+          "title": "Challenges in tolerogenic dendritic cell therapy for autoimmune diseases: the route of administration.",
+          "snippet": "Title: Challenges in tolerogenic dendritic cell therapy for autoimmune diseases: the route of administration.\nAuthors: Mansilla MJ, Hilkens CMU, Mart\u00ednez-C\u00e1ceres EM\nJournal: Immunother Adv",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.828991"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10303908/",
+          "identifier": "PMC:10303908",
+          "title": "Tolerogenic dendritic cells in type 1 diabetes: no longer a concept.",
+          "snippet": "Title: Tolerogenic dendritic cells in type 1 diabetes: no longer a concept.\nAuthors: Giannoukakis N\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829011"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10183318/",
+          "identifier": "PMC:10183318",
+          "title": "Signaling pathways involved in the biological functions of dendritic cells and their implications for disease treatment.",
+          "snippet": "Title: Signaling pathways involved in the biological functions of dendritic cells and their implications for disease treatment.\nAuthors: Cheng H, Chen W, Lin Y et al.\nJournal: Mol Biomed",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829035"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9980607/",
+          "identifier": "PMC:9980607",
+          "title": "Epitope-based precision immunotherapy of Type 1 diabetes.",
+          "snippet": "Title: Epitope-based precision immunotherapy of Type 1 diabetes.\nAuthors: Firdessa Fite R, Bechi Genzano C, Mallone R et al.\nJournal: Hum Vaccin Immunother",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829057"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9952924/",
+          "identifier": "PMC:9952924",
+          "title": "Revisiting the Pathogenesis of Type 1 Diabetes: Importance of Neural Input to Pancreatic Islets and the Therapeutic Capability of Stem Cell Educator (TM) Therapy to Restore Their Integrity.",
+          "snippet": "Title: Revisiting the Pathogenesis of Type 1 Diabetes: Importance of Neural Input to Pancreatic Islets and the Therapeutic Capability of Stem Cell Educator (TM) Therapy to Restore Their Integrity.\nAuthors: Zhao Y, Veysman B\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829078"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9911317/",
+          "identifier": "PMC:9911317",
+          "title": "Innovative Designs and Logistical Considerations for Expedited Clinical Development of Combination Disease-Modifying Treatments for Type 1 Diabetes.",
+          "snippet": "Title: Innovative Designs and Logistical Considerations for Expedited Clinical Development of Combination Disease-Modifying Treatments for Type 1 Diabetes.\nAuthors: Anderson RL, DiMeglio LA, Mander AP et al.\nJournal: Diabetes Care",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829098"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9169641/",
+          "identifier": "PMC:9169641",
+          "title": "Preclinical evaluation of a precision medicine approach to DNA vaccination in type 1 diabetes.",
+          "snippet": "Title: Preclinical evaluation of a precision medicine approach to DNA vaccination in type 1 diabetes.\nAuthors: Postigo-Fernandez J, Firdessa-Fite R, Creusot RJ\nJournal: Proc Natl Acad Sci U S A",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829121"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8244997/",
+          "identifier": "PMC:8244997",
+          "title": "Insulin immunotherapy for pretype 1 diabetes.",
+          "snippet": "Title: Insulin immunotherapy for pretype 1 diabetes.\nAuthors: Jacobsen LM, Schatz DA\nJournal: Curr Opin Endocrinol Diabetes Obes",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829144"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9099521/",
+          "identifier": "PMC:9099521",
+          "title": "Dendritic Cells and Their Immunotherapeutic Potential for Treating Type 1 Diabetes.",
+          "snippet": "Title: Dendritic Cells and Their Immunotherapeutic Potential for Treating Type 1 Diabetes.\nAuthors: Khan FU, Khongorzul P, Raki AA et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829165"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9076002/",
+          "identifier": "PMC:9076002",
+          "title": "Biomedical Applications of Quantum Dots: Overview, Challenges, and Clinical Potential.",
+          "snippet": "Title: Biomedical Applications of Quantum Dots: Overview, Challenges, and Clinical Potential.\nAuthors: Abdellatif AAH, Younis MA, Alsharidah M et al.\nJournal: Int J Nanomedicine",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829187"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8398144/",
+          "identifier": "PMC:8398144",
+          "title": "Focus on the Lymphatic Route to Optimize Drug Delivery in Cardiovascular Medicine.",
+          "snippet": "Title: Focus on the Lymphatic Route to Optimize Drug Delivery in Cardiovascular Medicine.\nAuthors: Tessier N, Moawad F, Amri N et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829207"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8395087/",
+          "identifier": "PMC:8395087",
+          "title": "Tolerogenic Dendritic Cell-Based Approaches in Autoimmunity.",
+          "snippet": "Title: Tolerogenic Dendritic Cell-Based Approaches in Autoimmunity.\nAuthors: Passeri L, Marta F, Bassi V et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829230"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8107985/",
+          "identifier": "PMC:8107985",
+          "title": "Current advances in using tolerogenic dendritic cells as a therapeutic alternative in the treatment of type 1 diabetes.",
+          "snippet": "Title: Current advances in using tolerogenic dendritic cells as a therapeutic alternative in the treatment of type 1 diabetes.\nAuthors: R\u00edos-R\u00edos WJ, Sosa-Luis SA, Torres-Aguilar H\nJournal: World J Diabetes",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:39.829250"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12950593",
+          "12865243",
+          "12583481",
+          "11520528",
+          "12302071",
+          "12117014",
+          "11951698",
+          "11739237",
+          "11145724",
+          "11049849",
+          "11019573",
+          "10546931",
+          "10403757",
+          "10303908",
+          "10183318",
+          "9980607",
+          "9952924",
+          "9911317",
+          "9169641",
+          "8244997",
+          "9099521",
+          "9076002",
+          "8398144",
+          "8395087",
+          "8107985"
+        ],
+        "pmc_count": 25,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Tolerogenic Dendritic Cell Vaccine_no_structured_match": true,
+        "uniprot_Tolerogenic Dendritic Cell Vaccine": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT04590872",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients ...",
+          "snippet": "Web result for: NCT04590872 An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients With Type 1 ",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:40.807838"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients ...",
+          "snippet": "Web result for: NCT04590872 An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients With Type 1 ",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:40.807887"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT04590872/",
+          "identifier": "NCT04590872",
+          "title": "Trial | NCT04590872",
+          "snippet": "Web result for: NCT04590872 An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients With Type 1 ",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:40.807905"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.smartpatients.com/trials/NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients ...",
+          "snippet": "Web result for: NCT04590872 An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients With Type 1 ",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:40.807920"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.trialx.com/clinical-trials/listings/249767/an-immunotherapy-vaccine-pipeptoldc-for-the-treatment-of-patients-with-type-1-diabetes/",
+          "identifier": "NCT04590872",
+          "title": "An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients ...",
+          "snippet": "Web result for: NCT04590872 An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients With Type 1 ",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:40.807934"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 22299
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Tolerogenic Dendritic Cell Vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT04590872",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2108573/",
+          "identifier": "CHEMBL2108573",
+          "title": "ANTHRAX VACCINE ABSORBED - ChEMBL",
+          "snippet": "Molecule: ANTHRAX VACCINE ABSORBED\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Biological vaccine - induces immune response",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:41.590407"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2108905/",
+          "identifier": "CHEMBL2108905",
+          "title": "BCG VACCINE - ChEMBL",
+          "snippet": "Molecule: BCG VACCINE\nType: Vaccine component\nMax clinical phase: 3.0\nBioactivity: Hepatotoxicity (moderate)=7.0 (NON-PROTEIN TARGET); Hepatotoxicity (moderate)=10.0 % (NON-PROTEIN TARGET); Hepatotoxicity (acute)=6.0 (Unchecked); Hepatotoxicity (acute)=0.9 % (NON-PROTEIN TARGET); Hepatotoxicity (cytolytic)=2.0 (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:43.363968"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2109042/",
+          "identifier": "CHEMBL2109042",
+          "title": "INFLUENZA VIRUS VACCINE - ChEMBL",
+          "snippet": "Molecule: INFLUENZA VIRUS VACCINE\nType: Vaccine component\nMax clinical phase: 3.0\nMechanism: Biological vaccine - induces immune response",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:43.849097"
+        }
+      ],
+      "raw_data": {
+        "chembl_Tolerogenic Dendritic Cell Vaccine_count": 5,
+        "chembl_Tolerogenic Dendritic Cell Vaccine_molecules": [
+          {
+            "chembl_id": "CHEMBL2108573",
+            "pref_name": "ANTHRAX VACCINE ABSORBED",
+            "mol_type": "Vaccine component",
+            "helm_notation": null,
+            "max_phase": "2.0"
+          },
+          {
+            "chembl_id": "CHEMBL2108905",
+            "pref_name": "BCG VACCINE",
+            "mol_type": "Vaccine component",
+            "helm_notation": null,
+            "max_phase": "3.0"
+          },
+          {
+            "chembl_id": "CHEMBL2109042",
+            "pref_name": "INFLUENZA VIRUS VACCINE",
+            "mol_type": "Vaccine component",
+            "helm_notation": null,
+            "max_phase": "3.0"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "rcsb_Tolerogenic Dendritic Cell Vaccine": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Tolerogenic Dendritic Cell Vaccine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "apd_Tolerogenic Dendritic Cell Vaccine": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT04590872",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT04590872",
+          "identifier": "NCT04590872",
+          "title": "An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients With Type 1 Diabetes",
+          "snippet": "Title: An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients With Type 1 Diabetes\nStatus: Active, not recruiting\nPhase: Phase 1\nCountries: United States\nConditions: Type 1 Diabetes Mellitus\nInterventions: Biological: Tolerogenic Dendritic Cell Vaccine\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:45.062159"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT04590872",
+          "public_title": "An Immunotherapy Vaccine (PIpepTolDC) for the Treatment of Patients With Type 1 Diabetes",
+          "scientific_title": "A Pilot Study to Evaluate the Safety and Feasibility of Autologous Tolerogenic Dendritic Cells Loaded With Proinsulin Peptide (C19-A3) in Patients With Type 1 Diabetes",
+          "recruitment_status": "Active, not recruiting",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Treatment. Masking: None (Open Label).",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Type 1 Diabetes Mellitus"
+          ],
+          "interventions": [
+            "Biological: Tolerogenic Dendritic Cell Vaccine"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Tolerogenic Dendritic Cell Vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Tolerogenic Dendritic Cell Vaccine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT04590872",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4385769482",
+          "identifier": "PMID:37628860",
+          "title": "Current Advances in the Biomedical Applications of Quantum Dots: Promises and Challenges",
+          "snippet": "Title: Current Advances in the Biomedical Applications of Quantum Dots: Promises and Challenges\nYear: 2023\nCitations: 76\nAbstract: Quantum dots (QDs) are a type of nanoparticle with exceptional photobleaching-resistant fluorescence. They are highly sought after for their potential use in various optical-based biomedical applications. However, there are still concerns regarding t",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:40.063896"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4387189818",
+          "identifier": "PMID:37795196",
+          "title": "Exploration of Immune Targets for Type 1 Diabetes and Latent Autoimmune Disease Immunotherapy",
+          "snippet": "Title: Exploration of Immune Targets for Type 1 Diabetes and Latent Autoimmune Disease Immunotherapy\nYear: 2023\nCitations: 29\nAbstract: Type 1 diabetes (T1D) is an autoimmune disease that destroys pancreatic beta cells, which produce insulin in the islets of Langerhans. The risk of developing T1D is influenced by environmental factors, genetics, and autoantibodies. Latent autoimmune ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:40.064078"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4380849056",
+          "identifier": "PMID:37388741",
+          "title": "Tolerogenic dendritic cells in type 1 diabetes: no longer a concept",
+          "snippet": "Title: Tolerogenic dendritic cells in type 1 diabetes: no longer a concept\nYear: 2023\nCitations: 21\nAbstract: . In the context of safety, this yields confidence that the time has come to test the best characterized tDC in phase II clinical trials in T1D, especially given that tDC are already being tested for other autoimmune conditions. The time is also now ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:40.064203"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4402990577",
+          "identifier": "PMID:39344871",
+          "title": "Clinical translation of quantum dots",
+          "snippet": "Title: Clinical translation of quantum dots\nYear: 2024\nCitations: 17",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:40.064226"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4406886929",
+          "identifier": "PMID:39873914",
+          "title": "Emerging Immunotherapies for Disease Modification of Type 1 Diabetes",
+          "snippet": "Title: Emerging Immunotherapies for Disease Modification of Type 1 Diabetes\nYear: 2025\nCitations: 9",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:40.064245"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT04590872",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.23860/thesis-aguirre-danielle-2014",
+          "identifier": "DOI:10.23860/thesis-aguirre-danielle-2014",
+          "title": "DELETION OF ANTIBODY ENCODED TOLEROGENIC SIGNALS TO IMPROVE A DENDRITIC CELL TARGETED VACCINE DELIVERY PLATFORM SYSTEM",
+          "snippet": "Title: DELETION OF ANTIBODY ENCODED TOLEROGENIC SIGNALS TO IMPROVE A DENDRITIC CELL TARGETED VACCINE DELIVERY PLATFORM SYSTEM",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:41.072765"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1021/acsnano.8b08346.s001",
+          "identifier": "DOI:10.1021/acsnano.8b08346.s001",
+          "title": "In Situ Dendritic Cell Vaccine for Effective Cancer Immunotherapy",
+          "snippet": "Title: In Situ Dendritic Cell Vaccine for Effective Cancer Immunotherapy",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:41.072814"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1007/978-4-431-55031-0_14",
+          "identifier": "DOI:10.1007/978-4-431-55031-0_14",
+          "title": "Dendritic Cell-Based Vaccine for Cancer",
+          "snippet": "Title: Dendritic Cell-Based Vaccine for Cancer\nJournal: Immunotherapy of Cancer\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:41.072839"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 3,
+        "biorxiv_prefilter_dropped": 3
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT04590872_total": 0,
+        "sec_edgar_Tolerogenic Dendritic Cell Vaccine_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT04590872",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_Tolerogenic Dendritic Cell Vaccine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT04590872",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Tolerogenic+Dendritic+Cell+Vaccine",
+          "identifier": "NIH:1ZIABC012211-01",
+          "title": "Essential Logistic Needs to Implement the C.L.E.A.R. Phase-I HIV Vaccine Trial (FRANCHINI, GENOVEFFA)",
+          "snippet": "Project: 1ZIABC012211-01\nPI: FRANCHINI, GENOVEFFA\nOrganization: \nFiscal year: 2025\nAward: $880,288\n(76 total NIH-funded projects matching 'Tolerogenic Dendritic Cell Vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:39.497933"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Tolerogenic+Dendritic+Cell+Vaccine",
+          "identifier": "NIH:1ZIABC012025-05",
+          "title": "Phase I HIV vaccine trial with DNAALVAC-HIV gp120 delta V1 vaccines (FRANCHINI, GENOVEFFA)",
+          "snippet": "Project: 1ZIABC012025-05\nPI: FRANCHINI, GENOVEFFA\nOrganization: \nFiscal year: 2025\nAward: $7,428,773\n(76 total NIH-funded projects matching 'Tolerogenic Dendritic Cell Vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:39.498037"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Tolerogenic+Dendritic+Cell+Vaccine",
+          "identifier": "NIH:5F30CA257291-04",
+          "title": "Discovery of myeloid immune features predictive of response to cancer immunotherapy in prostate cancer (MCCARTHY, ELIZABETH)",
+          "snippet": "Project: 5F30CA257291-04\nPI: MCCARTHY, ELIZABETH\nOrganization: \nFiscal year: 2024\nAward: $53,974\nStart: 2021-01-01\nEnd: 2024-12-31\n(76 total NIH-funded projects matching 'Tolerogenic Dendritic Cell Vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:39.498070"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_Tolerogenic Dendritic Cell Vaccine_count": 76,
+        "nih_reporter_Tolerogenic Dendritic Cell Vaccine_funded": true
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 7,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov"
+      ]
+    },
+    "literature": {
+      "citations_count": 25,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "pmc"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "openalex": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "sec_edgar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "nih_reporter"
+      ]
+    }
+  }
+}

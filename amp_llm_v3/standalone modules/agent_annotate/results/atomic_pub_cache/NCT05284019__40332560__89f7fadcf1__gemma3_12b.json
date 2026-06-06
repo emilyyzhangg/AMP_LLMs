@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT05284019",
+  "pmid": "PMID:40332560",
+  "source": "pubmed",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "YES",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "YES",
+    "q4_failure": "UNCLEAR",
+    "q5_advanced": "UNCLEAR",
+    "evidence_quote": "We evaluated the effectiveness, tolerability, and safety of eptinezumab in preventing high-frequency episodic migraine (HFEM) and chronic migraine (CM) over 24\u00a0weeks."
+  },
+  "verdict": "POSITIVE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

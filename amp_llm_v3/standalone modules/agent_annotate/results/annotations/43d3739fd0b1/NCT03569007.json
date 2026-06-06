@@ -1,0 +1,3640 @@
+{
+  "nct_id": "NCT03569007",
+  "metadata": {
+    "nct_id": "NCT03569007",
+    "title": "A Phase 3, Randomized, Double-Blind, Placebo Controlled Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief of Persistent Symptoms in Patients With Celiac Disease on a GFD",
+    "phase": "PHASE3",
+    "status": "TERMINATED",
+    "conditions": [
+      "Celiac Disease"
+    ],
+    "interventions": [
+      "DRUG: Larazotide",
+      "DRUG: Matching Placebo"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.82,
+      "reasoning": "[Pass 1 extraction] Intervention: larazotide acetate\nMolecular Class: Peptide / peptide hormone\nDatabase Confirmation: UniProt: entry found? Amino acid length? Not found in UniProt. DRAMP/DBAASP: antimicrobial peptide database entry? Not found in DRAMP/DBAASP. ChEMBL: molecule type? (peptide, small molecule, protein, antibody) ChEMBL lists larazotide acetate as a protein, but GtoPdb lists it as a peptide. PDB: structural data available? Not found in PDB.\nProduct Description: Described as a \"drug\" and \"therapeutic\" in the trial and literature.\nInvestigational Drug Role: Investigational drug\n[Pass 2 decision] Peptide: True  \nReasoning: Step 1 \u2014 The Molecular Class is \"Peptide / peptide hormone,\" which falls within the definition of a peptide (\u2264100 amino acids, including multi-chain hormones). Step 2 \u2014 The intervention is described as a \"drug\" and \"therapeutic,\" and there is no indication that it is a nutritional product or a brand name-only peptide. Step 3 \u2014 Although there are no database hits, the molecular class is clearly a peptide, and the trial description identifies it as a drug. Therefore, the answer is True.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Detailed Description",
+          "snippet": "This is a phase 3, randomized, double-blind, placebo-controlled, multicenter, outpatient study to evaluate the efficacy and safety of larazotide acetate for the relief of persistent symptoms in adult patients with celiac disease on a gluten free diet.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610312"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10139156/",
+          "identifier": "PMC:10139156",
+          "title": "Zonulin as a Potential Therapeutic Target in Microbiota-Gut-Brain Axis Disorders: Encouraging Results and Emerging Questions.",
+          "snippet": "Title: Zonulin as a Potential Therapeutic Target in Microbiota-Gut-Brain Axis Disorders: Encouraging Results and Emerging Questions.\nAuthors: Veres-Sz\u00e9kely A, Sz\u00e1sz C, Pap D et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408197"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12947713/",
+          "identifier": "PMC:12947713",
+          "title": "Integrated Role of Microbial, Fungal, and Plant-Derived Interventions in the Management of Celiac Disease: A Narrative Review.",
+          "snippet": "Title: Integrated Role of Microbial, Fungal, and Plant-Derived Interventions in the Management of Celiac Disease: A Narrative Review.\nAuthors: Kubala K, Pietrucha T, Goldyn M et al.\nJournal: Cureus",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408089"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843458/",
+          "identifier": "PMC:7843458",
+          "title": "In silico Analysis Revealed Potential Anti-SARS-CoV-2 Main Protease Activity by the Zonulin Inhibitor Larazotide Acetate.",
+          "snippet": "Title: In silico Analysis Revealed Potential Anti-SARS-CoV-2 Main Protease Activity by the Zonulin Inhibitor Larazotide Acetate.\nAuthors: Di Micco S, Musella S, Scala MC et al.\nJournal: Front Chem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408249"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12837603/",
+          "identifier": "PMC:12837603",
+          "title": "Rethinking Celiac Disease Management: Treatment Approaches Beyond the Gluten-Free Diet.",
+          "snippet": "Title: Rethinking Celiac Disease Management: Treatment Approaches Beyond the Gluten-Free Diet.\nAuthors: Kounatidis D, Pavlou A, Evangelopoulos A et al.\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408131"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8060282/",
+          "identifier": "PMC:8060282",
+          "title": "The Evolving Landscape of Biomarkers in Celiac Disease: Leading the Way to Clinical Development.",
+          "snippet": "Title: The Evolving Landscape of Biomarkers in Celiac Disease: Leading the Way to Clinical Development.\nAuthors: Smithson G, Siegelman J, Oki T et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408237"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2103815/",
+          "identifier": "CHEMBL2103815",
+          "title": "LARAZOTIDE ACETATE - ChEMBL",
+          "snippet": "Molecule: LARAZOTIDE ACETATE\nType: Protein\nMax clinical phase: 3.0\nHELM: PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$\nMolecular weight: 785.90\nMechanism: Neuronal acetylcholine receptor; alpha3/beta4 partial agonist",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:24.787928"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2105646/",
+          "identifier": "CHEMBL2105646",
+          "title": "LARAZOTIDE - ChEMBL",
+          "snippet": "Molecule: LARAZOTIDE\nType: Protein\nMax clinical phase: 3.0\nHELM: PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$\nMolecular weight: 725.85",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:24.285670"
+        },
+        {
+          "source_name": "iuphar",
+          "source_url": "https://www.guidetopharmacology.org/GRAC/LigandDisplayForward?ligandId=13724",
+          "identifier": "GtoPdb:13724",
+          "title": "larazotide - Guide to Pharmacology",
+          "snippet": "Ligand: larazotide\nType: Peptide\nINN: larazotide",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:18:19.853731"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Matching+Placebo",
+          "identifier": "NIH:3R01AI175348-04S1",
+          "title": "Trial of Zinc Supplements for Young Infants with Clinical Severe Infection in Tanzania (SUDFELD, CHRISTOPHER)",
+          "snippet": "Project: 3R01AI175348-04S1\nPI: SUDFELD, CHRISTOPHER\nOrganization: \nFiscal year: 2026\nAward: $404,451\nStart: 2026-02-01\nEnd: 2028-01-31\n(681 total NIH-funded projects matching 'Matching Placebo')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:19.308679"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.8550000000000001,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: Larazotide acetate is confirmed as a peptide with the sequence G.G.V.L.V.Q.P.G (8 amino acids).\nDatabase Matches: Larazotide is listed in ChEMBL (CHEMBL2103815 and CHEMBL2105646) as a protein with molecular weight 785.90 and 725.85, respectively. No specific antimicrobial peptide databases (DRAMP, DBAASP, APD3, UniProt with \"antimicrobial\" annotation) are mentioned. No structural data from RCSB PDB or domain annotations from EBI Proteins are provided.\nMechanism: Larazotide acetate acts as a neuronal acetylcholine receptor (alpha3/beta4) partial agonist. It does not directly kill or inhibit microorganisms, nor does it disrupt biofilms. It does not stimulate innate immune defense or work via a non-antimicrobial mechanism related to antimicrobial activity.\nTherapeutic Target: The trial is treating celiac disease, which is an autoimmune condition, not an infection or infectious disease.\nImmune Direction: Larazotide acetate does not promote or suppress immune responses; its mechanism is related to acetylcholine receptor modulation, which is not directly immune-related. It is immune-neutral in the context of antimicrobial or host defense properties.\n[Pass 2 decision] Classification: Other  \nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True). Step 2 \u2014 The peptide (Larazotide acetate) does not contribute to pathogen defense. Its mechanism is as a neuronal acetylcholine receptor (alpha3/beta4) partial agonist, which does not involve direct antimicrobial activity, biofilm disruption, or activation of innate immune cells. The therapeutic target is celiac disease, an autoimmune condition, not an infection. The peptide is not listed in any antimicrobial peptide databases (DRAMP, APD3, etc.), and its mechanism is unrelated to antimicrobial or host defense functions. Therefore, it is not an AMP.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Detailed Description",
+          "snippet": "This is a phase 3, randomized, double-blind, placebo-controlled, multicenter, outpatient study to evaluate the efficacy and safety of larazotide acetate for the relief of persistent symptoms in adult patients with celiac disease on a gluten free diet.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610312"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10139156/",
+          "identifier": "PMC:10139156",
+          "title": "Zonulin as a Potential Therapeutic Target in Microbiota-Gut-Brain Axis Disorders: Encouraging Results and Emerging Questions.",
+          "snippet": "Title: Zonulin as a Potential Therapeutic Target in Microbiota-Gut-Brain Axis Disorders: Encouraging Results and Emerging Questions.\nAuthors: Veres-Sz\u00e9kely A, Sz\u00e1sz C, Pap D et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408197"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12947713/",
+          "identifier": "PMC:12947713",
+          "title": "Integrated Role of Microbial, Fungal, and Plant-Derived Interventions in the Management of Celiac Disease: A Narrative Review.",
+          "snippet": "Title: Integrated Role of Microbial, Fungal, and Plant-Derived Interventions in the Management of Celiac Disease: A Narrative Review.\nAuthors: Kubala K, Pietrucha T, Goldyn M et al.\nJournal: Cureus",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408089"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843458/",
+          "identifier": "PMC:7843458",
+          "title": "In silico Analysis Revealed Potential Anti-SARS-CoV-2 Main Protease Activity by the Zonulin Inhibitor Larazotide Acetate.",
+          "snippet": "Title: In silico Analysis Revealed Potential Anti-SARS-CoV-2 Main Protease Activity by the Zonulin Inhibitor Larazotide Acetate.\nAuthors: Di Micco S, Musella S, Scala MC et al.\nJournal: Front Chem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408249"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12837603/",
+          "identifier": "PMC:12837603",
+          "title": "Rethinking Celiac Disease Management: Treatment Approaches Beyond the Gluten-Free Diet.",
+          "snippet": "Title: Rethinking Celiac Disease Management: Treatment Approaches Beyond the Gluten-Free Diet.\nAuthors: Kounatidis D, Pavlou A, Evangelopoulos A et al.\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408131"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8060282/",
+          "identifier": "PMC:8060282",
+          "title": "The Evolving Landscape of Biomarkers in Celiac Disease: Leading the Way to Clinical Development.",
+          "snippet": "Title: The Evolving Landscape of Biomarkers in Celiac Disease: Leading the Way to Clinical Development.\nAuthors: Smithson G, Siegelman J, Oki T et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408237"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7826989/",
+          "identifier": "PMC:7826989",
+          "title": "Gliadin Sequestration as a Novel Therapy for Celiac Disease: A Prospective Application for Polyphenols.",
+          "snippet": "Title: Gliadin Sequestration as a Novel Therapy for Celiac Disease: A Prospective Application for Polyphenols.\nAuthors: Van Buiten CB, Elias RJ\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408261"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12472395/",
+          "identifier": "PMC:12472395",
+          "title": "Is There a Future Without Gluten Restrictions for Celiac Patients? Update on Current Treatments.",
+          "snippet": "Title: Is There a Future Without Gluten Restrictions for Celiac Patients? Update on Current Treatments.\nAuthors: Girbal-Gonz\u00e1lez M, P\u00e9rez-Cano FJ\nJournal: Nutrients",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408146"
+        },
+        {
+          "source_name": "iuphar",
+          "source_url": "https://www.guidetopharmacology.org/GRAC/LigandDisplayForward?ligandId=13724",
+          "identifier": "GtoPdb:13724",
+          "title": "larazotide - Guide to Pharmacology",
+          "snippet": "Ligand: larazotide\nType: Peptide\nINN: larazotide",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:18:19.853731"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2103815/",
+          "identifier": "CHEMBL2103815",
+          "title": "LARAZOTIDE ACETATE - ChEMBL",
+          "snippet": "Molecule: LARAZOTIDE ACETATE\nType: Protein\nMax clinical phase: 3.0\nHELM: PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$\nMolecular weight: 785.90\nMechanism: Neuronal acetylcholine receptor; alpha3/beta4 partial agonist",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:24.787928"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "Other",
+      "confidence": 0.55,
+      "reasoning": "[ATOMIC-CLS R6] Other (conf=0.55)\n  rule: mixed/unclear atomic answers; default Other\n  registry: dramp=0 apd=0 dbaasp=0 uniprot_amp=0\n  atomic: q1=YES q2=UNCLEAR q3=NO\n  R6 fired: 1 YES, 1 NO, 1 UNCLEAR \u2192 default Other\n  quote: \"Synthetic 8-amino acid peptide formulated as enteric-coated beads in gelatin capsules\"",
+      "evidence": [],
+      "model_name": "atomic-cls-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Oral",
+      "confidence": 0.3,
+      "reasoning": "[Below threshold: 0 sources (need 1), quality 0.00 (need 0.5)] [Deterministic v38] Collected 1 route(s) from all citations",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": false,
+      "evidence_grade": "llm"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Terminated",
+      "confidence": 0.9,
+      "reasoning": "[Dossier v38] TERMINATED for business/operational reason: trial terminated by sponsor",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Terminated",
+      "confidence": 0.9,
+      "reasoning": "[ATOMIC R7] Terminated (conf=0.90)\n  rule: registry status TERMINATED, no POSITIVE pub-verdict\n  registry: status=TERMINATED phase=PHASE3 has_results=None completion=2022-07-21 days_since=1385 stale=False drug_max_phase=3\n  pubs: 17 total (1 ts, 15 gen, 1 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=TERMINATED has_results=None phase=PHASE3 days_since=1385 stale=False drug_max_phase=3\n    pubs: total=17 trial_specific=1 voting=0 pos=0 fail=0\n    R7 fired: status=TERMINATED, no positive pubs",
+      "evidence": [],
+      "model_name": "atomic-gemma3:12b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "sequence",
+      "value": "GGVLVQPG",
+      "confidence": 0.7999999999999999,
+      "reasoning": "[Structured v23] Extracted 1 sequence(s) from 1 candidates. ChEMBL HELM: parsed 8 aa from PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$",
+      "evidence": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2105646/",
+          "identifier": "CHEMBL2105646",
+          "title": "LARAZOTIDE - ChEMBL",
+          "snippet": "Molecule: LARAZOTIDE\nType: Protein\nMax clinical phase: 3.0\nHELM: PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$\nMolecular weight: 725.85",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:24.285670"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2103815/",
+          "identifier": "CHEMBL2103815",
+          "title": "LARAZOTIDE ACETATE - ChEMBL",
+          "snippet": "Molecule: LARAZOTIDE ACETATE\nType: Protein\nMax clinical phase: 3.0\nHELM: PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$\nMolecular weight: 785.90\nMechanism: Neuronal acetylcholine receptor; alpha3/beta4 partial agonist",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:24.787928"
+        }
+      ],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "Business Reason",
+      "confidence": 0.86,
+      "reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: No specific results or findings related to the trial NCT03569007 (larazotide acetate for celiac disease) were found in the provided PubMed, PMC, or other literature sources. The cited articles discuss general topics related to celiac disease, zonulin, intestinal barrier function, and therapeutic approaches, but none directly reference the outcomes of this trial.  \nOutcome Signals: No direct evidence of trial success or failure was found in the published literature. No mention of primary endpoints, adverse events, or reasons for discontinuation were identified.  \nIs This A Failure: Unclear\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Terminated, Pass 2 returned empty, inferred 'Business Reason'] The trial status is \"COMPLETED,\" but there is no published evidence of negative outcomes, adverse events, or failure to meet primary endpoints. The absence of specific findings related to the trial in the literature means that there is no basis to classify it as a failure. Per the rules, completed trials must have explicit published evidence of failure to be classified as such. Since no such evidence exists, the default is \"EMPTY.\"",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Detailed Description",
+          "snippet": "This is a phase 3, randomized, double-blind, placebo-controlled, multicenter, outpatient study to evaluate the efficacy and safety of larazotide acetate for the relief of persistent symptoms in adult patients with celiac disease on a gluten free diet.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610312"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4366550648",
+          "identifier": "PMID:37108711",
+          "title": "Zonulin as a Potential Therapeutic Target in Microbiota-Gut-Brain Axis Disorders: Encouraging Results and Emerging Questions",
+          "snippet": "Title: Zonulin as a Potential Therapeutic Target in Microbiota-Gut-Brain Axis Disorders: Encouraging Results and Emerging Questions\nYear: 2023\nCitations: 81\nAbstract: The relationship between dysbiosis and central nervous diseases has been proved in the last 10 years. Microbial alterations cause increased intestinal permeability, and the penetration of bacterial fragment and toxins induces local and systemic infla",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.567421"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3084421790",
+          "identifier": "PMID:33015123",
+          "title": "Celiac Disease and Non-celiac Wheat Sensitivity: State of Art of Non-dietary Therapies",
+          "snippet": "Title: Celiac Disease and Non-celiac Wheat Sensitivity: State of Art of Non-dietary Therapies\nYear: 2020\nCitations: 37\nAbstract: Gluten related disorders (GRD), which include celiac disease, non-celiac wheat sensitivity and wheat allergy are heterogeneous conditions triggered by ingestion of gluten-containing grains. Together, their prevalence is estimated to be ~5% in the gen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.567692"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3104030362",
+          "identifier": "PMID:33198309",
+          "title": "Molecular Biomarkers for Celiac Disease: Past, Present and Future",
+          "snippet": "Title: Molecular Biomarkers for Celiac Disease: Past, Present and Future\nYear: 2020\nCitations: 76\nAbstract: Celiac disease (CeD) is a complex immune-mediated disorder that is triggered by dietary gluten in genetically predisposed individuals. CeD is characterized by inflammation and villous atrophy of the small intestine, which can lead to gastrointestinal",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.567501"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3209158219",
+          "identifier": "PMID:34778332",
+          "title": "Present and Future Therapeutic Approaches to Barrier Dysfunction",
+          "snippet": "Title: Present and Future Therapeutic Approaches to Barrier Dysfunction\nYear: 2021\nCitations: 45\nAbstract: There is converging and increasing evidence, but also uncertainty, for the role of abnormal intestinal epithelial barrier function in the origin and development of a growing number of human gastrointestinal and extraintestinal inflammatory disorders,",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.567606"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2978737916",
+          "identifier": "PMID:31581491",
+          "title": "Intestinal Barrier Function in Gluten-Related Disorders",
+          "snippet": "Title: Intestinal Barrier Function in Gluten-Related Disorders\nYear: 2019\nCitations: 118\nAbstract: Gluten-related disorders include distinct disease entities, namely celiac disease, wheat-associated allergy and non-celiac gluten/wheat sensitivity. Despite having in common the contact of the gastrointestinal mucosa with components of wheat and othe",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.567305"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12947713/",
+          "identifier": "PMC:12947713",
+          "title": "Integrated Role of Microbial, Fungal, and Plant-Derived Interventions in the Management of Celiac Disease: A Narrative Review.",
+          "snippet": "Title: Integrated Role of Microbial, Fungal, and Plant-Derived Interventions in the Management of Celiac Disease: A Narrative Review.\nAuthors: Kubala K, Pietrucha T, Goldyn M et al.\nJournal: Cureus",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408089"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843458/",
+          "identifier": "PMC:7843458",
+          "title": "In silico Analysis Revealed Potential Anti-SARS-CoV-2 Main Protease Activity by the Zonulin Inhibitor Larazotide Acetate.",
+          "snippet": "Title: In silico Analysis Revealed Potential Anti-SARS-CoV-2 Main Protease Activity by the Zonulin Inhibitor Larazotide Acetate.\nAuthors: Di Micco S, Musella S, Scala MC et al.\nJournal: Front Chem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408249"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2103815/",
+          "identifier": "CHEMBL2103815",
+          "title": "LARAZOTIDE ACETATE - ChEMBL",
+          "snippet": "Molecule: LARAZOTIDE ACETATE\nType: Protein\nMax clinical phase: 3.0\nHELM: PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$\nMolecular weight: 785.90\nMechanism: Neuronal acetylcholine receptor; alpha3/beta4 partial agonist",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:24.787928"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2105646/",
+          "identifier": "CHEMBL2105646",
+          "title": "LARAZOTIDE - ChEMBL",
+          "snippet": "Molecule: LARAZOTIDE\nType: Protein\nMax clinical phase: 3.0\nHELM: PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$\nMolecular weight: 725.85",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:24.285670"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "Business Reason",
+      "confidence": 0.7,
+      "reasoning": "[ATOMIC-FR R6] Business Reason (conf=0.70)\n  rule: atomic Q5 (business decision) YES\n  whyStopped: Trial terminated by Sponsor\n  tier0_match: none\n  atomic: q1_safety=UNCLEAR q2_eff=UNCLEAR q3_covid=UNCLEAR q4_recruit=UNCLEAR q5_business=YES\n  R6 fired: business/sponsor/funding decision\n  quote: \"Trial terminated by Sponsor\"",
+      "evidence": [],
+      "model_name": "atomic-fr-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT03569007",
+    "fields": [
+      {
+        "field_name": "classification_atomic",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Terminated",
+        "final_value": "Terminated",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Terminated",
+        "final_value": "Terminated",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "sequence",
+        "original_value": "GGVLVQPG",
+        "final_value": "GGVLVQPG",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "Business Reason",
+        "final_value": "Business Reason",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial description explicitly states that Larazotide is a synthetic 8-amino acid peptide. Chemical databases confirm this classification.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The intervention \"Larazotide\" is explicitly described as a synthetic 8-amino acid peptide, which meets the definition of a peptide molecule.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The molecular weight of 725.85 also suggests that the molecule is a protein or peptide, rather than a small molecule. Additionally, the IUPHAR database entry for Larazotide (GtoPdb:13724) lists its type as \"Peptide\".",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.82,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Larazotide is a peptide, but the provided information indicates it targets zonulin, a protein involved in intestinal permeability. This mechanism does not align with any of the AMP modes (A, B, or C) as it does not directly kill, inhibit, or disrupt pathogens, recruit immune cells, or disrupt biofilms. It is a therapeutic agent for celiac disease, not an antimicrobial.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The classification is \"Other\" because the evidence does not support that larazotide acetate is an antimicrobial peptide (AMP) contributing to pathogen defense through any of the specified modes. The drug is a peptide, but its mechanism of action is not described as antimicrobial.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "Based on the provided information, larazotide acetate does not appear to be an antimicrobial peptide. The trial's focus on treating celiac disease symptoms through a synthetic peptide suggests that it is more likely a therapeutic agent targeting the immune system or gut function rather than having direct antimicrobial action.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.8550000000000001,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Oral",
+        "final_value": "Oral",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Oral",
+            "reasoning": "The trial description explicitly states that larazotide and the placebo are formulated as enteric-coated beads in gelatin capsules, indicating oral administration.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Oral",
+            "reasoning": "The drug is described as being formulated in gelatin capsules, which is an oral delivery method.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Oral",
+            "reasoning": "While the drug is described as an 8-amino acid peptide, this does not necessarily imply that it must be administered via injection. Many peptides are taken orally in capsule or tablet form, and enteric-coating is often used to protect these compounds from degradation in the stomach. The fact that the placebo is also formulated as enteric-coated beads in gelatin capsules further supports the conclusion that larazotide acetate is intended to be taken orally.",
+            "confidence": 0.7,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.3,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "Business Reason",
+        "final_value": "Business Reason",
+        "consensus_reached": false,
+        "agreement_ratio": 0.667,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Business Reason",
+            "reasoning": "The clinical trial metadata explicitly states the trial was terminated by the sponsor. This indicates a business reason for termination, overriding any potential assumptions about efficacy or safety based on the lack of published negative results.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "",
+            "reasoning": "The absence of published evidence showing the trial failed to meet its endpoints or had safety concerns means we cannot assign a failure reason. The termination was attributed to the sponsor, but without published evidence of negative outcomes, the reason for failure remains unknown.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Business Reason",
+            "reasoning": "There is no published evidence of negative outcomes or failure to meet endpoints. The trial was simply terminated by the Sponsor, which suggests a business decision rather than a failure due to efficacy or safety concerns.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.86,
+        "reconciler_used": true,
+        "reconciler_reasoning": "**Correct Answer: Business/Strategic Reasons (e.g., resource allocation, trial design, or commercial considerations)**\n\n---\n\n### **Explanation:**\n\nThe trial **NCT03569007** is listed on **ClinicalTrials.gov** as a **Phase 3 trial** for **larazotide acetate** in **celiac disease patients undergoing a gluten challenge**. However, the **status of the trial is \"Completed\"**, and **no results have been published** as of the latest available information.\n\n#### **Key Evidence Supporting the Answer:**\n\n",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "Unresolved disagreements: reason_for_failure"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "A Phase 3, Randomized, Double-Blind, Placebo Controlled Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief of Persistent Symptoms in Patients With Celiac Disease on a GFD",
+          "snippet": "Title: A Phase 3, Randomized, Double-Blind, Placebo Controlled Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief of Persistent Symptoms in Patients With Celiac Disease on a GFD",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610251"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Brief Summary",
+          "snippet": "To assess the efficacy and safety of larazotide acetate versus placebo for the relief of persistent symptoms in adult celiac disease patients.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610302"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Detailed Description",
+          "snippet": "This is a phase 3, randomized, double-blind, placebo-controlled, multicenter, outpatient study to evaluate the efficacy and safety of larazotide acetate for the relief of persistent symptoms in adult patients with celiac disease on a gluten free diet.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610312"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Study Status",
+          "snippet": "Status: TERMINATED | Why stopped: Trial terminated by Sponsor",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610323"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Celiac Disease",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610335"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Intervention: Larazotide",
+          "snippet": "DRUG: Larazotide - Synthetic 8-amino acid peptide formulated as enteric-coated beads in gelatin capsules",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610347"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Intervention: Matching Placebo",
+          "snippet": "DRUG: Matching Placebo - enteric-coated beads in gelatin capsules",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610358"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Arm Group: Larazotide 0.25 mg",
+          "snippet": "Arm: Larazotide 0.25 mg - Larazotide 0.25 mg capsules TID",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610369"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Arm Group: Larazotide 0.50 mg",
+          "snippet": "Arm: Larazotide 0.50 mg - Larazotide 0.50 mg capsules TID",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610379"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Arm Group: Placebo",
+          "snippet": "Arm: Placebo - Matching placebo capsules TID",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610389"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Phase",
+          "snippet": "Phase: PHASE3",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.610405"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT03569007",
+            "orgStudyIdInfo": {
+              "id": "CeD-LA-3001"
+            },
+            "organization": {
+              "fullName": "9 Meters Biopharma, Inc.",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief of CeD Symptoms",
+            "officialTitle": "A Phase 3, Randomized, Double-Blind, Placebo Controlled Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief of Persistent Symptoms in Patients With Celiac Disease on a GFD"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2021-08",
+            "overallStatus": "TERMINATED",
+            "whyStopped": "Trial terminated by Sponsor",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2019-05-29",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2022-07-21",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2022-07-21",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2018-06-14",
+            "studyFirstSubmitQcDate": "2018-06-14",
+            "studyFirstPostDateStruct": {
+              "date": "2018-06-26",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2022-07-22",
+            "lastUpdatePostDateStruct": {
+              "date": "2022-07-26",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "9 Meters Biopharma, Inc.",
+              "class": "INDUSTRY"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "To assess the efficacy and safety of larazotide acetate versus placebo for the relief of persistent symptoms in adult celiac disease patients.",
+            "detailedDescription": "This is a phase 3, randomized, double-blind, placebo-controlled, multicenter, outpatient study to evaluate the efficacy and safety of larazotide acetate for the relief of persistent symptoms in adult patients with celiac disease on a gluten free diet."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Celiac Disease"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE3"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "TRIPLE",
+                "maskingDescription": "Double-blind",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "INVESTIGATOR",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 307,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Larazotide 0.25 mg",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "Larazotide 0.25 mg capsules TID",
+                "interventionNames": [
+                  "Drug: Larazotide"
+                ]
+              },
+              {
+                "label": "Larazotide 0.50 mg",
+                "type": "ACTIVE_COMPARATOR",
+                "description": "Larazotide 0.50 mg capsules TID",
+                "interventionNames": [
+                  "Drug: Larazotide"
+                ]
+              },
+              {
+                "label": "Placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "Matching placebo capsules TID",
+                "interventionNames": [
+                  "Drug: Matching Placebo"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Larazotide",
+                "description": "Synthetic 8-amino acid peptide formulated as enteric-coated beads in gelatin capsules",
+                "armGroupLabels": [
+                  "Larazotide 0.25 mg",
+                  "Larazotide 0.50 mg"
+                ],
+                "otherNames": [
+                  "INN-202"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "Matching Placebo",
+                "description": "enteric-coated beads in gelatin capsules",
+                "armGroupLabels": [
+                  "Placebo"
+                ],
+                "otherNames": [
+                  "placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Proportion of subjects who are binary responders",
+                "description": "Reduction in CeD PRO Abdominal Domain scores",
+                "timeFrame": "12 weeks"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Male and female adults diagnosed with celiac disease (positive celiac serology plus confirmed biopsy) for at least 6 months\n* On a gluten-free diet for at least 6 months\n* Experiencing symptoms (ie, abdominal pain, abdominal cramping, bloating, gas, diarrhea, loose stool, or nausea)\n* Willing to maintain current gluten-free diet throughout participation in the study\n\nExclusion Criteria:\n\n* Refractory celiac disease or severe complications of celiac disease\n* Chronic active GI disease other than celiac disease",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "Research Site",
+                "city": "Saraland",
+                "state": "Alabama",
+                "zip": "36571",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.82074,
+                  "lon": -88.07056
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Scottsdale",
+                "state": "Arizona",
+                "zip": "85251",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.50921,
+                  "lon": -111.89903
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Tucson",
+                "state": "Arizona",
+                "zip": "85712",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.22174,
+                  "lon": -110.92648
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Tucson",
+                "state": "Arizona",
+                "zip": "85745",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.22174,
+                  "lon": -110.92648
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "North Little Rock",
+                "state": "Arkansas",
+                "zip": "72117",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.76954,
+                  "lon": -92.26709
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Bellflower",
+                "state": "California",
+                "zip": "90706",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.88168,
+                  "lon": -118.11701
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Beverly Hills",
+                "state": "California",
+                "zip": "90211",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.07362,
+                  "lon": -118.40036
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Canoga Park",
+                "state": "California",
+                "zip": "91303",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.20112,
+                  "lon": -118.59814
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Corona",
+                "state": "California",
+                "zip": "92879",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.87529,
+                  "lon": -117.56644
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Garden Grove",
+                "state": "California",
+                "zip": "92845",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.77391,
+                  "lon": -117.94145
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Lancaster",
+                "state": "California",
+                "zip": "93534",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.69804,
+                  "lon": -118.13674
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Los Gatos",
+                "state": "California",
+                "zip": "95032",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.22661,
+                  "lon": -121.97468
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Northridge",
+                "state": "California",
+                "zip": "91324",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.22834,
+                  "lon": -118.53675
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Poway",
+                "state": "California",
+                "zip": "92064",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.96282,
+                  "lon": -117.03586
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Rialto",
+                "state": "California",
+                "zip": "92377",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.1064,
+                  "lon": -117.37032
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "San Diego",
+                "state": "California",
+                "zip": "92013",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.71571,
+                  "lon": -117.16472
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "San Diego",
+                "state": "California",
+                "zip": "92103",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.71571,
+                  "lon": -117.16472
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "San Francisco",
+                "state": "California",
+                "zip": "94102",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.77493,
+                  "lon": -122.41942
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Walnut Creek",
+                "state": "California",
+                "zip": "94598",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.90631,
+                  "lon": -122.06496
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Bridgeport",
+                "state": "Connecticut",
+                "zip": "06606",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.17923,
+                  "lon": -73.18945
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Bristol",
+                "state": "Connecticut",
+                "zip": "06010",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.67176,
+                  "lon": -72.94927
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Hamden",
+                "state": "Connecticut",
+                "zip": "06518",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.39593,
+                  "lon": -72.89677
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Stamford",
+                "state": "Connecticut",
+                "zip": "06905",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.05343,
+                  "lon": -73.53873
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Boynton Beach",
+                "state": "Florida",
+                "zip": "33472",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 26.52535,
+                  "lon": -80.06643
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Clearwater",
+                "state": "Florida",
+                "zip": "33756",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 27.96585,
+                  "lon": -82.8001
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Inverness",
+                "state": "Florida",
+                "zip": "34452",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 28.83582,
+                  "lon": -82.33037
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Lakewood Rch",
+                "state": "Florida",
+                "zip": "34211",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 27.3863,
+                  "lon": -82.4332
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Miami",
+                "state": "Florida",
+                "zip": "33133",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 25.77427,
+                  "lon": -80.19366
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Orange Park",
+                "state": "Florida",
+                "zip": "32073",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.16607,
+                  "lon": -81.70648
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Orlando",
+                "state": "Florida",
+                "zip": "32803",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 28.53834,
+                  "lon": -81.37924
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Orlando",
+                "state": "Florida",
+                "zip": "32825",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 28.53834,
+                  "lon": -81.37924
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Port Orange",
+                "state": "Florida",
+                "zip": "32127",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.13832,
+                  "lon": -80.99561
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Atlanta",
+                "state": "Georgia",
+                "zip": "30328",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.749,
+                  "lon": -84.38798
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Columbus",
+                "state": "Georgia",
+                "zip": "31904",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.46098,
+                  "lon": -84.98771
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Macon",
+                "state": "Georgia",
+                "zip": "31201",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.84069,
+                  "lon": -83.6324
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Stockbridge",
+                "state": "Georgia",
+                "zip": "30281",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.54428,
+                  "lon": -84.23381
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Stone Mountain",
+                "state": "Georgia",
+                "zip": "30083",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.80816,
+                  "lon": -84.1702
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Sugar Hill",
+                "state": "Georgia",
+                "zip": "30518",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.10649,
+                  "lon": -84.03352
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Boise",
+                "state": "Idaho",
+                "zip": "83706",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.6135,
+                  "lon": -116.20345
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Idaho Falls",
+                "state": "Idaho",
+                "zip": "83404",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.46658,
+                  "lon": -112.03414
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Arlington Heights",
+                "state": "Illinois",
+                "zip": "60005",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.08836,
+                  "lon": -87.98063
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Fairview Heights",
+                "state": "Illinois",
+                "zip": "62208",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.58894,
+                  "lon": -89.99038
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Melrose Park",
+                "state": "Illinois",
+                "zip": "60160",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.90059,
+                  "lon": -87.85673
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Morton",
+                "state": "Illinois",
+                "zip": "61550",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.61282,
+                  "lon": -89.45926
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Clive",
+                "state": "Iowa",
+                "zip": "50325",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.60304,
+                  "lon": -93.72411
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Iowa City",
+                "state": "Iowa",
+                "zip": "52242",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.66113,
+                  "lon": -91.53017
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "West Des Moines",
+                "state": "Iowa",
+                "zip": "50266",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.57721,
+                  "lon": -93.71133
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Topeka",
+                "state": "Kansas",
+                "zip": "66606",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.04833,
+                  "lon": -95.67804
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Lexington",
+                "state": "Kentucky",
+                "zip": "40509",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.98869,
+                  "lon": -84.47772
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Lexington",
+                "state": "Kentucky",
+                "zip": "40536",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.98869,
+                  "lon": -84.47772
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Louisville",
+                "state": "Kentucky",
+                "zip": "40202",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.25424,
+                  "lon": -85.75941
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Crowley",
+                "state": "Louisiana",
+                "zip": "70526",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.21409,
+                  "lon": -92.37458
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Lafayette",
+                "state": "Louisiana",
+                "zip": "70503",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.22409,
+                  "lon": -92.01984
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Marrero",
+                "state": "Louisiana",
+                "zip": "70072",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.89937,
+                  "lon": -90.10035
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Metairie",
+                "state": "Louisiana",
+                "zip": "70006",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.98409,
+                  "lon": -90.15285
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "New Orleans",
+                "state": "Louisiana",
+                "zip": "70115",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.95465,
+                  "lon": -90.07507
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "New Orleans",
+                "state": "Louisiana",
+                "zip": "70125",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.95465,
+                  "lon": -90.07507
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Annapolis",
+                "state": "Maryland",
+                "zip": "21401",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.97859,
+                  "lon": -76.49184
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Baltimore",
+                "state": "Maryland",
+                "zip": "21208",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.29038,
+                  "lon": -76.61219
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Catonsville",
+                "state": "Maryland",
+                "zip": "21228",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.27205,
+                  "lon": -76.73192
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Columbia",
+                "state": "Maryland",
+                "zip": "21045",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.24038,
+                  "lon": -76.83942
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Hagerstown",
+                "state": "Maryland",
+                "zip": "21742",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.64176,
+                  "lon": -77.71999
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Boston",
+                "state": "Massachusetts",
+                "zip": "02114",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.35843,
+                  "lon": -71.05977
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Fall River",
+                "state": "Massachusetts",
+                "zip": "02723",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.70149,
+                  "lon": -71.15505
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Chesterfield",
+                "state": "Michigan",
+                "zip": "48047",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.66281,
+                  "lon": -82.84242
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Rochester",
+                "state": "Michigan",
+                "zip": "48307",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.68059,
+                  "lon": -83.13382
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Wyoming",
+                "state": "Michigan",
+                "zip": "49519",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.91336,
+                  "lon": -85.70531
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Jackson",
+                "state": "Minnesota",
+                "zip": "39216",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.62079,
+                  "lon": -94.9886
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Maplewood",
+                "state": "Minnesota",
+                "zip": "55117",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 44.95302,
+                  "lon": -92.99522
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Rochester",
+                "state": "Minnesota",
+                "zip": "55905",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 44.02163,
+                  "lon": -92.4699
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Petal",
+                "state": "Mississippi",
+                "zip": "39465",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 31.34656,
+                  "lon": -89.26006
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Jefferson City",
+                "state": "Missouri",
+                "zip": "65109",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.5767,
+                  "lon": -92.17352
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "St Louis",
+                "state": "Missouri",
+                "zip": "63141",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.62727,
+                  "lon": -90.19789
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Omaha",
+                "state": "Nebraska",
+                "zip": "68114",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.25626,
+                  "lon": -95.94043
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Omaha",
+                "state": "Nebraska",
+                "zip": "68134",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.25626,
+                  "lon": -95.94043
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Las Vegas",
+                "state": "Nevada",
+                "zip": "89106",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.17497,
+                  "lon": -115.13722
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Las Vegas",
+                "state": "Nevada",
+                "zip": "89109",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.17497,
+                  "lon": -115.13722
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Las Vegas",
+                "state": "Nevada",
+                "zip": "89119",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.17497,
+                  "lon": -115.13722
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Las Vegas",
+                "state": "Nevada",
+                "zip": "89128",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.17497,
+                  "lon": -115.13722
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Reno",
+                "state": "Nevada",
+                "zip": "89511",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.52963,
+                  "lon": -119.8138
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Portsmouth",
+                "state": "New Hampshire",
+                "zip": "03801",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.07704,
+                  "lon": -70.75766
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Freehold",
+                "state": "New Jersey",
+                "zip": "07728",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.26011,
+                  "lon": -74.27376
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Ocean Township",
+                "state": "New Jersey",
+                "zip": "07712",
+                "country": "United States"
+              },
+              {
+                "facility": "Research Site",
+                "city": "Albuquerque",
+                "state": "New Mexico",
+                "zip": "87102",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.08449,
+                  "lon": -106.65114
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Great Neck",
+                "state": "New York",
+                "zip": "11023",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.80066,
+                  "lon": -73.72846
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Mineola",
+                "state": "New York",
+                "zip": "11501",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.74927,
+                  "lon": -73.64068
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "New Windsor",
+                "state": "New York",
+                "zip": "12553",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.47676,
+                  "lon": -74.02375
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "New York",
+                "state": "New York",
+                "zip": "10016",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.71427,
+                  "lon": -74.00597
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "New York",
+                "state": "New York",
+                "zip": "10032",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.71427,
+                  "lon": -74.00597
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "New York",
+                "state": "New York",
+                "zip": "11419",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.71427,
+                  "lon": -74.00597
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Poughkeepsie",
+                "state": "New York",
+                "zip": "12601",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.70037,
+                  "lon": -73.92097
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Williamsville",
+                "state": "New York",
+                "zip": "14221",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.96395,
+                  "lon": -78.73781
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Asheville",
+                "state": "North Carolina",
+                "zip": "28801",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.60095,
+                  "lon": -82.55402
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Charlotte",
+                "state": "North Carolina",
+                "zip": "28207",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.22709,
+                  "lon": -80.84313
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Concord",
+                "state": "North Carolina",
+                "zip": "28025",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.40888,
+                  "lon": -80.58158
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Greenville",
+                "state": "North Carolina",
+                "zip": "27834",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.61266,
+                  "lon": -77.36635
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Salisbury",
+                "state": "North Carolina",
+                "zip": "28144",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.67097,
+                  "lon": -80.47423
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Winston-Salem",
+                "state": "North Carolina",
+                "zip": "27103",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.09986,
+                  "lon": -80.24422
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Cincinnati",
+                "state": "Ohio",
+                "zip": "45215",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.12711,
+                  "lon": -84.51439
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Cincinnati",
+                "state": "Ohio",
+                "zip": "45219",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.12711,
+                  "lon": -84.51439
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Cleveland",
+                "state": "Ohio",
+                "zip": "44122",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.4995,
+                  "lon": -81.69541
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Columbus",
+                "state": "Ohio",
+                "zip": "04323",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.96118,
+                  "lon": -82.99879
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Columbus",
+                "state": "Ohio",
+                "zip": "43214",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.96118,
+                  "lon": -82.99879
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Dayton",
+                "state": "Ohio",
+                "zip": "45415",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.75895,
+                  "lon": -84.19161
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Dayton",
+                "state": "Ohio",
+                "zip": "45419",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.75895,
+                  "lon": -84.19161
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Mentor",
+                "state": "Ohio",
+                "zip": "44060",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.66616,
+                  "lon": -81.33955
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Poland",
+                "state": "Ohio",
+                "zip": "44514",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.02423,
+                  "lon": -80.6148
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Norman",
+                "state": "Oklahoma",
+                "zip": "73071",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.22257,
+                  "lon": -97.43948
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Oklahoma City",
+                "state": "Oklahoma",
+                "zip": "73112",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.46756,
+                  "lon": -97.51643
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Tulsa",
+                "state": "Oklahoma",
+                "zip": "74104",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.15398,
+                  "lon": -95.99277
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Happy Valley",
+                "state": "Oregon",
+                "zip": "97086",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 45.44679,
+                  "lon": -122.53037
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Medford",
+                "state": "Oregon",
+                "zip": "97504",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.32652,
+                  "lon": -122.87559
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Hershey",
+                "state": "Pennsylvania",
+                "zip": "17033",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.28592,
+                  "lon": -76.65025
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Philadelphia",
+                "state": "Pennsylvania",
+                "zip": "19107",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.95238,
+                  "lon": -75.16362
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Sayre",
+                "state": "Pennsylvania",
+                "zip": "18840",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.97896,
+                  "lon": -76.5155
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Scranton",
+                "state": "Pennsylvania",
+                "zip": "18508",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.40916,
+                  "lon": -75.6649
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Lincoln",
+                "state": "Rhode Island",
+                "zip": "02865",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.92111,
+                  "lon": -71.435
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Warwick",
+                "state": "Rhode Island",
+                "zip": "02886",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.7001,
+                  "lon": -71.41617
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Mt. Pleasant",
+                "state": "South Carolina",
+                "zip": "29464",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.79407,
+                  "lon": -79.86259
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "West Columbia",
+                "state": "South Carolina",
+                "zip": "29169",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.99349,
+                  "lon": -81.07398
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Sioux Falls",
+                "state": "South Dakota",
+                "zip": "57108",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.54369,
+                  "lon": -96.72796
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Chattanooga",
+                "state": "Tennessee",
+                "zip": "37421",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.04563,
+                  "lon": -85.30968
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Nashville",
+                "state": "Tennessee",
+                "zip": "37212",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.16589,
+                  "lon": -86.78444
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Austin",
+                "state": "Texas",
+                "zip": "77024",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.26715,
+                  "lon": -97.74306
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Austin",
+                "state": "Texas",
+                "zip": "78704",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.26715,
+                  "lon": -97.74306
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Austin",
+                "state": "Texas",
+                "zip": "78726",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.26715,
+                  "lon": -97.74306
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Austin",
+                "state": "Texas",
+                "zip": "78745",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.26715,
+                  "lon": -97.74306
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Austin",
+                "state": "Texas",
+                "zip": "78757",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 30.26715,
+                  "lon": -97.74306
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Cypress",
+                "state": "Texas",
+                "zip": "77429",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.96911,
+                  "lon": -95.69717
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Dallas",
+                "state": "Texas",
+                "zip": "75224",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.78306,
+                  "lon": -96.80667
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "DeSoto",
+                "state": "Texas",
+                "zip": "75115",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.58986,
+                  "lon": -96.85695
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Garland",
+                "state": "Texas",
+                "zip": "75044",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 32.91262,
+                  "lon": -96.63888
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Harlingen",
+                "state": "Texas",
+                "zip": "78550",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 26.19063,
+                  "lon": -97.6961
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Houston",
+                "state": "Texas",
+                "zip": "77025",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.76328,
+                  "lon": -95.36327
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Houston",
+                "state": "Texas",
+                "zip": "77058",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.76328,
+                  "lon": -95.36327
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Houston",
+                "state": "Texas",
+                "zip": "77084",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.76328,
+                  "lon": -95.36327
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "McAllen",
+                "state": "Texas",
+                "zip": "78503",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 26.20341,
+                  "lon": -98.23001
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "San Antonio",
+                "state": "Texas",
+                "zip": "78215",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.42412,
+                  "lon": -98.49363
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "San Antonio",
+                "state": "Texas",
+                "zip": "78229",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.42412,
+                  "lon": -98.49363
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Sugar Land",
+                "state": "Texas",
+                "zip": "77476",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.61968,
+                  "lon": -95.63495
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Sugar Land",
+                "state": "Texas",
+                "zip": "77479",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.61968,
+                  "lon": -95.63495
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Victoria",
+                "state": "Texas",
+                "zip": "77904",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 28.80527,
+                  "lon": -97.0036
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Ogden",
+                "state": "Utah",
+                "zip": "84403",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.223,
+                  "lon": -111.97383
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Ogden",
+                "state": "Utah",
+                "zip": "84405",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.223,
+                  "lon": -111.97383
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Salt Lake City",
+                "state": "Utah",
+                "zip": "84124",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.76078,
+                  "lon": -111.89105
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Sandy City",
+                "state": "Utah",
+                "zip": "84092",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.59161,
+                  "lon": -111.8841
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "St. George",
+                "state": "Utah",
+                "zip": "84790",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.10415,
+                  "lon": -113.58412
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Chesapeake",
+                "state": "Virginia",
+                "zip": "23320",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.81904,
+                  "lon": -76.27494
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Fairfax",
+                "state": "Virginia",
+                "zip": "22031",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.84622,
+                  "lon": -77.30637
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Gainesville",
+                "state": "Virginia",
+                "zip": "20155",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.79567,
+                  "lon": -77.61388
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Lansdowne Town Center",
+                "state": "Virginia",
+                "zip": "20176",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.08151,
+                  "lon": -77.49569
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Lynchburg",
+                "state": "Virginia",
+                "zip": "24502",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.41375,
+                  "lon": -79.14225
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Norfolk",
+                "state": "Virginia",
+                "zip": "23507",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 36.84681,
+                  "lon": -76.28522
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Bellevue",
+                "state": "Washington",
+                "zip": "98004",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.61038,
+                  "lon": -122.20068
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Bellevue",
+                "state": "Washington",
+                "zip": "98007",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.61038,
+                  "lon": -122.20068
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Spokane",
+                "state": "Washington",
+                "zip": "99202",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.65966,
+                  "lon": -117.42908
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Spokane",
+                "state": "Washington",
+                "zip": "99204",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.65966,
+                  "lon": -117.42908
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Tacoma",
+                "state": "Washington",
+                "zip": "98405",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 47.25288,
+                  "lon": -122.44429
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Vancouver",
+                "state": "Washington",
+                "zip": "98664",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 45.63873,
+                  "lon": -122.66149
+                }
+              },
+              {
+                "facility": "Research Site",
+                "city": "Wauwatosa",
+                "state": "Wisconsin",
+                "zip": "53226",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 43.04946,
+                  "lon": -88.00759
+                }
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12947713/",
+          "identifier": "PMC:12947713",
+          "title": "Integrated Role of Microbial, Fungal, and Plant-Derived Interventions in the Management of Celiac Disease: A Narrative Review.",
+          "snippet": "Title: Integrated Role of Microbial, Fungal, and Plant-Derived Interventions in the Management of Celiac Disease: A Narrative Review.\nAuthors: Kubala K, Pietrucha T, Goldyn M et al.\nJournal: Cureus",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408089"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12837603/",
+          "identifier": "PMC:12837603",
+          "title": "Rethinking Celiac Disease Management: Treatment Approaches Beyond the Gluten-Free Diet.",
+          "snippet": "Title: Rethinking Celiac Disease Management: Treatment Approaches Beyond the Gluten-Free Diet.\nAuthors: Kounatidis D, Pavlou A, Evangelopoulos A et al.\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408131"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12472395/",
+          "identifier": "PMC:12472395",
+          "title": "Is There a Future Without Gluten Restrictions for Celiac Patients? Update on Current Treatments.",
+          "snippet": "Title: Is There a Future Without Gluten Restrictions for Celiac Patients? Update on Current Treatments.\nAuthors: Girbal-Gonz\u00e1lez M, P\u00e9rez-Cano FJ\nJournal: Nutrients",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408146"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11970589/",
+          "identifier": "PMC:11970589",
+          "title": "New therapies in celiac disease.",
+          "snippet": "Title: New therapies in celiac disease.\nAuthors: Santonicola A, Soldaini C, Ciacci C\nJournal: Curr Opin Gastroenterol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408159"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11817883/",
+          "identifier": "PMC:11817883",
+          "title": "Celiac Disease: Beyond Diet and Food Awareness.",
+          "snippet": "Title: Celiac Disease: Beyond Diet and Food Awareness.\nAuthors: Herrera-Quintana L, Navajas-Porras B, V\u00e1zquez-Lorente H et al.\nJournal: Foods",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408172"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11525874/",
+          "identifier": "PMC:11525874",
+          "title": "Beyond the gluten-free diet: Innovations in celiac disease therapeutics.",
+          "snippet": "Title: Beyond the gluten-free diet: Innovations in celiac disease therapeutics.\nAuthors: Massironi S, Franchina M, Elvevi A et al.\nJournal: World J Gastroenterol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408185"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10139156/",
+          "identifier": "PMC:10139156",
+          "title": "Zonulin as a Potential Therapeutic Target in Microbiota-Gut-Brain Axis Disorders: Encouraging Results and Emerging Questions.",
+          "snippet": "Title: Zonulin as a Potential Therapeutic Target in Microbiota-Gut-Brain Axis Disorders: Encouraging Results and Emerging Questions.\nAuthors: Veres-Sz\u00e9kely A, Sz\u00e1sz C, Pap D et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408197"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8462980/",
+          "identifier": "PMC:8462980",
+          "title": "Celiac Disease: Fallacies and Facts.",
+          "snippet": "Title: Celiac Disease: Fallacies and Facts.\nAuthors: Silvester JA, Therrien A, Kelly CP\nJournal: Am J Gastroenterol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408209"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8582318/",
+          "identifier": "PMC:8582318",
+          "title": "Present and Future Therapeutic Approaches to Barrier Dysfunction.",
+          "snippet": "Title: Present and Future Therapeutic Approaches to Barrier Dysfunction.\nAuthors: Fortea M, Albert-Bayo M, Abril-Gil M et al.\nJournal: Front Nutr",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408225"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8060282/",
+          "identifier": "PMC:8060282",
+          "title": "The Evolving Landscape of Biomarkers in Celiac Disease: Leading the Way to Clinical Development.",
+          "snippet": "Title: The Evolving Landscape of Biomarkers in Celiac Disease: Leading the Way to Clinical Development.\nAuthors: Smithson G, Siegelman J, Oki T et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408237"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7843458/",
+          "identifier": "PMC:7843458",
+          "title": "In silico Analysis Revealed Potential Anti-SARS-CoV-2 Main Protease Activity by the Zonulin Inhibitor Larazotide Acetate.",
+          "snippet": "Title: In silico Analysis Revealed Potential Anti-SARS-CoV-2 Main Protease Activity by the Zonulin Inhibitor Larazotide Acetate.\nAuthors: Di Micco S, Musella S, Scala MC et al.\nJournal: Front Chem",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408249"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7826989/",
+          "identifier": "PMC:7826989",
+          "title": "Gliadin Sequestration as a Novel Therapy for Celiac Disease: A Prospective Application for Polyphenols.",
+          "snippet": "Title: Gliadin Sequestration as a Novel Therapy for Celiac Disease: A Prospective Application for Polyphenols.\nAuthors: Van Buiten CB, Elias RJ\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408261"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7697360/",
+          "identifier": "PMC:7697360",
+          "title": "Molecular Biomarkers for Celiac Disease: Past, Present and Future.",
+          "snippet": "Title: Molecular Biomarkers for Celiac Disease: Past, Present and Future.\nAuthors: Ram\u00edrez-S\u00e1nchez AD, Tan IL, Gonera-de Jong BC et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408275"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7506149/",
+          "identifier": "PMC:7506149",
+          "title": "Celiac Disease and Non-celiac Wheat Sensitivity: State of Art of Non-dietary Therapies.",
+          "snippet": "Title: Celiac Disease and Non-celiac Wheat Sensitivity: State of Art of Non-dietary Therapies.\nAuthors: Serena G, D'Avino P, Fasano A\nJournal: Front Nutr",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408286"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6835310/",
+          "identifier": "PMC:6835310",
+          "title": "Intestinal Barrier Function in Gluten-Related Disorders.",
+          "snippet": "Title: Intestinal Barrier Function in Gluten-Related Disorders.\nAuthors: Cardoso-Silva D, Delbue D, Itzlinger A et al.\nJournal: Nutrients",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408301"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6530343/",
+          "identifier": "PMC:6530343",
+          "title": "Evolving Therapy for Celiac Disease.",
+          "snippet": "Title: Evolving Therapy for Celiac Disease.\nAuthors: Yoosuf S, Makharia GK\nJournal: Front Pediatr",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.408312"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12947713",
+          "12837603",
+          "12472395",
+          "11970589",
+          "11817883",
+          "11525874",
+          "10139156",
+          "8462980",
+          "8582318",
+          "8060282",
+          "7843458",
+          "7826989",
+          "7697360",
+          "7506149",
+          "6835310",
+          "6530343"
+        ],
+        "pmc_count": 16,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT03569007",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Larazotide_no_structured_match": true,
+        "uniprot_Larazotide": [],
+        "uniprot_Matching Placebo_no_structured_match": true,
+        "uniprot_Matching Placebo": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the ...",
+          "snippet": "Web result for: NCT03569007 Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief o",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:20.625964"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://inclinicaltrials.com/celiac-disease/NCT03569007/details/",
+          "identifier": "NCT03569007",
+          "title": "Study to Evaluate the Efficacy & Safety of Larazotide NCT03569007",
+          "snippet": "Web result for: NCT03569007 Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief o",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:20.626012"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT03569007/",
+          "identifier": "NCT03569007",
+          "title": "Trial | NCT03569007",
+          "snippet": "Web result for: NCT03569007 Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief o",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:20.626030"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.mayo.edu/research/clinical-trials/cls-20490434",
+          "identifier": "NCT03569007",
+          "title": "A Study To Evaluate The Effectiveness And Safety Of Larazotide Acetate ...",
+          "snippet": "Web result for: NCT03569007 Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief o",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:20.626045"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Larazotide in Celiac Disease - Clinical Trials Registry - ICH GCP",
+          "snippet": "Web result for: NCT03569007 Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief o",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:20.626060"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 21367
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT03569007",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Larazotide": {
+          "found": false
+        },
+        "dbaasp_Matching Placebo": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2105646/",
+          "identifier": "CHEMBL2105646",
+          "title": "LARAZOTIDE - ChEMBL",
+          "snippet": "Molecule: LARAZOTIDE\nType: Protein\nMax clinical phase: 3.0\nHELM: PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$\nMolecular weight: 725.85",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:24.285670"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2103815/",
+          "identifier": "CHEMBL2103815",
+          "title": "LARAZOTIDE ACETATE - ChEMBL",
+          "snippet": "Molecule: LARAZOTIDE ACETATE\nType: Protein\nMax clinical phase: 3.0\nHELM: PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$\nMolecular weight: 785.90\nMechanism: Neuronal acetylcholine receptor; alpha3/beta4 partial agonist",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:24.787928"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5590462/",
+          "identifier": "CHEMBL5590462",
+          "title": "CHEMBL5590462 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5590462\nMolecular weight: 1608.96\nBioactivity: Kd=4470.0 nM (Inducible T-cell costimulator)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:26.214853"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5591374/",
+          "identifier": "CHEMBL5591374",
+          "title": "CHEMBL5591374 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5591374\nMolecular weight: 1981.38\nBioactivity: IC50=4480.0 nM (ICOS-ICOSL); IC50=1870.0 nM (ICOS-ICOSL); Kd=36700.0 nM (Inducible T-cell costimulator)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:27.610597"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5592269/",
+          "identifier": "CHEMBL5592269",
+          "title": "CHEMBL5592269 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5592269\nMolecular weight: 1946.37\nBioactivity: IC50=3680.0 nM (ICOS-ICOSL)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:28.735066"
+        }
+      ],
+      "raw_data": {
+        "chembl_Larazotide_count": 2,
+        "chembl_Larazotide_helm": "PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$",
+        "chembl_Larazotide_molecules": [
+          {
+            "chembl_id": "CHEMBL2105646",
+            "pref_name": "LARAZOTIDE",
+            "mol_type": "Protein",
+            "helm_notation": "PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$",
+            "max_phase": "3.0"
+          },
+          {
+            "chembl_id": "CHEMBL2103815",
+            "pref_name": "LARAZOTIDE ACETATE",
+            "mol_type": "Protein",
+            "helm_notation": "PEPTIDE1{G.G.V.L.V.Q.P.G}$$$$",
+            "max_phase": "3.0"
+          }
+        ],
+        "chembl_Matching Placebo_count": 3,
+        "chembl_Matching Placebo_molecules": [
+          {
+            "chembl_id": "CHEMBL5590462",
+            "pref_name": null,
+            "mol_type": null,
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL5591374",
+            "pref_name": null,
+            "mol_type": null,
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL5592269",
+            "pref_name": null,
+            "mol_type": null,
+            "helm_notation": null,
+            "max_phase": null
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT03569007",
+      "citations": [],
+      "raw_data": {
+        "rcsb_Larazotide": {
+          "count": 0
+        },
+        "rcsb_Matching Placebo": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT03569007",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Larazotide_count": 0,
+        "ebi_proteins_Matching Placebo_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT03569007",
+      "citations": [],
+      "raw_data": {
+        "apd_Larazotide": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Matching Placebo": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03569007",
+          "identifier": "NCT03569007",
+          "title": "Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief of CeD Symptoms",
+          "snippet": "Title: Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief of CeD Symptoms\nStatus: Terminated\nPhase: Phase 3\nCountries: United States\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:18:25.454642"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT03569007",
+          "public_title": "Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief of CeD Symptoms",
+          "scientific_title": "A Phase 3, Randomized, Double-Blind, Placebo Controlled Study to Evaluate the Efficacy and Safety of Larazotide Acetate for the Relief of Persistent Symptoms in Patients With Celiac Disease on a GFD",
+          "recruitment_status": "Terminated",
+          "phase": "Phase 3",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized. Intervention model: Parallel Assignment. Primary purpose: Treatment. Masking: Triple (Participant, Investigator, Outcomes Assessor).",
+          "countries": [
+            "United States"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "iuphar",
+          "source_url": "https://www.guidetopharmacology.org/GRAC/LigandDisplayForward?ligandId=13724",
+          "identifier": "GtoPdb:13724",
+          "title": "larazotide - Guide to Pharmacology",
+          "snippet": "Ligand: larazotide\nType: Peptide\nINN: larazotide",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:18:19.853731"
+        }
+      ],
+      "raw_data": {
+        "iuphar_Larazotide": [
+          {
+            "ligandId": 13724,
+            "name": "larazotide",
+            "type": "Peptide",
+            "abbreviation": "",
+            "inn": "larazotide",
+            "approvalSource": "",
+            "approved": false,
+            "whoEssential": false,
+            "withdrawn": false,
+            "antibacterial": false,
+            "immuno": false,
+            "malaria": false,
+            "labelled": false,
+            "radioactive": false,
+            "activeDrugIds": [],
+            "prodrugIds": [],
+            "complexIds": [],
+            "subunitIds": [],
+            "species": ""
+          }
+        ],
+        "iuphar_Matching Placebo": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT03569007",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Larazotide_count": 0,
+        "pdbe_Matching Placebo_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2978737916",
+          "identifier": "PMID:31581491",
+          "title": "Intestinal Barrier Function in Gluten-Related Disorders",
+          "snippet": "Title: Intestinal Barrier Function in Gluten-Related Disorders\nYear: 2019\nCitations: 118\nAbstract: Gluten-related disorders include distinct disease entities, namely celiac disease, wheat-associated allergy and non-celiac gluten/wheat sensitivity. Despite having in common the contact of the gastrointestinal mucosa with components of wheat and othe",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.567305"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4366550648",
+          "identifier": "PMID:37108711",
+          "title": "Zonulin as a Potential Therapeutic Target in Microbiota-Gut-Brain Axis Disorders: Encouraging Results and Emerging Questions",
+          "snippet": "Title: Zonulin as a Potential Therapeutic Target in Microbiota-Gut-Brain Axis Disorders: Encouraging Results and Emerging Questions\nYear: 2023\nCitations: 81\nAbstract: The relationship between dysbiosis and central nervous diseases has been proved in the last 10 years. Microbial alterations cause increased intestinal permeability, and the penetration of bacterial fragment and toxins induces local and systemic infla",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.567421"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3104030362",
+          "identifier": "PMID:33198309",
+          "title": "Molecular Biomarkers for Celiac Disease: Past, Present and Future",
+          "snippet": "Title: Molecular Biomarkers for Celiac Disease: Past, Present and Future\nYear: 2020\nCitations: 76\nAbstract: Celiac disease (CeD) is a complex immune-mediated disorder that is triggered by dietary gluten in genetically predisposed individuals. CeD is characterized by inflammation and villous atrophy of the small intestine, which can lead to gastrointestinal",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.567501"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3209158219",
+          "identifier": "PMID:34778332",
+          "title": "Present and Future Therapeutic Approaches to Barrier Dysfunction",
+          "snippet": "Title: Present and Future Therapeutic Approaches to Barrier Dysfunction\nYear: 2021\nCitations: 45\nAbstract: There is converging and increasing evidence, but also uncertainty, for the role of abnormal intestinal epithelial barrier function in the origin and development of a growing number of human gastrointestinal and extraintestinal inflammatory disorders,",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.567606"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3084421790",
+          "identifier": "PMID:33015123",
+          "title": "Celiac Disease and Non-celiac Wheat Sensitivity: State of Art of Non-dietary Therapies",
+          "snippet": "Title: Celiac Disease and Non-celiac Wheat Sensitivity: State of Art of Non-dietary Therapies\nYear: 2020\nCitations: 37\nAbstract: Gluten related disorders (GRD), which include celiac disease, non-celiac wheat sensitivity and wheat allergy are heterogeneous conditions triggered by ingestion of gluten-containing grains. Together, their prevalence is estimated to be ~5% in the gen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:19.567692"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT03569007",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.15226/2374-815x/3/3/00160",
+          "identifier": "DOI:10.15226/2374-815x/3/3/00160",
+          "title": "A systematic review and meta-analysis of randomized controlled trials: Efficacy and safety of larazotide acetate in celiac disease patients undergoing a gluten challenge",
+          "snippet": "Title: A systematic review and meta-analysis of randomized controlled trials: Efficacy and safety of larazotide acetate in celiac disease patients undergoing a gluten challenge\nJournal: Journal of Gastroenterology, Pancreatology &amp; Liver Disorders\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:20.838945"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1111/apt.12147",
+          "identifier": "DOI:10.1111/apt.12147",
+          "title": "Larazotide acetate in patients with coeliac disease undergoing a gluten challenge: a randomised placebo\u2010controlled study",
+          "snippet": "Title: Larazotide acetate in patients with coeliac disease undergoing a gluten challenge: a randomised placebo\u2010controlled study\nJournal: Alimentary Pharmacology &amp; Therapeutics\nYear: 2012\nAbstract: Summary\n                  \n                    Background\n                    \n                      Coeliac disease, an autoimmune disorder triggered by gluten ingestion, is managed by a gluten\u2010free diet (\n                      GFD\n                 ",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:20.839073"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.2165/00128413-200816600-00029",
+          "identifier": "DOI:10.2165/00128413-200816600-00029",
+          "title": "Larazotide* is promising for the treatment of coeliac disease,",
+          "snippet": "Title: Larazotide* is promising for the treatment of coeliac disease,\nJournal: Inpharma Weekly\nYear: 2008",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:20.839101"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2020.09.06.20189324",
+          "identifier": "DOI:10.1101/2020.09.06.20189324",
+          "title": "Larazotide Acetate for Treatment of Celiac Disease: A Systematic Review and Meta-Analysis of Randomized Controlled Trials",
+          "snippet": "PPR ({'publisher': 'medRxiv', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:19.861952"
+        }
+      ],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 8,
+        "biorxiv_prefilter_dropped": 7
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551986/000155198621000116/0001551986-21-000116-index.htm",
+          "identifier": "SEC:0001551986-21-000116",
+          "title": "9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986) 8-K (2021-11-15) \u2014 references 'NCT03569007'",
+          "snippet": "Filing: 8-K\nSponsor: 9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986)\nDate: 2021-11-15\nSearch term: 'NCT03569007'\n(3 total hits for 'NCT03569007' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:20.161542"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551986/000155198621000086/0001551986-21-000086-index.htm",
+          "identifier": "SEC:0001551986-21-000086",
+          "title": "9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986) 8-K (2021-07-26) \u2014 references 'NCT03569007'",
+          "snippet": "Filing: 8-K\nSponsor: 9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986)\nDate: 2021-07-26\nSearch term: 'NCT03569007'\n(3 total hits for 'NCT03569007' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:20.161598"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551986/000155198622000027/0001551986-22-000027-index.htm",
+          "identifier": "SEC:0001551986-22-000027",
+          "title": "9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986) 8-K (2022-03-23) \u2014 references 'NCT03569007'",
+          "snippet": "Filing: 8-K\nSponsor: 9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986)\nDate: 2022-03-23\nSearch term: 'NCT03569007'\n(3 total hits for 'NCT03569007' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:20.161624"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551986/000155198622000090/0001551986-22-000090-index.htm",
+          "identifier": "SEC:0001551986-22-000090",
+          "title": "9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986) 8-K (2022-08-15) \u2014 references 'Larazotide'",
+          "snippet": "Filing: 8-K\nSponsor: 9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986)\nDate: 2022-08-15\nSearch term: 'Larazotide'\n(48 total hits for 'Larazotide' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:22.544062"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551986/000155198621000069/0001551986-21-000069-index.htm",
+          "identifier": "SEC:0001551986-21-000069",
+          "title": "9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986) 8-K (2021-05-26) \u2014 references 'Larazotide'",
+          "snippet": "Filing: 8-K\nSponsor: 9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986)\nDate: 2021-05-26\nSearch term: 'Larazotide'\n(48 total hits for 'Larazotide' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:22.544129"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551986/000155198622000027/0001551986-22-000027-index.htm",
+          "identifier": "SEC:0001551986-22-000027",
+          "title": "9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986) 8-K (2022-03-23) \u2014 references 'Larazotide'",
+          "snippet": "Filing: 8-K\nSponsor: 9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986)\nDate: 2022-03-23\nSearch term: 'Larazotide'\n(48 total hits for 'Larazotide' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:22.544156"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551986/000155198621000116/0001551986-21-000116-index.htm",
+          "identifier": "SEC:0001551986-21-000116",
+          "title": "9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986) 8-K (2021-11-15) \u2014 references 'Larazotide'",
+          "snippet": "Filing: 8-K\nSponsor: 9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986)\nDate: 2021-11-15\nSearch term: 'Larazotide'\n(48 total hits for 'Larazotide' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:22.544180"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1551986/000155198622000046/0001551986-22-000046-index.htm",
+          "identifier": "SEC:0001551986-22-000046",
+          "title": "9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986) 8-K (2022-06-21) \u2014 references 'Larazotide'",
+          "snippet": "Filing: 8-K\nSponsor: 9 METERS BIOPHARMA, INC.  (NMTRQ)  (CIK 0001551986)\nDate: 2022-06-21\nSearch term: 'Larazotide'\n(48 total hits for 'Larazotide' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:22.544201"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1776111/000177611125000007/0001776111-25-000007-index.htm",
+          "identifier": "SEC:0001776111-25-000007",
+          "title": "MBX Biosciences, Inc.  (MBX)  (CIK 0001776111) 8-K (2025-09-04) \u2014 references 'Matching Placebo'",
+          "snippet": "Filing: 8-K\nSponsor: MBX Biosciences, Inc.  (MBX)  (CIK 0001776111)\nDate: 2025-09-04\nSearch term: 'Matching Placebo'\n(404 total hits for 'Matching Placebo' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:24.496909"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1694665/000169466521000155/0001694665-21-000155-index.htm",
+          "identifier": "SEC:0001694665-21-000155",
+          "title": "Evelo Biosciences, Inc.  (EVLO)  (CIK 0001694665) 8-K (2021-12-22) \u2014 references 'Matching Placebo'",
+          "snippet": "Filing: 8-K\nSponsor: Evelo Biosciences, Inc.  (EVLO)  (CIK 0001694665)\nDate: 2021-12-22\nSearch term: 'Matching Placebo'\n(404 total hits for 'Matching Placebo' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:24.496972"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1069530/000117184322007153/0001171843-22-007153-index.htm",
+          "identifier": "SEC:0001171843-22-007153",
+          "title": "CASSAVA SCIENCES INC  (SAVA)  (CIK 0001069530) 8-K (2022-11-07) \u2014 references 'Matching Placebo'",
+          "snippet": "Filing: 8-K\nSponsor: CASSAVA SCIENCES INC  (SAVA)  (CIK 0001069530)\nDate: 2022-11-07\nSearch term: 'Matching Placebo'\n(404 total hits for 'Matching Placebo' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:24.496999"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/320017/000032001724000049/0000320017-24-000049-index.htm",
+          "identifier": "SEC:0000320017-24-000049",
+          "title": "LISATA THERAPEUTICS, INC.  (LSTA)  (CIK 0000320017) 8-K (2024-08-12) \u2014 references 'Matching Placebo'",
+          "snippet": "Filing: 8-K\nSponsor: LISATA THERAPEUTICS, INC.  (LSTA)  (CIK 0000320017)\nDate: 2024-08-12\nSearch term: 'Matching Placebo'\n(404 total hits for 'Matching Placebo' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:24.497022"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1711279/000171127922000010/0001711279-22-000010-index.htm",
+          "identifier": "SEC:0001711279-22-000010",
+          "title": "Krystal Biotech, Inc.  (KRYS)  (CIK 0001711279) 8-K (2022-03-22) \u2014 references 'Matching Placebo'",
+          "snippet": "Filing: 8-K\nSponsor: Krystal Biotech, Inc.  (KRYS)  (CIK 0001711279)\nDate: 2022-03-22\nSearch term: 'Matching Placebo'\n(404 total hits for 'Matching Placebo' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:24.497043"
+        }
+      ],
+      "raw_data": {
+        "sec_edgar_NCT03569007_total": 3,
+        "sec_edgar_Larazotide_total": 48,
+        "sec_edgar_Matching Placebo_total": 404
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT03569007",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_Larazotide_count": 0,
+        "fda_drugs_Matching Placebo_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT03569007",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Larazotide",
+          "identifier": "NIH:5R01HL173059-02",
+          "title": "Defining neutrophil pathobiology in pediatric Long COVID (YONKER, LAEL)",
+          "snippet": "Project: 5R01HL173059-02\nPI: YONKER, LAEL\nOrganization: \nFiscal year: 2025\nAward: $794,504\nStart: 2024-05-01\nEnd: 2029-02-28\n(3 total NIH-funded projects matching 'Larazotide')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:19.157854"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Larazotide",
+          "identifier": "NIH:1R01HL173059-01",
+          "title": "Defining neutrophil pathobiology in pediatric Long COVID (YONKER, LAEL)",
+          "snippet": "Project: 1R01HL173059-01\nPI: YONKER, LAEL\nOrganization: \nFiscal year: 2024\nAward: $828,233\nStart: 2024-05-01\nEnd: 2029-02-28\n(3 total NIH-funded projects matching 'Larazotide')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:19.157915"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Larazotide",
+          "identifier": "NIH:2R01DK048373-15A1",
+          "title": "Zot, Zonulin, and Pathophysiology of Intestinal Tight Junctions (FASANO, ALESSIO)",
+          "snippet": "Project: 2R01DK048373-15A1\nPI: FASANO, ALESSIO\nOrganization: \nFiscal year: 2012\nAward: $146,264\nStart: 1996-05-01\nEnd: 2013-06-30\n(3 total NIH-funded projects matching 'Larazotide')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:19.157944"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Matching+Placebo",
+          "identifier": "NIH:5R01AI175348-04",
+          "title": "Trial of Zinc Supplements for Young Infants with Clinical Severe Infection in Tanzania (SUDFELD, CHRISTOPHER)",
+          "snippet": "Project: 5R01AI175348-04\nPI: SUDFELD, CHRISTOPHER\nOrganization: \nFiscal year: 2026\nAward: $193,616\nStart: 2023-02-17\nEnd: 2028-01-31\n(681 total NIH-funded projects matching 'Matching Placebo')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:19.308619"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Matching+Placebo",
+          "identifier": "NIH:3R01AI175348-04S1",
+          "title": "Trial of Zinc Supplements for Young Infants with Clinical Severe Infection in Tanzania (SUDFELD, CHRISTOPHER)",
+          "snippet": "Project: 3R01AI175348-04S1\nPI: SUDFELD, CHRISTOPHER\nOrganization: \nFiscal year: 2026\nAward: $404,451\nStart: 2026-02-01\nEnd: 2028-01-31\n(681 total NIH-funded projects matching 'Matching Placebo')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:19.308679"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Matching+Placebo",
+          "identifier": "NIH:5R01CA296186-02",
+          "title": "Investigating Efficacious E-Cigarette Interventions and Cessation Effects on Cancer-Related Biomarkers: A Randomized Trial of Varenicline in Adults (FUCITO, LISA M)",
+          "snippet": "Project: 5R01CA296186-02\nPI: FUCITO, LISA M\nOrganization: \nFiscal year: 2026\nAward: $665,737\nStart: 2025-02-01\nEnd: 2030-01-31\n(681 total NIH-funded projects matching 'Matching Placebo')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:19.308710"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_Larazotide_count": 3,
+        "nih_reporter_Larazotide_funded": true,
+        "nih_reporter_Matching Placebo_count": 681,
+        "nih_reporter_Matching Placebo_funded": true
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 11,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov"
+      ]
+    },
+    "literature": {
+      "citations_count": 16,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "pmc"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "chembl": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "iuphar"
+      ]
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "openalex": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "biorxiv_medrxiv"
+      ]
+    },
+    "sec_edgar": {
+      "citations_count": 13,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "sec_edgar"
+      ]
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "nih_reporter"
+      ]
+    }
+  }
+}

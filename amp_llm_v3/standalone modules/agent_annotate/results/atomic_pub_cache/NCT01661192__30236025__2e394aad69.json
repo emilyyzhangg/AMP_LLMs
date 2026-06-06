@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT01661192",
+  "pmid": "PMID:30236025",
+  "source": "pubmed",
+  "specificity": "trial_specific",
+  "answers": {
+    "q1_reports_results": "YES",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "UNCLEAR",
+    "q4_failure": "UNCLEAR",
+    "q5_advanced": "UNCLEAR",
+    "evidence_quote": "Our prospective, open-label Phase I/II extension study demonstrated that the administrat"
+  },
+  "verdict": "INDETERMINATE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

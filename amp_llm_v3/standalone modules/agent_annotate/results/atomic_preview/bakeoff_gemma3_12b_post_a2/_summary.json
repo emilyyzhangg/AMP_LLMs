@@ -1,0 +1,153 @@
+{
+  "run_id": "bakeoff_gemma3_12b_post_a2",
+  "annotation_dir": "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results/annotations/f6535916f390",
+  "n_ncts": 9,
+  "errors": 0,
+  "resumed_from_cache": 0,
+  "total_elapsed_sec": 55.7,
+  "final": true,
+  "rule_counts": {
+    "R7": 2,
+    "R5": 2,
+    "R8": 4,
+    "R6": 1
+  },
+  "atomic_value_counts": {
+    "Terminated": 2,
+    "Positive": 2,
+    "Unknown": 4,
+    "Active, not recruiting": 1
+  },
+  "legacy_value_counts": {
+    "N/A": 3,
+    "Unknown": 2,
+    "Positive": 2,
+    "Terminated": 1,
+    "Active, not recruiting": 1
+  },
+  "divergences": [
+    {
+      "nct": "NCT01639638",
+      "legacy": "N/A",
+      "atomic": "Terminated",
+      "rule": "R7"
+    },
+    {
+      "nct": "NCT01653249",
+      "legacy": "Unknown",
+      "atomic": "Positive",
+      "rule": "R5"
+    },
+    {
+      "nct": "NCT01661192",
+      "legacy": "N/A",
+      "atomic": "Unknown",
+      "rule": "R8"
+    },
+    {
+      "nct": "NCT01719133",
+      "legacy": "N/A",
+      "atomic": "Unknown",
+      "rule": "R8"
+    },
+    {
+      "nct": "NCT02660008",
+      "legacy": "Positive",
+      "atomic": "Unknown",
+      "rule": "R8"
+    }
+  ],
+  "divergence_rate": 0.556,
+  "per_nct": [
+    {
+      "nct": "NCT01639638",
+      "legacy": "N/A",
+      "atomic": "Terminated",
+      "rule": "R7",
+      "confidence": 0.9,
+      "model": "atomic-gemma3:12b",
+      "elapsed_sec": 0.1,
+      "diverges": true
+    },
+    {
+      "nct": "NCT01653249",
+      "legacy": "Unknown",
+      "atomic": "Positive",
+      "rule": "R5",
+      "confidence": 0.7,
+      "model": "atomic-gemma3:12b",
+      "elapsed_sec": 0.0,
+      "diverges": true
+    },
+    {
+      "nct": "NCT01661192",
+      "legacy": "N/A",
+      "atomic": "Unknown",
+      "rule": "R8",
+      "confidence": 0.5,
+      "model": "atomic-gemma3:12b",
+      "elapsed_sec": 23.8,
+      "diverges": true
+    },
+    {
+      "nct": "NCT01673217",
+      "legacy": "Positive",
+      "atomic": "Positive",
+      "rule": "R5",
+      "confidence": 0.7,
+      "model": "atomic-gemma3:12b",
+      "elapsed_sec": 0.0,
+      "diverges": false
+    },
+    {
+      "nct": "NCT01719133",
+      "legacy": "N/A",
+      "atomic": "Unknown",
+      "rule": "R8",
+      "confidence": 0.5,
+      "model": "atomic-gemma3:12b",
+      "elapsed_sec": 10.7,
+      "diverges": true
+    },
+    {
+      "nct": "NCT01723813",
+      "legacy": "Terminated",
+      "atomic": "Terminated",
+      "rule": "R7",
+      "confidence": 0.9,
+      "model": "atomic-gemma3:12b",
+      "elapsed_sec": 0.0,
+      "diverges": false
+    },
+    {
+      "nct": "NCT02660008",
+      "legacy": "Positive",
+      "atomic": "Unknown",
+      "rule": "R8",
+      "confidence": 0.5,
+      "model": "atomic-gemma3:12b",
+      "elapsed_sec": 21.1,
+      "diverges": true
+    },
+    {
+      "nct": "NCT03164486",
+      "legacy": "Active, not recruiting",
+      "atomic": "Active, not recruiting",
+      "rule": "R6",
+      "confidence": 0.9,
+      "model": "atomic-gemma3:12b",
+      "elapsed_sec": 0.0,
+      "diverges": false
+    },
+    {
+      "nct": "NCT03207295",
+      "legacy": "Unknown",
+      "atomic": "Unknown",
+      "rule": "R8",
+      "confidence": 0.5,
+      "model": "atomic-gemma3:12b",
+      "elapsed_sec": 0.0,
+      "diverges": false
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "run_id": "preview_2026_04_17_10nct",
+  "n_ncts": 9,
+  "per_nct": [
+    {
+      "nct": "NCT01639638",
+      "legacy": "N/A",
+      "atomic": "Terminated",
+      "rule": "R7",
+      "confidence": 0.9,
+      "elapsed_sec": 211.2,
+      "diverges": true
+    },
+    {
+      "nct": "NCT01653249",
+      "legacy": "Unknown",
+      "atomic": "Positive",
+      "rule": "R1",
+      "confidence": 0.9,
+      "elapsed_sec": 417.2,
+      "diverges": true
+    },
+    {
+      "nct": "NCT01661192",
+      "legacy": "N/A",
+      "atomic": "Unknown",
+      "rule": "R8",
+      "confidence": 0.5,
+      "elapsed_sec": 0.0,
+      "diverges": true
+    },
+    {
+      "nct": "NCT01673217",
+      "legacy": "Positive",
+      "atomic": "Positive",
+      "rule": "R5",
+      "confidence": 0.7,
+      "elapsed_sec": 1055.5,
+      "diverges": false
+    },
+    {
+      "nct": "NCT01719133",
+      "legacy": "N/A",
+      "atomic": "Unknown",
+      "rule": "R8",
+      "confidence": 0.5,
+      "elapsed_sec": 146.8,
+      "diverges": true
+    },
+    {
+      "nct": "NCT01723813",
+      "legacy": "Terminated",
+      "atomic": "Terminated",
+      "rule": "R7",
+      "confidence": 0.9,
+      "elapsed_sec": 1480.2,
+      "diverges": false
+    },
+    {
+      "nct": "NCT02660008",
+      "legacy": "Positive",
+      "atomic": "Unknown",
+      "rule": "R8",
+      "confidence": 0.5,
+      "elapsed_sec": 146.6,
+      "diverges": true
+    },
+    {
+      "nct": "NCT03164486",
+      "legacy": "Active, not recruiting",
+      "atomic": "Active, not recruiting",
+      "rule": "R6",
+      "confidence": 0.9,
+      "elapsed_sec": 573.9,
+      "diverges": false
+    },
+    {
+      "nct": "NCT03207295",
+      "legacy": "Unknown",
+      "atomic": "Unknown",
+      "rule": "R8",
+      "confidence": 0.5,
+      "elapsed_sec": 42.1,
+      "diverges": false
+    }
+  ]
+}

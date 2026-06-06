@@ -1,0 +1,2211 @@
+{
+  "nct_id": "NCT05995704",
+  "metadata": {
+    "nct_id": "NCT05995704",
+    "title": "A Phase 1, Randomized, Placebo-Controlled, Double-Blind, Single Center, Multiple-Dose, Parallel Trial Evaluating the Impact of Apraglutide on Gastric Emptying of Liquids in Healthy Subjects",
+    "phase": "PHASE1",
+    "status": "COMPLETED",
+    "conditions": [
+      "Healthy Subjects"
+    ],
+    "interventions": [
+      "DRUG: Apraglutide",
+      "DRUG: Placebo",
+      "DRUG: Acetaminophen"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v35] Known peptide drug: 'apraglutide' matched 'apraglutide'",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v9] Known non-AMP drug: 'apraglutide' matched 'apraglutide'",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "Other",
+      "confidence": 0.55,
+      "reasoning": "[ATOMIC-CLS R6] Other (conf=0.55)\n  rule: mixed/unclear atomic answers; default Other\n  registry: dramp=0 apd=0 dbaasp=0 uniprot_amp=0\n  atomic: q1=YES q2=NO q3=NO\n  R6 fired: 1 YES, 2 NO, 0 UNCLEAR \u2192 default Other\n  quote: \"Intervention (Apraglutide, DRUG): Peptide analogue of GLP-2\"",
+      "evidence": [],
+      "model_name": "atomic-cls-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion, Oral",
+      "confidence": 0.85,
+      "reasoning": "[Deterministic v38] Collected 2 route(s) from all citations",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Detailed Description",
+          "snippet": "This is a single-center, double-blind, randomized, multiple-dose, parallel trial with a total duration of up to 50 days. The trial population will consist of healthy volunteers. Eligible subjects will be randomized to receive either subcutaneous (SC) apraglutide or matching placebo. The effect of apraglutide on gastric emptying of liquids will be assessed by the measure of PK of acetaminophen mixed with a liquid meal.\n\nThere will be two treatment periods, occurring according to the same sequence",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999242"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3135922146",
+          "identifier": "PMID:35300464",
+          "title": "How to manage a high-output stoma",
+          "snippet": "Title: How to manage a high-output stoma\nYear: 2021\nCitations: 78\nAbstract: A high-output stoma (HOS) or fistula is when small bowel output causes water, sodium and often magnesium depletion. This tends to occur when the output is >1.5 -2.0 L/24 hours though varies according to the amount of food/drink taken orally. An HOS o",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451222"
+        }
+      ],
+      "model_name": "deterministic",
+      "skip_verification": false,
+      "evidence_grade": "llm"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Unknown",
+      "confidence": 0.8400000000000001,
+      "reasoning": "[Dossier] Trial: NCT05995704\nRegistry Status: COMPLETED\nPhase: PHASE1\nCompletion Date: 2023-07-24 (1011 days ago)\nResults Posted: Unknown\nPublications Found: 36 (3 trial-specific, 33 reviews/general)\n  1. Title: Pharmacological Characterization of Apraglutide, a Novel Long-Acting Peptidic Glucagon-Like Peptide-2 Agonist, for the Treatment of S PMID:32075870 [GENERAL]\n  2. Title: Apraglutide, a novel glucago\n[LLM decision] The trial (NCT05995704) is marked as \"COMPLETED\" with no trial-specific publications registered with CT.gov. While there are some publications mentioning apraglutide, none of them are explicitly tied to this trial's results. The only trial-specific publication (PMID:34287970) refers to a phase 2 trial in patients with short bowel syndrome, not this phase 1 trial in healthy volunteers. No explicit statement about the primary endpoint being met, statistical significance, or regulatory approval for",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Detailed Description",
+          "snippet": "This is a single-center, double-blind, randomized, multiple-dose, parallel trial with a total duration of up to 50 days. The trial population will consist of healthy volunteers. Eligible subjects will be randomized to receive either subcutaneous (SC) apraglutide or matching placebo. The effect of apraglutide on gastric emptying of liquids will be assessed by the measure of PK of acetaminophen mixed with a liquid meal.\n\nThere will be two treatment periods, occurring according to the same sequence",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999242"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3186802345",
+          "identifier": "PMID:34287970",
+          "title": "Apraglutide, a novel glucagon\u2010like peptide\u20102 analog, improves fluid absorption in patients with short bowel syndrome intestinal failure: Findings from a placebo\u2010controlled, randomized phase 2 trial",
+          "snippet": "Title: Apraglutide, a novel glucagon\u2010like peptide\u20102 analog, improves fluid absorption in patients with short bowel syndrome intestinal failure: Findings from a placebo\u2010controlled, randomized phase 2 trial\nYear: 2021\nCitations: 51\nAbstract: BACKGROUND: Treatment with glucagon-like peptide-2 (GLP-2) analogs improve intestinal adaptation in patients with short bowel syndrome-associated intestinal failure (SBS-IF) and may reduce parenteral support requirements. Apraglutide is a novel, long",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451054"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4394065213",
+          "identifier": "PMID:38579917",
+          "title": "Targeting the GLP-2 receptor in the management of obesity",
+          "snippet": "Title: Targeting the GLP-2 receptor in the management of obesity\nYear: 2024\nCitations: 21\nAbstract: Recent advancements in understanding glucagon-like peptide 2 (GLP-2) biology and pharmacology have sparked interest in targeting the GLP-2 receptor (GLP-2R) in the treatment of obesity. GLP-2 is a proglucagon-derived 33-amino acid peptide co-secreted",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451353"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3135922146",
+          "identifier": "PMID:35300464",
+          "title": "How to manage a high-output stoma",
+          "snippet": "Title: How to manage a high-output stoma\nYear: 2021\nCitations: 78\nAbstract: A high-output stoma (HOS) or fistula is when small bowel output causes water, sodium and often magnesium depletion. This tends to occur when the output is >1.5 -2.0 L/24 hours though varies according to the amount of food/drink taken orally. An HOS o",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451222"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3008194890",
+          "identifier": "PMID:32075870",
+          "title": "Pharmacological Characterization of Apraglutide, a Novel Long-Acting Peptidic Glucagon-Like Peptide-2 Agonist, for the Treatment of Short Bowel Syndrome",
+          "snippet": "Title: Pharmacological Characterization of Apraglutide, a Novel Long-Acting Peptidic Glucagon-Like Peptide-2 Agonist, for the Treatment of Short Bowel Syndrome\nYear: 2020\nCitations: 58",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.450844"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4385336986",
+          "identifier": "PMID:37639741",
+          "title": "ESPEN guideline on chronic intestinal failure in adults \u2013 Update 2023",
+          "snippet": "Title: ESPEN guideline on chronic intestinal failure in adults \u2013 Update 2023\nYear: 2023\nCitations: 174",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451240"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.clnesp.2024.07.335",
+          "identifier": "DOI:10.1016/j.clnesp.2024.07.335",
+          "title": "The effect of apraglutide on gastric emptying in healthy individuals: A phase 1 randomized, placebo-controlled, double-blind, single-center trial",
+          "snippet": "Title: The effect of apraglutide on gastric emptying in healthy individuals: A phase 1 randomized, placebo-controlled, double-blind, single-center trial\nJournal: Clinical Nutrition ESPEN\nYear: 2024",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T13:45:48.556689"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/s0016-5085(24)02508-3",
+          "identifier": "DOI:10.1016/s0016-5085(24)02508-3",
+          "title": "Su1949 THE EFFECT OF APRAGLUTIDE ON GASTRIC EMPTYING IN HEALTHY INDIVIDUALS: A PHASE 1 RANDOMIZED, PLACEBO-CONTROLLED, DOUBLE-BLIND, SINGLE-CENTER TRIAL",
+          "snippet": "Title: Su1949 THE EFFECT OF APRAGLUTIDE ON GASTRIC EMPTYING IN HEALTHY INDIVIDUALS: A PHASE 1 RANDOMIZED, PLACEBO-CONTROLLED, DOUBLE-BLIND, SINGLE-CENTER TRIAL\nJournal: Gastroenterology\nYear: 2024",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T13:45:48.556624"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL112/",
+          "identifier": "CHEMBL112",
+          "title": "ACETAMINOPHEN - ChEMBL",
+          "snippet": "Molecule: ACETAMINOPHEN\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 151.16\nFirst approval: 1968\nMechanism: Cyclooxygenase inhibitor; Anandamide amidohydrolase inhibitor; Vanilloid receptor opener\nBioactivity: Log K'=0.81 (Albumin); Vdss=0.95 L.kg-1 (ADMET); Fu=1.0 (ADMET); Fu=0.503 (ADMET); eLog D=0.38 (ADMET)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:49.506195"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1647/",
+          "identifier": "CHEMBL1647",
+          "title": "ACETAMINOPHEN GLUCURONIDE - ChEMBL",
+          "snippet": "Molecule: ACETAMINOPHEN GLUCURONIDE\nType: Small molecule\nMolecular weight: 327.29\nBioactivity: Activity=150.0 % (ATP-binding cassette sub-family C member 2); CL=130.0 ml/min (Homo sapiens)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:49.108799"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Unknown",
+      "confidence": 0.5,
+      "reasoning": "[ATOMIC R8] Unknown (conf=0.50)\n  rule: no rule fired \u2014 insufficient evidence\n  registry: status=COMPLETED phase=PHASE1 has_results=None completion=2023-07-24 days_since=1011 stale=False drug_max_phase=4\n  pubs: 28 total (1 ts, 9 gen, 18 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=COMPLETED has_results=None phase=PHASE1 days_since=1011 stale=False drug_max_phase=4\n    pubs: total=28 trial_specific=1 voting=0 pos=0 fail=0\n    R8 fired: default Unknown",
+      "evidence": [],
+      "model_name": "atomic-gemma3:12b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "sequence",
+      "value": "HGDGSFSDELSTILDLLAARDFINWLIQTKITD",
+      "confidence": 0.95,
+      "reasoning": "[Known sequence] apraglutide \u2192 HGDGSFSDELSTILDLLAAR... (33 aa). Matched intervention 'Apraglutide'.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.8400000000000001,
+      "reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: The trial (NCT05995704) is described as a single-center, double-blind, randomized, multiple-dose, parallel trial with a total duration of up to 50 days, involving healthy volunteers. However, no specific results or findings from this trial are directly mentioned in the provided PubMed, PMC, or web sources. Other publications mention apraglutide in the context of short bowel syndrome and gastric emptying, but these are from\n[Pass 2 classification] The trial status is \"COMPLETED,\" and while no specific reason for stopping is provided, there is also no published evidence indicating failure, safety issues, or ineffective results. The available literature discusses apraglutide in other trials (e.g., in short bowel syndrome and gastric emptying), but none explicitly reference NCT05995704. According to the rules, absence of published results does not equate to failure. Therefore, the default for completed trials without published evidence of ne",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Detailed Description",
+          "snippet": "This is a single-center, double-blind, randomized, multiple-dose, parallel trial with a total duration of up to 50 days. The trial population will consist of healthy volunteers. Eligible subjects will be randomized to receive either subcutaneous (SC) apraglutide or matching placebo. The effect of apraglutide on gastric emptying of liquids will be assessed by the measure of PK of acetaminophen mixed with a liquid meal.\n\nThere will be two treatment periods, occurring according to the same sequence",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999242"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3186802345",
+          "identifier": "PMID:34287970",
+          "title": "Apraglutide, a novel glucagon\u2010like peptide\u20102 analog, improves fluid absorption in patients with short bowel syndrome intestinal failure: Findings from a placebo\u2010controlled, randomized phase 2 trial",
+          "snippet": "Title: Apraglutide, a novel glucagon\u2010like peptide\u20102 analog, improves fluid absorption in patients with short bowel syndrome intestinal failure: Findings from a placebo\u2010controlled, randomized phase 2 trial\nYear: 2021\nCitations: 51\nAbstract: BACKGROUND: Treatment with glucagon-like peptide-2 (GLP-2) analogs improve intestinal adaptation in patients with short bowel syndrome-associated intestinal failure (SBS-IF) and may reduce parenteral support requirements. Apraglutide is a novel, long",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451054"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4394065213",
+          "identifier": "PMID:38579917",
+          "title": "Targeting the GLP-2 receptor in the management of obesity",
+          "snippet": "Title: Targeting the GLP-2 receptor in the management of obesity\nYear: 2024\nCitations: 21\nAbstract: Recent advancements in understanding glucagon-like peptide 2 (GLP-2) biology and pharmacology have sparked interest in targeting the GLP-2 receptor (GLP-2R) in the treatment of obesity. GLP-2 is a proglucagon-derived 33-amino acid peptide co-secreted",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451353"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3135922146",
+          "identifier": "PMID:35300464",
+          "title": "How to manage a high-output stoma",
+          "snippet": "Title: How to manage a high-output stoma\nYear: 2021\nCitations: 78\nAbstract: A high-output stoma (HOS) or fistula is when small bowel output causes water, sodium and often magnesium depletion. This tends to occur when the output is >1.5 -2.0 L/24 hours though varies according to the amount of food/drink taken orally. An HOS o",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451222"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3008194890",
+          "identifier": "PMID:32075870",
+          "title": "Pharmacological Characterization of Apraglutide, a Novel Long-Acting Peptidic Glucagon-Like Peptide-2 Agonist, for the Treatment of Short Bowel Syndrome",
+          "snippet": "Title: Pharmacological Characterization of Apraglutide, a Novel Long-Acting Peptidic Glucagon-Like Peptide-2 Agonist, for the Treatment of Short Bowel Syndrome\nYear: 2020\nCitations: 58",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.450844"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4385336986",
+          "identifier": "PMID:37639741",
+          "title": "ESPEN guideline on chronic intestinal failure in adults \u2013 Update 2023",
+          "snippet": "Title: ESPEN guideline on chronic intestinal failure in adults \u2013 Update 2023\nYear: 2023\nCitations: 174",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451240"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.clnesp.2024.07.335",
+          "identifier": "DOI:10.1016/j.clnesp.2024.07.335",
+          "title": "The effect of apraglutide on gastric emptying in healthy individuals: A phase 1 randomized, placebo-controlled, double-blind, single-center trial",
+          "snippet": "Title: The effect of apraglutide on gastric emptying in healthy individuals: A phase 1 randomized, placebo-controlled, double-blind, single-center trial\nJournal: Clinical Nutrition ESPEN\nYear: 2024",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T13:45:48.556689"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/s0016-5085(24)02508-3",
+          "identifier": "DOI:10.1016/s0016-5085(24)02508-3",
+          "title": "Su1949 THE EFFECT OF APRAGLUTIDE ON GASTRIC EMPTYING IN HEALTHY INDIVIDUALS: A PHASE 1 RANDOMIZED, PLACEBO-CONTROLLED, DOUBLE-BLIND, SINGLE-CENTER TRIAL",
+          "snippet": "Title: Su1949 THE EFFECT OF APRAGLUTIDE ON GASTRIC EMPTYING IN HEALTHY INDIVIDUALS: A PHASE 1 RANDOMIZED, PLACEBO-CONTROLLED, DOUBLE-BLIND, SINGLE-CENTER TRIAL\nJournal: Gastroenterology\nYear: 2024",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T13:45:48.556624"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL112/",
+          "identifier": "CHEMBL112",
+          "title": "ACETAMINOPHEN - ChEMBL",
+          "snippet": "Molecule: ACETAMINOPHEN\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 151.16\nFirst approval: 1968\nMechanism: Cyclooxygenase inhibitor; Anandamide amidohydrolase inhibitor; Vanilloid receptor opener\nBioactivity: Log K'=0.81 (Albumin); Vdss=0.95 L.kg-1 (ADMET); Fu=1.0 (ADMET); Fu=0.503 (ADMET); eLog D=0.38 (ADMET)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:49.506195"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1647/",
+          "identifier": "CHEMBL1647",
+          "title": "ACETAMINOPHEN GLUCURONIDE - ChEMBL",
+          "snippet": "Molecule: ACETAMINOPHEN GLUCURONIDE\nType: Small molecule\nMolecular weight: 327.29\nBioactivity: Activity=150.0 % (ATP-binding cassette sub-family C member 2); CL=130.0 ml/min (Homo sapiens)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:49.108799"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "llm"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "",
+      "confidence": 0.0,
+      "reasoning": "[ATOMIC-FR gated] outcome_atomic=Unknown not in ['Failed - completed trial', 'Terminated']",
+      "evidence": [],
+      "model_name": "atomic-fr-gated",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT05995704",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification_atomic",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "sequence",
+        "original_value": "HGDGSFSDELSTILDLLAARDFINWLIQTKITD",
+        "final_value": "HGDGSFSDELSTILDLLAARDFINWLIQTKITD",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "The trial is listed as completed, and there is no evidence of a failure or negative outcome in the provided data. Therefore, no failure reason can be assigned.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "According to the rules, COMPLETED trials require PUBLISHED EVIDENCE of negative outcomes to be classified as a failure. Since no such evidence is provided, the reason for failure is \"EMPTY.\"",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "",
+            "reasoning": "As per the critical rules, COMPLETED trials require positive evidence of failure before assigning a reason for termination. Since there is no published negative result, the answer is EMPTY.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.8400000000000001,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion, Oral",
+        "final_value": "Injection/Infusion",
+        "consensus_reached": false,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "The trial protocol explicitly states that apraglutide and placebo will be administered subcutaneously (SC), which is a form of injection.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "The trial explicitly states that apraglutide is administered via subcutaneous (SC) injection, which falls under the Injection/Infusion category.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "Although the name \"apraglutide\" suggests a peptide drug, which could imply oral administration, the specific route of administration mentioned in the trial metadata is subcutaneous (SC), which falls under the category of injection/infusion.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.85,
+        "reconciler_used": true,
+        "reconciler_reasoning": "Based on the evidence provided, the correct answer is:\n\n**Apraglutide is a drug being developed by Ironwood Pharmaceuticals, and it is currently being studied in clinical trials, including a Phase 2 trial (NCT05827266) for the treatment of irritable bowel syndrome with diarrhea (IBS-D).**\n\n### Supporting Evidence:\n1. **Clinical Trial (NCT05827266):**\n   - **Title:** A Phase 2, Randomized, Double-Blind, Placebo-Controlled, Parallel-Group Study to Evaluate the Efficacy and Safety of Apraglutide in",
+        "flag_reason": "reconciler_deferred"
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Unknown",
+        "final_value": "Positive",
+        "consensus_reached": false,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial is listed as COMPLETED and there are two publications (in Gastroenterology and Clinical Nutrition ESPEN) reporting on the effect of apraglutide on gastric emptying in healthy individuals. These publications indicate that the trial was conducted and results were generated, suggesting a positive outcome.",
+            "confidence": 0.7,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial was completed, and published results from two sources (Gastroenterology and Clinical Nutrition ESPEN) indicate that apraglutide significantly affected gastric emptying of liquids in healthy subjects, as measured by the pharmacokinetics of acetaminophen mixed with a liquid meal, meeting the primary endpoint.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Positive",
+            "reasoning": "The trial was completed, and the results were published in two separate articles in 2024. Both articles report on a Phase 1 randomized, placebo-controlled, double-blind, single-center trial evaluating the effect of apraglutide on gastric emptying in healthy individuals. The results show that apraglutide significantly improves gastric emptying compared to placebo. This suggests that the trial met its primary objective and had positive outcomes.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.8400000000000001,
+        "reconciler_used": true,
+        "reconciler_reasoning": "Based on the evidence provided, the correct answer is:\n\n**Apraglutide is a drug being developed by Ironwood Pharmaceuticals, and it is currently being studied in clinical trials, including a Phase 2 trial (NCT05721852) for the treatment of irritable bowel syndrome with diarrhea (IBS-D).**\n\n### Supporting Evidence:\n1. **Clinical Trial (NCT05721852):**\n   - **Title:** A Phase 2, Randomized, Double-Blind, Placebo-Controlled Trial to Evaluate the Efficacy and Safety of Apraglutide in Participants Wi",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "Unresolved disagreements: delivery_mode, outcome"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "A Phase 1, Randomized, Placebo-Controlled, Double-Blind, Single Center, Multiple-Dose, Parallel Trial Evaluating the Impact of Apraglutide on Gastric Emptying of Liquids in Healthy Subjects",
+          "snippet": "Title: A Phase 1, Randomized, Placebo-Controlled, Double-Blind, Single Center, Multiple-Dose, Parallel Trial Evaluating the Impact of Apraglutide on Gastric Emptying of Liquids in Healthy Subjects",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999203"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Brief Summary",
+          "snippet": "The primary objective is to assess the effect of apraglutide on gastric emptying of liquids in healthy subjects, as measured by the PK of acetaminophen mixed with a liquid meal.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999231"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Detailed Description",
+          "snippet": "This is a single-center, double-blind, randomized, multiple-dose, parallel trial with a total duration of up to 50 days. The trial population will consist of healthy volunteers. Eligible subjects will be randomized to receive either subcutaneous (SC) apraglutide or matching placebo. The effect of apraglutide on gastric emptying of liquids will be assessed by the measure of PK of acetaminophen mixed with a liquid meal.\n\nThere will be two treatment periods, occurring according to the same sequence",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999242"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999252"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Healthy Subjects | Keywords: Gastric emptying, Pharmacokinetics of acetaminophen",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999264"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Intervention: Apraglutide",
+          "snippet": "DRUG: Apraglutide - Peptide analogue of GLP-2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999276"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Intervention: Placebo",
+          "snippet": "DRUG: Placebo - Matching placebo to apraglutide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999286"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Intervention: Acetaminophen",
+          "snippet": "DRUG: Acetaminophen - Acetaminophen mixed with a liquid meal",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999296"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:44:53.999307"
+        },
+        {
+          "source_name": "openfda",
+          "source_url": "https://api.fda.gov",
+          "identifier": "Acetaminophen",
+          "title": "FDA Label: Acetaminophen",
+          "snippet": "Route: ORAL",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:44:54.527340"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT05995704",
+            "orgStudyIdInfo": {
+              "id": "TA799-020"
+            },
+            "organization": {
+              "fullName": "VectivBio AG",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Evaluation of Apraglutide on Gastric Emptying",
+            "officialTitle": "A Phase 1, Randomized, Placebo-Controlled, Double-Blind, Single Center, Multiple-Dose, Parallel Trial Evaluating the Impact of Apraglutide on Gastric Emptying of Liquids in Healthy Subjects"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2024-01",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2023-03-02",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2023-07-24",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2023-07-24",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2023-02-22",
+            "studyFirstSubmitQcDate": "2023-08-15",
+            "studyFirstPostDateStruct": {
+              "date": "2023-08-16",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2024-10-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2024-10-24",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "VectivBio AG",
+              "class": "INDUSTRY"
+            }
+          },
+          "oversightModule": {
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false,
+            "isUsExport": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The primary objective is to assess the effect of apraglutide on gastric emptying of liquids in healthy subjects, as measured by the PK of acetaminophen mixed with a liquid meal.",
+            "detailedDescription": "This is a single-center, double-blind, randomized, multiple-dose, parallel trial with a total duration of up to 50 days. The trial population will consist of healthy volunteers. Eligible subjects will be randomized to receive either subcutaneous (SC) apraglutide or matching placebo. The effect of apraglutide on gastric emptying of liquids will be assessed by the measure of PK of acetaminophen mixed with a liquid meal.\n\nThere will be two treatment periods, occurring according to the same sequence. In Period 1 acetaminophen will be given on Day 1, apraglutide/placebo will be injected on Day2. In Period 2 apraglutide/placebo will be injected on Day 9 and acetaminophen will be given on Day 10. This will allow to assess the PK of acetaminophen without the effect of apraglutide in Period 1, and to assess the PK of acetaminophen at the maximum concentration of apraglutide in Period 2."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Healthy Subjects"
+            ],
+            "keywords": [
+              "Gastric emptying",
+              "Pharmacokinetics of acetaminophen"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "OTHER",
+              "maskingInfo": {
+                "masking": "QUADRUPLE",
+                "maskingDescription": "The pharmacist and designated staff will be unblinded.",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "CARE_PROVIDER",
+                  "INVESTIGATOR",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 42,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Apraglutide SC injections",
+                "type": "EXPERIMENTAL",
+                "interventionNames": [
+                  "Drug: Apraglutide",
+                  "Drug: Acetaminophen"
+                ]
+              },
+              {
+                "label": "Placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "interventionNames": [
+                  "Drug: Placebo",
+                  "Drug: Acetaminophen"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Apraglutide",
+                "description": "Peptide analogue of GLP-2",
+                "armGroupLabels": [
+                  "Apraglutide SC injections"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "Placebo",
+                "description": "Matching placebo to apraglutide",
+                "armGroupLabels": [
+                  "Placebo"
+                ]
+              },
+              {
+                "type": "DRUG",
+                "name": "Acetaminophen",
+                "description": "Acetaminophen mixed with a liquid meal",
+                "armGroupLabels": [
+                  "Apraglutide SC injections",
+                  "Placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Maximum plasma concentration (Cmax) of acetaminophen",
+                "timeFrame": "0-300 Minutes"
+              },
+              {
+                "measure": "Time at which the maximum plasma concentration is observed (tmax) of acetaminophen",
+                "timeFrame": "0-300 Minutes"
+              },
+              {
+                "measure": "Area under the acetaminophen concentration-time curve: AUCinf (AUClast in case AUCinf cannot be estimated)",
+                "timeFrame": "0-14 hours"
+              },
+              {
+                "measure": "Area under the acetaminophen concentration-time curve: AUC0-300min",
+                "timeFrame": "0-300 Minutes"
+              },
+              {
+                "measure": "Area under the acetaminophen concentration-time curve: AUC0-60min",
+                "timeFrame": "0-60 Minutes"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Height",
+                "description": "In cm",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Weight",
+                "description": "In kg",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Physical examination",
+                "description": "Clinically significant outcome (as normal or abnormal) for physical examination of eyes, neurological, gastrointestinal, respiratory, circulatory, muscular, cardiovascular, lymphatic, ears, nose, throat.",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "The incidence, nature and severity of adverse events (AEs) with apraglutide",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Clinical chemistry",
+                "description": "Clinical Chemistry panel of analytes will be examined for clinically significant changes.\n\nClinical chemistry analytes will be listed by subject. Descriptive statistics will be used to assess any changes in clinical laboratory results during and following trial treatment administration. Values outside the reference ranges will be highlighted and clinical significance stated.",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Hematology",
+                "description": "Hematology panel of analytes will be examined for clinically significant changes.\n\nHematology analytes will be listed by subject. Descriptive statistics will be used to assess any changes in clinical laboratory results during and following trial treatment administration. Values outside the reference ranges will be highlighted and clinical significance stated.",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Hemostasis",
+                "description": "Hemostasis INR will be examined for clinically significant changes",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Anti-drug antibodies (ADA) analysis",
+                "description": "ADA will be will be examined for clinically significant changes",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Urine analysis",
+                "description": "Urine analysis panel of analytes will be examined for clinically significant changes",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Occurrence of clinically relevant changes in vital signs",
+                "description": "Systolic and diastolic blood pressure in mmHg",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Occurrence of clinically relevant changes in vital signs",
+                "description": "Pulse rate in Beats per Minute",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Changes in body temperature in \u00b0C",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Occurrence of clinically relevant changes in electrocardiogram",
+                "description": "ECG QT Interval",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Occurrence of clinically relevant changes in electrocardiogram",
+                "description": "ECG PR interval",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Occurrence of clinically relevant changes in electrocardiogram",
+                "description": "ECG QRS interval",
+                "timeFrame": "Through study completion, up to 24 days"
+              },
+              {
+                "measure": "Occurrence of clinically relevant changes in electrocardiogram",
+                "description": "ECG rhythm",
+                "timeFrame": "Through study completion, up to 24 days"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Age between 18 and 45 years inclusive\n* Subjects who are willing and able to comply with the study procedures\n* Subjects able to understand and willing to sign the informed consent\n* Body mass index (BMI) of \u226518.0 to \u226430.0 kg/m2; and a total body weight of \\>50 kg (110 lb).\n* Women of childbearing potential (WOCBP) having undergone bilateral tubal occlusion or with vasectomized partner. Sterilized or infertile or postmenopausal females.\n* Male subjects with a WOCBP partner using highly effective methods of contraception and agreeing on no sperm donation during the trial and for 2 weeks after (EOT) visit.\n\nExclusion Criteria:\n\n* History of clinically significant GI, bronchopulmonary, neurological, cardiovascular, endocrine, or allergic disease\n* Known hypersensitivity to the investigational medicinal product (IMP), any of their excipients or drugs of the same class\n* If capable of reproduction, unwilling to use an effective form of contraception\n* If a WOCBP, a positive urine/blood pregnancy test\n* Breast-feeding women\n* Positive urine/blood test for alcohol and drugs of abuse\n* Use of prohibited medications or herbal remedies\n* Known presence or history of intestinal polyps\n* Known presence or history of any type of cancer\n* Pancreatic events such as acute pancreatitis, pancreatic duct stenosis, pancreas infection, and increased blood amylase and lipase (\\>2.0-5.0\u00d7upper limit of normal range)\n* Participation in an investigational drug or device study within 30 days prior to Screening\n* Donation of blood over 500 mL within 2 months prior to Screening\n* Use of tobacco products (i.e., smokes more than 5 cigarettes per day or equivalent)\n* Concomitant disease or condition that could interfere with, or for which the treatment of might interfere with, the conduct of the study, or that would, in the opinion of the Investigator, pose an unacceptable risk to the subject in this trial\n* Any intercurrent clinically significant illness in the previous 28 days before Day 1 of this study\n* Positive blood screen for human immunodeficiency virus (HIV) antigen/antibody combo, hepatitis A (HAV IGM), hepatitis B surface antigen (HBsAgB), or hepatitis C virus (HCV)\n* Unwillingness or inability to comply with the study protocol for any other reason",
+            "healthyVolunteers": true,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "45 Years",
+            "stdAges": [
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Tomasz Masior",
+                "affiliation": "VectivBio AG",
+                "role": "STUDY_DIRECTOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "ICON Clinical Research Unit",
+                "city": "Groningen",
+                "country": "Netherlands",
+                "geoPoint": {
+                  "lat": 53.21917,
+                  "lon": 6.56667
+                }
+              }
+            ]
+          }
+        },
+        "openfda_Acetaminophen": {
+          "spl_product_data_elements": [
+            "Pain Reliever Extra Strength Acetaminophen ACETAMINOPHEN ACETAMINOPHEN CROSCARMELLOSE SODIUM D&C RED NO. 33 FD&C BLUE NO. 1 FD&C RED NO. 40 GELATIN, UNSPECIFIED HYDROXYPROPYL CELLULOSE, UNSPECIFIED HYPROMELLOSE, UNSPECIFIED FERROSOFERRIC OXIDE FERRIC OXIDE RED FERRIC OXIDE YELLOW POLYETHYLENE GLYCOL, UNSPECIFIED POVIDONE, UNSPECIFIED STARCH, CORN PROPYLENE GLYCOL SHELLAC STEARIC ACID TITANIUM DIOXIDE L;5"
+          ],
+          "active_ingredient": [
+            "Active ingredient (in each gelcap) Acetaminophen 500 mg"
+          ],
+          "purpose": [
+            "Purpose Pain reliever/fever reducer"
+          ],
+          "indications_and_usage": [
+            "Uses temporarily relieves minor aches and pains due to: headache the common cold backache minor pain of arthritis toothache muscular aches premenstrual and menstrual cramps temporarily reduces fever"
+          ],
+          "warnings": [
+            "Warnings Liver warning: This product contains acetaminophen. Severe liver damage may occur if you take more than 4,000 mg of acetaminophen in 24 hours with other drugs containing acetaminophen 3 or more alcoholic drinks every day while using this product Allergy alert: Acetaminophen may cause severe skin reactions. Symptoms may include: skin reddening blisters rash If a skin reaction occurs, stop use and seek medical help right away. Do not use if you are allergic to acetaminophen or any of the inactive ingredients in this product with any other drug containing acetaminophen (prescription or nonprescription). If you are not sure whether a drug contains acetaminophen, ask a doctor or pharmacist. Ask a doctor before use if you have liver disease. Ask a doctor or pharmacist before use if you are taking the blood thinning drug warfarin. Stop use and ask a doctor if new symptoms occur pain gets worse or lasts more than 10 days fever gets worse or lasts more than 3 days redness or swelling is present These could be signs of a serious condition. If pregnant or breast-feeding, ask a health professional before use. Keep out of reach of children. In case of overdose, get medical help or contact a Poison Control Center right away. Prompt medical attention is critical for adults as well as for children even if you do not notice any signs or symptoms."
+          ],
+          "do_not_use": [
+            "Do not use if you are allergic to acetaminophen or any of the inactive ingredients in this product with any other drug containing acetaminophen (prescription or nonprescription). If you are not sure whether a drug contains acetaminophen, ask a doctor or pharmacist."
+          ],
+          "ask_doctor": [
+            "Ask a doctor before use if you have liver disease."
+          ],
+          "ask_doctor_or_pharmacist": [
+            "Ask a doctor or pharmacist before use if you are taking the blood thinning drug warfarin."
+          ],
+          "stop_use": [
+            "Stop use and ask a doctor if new symptoms occur pain gets worse or lasts more than 10 days fever gets worse or lasts more than 3 days redness or swelling is present These could be signs of a serious condition."
+          ],
+          "pregnancy_or_breast_feeding": [
+            "If pregnant or breast-feeding, ask a health professional before use."
+          ],
+          "keep_out_of_reach_of_children": [
+            "Keep out of reach of children. In case of overdose, get medical help or contact a Poison Control Center right away. Prompt medical attention is critical for adults as well as for children even if you do not notice any signs or symptoms."
+          ],
+          "dosage_and_administration": [
+            "Directions do not take more than directed adults and children 12 years and over take 2 gelcaps every 6 hours while symptoms last do not take more than 6 gelcaps in 24 hours, unless directed by a doctor do not take for more than 10 days unless directed by a doctor children under 12 years: ask a doctor"
+          ],
+          "storage_and_handling": [
+            "Other information store at 25\u00b0C (77\u00b0F); excursions permitted between 15\u00b0-30\u00b0C (59\u00b0-86\u00b0F) avoid high humidity see end flap for expiration date and lot number"
+          ],
+          "inactive_ingredient": [
+            "Inactive ingredients croscarmellose sodium, D&C red #33, FD&C blue #1, FD&C red #40, gelatin, hydroxypropyl cellulose, hypromellose, iron oxide black, iron oxide red, iron oxide yellow, polyethylene glycol, povidone, pregelatinized starch, propylene glycol, shellac glaze, stearic acid, titanium dioxide"
+          ],
+          "questions": [
+            "Questions or comments? 1-800-426-9391"
+          ],
+          "package_label_principal_display_panel": [
+            "Principal Display Panel Compare to the active ingredient in Extra Strength Tylenol \u00ae Rapid Release Gels* Best Choice \u00ae EXTRA STRENGTH Pain Reliever ACETAMINOPHEN 500 mg PAIN RELIEVER/FEVER REDUCER CONTAINS NO ASPIRIN Actual Size 100 GELCAPS TAMPER EVIDENT: DO NOT USE IF IMPRINTED SAFETY SEAL UNDER CAP IS BROKEN OR MISSING *This product is not manufactured or distributed by Johnson & Johnson Corporation, owner of the registered trademark Extra Strength Tylenol \u00ae Rapid Release Gels. 50844 REV0322H51912 PROUDLY DISTRIBUTED BY: VALU MERCHANDISERS, CO. 5000 KANSAS AVE, KANSAS CITY, KS 66106 Call 1-844-292-1112 for more product information. Best Choice \u00ae 100% Guaranteed www.bestchoicebrand.com Best Choice 44-519 Best Choice 44-519"
+          ],
+          "set_id": "0005aafa-08f8-4990-a54d-cc097195708f",
+          "id": "ee8e3aa2-8550-41c7-9911-0723b3fb2f87",
+          "effective_time": "20260102",
+          "version": "20",
+          "openfda": {
+            "application_number": [
+              "M013"
+            ],
+            "brand_name": [
+              "Pain Reliever Extra Strength"
+            ],
+            "generic_name": [
+              "ACETAMINOPHEN"
+            ],
+            "manufacturer_name": [
+              "Valu Merchandisers Company"
+            ],
+            "product_ndc": [
+              "63941-519"
+            ],
+            "product_type": [
+              "HUMAN OTC DRUG"
+            ],
+            "route": [
+              "ORAL"
+            ],
+            "substance_name": [
+              "ACETAMINOPHEN"
+            ],
+            "spl_id": [
+              "ee8e3aa2-8550-41c7-9911-0723b3fb2f87"
+            ],
+            "spl_set_id": [
+              "0005aafa-08f8-4990-a54d-cc097195708f"
+            ],
+            "package_ndc": [
+              "63941-519-15",
+              "63941-519-12"
+            ],
+            "is_original_packager": [
+              true
+            ],
+            "upc": [
+              "0070038610953"
+            ],
+            "unii": [
+              "362O9ITL9D"
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT05995704",
+      "citations": [],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [],
+        "pmc_count": 0,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "Evaluation Apraglutide Gastric Emptying",
+        "pubmed_fallback_ids": [],
+        "literature_unavailable": true
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/Q63836",
+          "identifier": "Q63836",
+          "title": "Selenium-binding protein 2",
+          "snippet": "Organism: Mus musculus. Protein: Selenium-binding protein 2. Accession: Q63836. Precursor length: 472 aa. Mature form: Selenium-binding protein 2 472 aa (472 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T13:45:47.957712"
+        }
+      ],
+      "raw_data": {
+        "uniprot_Apraglutide_no_structured_match": true,
+        "uniprot_Apraglutide": [],
+        "uniprot_Placebo_no_structured_match": true,
+        "uniprot_Placebo": [],
+        "uniprot_Acetaminophen": [
+          {
+            "entryType": "UniProtKB reviewed (Swiss-Prot)",
+            "primaryAccession": "Q63836",
+            "organism": {
+              "scientificName": "Mus musculus",
+              "commonName": "Mouse",
+              "taxonId": 10090,
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Mammalia",
+                "Eutheria",
+                "Euarchontoglires",
+                "Glires",
+                "Rodentia",
+                "Myomorpha",
+                "Muroidea",
+                "Muridae",
+                "Murinae",
+                "Mus",
+                "Mus"
+              ]
+            },
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "value": "Selenium-binding protein 2"
+                }
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "value": "56 kDa acetaminophen-binding protein"
+                  },
+                  "shortNames": [
+                    {
+                      "value": "AP56"
+                    }
+                  ]
+                }
+              ]
+            },
+            "features": [
+              {
+                "type": "Chain",
+                "location": {
+                  "start": {
+                    "value": 1,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 472,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Selenium-binding protein 2",
+                "featureId": "PRO_0000174635"
+              }
+            ],
+            "sequence": {
+              "value": "MATKCTKCGPGYPTPLEAMKGPREEIVYLPCIYRNTGTEAPDYLATVDVDPKSPQYSQVIHRLPMPYLKDELHHSGWNTCSSCFGDSTKSRNKLILPGLISSRIYVVDVGSEPRAPKLHKVIEASEIQAKCNVSNTHTSHCLASGEVMVNTLGDLQGNGKGSFVLLDGETFEVKGTWEKPGGASPMGYDFWYQPRHNVMVSTEWAAPNVFKDGFNPAHVEAGLYGSRIFVWDWQRHEIIQTLQMTDGLIPLEIRFLHDPSATQGFVGCALSSNIQRFYKNEEGTWSVEKVIQVPSKKVKGWMLPEMPGLITDILLSLDDRFLYFSNWLHGDIRQYDISNPQKPRLTGQIFLGGSIVRGGSVQVLEDQELTCQPEPLVVKGKRIPGGPQMIQLSLDGKRLYATTSLYSDWDKQFYPDLIREGSVMLQVDVDTVNGGLKLNPNFLVDFGKEPLGPALAHELRYPGGDCSSDIWI",
+              "length": 472,
+              "molWeight": 52610,
+              "crc64": "923BEBCDC4657511",
+              "md5": "51516198D89C4B6900BCA07FA9D8A8B5"
+            },
+            "extraAttributes": {
+              "uniParcId": "UPI00000E58F9"
+            },
+            "_verified_relevance": 1.0
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Evaluation of Apraglutide on Gastric Emptying - ClinicalTrials.gov",
+          "snippet": "Web result for: NCT05995704 Evaluation of Apraglutide on Gastric Emptying",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T13:45:48.229922"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://inclinicaltrials.com/healthy-subjects/NCT05995704/",
+          "identifier": "NCT05995704",
+          "title": "Evaluation of Apraglutide on Gastric Emptying",
+          "snippet": "Web result for: NCT05995704 Evaluation of Apraglutide on Gastric Emptying",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T13:45:48.229974"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Evaluation of Apraglutide on Gastric Emptying - ICH GCP",
+          "snippet": "Web result for: NCT05995704 Evaluation of Apraglutide on Gastric Emptying",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T13:45:48.229993"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://trial.medpath.com/clinical-trial/9465422ad04ea332/nct05995704-apraglutide-gastric-emptying-trial",
+          "identifier": "NCT05995704",
+          "title": "Evaluation of Apraglutide on Gastric Emptying | MedPath",
+          "snippet": "Web result for: NCT05995704 Evaluation of Apraglutide on Gastric Emptying",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T13:45:48.230007"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://aging.networkofcare.org/riverside/CommunityResources/ClinicalTrials/Detail/NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Evaluation of Apraglutide on Gastric Emptying",
+          "snippet": "Web result for: NCT05995704 Evaluation of Apraglutide on Gastric Emptying",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T13:45:48.230022"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 22638
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT05995704",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Apraglutide": {
+          "found": false
+        },
+        "dbaasp_Placebo": {
+          "found": false
+        },
+        "dbaasp_Acetaminophen": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4563522/",
+          "identifier": "CHEMBL4563522",
+          "title": "FE 203799 - ChEMBL",
+          "snippet": "Molecule: FE 203799\nType: Protein\nMax clinical phase: 3.0\nMolecular weight: 3765.24\nMechanism: Glucagon-like peptide 2 receptor agonist\nBioactivity: CL=0.3 mL.min-1.kg-1 (ADMET); T1/2=30.0 hr (ADMET); T1/2=30.0 hr (ADMET)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.728657"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1647/",
+          "identifier": "CHEMBL1647",
+          "title": "ACETAMINOPHEN GLUCURONIDE - ChEMBL",
+          "snippet": "Molecule: ACETAMINOPHEN GLUCURONIDE\nType: Small molecule\nMolecular weight: 327.29\nBioactivity: Activity=150.0 % (ATP-binding cassette sub-family C member 2); CL=130.0 ml/min (Homo sapiens)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:49.108799"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL112/",
+          "identifier": "CHEMBL112",
+          "title": "ACETAMINOPHEN - ChEMBL",
+          "snippet": "Molecule: ACETAMINOPHEN\nType: Small molecule\nMax clinical phase: 4.0\nMolecular weight: 151.16\nFirst approval: 1968\nMechanism: Cyclooxygenase inhibitor; Anandamide amidohydrolase inhibitor; Vanilloid receptor opener\nBioactivity: Log K'=0.81 (Albumin); Vdss=0.95 L.kg-1 (ADMET); Fu=1.0 (ADMET); Fu=0.503 (ADMET); eLog D=0.38 (ADMET)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:49.506195"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1795485/",
+          "identifier": "CHEMBL1795485",
+          "title": "ACETAMINOPHEN ALANINATE HYDROCHLORIDE - ChEMBL",
+          "snippet": "Molecule: ACETAMINOPHEN ALANINATE HYDROCHLORIDE\nType: Small molecule\nMolecular weight: 258.70\nBioactivity: T1/2=0.5388 hr (No relevant target)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:49.846554"
+        }
+      ],
+      "raw_data": {
+        "chembl_Apraglutide_count": 1,
+        "chembl_Apraglutide_molecules": [
+          {
+            "chembl_id": "CHEMBL4563522",
+            "pref_name": "FE 203799",
+            "mol_type": "Protein",
+            "helm_notation": null,
+            "max_phase": "3.0"
+          }
+        ],
+        "chembl_Placebo_count": 0,
+        "chembl_Acetaminophen_count": 5,
+        "chembl_Acetaminophen_molecules": [
+          {
+            "chembl_id": "CHEMBL1647",
+            "pref_name": "ACETAMINOPHEN GLUCURONIDE",
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL112",
+            "pref_name": "ACETAMINOPHEN",
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": "4.0"
+          },
+          {
+            "chembl_id": "CHEMBL1795485",
+            "pref_name": "ACETAMINOPHEN ALANINATE HYDROCHLORIDE",
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/6XOL",
+          "identifier": "PDB:6XOL",
+          "title": "DCN1 bound to DI-1548",
+          "snippet": "PDB ID: 6XOL\nTitle: DCN1 bound to DI-1548\nMethod: X-RAY DIFFRACTION\nResolution: 2.39 A\nDeposited: 2020-07-07\nReleased: 2021-06-02\nCitation: Selective inhibition of cullin 3 neddylation through covalent targeting DCN1 protects mice from acetaminophen-induced liver toxicity.. Zhou, H., Lu, J., Chinnaswamy, K. et al.. Nat Commun (2021)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T13:45:46.886647"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/6XON",
+          "identifier": "PDB:6XON",
+          "title": "DCN1 bound to inhibitor 9",
+          "snippet": "PDB ID: 6XON\nTitle: DCN1 bound to inhibitor 9\nMethod: X-RAY DIFFRACTION\nResolution: 2.8 A\nDeposited: 2020-07-07\nReleased: 2021-06-02\nCitation: Selective inhibition of cullin 3 neddylation through covalent targeting DCN1 protects mice from acetaminophen-induced liver toxicity.. Zhou, H., Lu, J., Chinnaswamy, K. et al.. Nat Commun (2021)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T13:45:46.928582"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/6XOO",
+          "identifier": "PDB:6XOO",
+          "title": "DCN1 bound to DI-1859",
+          "snippet": "PDB ID: 6XOO\nTitle: DCN1 bound to DI-1859\nMethod: X-RAY DIFFRACTION\nResolution: 2.06 A\nDeposited: 2020-07-07\nReleased: 2021-06-02\nCitation: Selective inhibition of cullin 3 neddylation through covalent targeting DCN1 protects mice from acetaminophen-induced liver toxicity.. Zhou, H., Lu, J., Chinnaswamy, K. et al.. Nat Commun (2021)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T13:45:46.970586"
+        }
+      ],
+      "raw_data": {
+        "rcsb_Apraglutide": {
+          "count": 0
+        },
+        "rcsb_Placebo": {
+          "count": 0
+        },
+        "rcsb_Acetaminophen_count": 23
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/Q63836",
+          "identifier": "Q63836",
+          "title": "Selenium-binding protein 2 - EBI Proteins",
+          "snippet": "Protein: Selenium-binding protein 2\nOrganism: Mus musculus\nLength: 472 aa\nMass: 52610 Da\nFunction: Selenium- and acetaminophen-binding protein which may be involved in the sensing of reactive xenobiotics in the cytoplasm. May be involved in intra-Golgi protein transport (By similarity)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.446266"
+        }
+      ],
+      "raw_data": {
+        "ebi_proteins_Apraglutide_count": 0,
+        "ebi_proteins_Placebo_count": 0,
+        "ebi_proteins_Acetaminophen_count": 1,
+        "ebi_variation_Q63836_count": 0,
+        "ebi_proteins_Acetaminophen_entries": [
+          {
+            "accession": "Q63836",
+            "protein_name": "Selenium-binding protein 2",
+            "sequence": "MATKCTKCGPGYPTPLEAMKGPREEIVYLPCIYRNTGTEAPDYLATVDVDPKSPQYSQVIHRLPMPYLKDELHHSGWNTCSSCFGDSTKSRNKLILPGLISSRIYVVDVGSEPRAPKLHKVIEASEIQAKCNVSNTHTSHCLASGEVMVNTLGDLQGNGKGSFVLLDGETFEVKGTWEKPGGASPMGYDFWYQPRHNVMVSTEWAAPNVFKDGFNPAHVEAGLYGSRIFVWDWQRHEIIQTLQMTDGLIPLEIRFLHDPSATQGFVGCALSSNIQRFYKNEEGTWSVEKVIQVPSKKVKGWMLPEMPGLITDILLSLDDRFLYFSNWLHGDIRQYDISNPQKPRLTGQIFLGGSIVRGGSVQVLEDQELTCQPEPLVVKGKRIPGGPQMIQLSLDGKRLYATTSLYSDWDKQFYPDLIREGSVMLQVDVDTVNGGLKLNPNFLVDFGKEPLGPALAHELRYPGGDCSSDIWI",
+            "seq_length": 472,
+            "features": [
+              {
+                "type": "CHAIN",
+                "category": "MOLECULE_PROCESSING",
+                "ftId": "PRO_0000174635",
+                "description": "Selenium-binding protein 2",
+                "begin": "1",
+                "end": "472",
+                "molecule": ""
+              }
+            ]
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT05995704",
+      "citations": [],
+      "raw_data": {
+        "apd_Apraglutide": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Placebo": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Acetaminophen": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT05995704",
+          "identifier": "NCT05995704",
+          "title": "Evaluation of Apraglutide on Gastric Emptying",
+          "snippet": "Title: Evaluation of Apraglutide on Gastric Emptying\nStatus: Completed\nPhase: Phase 1\nCountries: Netherlands\nConditions: Healthy Subjects\nInterventions: Drug: Apraglutide, Drug: Placebo, Drug: Acetaminophen\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T13:45:48.798695"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT05995704",
+          "public_title": "Evaluation of Apraglutide on Gastric Emptying",
+          "scientific_title": "A Phase 1, Randomized, Placebo-Controlled, Double-Blind, Single Center, Multiple-Dose, Parallel Trial Evaluating the Impact of Apraglutide on Gastric Emptying of Liquids in Healthy Subjects",
+          "recruitment_status": "Completed",
+          "phase": "Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized. Intervention model: Parallel Assignment. Primary purpose: Other. Masking: Quadruple (Participant, Care Provider, Investigator, Outcomes Assessor).",
+          "countries": [
+            "Netherlands"
+          ],
+          "conditions": [
+            "Healthy Subjects"
+          ],
+          "interventions": [
+            "Drug: Apraglutide",
+            "Drug: Placebo",
+            "Drug: Acetaminophen"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "iuphar",
+          "source_url": "https://www.guidetopharmacology.org/GRAC/LigandDisplayForward?ligandId=10685",
+          "identifier": "GtoPdb:10685",
+          "title": "apraglutide - Guide to Pharmacology",
+          "snippet": "Ligand: apraglutide\nType: Peptide\nINN: apraglutide",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T13:45:47.542515"
+        }
+      ],
+      "raw_data": {
+        "iuphar_Apraglutide": [
+          {
+            "ligandId": 10685,
+            "name": "apraglutide",
+            "type": "Peptide",
+            "abbreviation": "",
+            "inn": "apraglutide",
+            "approvalSource": "",
+            "approved": false,
+            "whoEssential": false,
+            "withdrawn": false,
+            "antibacterial": false,
+            "immuno": false,
+            "malaria": false,
+            "labelled": false,
+            "radioactive": false,
+            "activeDrugIds": [],
+            "prodrugIds": [],
+            "complexIds": [],
+            "subunitIds": [],
+            "species": ""
+          }
+        ],
+        "iuphar_Placebo": {
+          "found": false
+        },
+        "iuphar_Acetaminophen": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/3dji",
+          "identifier": "PDB:3dji",
+          "title": "Crystal Structure of Macrophage Migration Inhibitory Factor Bound to an Acetaminophen Dimer Derived from NAPQI",
+          "snippet": "PDB ID: 3dji\nTitle: Crystal Structure of Macrophage Migration Inhibitory Factor Bound to an Acetaminophen Dimer Derived from NAPQI\nExperimental method: X-ray diffraction\nQuality: Resolution: 1.95 A, R-factor: 0.2090, R-free: 0.2470\nMolecules: Macrophage migration inhibitory factor\nMolecule type: Protein\nOrganisms: Homo sapiens\nBound entities: 2\nAssembly: trimer (homo)\nDeposited: 2008-06-23\nReleased: 2008-12-23\nCitation: Structural and kinetic analyses of macrophage migration inhibitory factor active site interactions.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T13:45:47.556962"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/4cut",
+          "identifier": "PDB:4cut",
+          "title": "Crystal structure of human BAZ2B in complex with fragment-5 N09428",
+          "snippet": "PDB ID: 4cut\nTitle: Crystal structure of human BAZ2B in complex with fragment-5 N09428\nExperimental method: X-ray diffraction\nQuality: Resolution: 1.835 A, R-factor: 0.1700, R-free: 0.1966\nMolecules: Bromodomain adjacent to zinc finger domain protein 2B\nMolecule type: Protein\nOrganisms: Homo sapiens\nBound entities: 2\nAssembly: monomer (homo)\nDeposited: 2014-03-21\nReleased: 2014-04-02\nCitation: Crystal Structure of Human Baz2B in Complex with Fragment-5 N09428",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T13:45:47.706976"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/1tym",
+          "identifier": "PDB:1tym",
+          "title": "THE STRUCTURE OF A COMPLEX OF HEXAMERIC INSULIN AND 4'-HYDROXYACETANILIDE",
+          "snippet": "PDB ID: 1tym\nTitle: THE STRUCTURE OF A COMPLEX OF HEXAMERIC INSULIN AND 4'-HYDROXYACETANILIDE\nExperimental method: X-ray diffraction\nQuality: Resolution: 1.9 A, R-factor: 0.1730\nMolecules: Insulin A chain\nMolecule type: Protein\nOrganisms: Homo sapiens\nBound entities: 3\nAssembly: dimer (hetero)\nDeposited: 1994-06-21\nReleased: 1994-09-30\nCitation: The structure of a complex of hexameric insulin and 4'-hydroxyacetanilide.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T13:45:47.860215"
+        }
+      ],
+      "raw_data": {
+        "pdbe_Apraglutide_count": 0,
+        "pdbe_Placebo_count": 0,
+        "pdbe_Acetaminophen_count": 14
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3008194890",
+          "identifier": "PMID:32075870",
+          "title": "Pharmacological Characterization of Apraglutide, a Novel Long-Acting Peptidic Glucagon-Like Peptide-2 Agonist, for the Treatment of Short Bowel Syndrome",
+          "snippet": "Title: Pharmacological Characterization of Apraglutide, a Novel Long-Acting Peptidic Glucagon-Like Peptide-2 Agonist, for the Treatment of Short Bowel Syndrome\nYear: 2020\nCitations: 58",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.450844"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3186802345",
+          "identifier": "PMID:34287970",
+          "title": "Apraglutide, a novel glucagon\u2010like peptide\u20102 analog, improves fluid absorption in patients with short bowel syndrome intestinal failure: Findings from a placebo\u2010controlled, randomized phase 2 trial",
+          "snippet": "Title: Apraglutide, a novel glucagon\u2010like peptide\u20102 analog, improves fluid absorption in patients with short bowel syndrome intestinal failure: Findings from a placebo\u2010controlled, randomized phase 2 trial\nYear: 2021\nCitations: 51\nAbstract: BACKGROUND: Treatment with glucagon-like peptide-2 (GLP-2) analogs improve intestinal adaptation in patients with short bowel syndrome-associated intestinal failure (SBS-IF) and may reduce parenteral support requirements. Apraglutide is a novel, long",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451054"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3135922146",
+          "identifier": "PMID:35300464",
+          "title": "How to manage a high-output stoma",
+          "snippet": "Title: How to manage a high-output stoma\nYear: 2021\nCitations: 78\nAbstract: A high-output stoma (HOS) or fistula is when small bowel output causes water, sodium and often magnesium depletion. This tends to occur when the output is >1.5 -2.0 L/24 hours though varies according to the amount of food/drink taken orally. An HOS o",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451222"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4385336986",
+          "identifier": "PMID:37639741",
+          "title": "ESPEN guideline on chronic intestinal failure in adults \u2013 Update 2023",
+          "snippet": "Title: ESPEN guideline on chronic intestinal failure in adults \u2013 Update 2023\nYear: 2023\nCitations: 174",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451240"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4394065213",
+          "identifier": "PMID:38579917",
+          "title": "Targeting the GLP-2 receptor in the management of obesity",
+          "snippet": "Title: Targeting the GLP-2 receptor in the management of obesity\nYear: 2024\nCitations: 21\nAbstract: Recent advancements in understanding glucagon-like peptide 2 (GLP-2) biology and pharmacology have sparked interest in targeting the GLP-2 receptor (GLP-2R) in the treatment of obesity. GLP-2 is a proglucagon-derived 33-amino acid peptide co-secreted",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T13:45:47.451353"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 0,
+        "openalex_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT05995704",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/s0016-5085(24)02508-3",
+          "identifier": "DOI:10.1016/s0016-5085(24)02508-3",
+          "title": "Su1949 THE EFFECT OF APRAGLUTIDE ON GASTRIC EMPTYING IN HEALTHY INDIVIDUALS: A PHASE 1 RANDOMIZED, PLACEBO-CONTROLLED, DOUBLE-BLIND, SINGLE-CENTER TRIAL",
+          "snippet": "Title: Su1949 THE EFFECT OF APRAGLUTIDE ON GASTRIC EMPTYING IN HEALTHY INDIVIDUALS: A PHASE 1 RANDOMIZED, PLACEBO-CONTROLLED, DOUBLE-BLIND, SINGLE-CENTER TRIAL\nJournal: Gastroenterology\nYear: 2024",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T13:45:48.556624"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.clnesp.2024.07.335",
+          "identifier": "DOI:10.1016/j.clnesp.2024.07.335",
+          "title": "The effect of apraglutide on gastric emptying in healthy individuals: A phase 1 randomized, placebo-controlled, double-blind, single-center trial",
+          "snippet": "Title: The effect of apraglutide on gastric emptying in healthy individuals: A phase 1 randomized, placebo-controlled, double-blind, single-center trial\nJournal: Clinical Nutrition ESPEN\nYear: 2024",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T13:45:48.556689"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.55788/14a9c7fb",
+          "identifier": "DOI:10.55788/14a9c7fb",
+          "title": "STARS: Apraglutide shows efficacy in short bowel syndrome with intestinal failure",
+          "snippet": "Title: STARS: Apraglutide shows efficacy in short bowel syndrome with intestinal failure\nJournal: Medicom Conference Report DDW 2024\nYear: 2024",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T13:45:48.556716"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202604.1740.v1",
+          "identifier": "DOI:10.20944/preprints202604.1740.v1",
+          "title": "Effect of an Intravenous Acetaminophen/Ibuprofen Fixed-Dose Combination on Catheter-Related Bladder Discomfort: A Prospective, Randomized, Placebo-Controlled, Double-Blind Pilot Study",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037268"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202501.0319.v6",
+          "identifier": "DOI:10.20944/preprints202501.0319.v6",
+          "title": "An Update on the Connection Between Acetaminophen and Autism: Expanding Evidence and Misinterpreted Sibling Control Studies",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037320"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.31234/osf.io/em2q5_v2",
+          "identifier": "DOI:10.31234/osf.io/em2q5_v2",
+          "title": "Behavioral Consequences of Blunting Fear with Acetaminophen",
+          "snippet": "PPR ({'publisher': 'PsyArXiv', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037344"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-8971010/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-8971010/v1",
+          "title": "Worldwide search behavior following the HHS announcement on the association between prenatal acetaminophen exposure and autism spectrum disorders",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037365"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-9224000/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-9224000/v1",
+          "title": "Targeting nucleoporin NUP85 ameliorates acetaminophen-induced liver injury by inhibiting inflammation and oxidative stress in hepatocytes",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037384"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-9123982/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-9123982/v1",
+          "title": "By-product Aware Sales Share (ByPASS) Method for Constructing Physical Input-Output Tables from Mechanistic Models : A Case Study on Acetaminophen Manufacturing",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037403"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-9116861/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-9116861/v1",
+          "title": "Automation of 3D Liver Spheroid generation and Acetaminophen dose\u2013 response on the MO:BOT enhances assay robustness and precision",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037422"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202602.1936.v1",
+          "identifier": "DOI:10.20944/preprints202602.1936.v1",
+          "title": "Suspension Reactor Studies for the Photocatalytic Degradation of Acetaminophen",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037441"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-7955803/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-7955803/v1",
+          "title": "Effects of preemptive acetaminophen administration and preoperative anxiety on postoperative agitation and pain in adult septorhinoplasty patients",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037459"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-8110558/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-8110558/v1",
+          "title": "Prostaglandin E2 alleviates acetaminophen-induced liver injury through DDIT4-enhanced autophagy regulated by circLima1/miR- 486",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037515"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.10.07.681041",
+          "identifier": "DOI:10.1101/2025.10.07.681041",
+          "title": "Prenatal Acetaminophen Exposure Does Not Disrupt Human Fetal Brain Development in Cortical Organoid Models",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037572"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202509.1296.v1",
+          "identifier": "DOI:10.20944/preprints202509.1296.v1",
+          "title": "Hydrothermal Modification of Activated Carbon Enhances Acetaminophen Adsorption: Experimental and Computational Evidence of \u03c0\u2013\u03c0 Interaction Dominance",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037610"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-7334690/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-7334690/v1",
+          "title": "An efficient novel electrochemical sensor for simultaneous determination of acetaminophen and moxifloxacin based on poly benzylidene-2-(2,4- dinitrophenyl)hydrazine carbon paste electrode",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037630"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202508.0006.v1",
+          "identifier": "DOI:10.20944/preprints202508.0006.v1",
+          "title": "Evidence That Acetaminophen Triggers Autism in Susceptible Individuals Has Been Ignored and Mishandled for More than a Decade",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037648"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-6712781/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-6712781/v1",
+          "title": "Association Between Early Acetaminophen Exposure and Sepsis-Associated Acute Kidney Injury: A Retrospective Cohort Study",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037685"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-6533986/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-6533986/v1",
+          "title": "Routine Use of Intravenous Acetaminophen Safely Enhances Pain Control After Minimally Invasive Hepatectomies: a retrospective cohort study",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037704"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.07.07.663557",
+          "identifier": "DOI:10.1101/2025.07.07.663557",
+          "title": "A Sulfotransferase from a Gut Microbe Acts on Diverse Phenolic Sulfate Compounds, Including Acetaminophen Sulfate",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037722"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.07.31.667940",
+          "identifier": "DOI:10.1101/2025.07.31.667940",
+          "title": "Diploid Hepatocytes Resist Acetaminophen-Induced Liver Injury Through Suppressed JNK Signaling",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037740"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.05.08.25327260",
+          "identifier": "DOI:10.1101/2025.05.08.25327260",
+          "title": "Acetaminophen and Acetaminophen-Opioid Combination Prescribing Trends Among Hospitalized Children, Adolescents, and Young Adults with Cancer",
+          "snippet": "PPR ({'publisher': 'medRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.037759"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202604.1249.v1",
+          "identifier": "DOI:10.20944/preprints202604.1249.v1",
+          "title": "Phenome-Wide Screening Identified Novel Repurposing Potential for Paracetamol and Levothyroxine in Mental Health and Diabetes",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.067874"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-8872875/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-8872875/v1",
+          "title": "A Robust RP-HPLC Method for Simultaneous Estimation of Paracetamol and Nefopam in Human Plasma: Design of Experiments Approach",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.067908"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-9329540/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-9329540/v1",
+          "title": "Understanding Public Procurement of Paracetamol and Iron tablets in Nepal\u2019s Health System",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.067919"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202602.2003.v1",
+          "identifier": "DOI:10.20944/preprints202602.2003.v1",
+          "title": "Paracetamol <em>\u03b2</em>-D-Glucoside: Prodrug Design, Kinetics, and Regulatory Stability Assessment",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.067930"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-8601812/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-8601812/v1",
+          "title": "Hepatoprotective and antioxidant effects of safflower oil in a rat model of paracetamol-induced acute toxic hepatitis",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2026})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.067959"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202512.2787.v1",
+          "identifier": "DOI:10.20944/preprints202512.2787.v1",
+          "title": "Paracetamol Removal from Aqueous Media Through Fenton Reaction Using ZSM-5 Zeolite Produced from Fly-Ash",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.067968"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202512.1412.v1",
+          "identifier": "DOI:10.20944/preprints202512.1412.v1",
+          "title": "Heterogeneous Photo-Fenton Catalyzed by Natural Iron Ore from a City of Bandj\u00e9li in Northwestern of Togo, for the Elimination of Paracetamol in Aqueous Media",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.067986"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-7829945/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-7829945/v1",
+          "title": "Activated carbon from butia endocarp hydrochar obtained via hydrothermal liquefaction as an adsorbent for the removal of Paracetamol and 2,4-Dichlorophenoxyacetic Acid",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.068041"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202509.2168.v1",
+          "identifier": "DOI:10.20944/preprints202509.2168.v1",
+          "title": "Gestational Paracetamol Toxicity Induces Behavioral and Structural Brain Defects in Rats with Direct Effect",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:48.068059"
+        }
+      ],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 63,
+        "biorxiv_prefilter_dropped": 35
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1446847/000110465925028766/0001104659-25-028766-index.htm",
+          "identifier": "SEC:0001104659-25-028766",
+          "title": "IRONWOOD PHARMACEUTICALS INC  (IRWD)  (CIK 0001446847) 8-K (2025-03-27) \u2014 references 'Apraglutide'",
+          "snippet": "Filing: 8-K\nSponsor: IRONWOOD PHARMACEUTICALS INC  (IRWD)  (CIK 0001446847)\nDate: 2025-03-27\nSearch term: 'Apraglutide'\n(44 total hits for 'Apraglutide' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:56.936872"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1446847/000110465925034381/0001104659-25-034381-index.htm",
+          "identifier": "SEC:0001104659-25-034381",
+          "title": "IRONWOOD PHARMACEUTICALS INC  (IRWD)  (CIK 0001446847) 8-K (2025-04-14) \u2014 references 'Apraglutide'",
+          "snippet": "Filing: 8-K\nSponsor: IRONWOOD PHARMACEUTICALS INC  (IRWD)  (CIK 0001446847)\nDate: 2025-04-14\nSearch term: 'Apraglutide'\n(44 total hits for 'Apraglutide' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:56.937000"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1446847/000110465926000057/0001104659-26-000057-index.htm",
+          "identifier": "SEC:0001104659-26-000057",
+          "title": "IRONWOOD PHARMACEUTICALS INC  (IRWD)  (CIK 0001446847) 8-K (2026-01-02) \u2014 references 'Apraglutide'",
+          "snippet": "Filing: 8-K\nSponsor: IRONWOOD PHARMACEUTICALS INC  (IRWD)  (CIK 0001446847)\nDate: 2026-01-02\nSearch term: 'Apraglutide'\n(44 total hits for 'Apraglutide' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:56.937029"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1446847/000155837023018589/0001558370-23-018589-index.htm",
+          "identifier": "SEC:0001558370-23-018589",
+          "title": "IRONWOOD PHARMACEUTICALS INC  (IRWD)  (CIK 0001446847) 10-Q (2023-11-09) \u2014 references 'Apraglutide'",
+          "snippet": "Filing: 10-Q\nSponsor: IRONWOOD PHARMACEUTICALS INC  (IRWD)  (CIK 0001446847)\nDate: 2023-11-09\nSearch term: 'Apraglutide'\n(44 total hits for 'Apraglutide' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:56.937054"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1446847/000110465925108806/0001104659-25-108806-index.htm",
+          "identifier": "SEC:0001104659-25-108806",
+          "title": "IRONWOOD PHARMACEUTICALS INC  (IRWD)  (CIK 0001446847) 8-K (2025-11-10) \u2014 references 'Apraglutide'",
+          "snippet": "Filing: 8-K\nSponsor: IRONWOOD PHARMACEUTICALS INC  (IRWD)  (CIK 0001446847)\nDate: 2025-11-10\nSearch term: 'Apraglutide'\n(44 total hits for 'Apraglutide' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:56.937076"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1513525/000121390022058942/0001213900-22-058942-index.htm",
+          "identifier": "SEC:0001213900-22-058942",
+          "title": "ADIAL PHARMACEUTICALS, INC.  (ADIL)  (CIK 0001513525) 8-K (2022-09-26) \u2014 references 'Acetaminophen'",
+          "snippet": "Filing: 8-K\nSponsor: ADIAL PHARMACEUTICALS, INC.  (ADIL)  (CIK 0001513525)\nDate: 2022-09-26\nSearch term: 'Acetaminophen'\n(438 total hits for 'Acetaminophen' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:59.062781"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/786947/000110465923096868/0001104659-23-096868-index.htm",
+          "identifier": "SEC:0001104659-23-096868",
+          "title": "ACURA PHARMACEUTICALS, INC  (ACUR)  (CIK 0000786947) 8-K (2023-08-30) \u2014 references 'Acetaminophen'",
+          "snippet": "Filing: 8-K\nSponsor: ACURA PHARMACEUTICALS, INC  (ACUR)  (CIK 0000786947)\nDate: 2023-08-30\nSearch term: 'Acetaminophen'\n(438 total hits for 'Acetaminophen' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:59.062847"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1087294/000162828024050499/0001628280-24-050499-index.htm",
+          "identifier": "SEC:0001628280-24-050499",
+          "title": "CUMBERLAND PHARMACEUTICALS INC  (CPIX)  (CIK 0001087294) 8-K (2024-12-09) \u2014 references 'Acetaminophen'",
+          "snippet": "Filing: 8-K\nSponsor: CUMBERLAND PHARMACEUTICALS INC  (CPIX)  (CIK 0001087294)\nDate: 2024-12-09\nSearch term: 'Acetaminophen'\n(438 total hits for 'Acetaminophen' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:59.062874"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/786947/000110465921077442/0001104659-21-077442-index.htm",
+          "identifier": "SEC:0001104659-21-077442",
+          "title": "ACURA PHARMACEUTICALS, INC  (ACUR)  (CIK 0000786947) 8-K (2021-06-07) \u2014 references 'Acetaminophen'",
+          "snippet": "Filing: 8-K\nSponsor: ACURA PHARMACEUTICALS, INC  (ACUR)  (CIK 0000786947)\nDate: 2021-06-07\nSearch term: 'Acetaminophen'\n(438 total hits for 'Acetaminophen' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:59.062896"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/786947/000110465923009872/0001104659-23-009872-index.htm",
+          "identifier": "SEC:0001104659-23-009872",
+          "title": "ACURA PHARMACEUTICALS, INC  (ACUR)  (CIK 0000786947) 8-K (2023-02-02) \u2014 references 'Acetaminophen'",
+          "snippet": "Filing: 8-K\nSponsor: ACURA PHARMACEUTICALS, INC  (ACUR)  (CIK 0000786947)\nDate: 2023-02-02\nSearch term: 'Acetaminophen'\n(438 total hits for 'Acetaminophen' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:59.062922"
+        }
+      ],
+      "raw_data": {
+        "sec_edgar_NCT05995704_total": 0,
+        "sec_edgar_Apraglutide_total": 44,
+        "sec_edgar_Acetaminophen_total": 438
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "fda_drugs",
+          "source_url": "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo=ANDA207035",
+          "identifier": "FDA:ANDA207035",
+          "title": "ARTHRITISPAIN RELIEF - Drugs@FDA",
+          "snippet": "Drug: ARTHRITISPAIN RELIEF\nSponsor: HERITAGE\nApplication: ANDA207035\nFDA approved: YES\nApproval dates: 2018-05-31\nGeneric name(s): ACETAMINOPHEN\nActive substance: ACETAMINOPHEN\nRoute: ORAL\nProducts: ACETAMINOPHEN (TABLET, EXTENDED RELEASE, Discontinued)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:46.802508"
+        },
+        {
+          "source_name": "fda_drugs",
+          "source_url": "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo=ANDA214305",
+          "identifier": "FDA:ANDA214305",
+          "title": "BUTALBITAL AND ACETAMINOPHEN - Drugs@FDA",
+          "snippet": "Drug: BUTALBITAL AND ACETAMINOPHEN\nSponsor: QUAGEN\nApplication: ANDA214305\nFDA approved: YES\nApproval dates: 2024-02-01\nGeneric name(s): BUTALBITAL AND ACETAMINOPHEN\nActive substance: ACETAMINOPHEN, BUTALBITAL\nRoute: ORAL\nProducts: BUTALBITAL AND ACETAMINOPHEN (TABLET, Prescription)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:46.802577"
+        },
+        {
+          "source_name": "fda_drugs",
+          "source_url": "https://www.accessdata.fda.gov/scripts/cder/daf/index.cfm?event=overview.process&ApplNo=ANDA040248",
+          "identifier": "FDA:ANDA040248",
+          "title": "Acetaminophen - Drugs@FDA",
+          "snippet": "Drug: Acetaminophen\nSponsor: CHARTWELL\nApplication: ANDA040248\nFDA approved: YES\nApproval dates: 2024-01-02, 2019-10-11, 2018-09-18\nProducts: HYDROCODONE BITARTRATE AND ACETAMINOPHEN (TABLET, Discontinued); HYDROCODONE BITARTRATE AND ACETAMINOPHEN (TABLET, Discontinued)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:46.802628"
+        }
+      ],
+      "raw_data": {
+        "fda_drugs_Apraglutide_count": 0,
+        "fda_drugs_Acetaminophen_count": 534,
+        "fda_drugs_Acetaminophen_approved": true,
+        "fda_drugs_Acetaminophen_indication": "Uses temporarily relieves minor aches and pains due to: headache the common cold backache minor pain of arthritis toothache muscular aches premenstrual and menstrual cramps temporarily reduces fever"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT05995704",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Acetaminophen",
+          "identifier": "NIH:5R01DK135752-03",
+          "title": "The role of phosphatidic acid in liver regeneration after acetaminophen overdose (MCGILL, MITCHELL RYAN)",
+          "snippet": "Project: 5R01DK135752-03\nPI: MCGILL, MITCHELL RYAN\nOrganization: \nFiscal year: 2026\nAward: $328,034\nStart: 2024-03-15\nEnd: 2029-02-28\n(2259 total NIH-funded projects matching 'Acetaminophen')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:47.120868"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Acetaminophen",
+          "identifier": "NIH:1K99MH138623-01A1",
+          "title": "Mechanisms and Modifiers of Prenatal Acetaminophen Exposure and Child Neurodevelopment (BAKER, BRENNAN H.)",
+          "snippet": "Project: 1K99MH138623-01A1\nPI: BAKER, BRENNAN H.\nOrganization: \nFiscal year: 2026\nAward: $244,123\nStart: 2026-04-01\nEnd: 2028-03-31\n(2259 total NIH-funded projects matching 'Acetaminophen')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:47.120950"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Acetaminophen",
+          "identifier": "NIH:5R01DK135566-04",
+          "title": "Diverging roles of EGFR and MET in acetaminophen-induced acute liver injury (BHUSHAN, BHARAT)",
+          "snippet": "Project: 5R01DK135566-04\nPI: BHUSHAN, BHARAT\nOrganization: \nFiscal year: 2026\nAward: $415,259\nStart: 2023-04-01\nEnd: 2027-12-31\n(2259 total NIH-funded projects matching 'Acetaminophen')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-30T13:45:47.120980"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_Apraglutide_count": 0,
+        "nih_reporter_Apraglutide_funded": false,
+        "nih_reporter_Acetaminophen_count": 2259,
+        "nih_reporter_Acetaminophen_funded": true
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 10,
+      "has_data": true,
+      "quality_avg": 0.94,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov",
+        "openfda"
+      ]
+    },
+    "literature": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "peptide_identity": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "uniprot"
+      ]
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "chembl": {
+      "citations_count": 4,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "rcsb_pdb"
+      ]
+    },
+    "ebi_proteins": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "ebi_proteins"
+      ]
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "iuphar"
+      ]
+    },
+    "pdbe": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "pdbe"
+      ]
+    },
+    "openalex": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 28,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "biorxiv_medrxiv"
+      ]
+    },
+    "sec_edgar": {
+      "citations_count": 10,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "sec_edgar"
+      ]
+    },
+    "fda_drugs": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "fda_drugs"
+      ]
+    },
+    "nih_reporter": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "nih_reporter"
+      ]
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT02660008",
+  "pmid": "PMC:10570215",
+  "source": "pmc",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "NO",
+    "q2_primary_met": "NA",
+    "q3_efficacy": "NA",
+    "q4_failure": "NA",
+    "q5_advanced": "UNCLEAR",
+    "evidence_quote": ""
+  },
+  "verdict": "INDETERMINATE",
+  "model": "qwen3:14b",
+  "error": "",
+  "cached": false
+}

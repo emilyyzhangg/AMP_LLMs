@@ -1,0 +1,1158 @@
+{
+  "nct_id": "NCT05608187",
+  "completed_at": "2026-05-06 10:20:00 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT05608187",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "A Randomized, Double-Blind, Placebo-controlled, Parallel, Exploratory Phase 2a Study to Evaluate Safety and Biological Effect on Wound Healing of ILP100-Topical in Subjects With Diabetic Foot Ulcers",
+          "snippet": "Title: A Randomized, Double-Blind, Placebo-controlled, Parallel, Exploratory Phase 2a Study to Evaluate Safety and Biological Effect on Wound Healing of ILP100-Topical in Subjects With Diabetic Foot Ulcers",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863257"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Brief Summary",
+          "snippet": "A randomized, double-blind, placebo-controlled, parallel, exploratory phase 2a study to evaluate safety and biologic efficacy on wound healing of ILP100-Topical in subjects with diabetic foot ulcers during 26 weeks with a 5-year long-term follow-up period. A total of 30 subjects will be randomized to low dose of ILP100-Topical (ILP100Lo), high dose of ILP100-Topical (ILP100Hi) or Placebo according to a 1:1:1 randomization schedule.\n\nThe study will consist of a 3-weeks Screening and Run-in Phase,",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863281"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Study Status",
+          "snippet": "Status: TERMINATED | Why stopped: Patient recruitment issues",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863289"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Wound Heal, Wound Healing Disturbance of, Wound Healing Disorder, Wound Healing Delayed, Diabetic Foot Ulcer, Diabetic Foot Ulcer Mixed | Keywords: emilimogene sigulactibac, ILP100, ILP100-Topical, Lactobacillus reuteri, Limosilactobacillus reuteri, CXCL12, diabetic foot ulcer, wound healing, Ilya Pharma, live biopharmaceutical product, lactic acid bacteria",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863300"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Intervention: ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2",
+          "snippet": "BIOLOGICAL: ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2 - Topical application of ILP100-Topical (emilimogene sigulactibac) at a dose of 5x10\\^7 CFU/cm\\^2 wound area.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863308"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Intervention: ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2",
+          "snippet": "BIOLOGICAL: ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2 - Topical application of ILP100-Topical (emilimogene sigulactibac) at a dose of 1x10\\^9 CFU/cm\\^2 wound area.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863315"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Intervention: Placebo",
+          "snippet": "BIOLOGICAL: Placebo - Topical application of placebo (ILP100 dilution buffer mixed with the activation peptide SppIP).",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863321"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Arm Group: ILP100Lo",
+          "snippet": "Arm: ILP100Lo - During the Treatment Phase, subjects will continue on standard of care according to the protocol and ILP100Lo (ILP100-Topical, 5x10\\^7 colony forming units (CFU)/cm\\^2) will be topically administered at two occasions on Day 1 (Baseline and Hour 2), Days 2, 3, and thereafter every second to third day until Day 31.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863328"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Arm Group: ILP100Hi",
+          "snippet": "Arm: ILP100Hi - During the Treatment Phase, subjects will continue on standard of care according to the protocol and ILP100Hi (ILP100-Topical, 1x10\\^9 CFU/cm\\^2) will be topically administered at two occasions on Day 1 (Baseline and Hour 2), Days 2, 3, and thereafter every second to third day until Day 31.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863334"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Arm Group: Placebo",
+          "snippet": "Arm: Placebo - During the Treatment Phase, subjects will continue on standard of care according to the protocol and Placebo (ILP100 dilution buffer mixed with the activation peptide SppIP) will be topically administered at two occasions on Day 1 (Baseline and Hour 2), Days 2, 3, and thereafter every second to third day until Day 31.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863340"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.863346"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT05608187",
+            "orgStudyIdInfo": {
+              "id": "IP-CT-003"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "2021-000563-69",
+                "type": "EUDRACT_NUMBER"
+              }
+            ],
+            "organization": {
+              "fullName": "Ilya Pharma",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Evaluating Safety and Biological Effect on Wound Healing of ILP100-Topical in Subjects With Diabetic Foot Ulcers",
+            "officialTitle": "A Randomized, Double-Blind, Placebo-controlled, Parallel, Exploratory Phase 2a Study to Evaluate Safety and Biological Effect on Wound Healing of ILP100-Topical in Subjects With Diabetic Foot Ulcers"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2025-03",
+            "overallStatus": "TERMINATED",
+            "whyStopped": "Patient recruitment issues",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2022-09-26",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2024-12-16",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2024-12-20",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2022-10-03",
+            "studyFirstSubmitQcDate": "2022-10-31",
+            "studyFirstPostDateStruct": {
+              "date": "2022-11-08",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2025-03-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2025-03-05",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Ilya Pharma",
+              "class": "INDUSTRY"
+            },
+            "collaborators": [
+              {
+                "name": "European Commission",
+                "class": "OTHER"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false,
+            "isUsExport": false
+          },
+          "descriptionModule": {
+            "briefSummary": "A randomized, double-blind, placebo-controlled, parallel, exploratory phase 2a study to evaluate safety and biologic efficacy on wound healing of ILP100-Topical in subjects with diabetic foot ulcers during 26 weeks with a 5-year long-term follow-up period. A total of 30 subjects will be randomized to low dose of ILP100-Topical (ILP100Lo), high dose of ILP100-Topical (ILP100Hi) or Placebo according to a 1:1:1 randomization schedule.\n\nThe study will consist of a 3-weeks Screening and Run-in Phase, followed by a 5-week Treatment Phase starting from Baseline and an Assessment Phase from Week 5 to Week 26. Thereafter, the subjects will be followed yearly during 5 years in a Long-Term Safety Follow-up Phase."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Wound Heal",
+              "Wound Healing Disturbance of",
+              "Wound Healing Disorder",
+              "Wound Healing Delayed",
+              "Diabetic Foot Ulcer",
+              "Diabetic Foot Ulcer Mixed"
+            ],
+            "keywords": [
+              "emilimogene sigulactibac",
+              "ILP100",
+              "ILP100-Topical",
+              "Lactobacillus reuteri",
+              "Limosilactobacillus reuteri",
+              "CXCL12",
+              "diabetic foot ulcer",
+              "wound healing",
+              "Ilya Pharma",
+              "live biopharmaceutical product",
+              "lactic acid bacteria"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "RANDOMIZED",
+              "interventionModel": "PARALLEL",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "QUADRUPLE",
+                "maskingDescription": "This is a double-blind study, and the allocation of treatments will not be disclosed to subjects, Investigator or Independent Evaluators until database lock after all subjects (who were not withdrawn) completed Week 26.",
+                "whoMasked": [
+                  "PARTICIPANT",
+                  "CARE_PROVIDER",
+                  "INVESTIGATOR",
+                  "OUTCOMES_ASSESSOR"
+                ]
+              }
+            },
+            "enrollmentInfo": {
+              "count": 1,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "ILP100Lo",
+                "type": "EXPERIMENTAL",
+                "description": "During the Treatment Phase, subjects will continue on standard of care according to the protocol and ILP100Lo (ILP100-Topical, 5x10\\^7 colony forming units (CFU)/cm\\^2) will be topically administered at two occasions on Day 1 (Baseline and Hour 2), Days 2, 3, and thereafter every second to third day until Day 31.",
+                "interventionNames": [
+                  "Biological: ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2"
+                ]
+              },
+              {
+                "label": "ILP100Hi",
+                "type": "EXPERIMENTAL",
+                "description": "During the Treatment Phase, subjects will continue on standard of care according to the protocol and ILP100Hi (ILP100-Topical, 1x10\\^9 CFU/cm\\^2) will be topically administered at two occasions on Day 1 (Baseline and Hour 2), Days 2, 3, and thereafter every second to third day until Day 31.",
+                "interventionNames": [
+                  "Biological: ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2"
+                ]
+              },
+              {
+                "label": "Placebo",
+                "type": "PLACEBO_COMPARATOR",
+                "description": "During the Treatment Phase, subjects will continue on standard of care according to the protocol and Placebo (ILP100 dilution buffer mixed with the activation peptide SppIP) will be topically administered at two occasions on Day 1 (Baseline and Hour 2), Days 2, 3, and thereafter every second to third day until Day 31.",
+                "interventionNames": [
+                  "Biological: Placebo"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2",
+                "description": "Topical application of ILP100-Topical (emilimogene sigulactibac) at a dose of 5x10\\^7 CFU/cm\\^2 wound area.",
+                "armGroupLabels": [
+                  "ILP100Lo"
+                ],
+                "otherNames": [
+                  "ILP100-Topical"
+                ]
+              },
+              {
+                "type": "BIOLOGICAL",
+                "name": "ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2",
+                "description": "Topical application of ILP100-Topical (emilimogene sigulactibac) at a dose of 1x10\\^9 CFU/cm\\^2 wound area.",
+                "armGroupLabels": [
+                  "ILP100Hi"
+                ],
+                "otherNames": [
+                  "ILP100-Topical"
+                ]
+              },
+              {
+                "type": "BIOLOGICAL",
+                "name": "Placebo",
+                "description": "Topical application of placebo (ILP100 dilution buffer mixed with the activation peptide SppIP).",
+                "armGroupLabels": [
+                  "Placebo"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Compare incidence of adverse events (AEs) between treatment groups",
+                "description": "The incidence of AEs up to Week 26 will be presented for each treatment group and by category, causality, severity and frequency.",
+                "timeFrame": "Compare between the ILP100-Topical and Placebo treatment arms up to Week 26."
+              },
+              {
+                "measure": "Compare incidence of serious adverse events (SAEs) between treatment groups",
+                "description": "The incidence of SAEs up to Week 26 will be presented for each treatment group and by category, causality, severity and frequency.",
+                "timeFrame": "Compare between the ILP100-Topical and Placebo treatment arms up to Week 26."
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Local tolerability by Investigator's assessment",
+                "description": "Local tolerance to treatment will be assessed by the Investigator. Wound tolerability parameters will be presented in categories of appearance of inflammation, amount of exudate present, hemorrhage, presence of slough/necrotic tissue, presence of granulation tissue and hypergranulation.",
+                "timeFrame": "Compare Investigator's local tolerability assessments up to Week 26 between the ILP100-Topical and Placebo treatment arms."
+              },
+              {
+                "measure": "Local tolerability by Independent Assessor's assessment",
+                "description": "Local tolerance to treatment will be assessed by the Independent Assessor. Wound tolerability parameters will be presented in categories of appearance of inflammation, amount of exudate present, hemorrhage, presence of slough/necrotic tissue, presence of granulation tissue and hypergranulation.",
+                "timeFrame": "Compare local tolerability up to Week 26 between the ILP100-Topical and Placebo treatment arms."
+              },
+              {
+                "measure": "Proportion of subjects with a local tolerability parameter Grade \u2265 2 per Investigator's Assessment",
+                "description": "The proportion of subjects with a local tolerability parameter grade \u2265 2 will be calculated (grading system=0 to 3, where 3 is severe). Local tolerance to treatment, infection and wound healing will be assessed by the Investigator. Wound tolerability parameters include appearance of inflammation, amount of exudate present, hemorrhage, presence of slough/necrotic tissue, presence of granulation tissue and hypergranulation.",
+                "timeFrame": "Compare the ILP100-Topical and Placebo treatment arms up to Week 26."
+              },
+              {
+                "measure": "Proportion of subjects with a local tolerability parameter Grade \u2265 2 per Independent Assessor's Assessment",
+                "description": "The proportion of subjects with a local tolerability parameter grade \u2265 2 will be calculated (grading system=0 to 3, where 3 is severe). Local tolerance to treatment, infection and wound healing will be assessed by the Independent Assessor. Wound tolerability parameters include appearance of inflammation, amount of exudate present, hemorrhage, presence of slough/necrotic tissue, presence of granulation tissue and hypergranulation.",
+                "timeFrame": "Compare the ILP100-Topical and Placebo treatment arms up to Week 26."
+              },
+              {
+                "measure": "Wound area reduction (percent of Baseline)",
+                "description": "Wound area will be measured and calculated as proportion of the wound area at Baseline. Metric analyses of wound area is made on 3D models acquired up to Week 26.",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 26"
+              },
+              {
+                "measure": "Wound healing rate",
+                "description": "Wound healing rate will be calculated as change in the wound area per week. Wound healing will be assessed by Investigators and Independent Assessor.",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 26"
+              },
+              {
+                "measure": "Proportion of subjects with \u226550% and 75% partially healed wounds",
+                "description": "The proportion of subjects with \u226550% and 75% partially healed wounds will be calculated.",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 26"
+              },
+              {
+                "measure": "Time to partial (\u226550% and 75%) and complete healing",
+                "description": "Time to event outcomes will be evaluated using Kaplan-Meier curves. Wound healing is defined as full skin re-epithelialization without drainage or dressing requirements confirmed at two consecutive study visits 2 weeks apart. Wound healing will be assessed by Investigators and Independent Assessor.",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 26"
+              },
+              {
+                "measure": "Wound area",
+                "description": "Wound area will be measured and calculated (cm\\^2). Metric analyses of wound healing, including area, are made using 3D models acquired Screening to Week 26. Wound measures will be automatically generated by a computer software and validated by the Independent Assessor.",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 26"
+              },
+              {
+                "measure": "Proportion of subjects with completely healed wounds",
+                "description": "The proportion of subjects with completely healed wounds will be calculated. Wound healing is defined as full skin re-epithelialization without drainage or dressing requirements confirmed at two consecutive study visits 2 weeks apart. Wound healing will be assessed by Investigators and the Independent Assessor.",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 26"
+              },
+              {
+                "measure": "Proportion of subjects with recurrence of index wound",
+                "description": "The proportion of subjects with recurrence of index wound will be calculated. For wound assessments after each index wound healing visit, it will be documented if the index wound is still healed or if any recurrence of the wound has occurred.",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 26"
+              },
+              {
+                "measure": "Proportion of subjects with new wound infections",
+                "description": "The proportion of subjects with new wound infections will be calculated based on the Investigators evaluation of the skin, including assessing whether there are any new wound infections, at each study visit.",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 26"
+              },
+              {
+                "measure": "Days on antibiotic treatment",
+                "description": "Days on antibiotic treatment as a percentage of days in the study up to Week 26 will be calculated for each subject.",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 26"
+              },
+              {
+                "measure": "Change in subject-reported wound-related pain",
+                "description": "Change in wound-related pain in the area of the index wound, as reported by subjects, using a numeric rating scale (NRS; 0-10, where 10 is the worst possible pain).",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 26"
+              },
+              {
+                "measure": "Long-term incidence of AEs.",
+                "description": "AEs and SAEs will be recorded during annual visits from Year 1 through Year 5.",
+                "timeFrame": "Compare the ILP100-Topical and Placebo treatment arms up to Year 5 after initiation of treatment."
+              },
+              {
+                "measure": "CXCL12 levels in plasma",
+                "description": "CXCL12 levels in plasma as measured by enzyme-linked immunosorbent assay (ELISA).",
+                "timeFrame": "Compare up to Week 16 between the ILP100-Topical and Placebo treatment arms."
+              },
+              {
+                "measure": "Presence of viable L. reuteri containing the pSIP_CXCL12 plasmid in wounds",
+                "description": "Bacteria will be collected from the wound and perilesional skin with sterile cotton swabs which will be cultured.",
+                "timeFrame": "Compare up to Year 5 between the ILP100-Topical and Placebo treatment arms."
+              }
+            ],
+            "otherOutcomes": [
+              {
+                "measure": "Proportion of subjects with index limb amputation and any limb amputation",
+                "description": "The proportion of subjects with index limb amputation and any limb amputation will be calculated.",
+                "timeFrame": "Compare at Week 26, and thereafter annually Year 1 to 5, between the ILP100-Topical and Placebo treatment arms."
+              },
+              {
+                "measure": "All-cause mortality and index wound-related mortality",
+                "description": "Mortality data will be acquired from the patient's medical records.",
+                "timeFrame": "Compare at Week 26, and thereafter annually Year 1 to 5, between the ILP100-Topical and Placebo treatment arms."
+              },
+              {
+                "measure": "Quality of life assessed with Wound-Quality of Life (Wound QoL) questionnaire",
+                "description": "Quality of life will be assessed by the subjects using the Wound-QoL questionnaire including 17 questions on impairment related to the wound, each to be answered by grades from 0-4 (0='not at all' to 4='very much')",
+                "timeFrame": "Compare up to Week 16 between the ILP100-Topical and Placebo treatment arms."
+              },
+              {
+                "measure": "Time for IMP preparation",
+                "description": "Time needed for IMP preparation, by the study personnel, will be recorded.",
+                "timeFrame": "Compare at Week 4 between the ILP100-Topical and Placebo treatment arms."
+              },
+              {
+                "measure": "Total number of redressings, off-loading and devices used for the treatment of the index wound",
+                "description": "Wound management will include redressing, which will be done both during home visits and study site visits, while debridement and changes of off-loading devices should only be done at study site visits. The total number of redressings, off-loading and devices used for the treatment of the index wound will be recorded.",
+                "timeFrame": "Compare the ILP100-Topical and Placebo treatment arms during 16 weeks from baseline."
+              },
+              {
+                "measure": "Wound volume",
+                "description": "Metric analyses of wound healing, including volume, are made using 3D models acquired from Screening to Week 26. Wound measures will be automatically generated by a computer software and validated by the Independent Assessor.",
+                "timeFrame": "Compare between the ILP100-Topical and Placebo treatment arms up to Week 26."
+              },
+              {
+                "measure": "Wound depth",
+                "description": "Metric analyses of wound healing, including depth, are made using 3D models acquired from Screening to Week 26. Wound measures will be automatically generated by a computer software and validated by the Independent Assessor.",
+                "timeFrame": "Compare between the ILP100-Topical and Placebo treatment arms up to Week 26."
+              },
+              {
+                "measure": "Wound volume reduction (percent of Baseline)",
+                "description": "Reduction of wound volume (percent of Baseline) will be calculated. Metric analyses of wound healing, including volume, are made using 3D models acquired from Screening to Week 26. Wound measures will be automatically generated by a computer software and validated by the Independent Assessor.",
+                "timeFrame": "Compare between the ILP100-Topical and Placebo treatment arms up to Week 26."
+              },
+              {
+                "measure": "Wound depth reduction (percent of Baseline)",
+                "description": "Reduction of wound depth (percent of Baseline) will be calculated. Metric analyses of wound healing, including depth, are made using 3D models acquired from Screening to Week 26. Wound measures will be automatically generated by a computer software and validated by the Independent Assessor.",
+                "timeFrame": "Compare between the ILP100-Topical and Placebo treatment arms up to Week 26."
+              },
+              {
+                "measure": "Analyses of predictive factors for wound healing outcome",
+                "description": "Analyses of associations between baseline clinical (including toe pressure at Baseline and sex) and biologic characteristics (including wound size and pH) with wound healing outcomes through Week 26. A statistical regression model will be developed to predict wound healing up to Week 26",
+                "timeFrame": "Analyses of associations between baseline clinical and biologic characteristics and wound healing outcomes up to Week 26."
+              },
+              {
+                "measure": "Analyses of predictive factors for occurence of AEs",
+                "description": "Analyses of associations between baseline clinical (including toe pressure at Baseline and sex) and biologic characteristics (including wound size and pH) with AEs. A statistical regression model will be developed to predict the AE outcome up to Week 26",
+                "timeFrame": "Analyses of associations between baseline clinical and biologic characteristics and occurence of AEs up to Week 26."
+              },
+              {
+                "measure": "Analyses of scar area",
+                "description": "Scar area will be measured for the index wound using 3D models generated from superimposing 2D images and infrared scanning of the topography of the wound and perilesional skin acquired at the study visits.",
+                "timeFrame": "Compare between the ILP100-Topical and Placebo treatment arms up to Week 26."
+              },
+              {
+                "measure": "Analyses of scar volume",
+                "description": "Scar volume will be measured for the index wound using 3D models generated from superimposing 2D images and infrared scanning of the topography of the wound and perilesional skin acquired at the study visits.",
+                "timeFrame": "Compare between the ILP100-Topical and Placebo treatment arms up to Week 26."
+              },
+              {
+                "measure": "Change from Baseline in level of wound pH",
+                "description": "Change from Baseline in level of wound pH will be measured on exuding wounds (at the discretion of the Investigator) at selected timepoints just prior to IMP administration using sterile litmus paper strips.",
+                "timeFrame": "Compare at Weeks 1, 4, 5, 8 and 16 between the ILP100-Topical and Placebo treatment arms."
+              },
+              {
+                "measure": "Change from Baseline in local blood flow in wound area measured with Laser Speckle Contrast Analysis",
+                "description": "Change from Baseline in local blood flow around the index wound will be addressed by non-invasive imaging using Laser Speckle Contrast Analysis (LASCA) where each wound and surrounding skin will be recorded for at least one minute of stable recording at selected timepoints in the study.",
+                "timeFrame": "Compare ILP100-Topical and Placebo treatment arms up to Week 16"
+              },
+              {
+                "measure": "Pathogenic wound bacteria characterization upon clinically defined or suspicions of wound infection",
+                "description": "Characteristics of ILP100 will be addressed by collecting bacteria from the wound with sterile cotton swabs which will be cultured.",
+                "timeFrame": "Compare species of infection-causing wound pathogens up to Week 26 between the ILP100-Topical and Placebo treatment arms."
+              },
+              {
+                "measure": "Wound microbiome profile, including presence and proportion of wound pathogenic bacteria",
+                "description": "The impact of ILP100 on the wound microbiome composition will be assessed from wounds swabs identified by sequencing bacterial 16S ribosomal ribonucleic acid (rRNA) genes.",
+                "timeFrame": "Compare the microbiome profile up to Week 16 between the ILP100 and Placebo treatment arms."
+              },
+              {
+                "measure": "Presence of anti-drug antibodies (ADA) to CXCL12 and the activation peptide SppIP up to Year 5",
+                "description": "The development of anti-drug antibodies (ADAs, to CXCL12 and SppIP) as measured by electrochemiluminescence immunoassay (ECLIA).",
+                "timeFrame": "Compare presence of ADA up to Year 5 between the ILP100-Topical and Placebo treatment arms."
+              },
+              {
+                "measure": "Analysis of L. reuteri containing the pSIP_CXCL12 plasmid in blood, feces, and perilesional skin",
+                "description": "Shedding to the external environment will be measured in feces and water lock samples collected at the sites. The method will determine the number of live L. reuteri R2LC containing pSIP\\_CXCL12 in the samples. Used dressings will also be collected for shedding analyses of L. reuteri R2LC containing the pSIP\\_CXCL12 plasmid.",
+                "timeFrame": "Analyses of presence of L. reuteri containing the pSIP_CXCL12 plasmid up to Year 5."
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Signed written informed consent\n* Males and females aged \u226518 years\n* Diagnosis of diabetes mellitus type 1 or 2\n* HbA1c \u2264 86 mmol/mol (\u2264 10%) at Screening\n* Subjects with at least one first time or recurrent full thickness ulcer (at or below the ankle) which fulfils all of the following criteria at Screening and at the time of Baseline:\n\n  1. A non-interdigital wound\n  2. Accessible for administration of IMP, wound study assessments and procedures\n  3. Persistence of the wound for at least 6 weeks at Baseline\n  4. Assessed by the investigator to be of non-venous etiology.\n  5. Minimum full skin ulcer without undermining, with no exposed muscle, tendon or bone\n  6. A wound area of 1.0 - 5.0 cm\\^2 after sharp or mechanical debridement at Screening\n  7. During the 2-weeks between start of Run-in Phase and Baseline the wound size must not decrease by more than 30% or increase by more than 25%, which correspond to wound areas of 0.7 - 6.3 cm\\^2, or at Screening expected by the Investigator to have a high probability for wound size changes within this range during this period.\n* Toe pressure \u226520 mm Hg\n* Expected to comply with the study procedures\n\nExclusion Criteria:\n\n* Infected index wound with clinical signs of inflammation at Screening or Baseline.\n* The index wound determined as heavily exuding defined as requiring more than 1 dressing change per day or requiring use of super absorbent dressing\n* Wound duration longer than 2 years\n* Active Charcot deformity of the study foot\n* Estimated glomerular filtration rate (eGFR) \\<30 mL/min/1.73m\\^2\n* Hemoglobin concentration \\<100 g/L at Baseline\n* Planned or ongoing treatment with corticosteroids to an equivalent dose of prednisolone \\>10 mg per day or other immunosuppressive therapy, or such treatment within 4 weeks prior to Baseline\n* Has any major surgery or hospitalization planned up to Week 26\n* Has changed a treatment for diabetes during the last 3 weeks before Baseline. Dose change is allowed\n* Ongoing treatment with dipeptidyl peptidase 4 (DPP-4) inhibitors\n* Revascularization procedure in the index wound leg planned or undertaken within 8 weeks before Screening, or under investigation\n* Current smokers\n* Participation in other clinical studies or having received any investigational treatment within 1 month or at the earliest five times the half-life prior to Screening\n* Has any disease conditions, including ulcerative dermatological disorders and vasculitis, or comorbidities which is expected to prevent the subject from participating in the study or confounding the evaluation of the safety profile and effect on wound healing of ILP100\n* Pregnant or lactating woman\n* Male subjects not willing to use a condom and refrain from donating sperm\n* Female subjects of childbearing potential unless they use a contraceptive method with a failure rate of \\< 1% to prevent pregnancy",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Jan Apelqvist, MD/PhD",
+                "affiliation": "Department of Endocrinology, Sk\u00e5ne University Hospital, Malm\u00f6, Sweden",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Department of Endocrinology, Sk\u00e5ne University Hospital",
+                "city": "Lund",
+                "zip": "221 85",
+                "country": "Sweden",
+                "geoPoint": {
+                  "lat": 55.70584,
+                  "lon": 13.19321
+                }
+              },
+              {
+                "facility": "Clinical Diabetes Research Unit at Uppsala University Hospital",
+                "city": "Uppsala",
+                "country": "Sweden",
+                "geoPoint": {
+                  "lat": 59.85882,
+                  "lon": 17.63889
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "29432190",
+                "type": "BACKGROUND",
+                "citation": "Vagesjo E, Ohnstedt E, Mortier A, Lofton H, Huss F, Proost P, Roos S, Phillipson M. Accelerated wound healing in mice by on-site production and delivery of CXCL12 by transformed lactic acid bacteria. Proc Natl Acad Sci U S A. 2018 Feb 20;115(8):1895-1900. doi: 10.1073/pnas.1716580115. Epub 2018 Feb 5."
+              },
+              {
+                "pmid": "30870037",
+                "type": "BACKGROUND",
+                "citation": "Ohnstedt E, Lofton Tomenius H, Vagesjo E, Phillipson M. The discovery and development of topical medicines for wound healing. Expert Opin Drug Discov. 2019 May;14(5):485-497. doi: 10.1080/17460441.2019.1588879. Epub 2019 Mar 14."
+              },
+              {
+                "pmid": "35213962",
+                "type": "BACKGROUND",
+                "citation": "Ohnstedt E, Lofton Tomenius H, Frank P, Roos S, Vagesjo E, Phillipson M. Accelerated Wound Healing in Minipigs by On-Site Production and Delivery of CXCL12 by Transformed Lactic Acid Bacteria. Pharmaceutics. 2022 Jan 19;14(2):229. doi: 10.3390/pharmaceutics14020229."
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "UNDECIDED",
+            "description": "Undecided due to ongoing development."
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT05608187",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13029376/",
+          "identifier": "PMC:13029376",
+          "title": "Ultradeformable Vesicles for Wound Healing: Ethosomes, Transferosomes, and Transethosomes in Topical Drug Delivery.",
+          "snippet": "Title: Ultradeformable Vesicles for Wound Healing: Ethosomes, Transferosomes, and Transethosomes in Topical Drug Delivery.\nAuthors: Jacob S, Varkey NR, Nair AB\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.415245"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12812840/",
+          "identifier": "PMC:12812840",
+          "title": "Diabetes and its complications: molecular mechanisms, prevention and treatment.",
+          "snippet": "Title: Diabetes and its complications: molecular mechanisms, prevention and treatment.\nAuthors: Zhao L, Yuan J, Yang Q et al.\nJournal: Signal Transduct Target Ther",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.415294"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12805557/",
+          "identifier": "PMC:12805557",
+          "title": "Microbial allies in skin trauma recovery: from immune modulation to engineered probiotic therapeutics.",
+          "snippet": "Title: Microbial allies in skin trauma recovery: from immune modulation to engineered probiotic therapeutics.\nAuthors: Wang AYL, Avi\u00f1a AE, Liu YY et al.\nJournal: Burns Trauma",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.415318"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12759254/",
+          "identifier": "PMC:12759254",
+          "title": "Probiotic-Based Materials as Living Therapeutics.",
+          "snippet": "Title: Probiotic-Based Materials as Living Therapeutics.\nAuthors: Sabio L, Day GJ, Salmeron-Sanchez M\nJournal: Adv Mater",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.415338"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12691224/",
+          "identifier": "PMC:12691224",
+          "title": "Cellular and Molecular Mechanisms of Wound Repair: From Biology to Therapeutic Innovation.",
+          "snippet": "Title: Cellular and Molecular Mechanisms of Wound Repair: From Biology to Therapeutic Innovation.\nAuthors: Jin C, Jin Y, Ding Z et al.\nJournal: Cells",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.415359"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12479421/",
+          "identifier": "PMC:12479421",
+          "title": "The human microbiome in clinical translation: from bench to bedside.",
+          "snippet": "Title: The human microbiome in clinical translation: from bench to bedside.\nAuthors: Bautista J, Echeverr\u00eda CE, Maldonado-Noboa I et al.\nJournal: Front Microbiol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.415380"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11404062/",
+          "identifier": "PMC:11404062",
+          "title": "Advances in nucleic acid delivery strategies for diabetic wound therapy.",
+          "snippet": "Title: Advances in nucleic acid delivery strategies for diabetic wound therapy.\nAuthors: Sarthi S, Bhardwaj H, Kumar Jangde R\nJournal: J Clin Transl Endocrinol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.415400"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11207742/",
+          "identifier": "PMC:11207742",
+          "title": "Translational Challenges in Drug Therapy and Delivery Systems for Treating Chronic Lower Extremity Wounds.",
+          "snippet": "Title: Translational Challenges in Drug Therapy and Delivery Systems for Treating Chronic Lower Extremity Wounds.\nAuthors: Aljamal D, Iyengar PS, Nguyen TT\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.415419"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10709320/",
+          "identifier": "PMC:10709320",
+          "title": "Recent advances in single-cell engineered live biotherapeutic products research for skin repair and disease treatment.",
+          "snippet": "Title: Recent advances in single-cell engineered live biotherapeutic products research for skin repair and disease treatment.\nAuthors: Roslan MAM, Omar MN, Sharif NAM et al.\nJournal: NPJ Biofilms Microbiomes",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.415440"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "13029376",
+          "12812840",
+          "12805557",
+          "12759254",
+          "12691224",
+          "12479421",
+          "11404062",
+          "11207742",
+          "10709320"
+        ],
+        "pmc_count": 9,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "uniprot_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2_no_structured_match": true,
+        "uniprot_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2": [],
+        "uniprot_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2_no_structured_match": true,
+        "uniprot_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2": [],
+        "uniprot_Placebo_no_structured_match": true,
+        "uniprot_Placebo": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT05608187",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Evaluating Safety and Biological Effect on Wound Healing of ILP100 ...",
+          "snippet": "Web result for: NCT05608187 Evaluating Safety and Biological Effect on Wound Healing of ILP100-Topical in Su",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:19:51.685565"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ctv.veeva.com/study/evaluating-safety-and-biological-effect-on-wound-healing-of-ilp100-topical-in-subjects-with-diabetic",
+          "identifier": "NCT05608187",
+          "title": "Evaluating Safety and Biological Effect on Wound Healing of ILP100 ...",
+          "snippet": "Web result for: NCT05608187 Evaluating Safety and Biological Effect on Wound Healing of ILP100-Topical in Su",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:19:51.685614"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT05608187?tab=table",
+          "identifier": "NCT05608187",
+          "title": "Evaluating Safety and Biological Effect on Wound Healing of ILP100 ...",
+          "snippet": "Web result for: NCT05608187 Evaluating Safety and Biological Effect on Wound Healing of ILP100-Topical in Su",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:19:51.685633"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT05608187/",
+          "identifier": "NCT05608187",
+          "title": "Trial | NCT05608187",
+          "snippet": "Web result for: NCT05608187 Evaluating Safety and Biological Effect on Wound Healing of ILP100-Topical in Su",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:19:51.685648"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.patlynk.com/trial/NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "A Randomized, Double-Blind, Placebo-controlled, Parallel, Exploratory ...",
+          "snippet": "Web result for: NCT05608187 Evaluating Safety and Biological Effect on Wound Healing of ILP100-Topical in Su",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:19:51.685662"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 22598
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2": {
+          "found": false
+        },
+        "dbaasp_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2": {
+          "found": false
+        },
+        "dbaasp_Placebo": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT05608187",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5095118/",
+          "identifier": "CHEMBL5095118",
+          "title": "EMILIMOGENE SIGULACTIBAC - ChEMBL",
+          "snippet": "Molecule: EMILIMOGENE SIGULACTIBAC\nType: Gene\nMax clinical phase: 2.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:53.828157"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4535998/",
+          "identifier": "CHEMBL4535998",
+          "title": "CHEMBL4535998 - ChEMBL",
+          "snippet": "Molecule: CHEMBL4535998\nType: Unknown\nMolecular weight: 360.81\nBioactivity: Inhibition=21.57 % (Replicase polyprotein 1ab); Inhibition=-0.03 % (SARS-CoV-2); Inhibition=-0.03 % (SARS-CoV-2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:55.493483"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5741168/",
+          "identifier": "CHEMBL5741168",
+          "title": "CHEMBL5741168 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5741168\nMolecular weight: 365.48\nBioactivity: Ki=4.44 nM (Unchecked); Ki=46.4 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:57.312978"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5095118/",
+          "identifier": "CHEMBL5095118",
+          "title": "EMILIMOGENE SIGULACTIBAC - ChEMBL",
+          "snippet": "Molecule: EMILIMOGENE SIGULACTIBAC\nType: Gene\nMax clinical phase: 2.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:58.425604"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4535998/",
+          "identifier": "CHEMBL4535998",
+          "title": "CHEMBL4535998 - ChEMBL",
+          "snippet": "Molecule: CHEMBL4535998\nType: Unknown\nMolecular weight: 360.81\nBioactivity: Inhibition=21.57 % (Replicase polyprotein 1ab); Inhibition=-0.03 % (SARS-CoV-2); Inhibition=-0.03 % (SARS-CoV-2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:59.653117"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5741168/",
+          "identifier": "CHEMBL5741168",
+          "title": "CHEMBL5741168 - ChEMBL",
+          "snippet": "Molecule: CHEMBL5741168\nMolecular weight: 365.48\nBioactivity: Ki=4.44 nM (Unchecked); Ki=46.4 nM (Unchecked)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:20:00.869378"
+        }
+      ],
+      "raw_data": {
+        "chembl_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2_count": 5,
+        "chembl_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2_molecules": [
+          {
+            "chembl_id": "CHEMBL5095118",
+            "pref_name": "EMILIMOGENE SIGULACTIBAC",
+            "mol_type": "Gene",
+            "helm_notation": null,
+            "max_phase": "2.0"
+          },
+          {
+            "chembl_id": "CHEMBL4535998",
+            "pref_name": null,
+            "mol_type": "Unknown",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL5741168",
+            "pref_name": null,
+            "mol_type": null,
+            "helm_notation": null,
+            "max_phase": null
+          }
+        ],
+        "chembl_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2_count": 5,
+        "chembl_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2_molecules": [
+          {
+            "chembl_id": "CHEMBL5095118",
+            "pref_name": "EMILIMOGENE SIGULACTIBAC",
+            "mol_type": "Gene",
+            "helm_notation": null,
+            "max_phase": "2.0"
+          },
+          {
+            "chembl_id": "CHEMBL4535998",
+            "pref_name": null,
+            "mol_type": "Unknown",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL5741168",
+            "pref_name": null,
+            "mol_type": null,
+            "helm_notation": null,
+            "max_phase": null
+          }
+        ],
+        "chembl_Placebo_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "rcsb_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2": {
+          "count": 0
+        },
+        "rcsb_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2": {
+          "count": 0
+        },
+        "rcsb_Placebo": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2_count": 0,
+        "ebi_proteins_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2_count": 0,
+        "ebi_proteins_Placebo_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "apd_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2": {
+          "searched": true,
+          "found": false
+        },
+        "apd_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Placebo": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT05608187",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT05608187",
+          "identifier": "NCT05608187",
+          "title": "Evaluating Safety and Biological Effect on Wound Healing of ILP100-Topical in Subjects With Diabetic Foot Ulcers",
+          "snippet": "Title: Evaluating Safety and Biological Effect on Wound Healing of ILP100-Topical in Subjects With Diabetic Foot Ulcers\nStatus: Terminated\nPhase: Phase 2\nCountries: Sweden\nConditions: Wound Healing Disturbance of, Wound Healing Delayed, Wound Healing Disorder, Diabetic Foot Ulcer Mixed, Diabetic Foot Ulcer, Wound Heal\nInterventions: Biological: ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2, Biological: Placebo, Biological: ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:19:54.726844"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT05608187",
+          "public_title": "Evaluating Safety and Biological Effect on Wound Healing of ILP100-Topical in Subjects With Diabetic Foot Ulcers",
+          "scientific_title": "A Randomized, Double-Blind, Placebo-controlled, Parallel, Exploratory Phase 2a Study to Evaluate Safety and Biological Effect on Wound Healing of ILP100-Topical in Subjects With Diabetic Foot Ulcers",
+          "recruitment_status": "Terminated",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Randomized. Intervention model: Parallel Assignment. Primary purpose: Treatment. Masking: Quadruple (Participant, Care Provider, Investigator, Outcomes Assessor).",
+          "countries": [
+            "Sweden"
+          ],
+          "conditions": [
+            "Wound Healing Disturbance of",
+            "Wound Healing Delayed",
+            "Wound Healing Disorder",
+            "Diabetic Foot Ulcer Mixed",
+            "Diabetic Foot Ulcer",
+            "Wound Heal"
+          ],
+          "interventions": [
+            "Biological: ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2",
+            "Biological: Placebo",
+            "Biological: ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "iuphar_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2": {
+          "found": false
+        },
+        "iuphar_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2": {
+          "found": false
+        },
+        "iuphar_Placebo": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "pdbe_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2_count": 0,
+        "pdbe_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2_count": 0,
+        "pdbe_Placebo_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT05608187",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4414253972",
+          "identifier": "PMID:41035896",
+          "title": "The human microbiome in clinical translation: from bench to bedside",
+          "snippet": "Title: The human microbiome in clinical translation: from bench to bedside\nYear: 2025\nCitations: 24\nAbstract: The human microbiome, once regarded as a passive passenger, is now recognized as a dynamic and essential determinant of human physiology, shaping immunity, metabolism, neurodevelopment, and therapeutic responsiveness across the lifespan. Advances in ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.403840"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4389487790",
+          "identifier": "PMID:38065982",
+          "title": "Recent advances in single-cell engineered live biotherapeutic products research for skin repair and disease treatment",
+          "snippet": "Title: Recent advances in single-cell engineered live biotherapeutic products research for skin repair and disease treatment\nYear: 2023\nCitations: 11\nAbstract: The human microbiome has emerged as a key player in maintaining skin health, and dysbiosis has been linked to various skin disorders. Amidst growing concerns regarding the side effects of antibiotic treatments, the potential of live biotherapeutic pr",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.404026"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4399287529",
+          "identifier": "https://doi.org/10.3390/pharmaceutics16060750",
+          "title": "Translational Challenges in Drug Therapy and Delivery Systems for Treating Chronic Lower Extremity Wounds",
+          "snippet": "Title: Translational Challenges in Drug Therapy and Delivery Systems for Treating Chronic Lower Extremity Wounds\nYear: 2024\nCitations: 10\nAbstract: Despite several promising preclinical studies performed over the past two decades, there remains a paucity of market-approved drugs to treat chronic lower extremity wounds in humans. This translational gap challenges our understanding of human chroni",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.404183"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4415492652",
+          "identifier": "PMID:41550964",
+          "title": "Microbial allies in skin trauma recovery: from immune modulation to engineered probiotic therapeutics",
+          "snippet": "Title: Microbial allies in skin trauma recovery: from immune modulation to engineered probiotic therapeutics\nYear: 2025\nAbstract: secreting FGF-2, IL-4, and CSF-1 promoted faster wound healing in diabetic mice and healed 83% of subjects in a Phase I DFU study. The range of probiotic therapies for trauma care expands due to advancements in probiotic delivery using materials and ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.404286"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W38931872",
+          "identifier": "https://doi.org/10.3390/pharmaceutics16060750",
+          "title": "Handhaving op kleine ergernissen: een onderzoek naar de keuze voor en de uitvoering van handhavingsinstrumenten door gemeenten om kleine ergernissen aan te pakken",
+          "snippet": "Title: Handhaving op kleine ergernissen: een onderzoek naar de keuze voor en de uitvoering van handhavingsinstrumenten door gemeenten om kleine ergernissen aan te pakken\nYear: 2010\nAbstract: Despite several promising preclinical studies performed over the past two decades, there remains a paucity of market-approved drugs to treat chronic lower extremity wounds in humans. This translational gap challenges our understanding of human chroni",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:19:50.404446"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT05608187",
+      "citations": [
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/791ed05b875f8f5920d2941e4c0311da473889e3",
+          "identifier": "PMID:22633422",
+          "title": "Update on clinical trials evaluating the effect of biologic therapy in patients with critical limb ischemia.",
+          "snippet": "Title: Update on clinical trials evaluating the effect of biologic therapy in patients with critical limb ischemia.\nTLDR: The recent results of, and future plans for, gene and cellular therapy clinical trials in patients with critical limb ischemia are summarized.\nYear: 2012\nCitations: 68",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:19:59.158833"
+        },
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/9f3775c2de696fe8f7fdb86748770486f67dd166",
+          "identifier": "PMID:38685547",
+          "title": "Preparation of nano-silver containing black phosphorus based on quaternized chitosan hydrogel and evaluating its effect on skin wound healing.",
+          "snippet": "Title: Preparation of nano-silver containing black phosphorus based on quaternized chitosan hydrogel and evaluating its effect on skin wound healing.\nTLDR: The reported hydrogels displayed excellent biocompatibility and hold significant potential for application in the field of tissue engineering for skin wound treatment.\nYear: 2024\nCitations: 11",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:19:59.158889"
+        },
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/3b19ad641aecfdaf653b41ea772e91b9cfb4563b",
+          "identifier": "PMID:40118421",
+          "title": "Hydrogel-based dressing for wound healing: A systematic review of clinical trials.",
+          "snippet": "Title: Hydrogel-based dressing for wound healing: A systematic review of clinical trials.\nTLDR: A systematic review of clinical research indicates that utilizing hydrogel dressings could potentially reduce the required time for wound healing and enhance the percentage of wound closure and revealed that hydrogel dressings are effective in treatment of chronic wounds.\nYear: 2025\nCitations: 35",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:19:59.158912"
+        }
+      ],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT05608187",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.18137/cardiometry.2023.26.712718",
+          "identifier": "DOI:10.18137/cardiometry.2023.26.712718",
+          "title": "Effect of Topical Insulin Versus Normal Saline Dressing on Diabetic Wound Healing: An Experimental Comparative Study",
+          "snippet": "Title: Effect of Topical Insulin Versus Normal Saline Dressing on Diabetic Wound Healing: An Experimental Comparative Study\nJournal: CARDIOMETRY\nYear: 2023\nAbstract: Introduction: Diabetic foot ulcer is one of the most significant and devastating complications and a major cause of hospitalization among patients with diabetes. It leads to severe economic and social burdens. The management of Diabetic foot ulcers r",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:19:52.820022"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/s1465-3249(23)00430-9",
+          "identifier": "DOI:10.1016/s1465-3249(23)00430-9",
+          "title": "Regulatory Affairs, Quality Systems, Policy, and Ethics: THE VALUE OF EARLY REGULATORY INTERACTIONS WITH AUTHORITIES FOR EMILIMOGENE SIGULACTIBAC (INN) - A NEW MODALITY IN GENE THERAPY",
+          "snippet": "Title: Regulatory Affairs, Quality Systems, Policy, and Ethics: THE VALUE OF EARLY REGULATORY INTERACTIONS WITH AUTHORITIES FOR EMILIMOGENE SIGULACTIBAC (INN) - A NEW MODALITY IN GENE THERAPY\nJournal: Cytotherapy\nYear: 2023",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:19:52.820086"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.21608/ejvs.2022.165585.1401",
+          "identifier": "DOI:10.21608/ejvs.2022.165585.1401",
+          "title": "Evaluating the Effect of Topical Flavonoid Luteolin on Skin Wound Healing in Rabbits",
+          "snippet": "Title: Evaluating the Effect of Topical Flavonoid Luteolin on Skin Wound Healing in Rabbits\nJournal: Egyptian Journal of Veterinary Sciences\nYear: 2023",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:19:52.820121"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 0,
+        "biorxiv_prefilter_dropped": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT05608187_total": 0,
+        "sec_edgar_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2_total": 0,
+        "sec_edgar_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2_status": 400,
+        "fda_drugs_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2_status": 400
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT05608187",
+      "citations": [],
+      "raw_data": {
+        "nih_reporter_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2_count": 0,
+        "nih_reporter_ILP100-Topical (emilimogene sigulactibac) 5x10^7 CFU/cm^2_funded": false,
+        "nih_reporter_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2_count": 0,
+        "nih_reporter_ILP100-Topical (emilimogene sigulactibac) 1x10^9 CFU/cm^2_funded": false
+      },
+      "error": null
+    }
+  ]
+}

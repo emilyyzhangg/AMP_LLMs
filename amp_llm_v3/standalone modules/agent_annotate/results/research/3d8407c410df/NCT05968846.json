@@ -1,0 +1,689 @@
+{
+  "nct_id": "NCT05968846",
+  "completed_at": "2026-04-30 10:17:07 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT05968846",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Repeat PET/CT Imaging of Patients With Systemic Amyloidosis Using Amyloid Reactive Peptide 124I-AT-01 (124I-p5+14, Iodine-124I-evuzamitide) to Measure Changes in Organ-specific Amyloid Load",
+          "snippet": "Title: Repeat PET/CT Imaging of Patients With Systemic Amyloidosis Using Amyloid Reactive Peptide 124I-AT-01 (124I-p5+14, Iodine-124I-evuzamitide) to Measure Changes in Organ-specific Amyloid Load",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.670602"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Brief Summary",
+          "snippet": "The goal of this research study is to determine whether changes in organ-specific uptake of 124I- AT-01 can be measured by PET/CT imaging and further, whether these values correlate with changes in a subject's disease status and thereby enable monitoring of disease response over time in terms of organ-specific amyloid load.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.670612"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Detailed Description",
+          "snippet": "This is a single center, open label, prospective study using 124I-AT-01 PET/CT imaging to evaluate changes in amyloid load in patients with systemic amyloidosis who had undergone 124I-AT-01 imaging.\n\nConsented eligible patients will provide 3 tablespoons of blood for the following laboratory tests: CMP, CBC, CRP, Troponin, NT-proBNP, LDH, FLC and anti-drug antibody (ADA) analyses. A urine sample will also be collected to assess renal function. If required, a pregnancy test will be administered.\n",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.670617"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.670623"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Systemic Amyloidosis | Keywords: systemic amyoidosis, p5+14, AT-01, PET/CT, evuzamitide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.670630"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Intervention: Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)",
+          "snippet": "DRUG: Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01) - 124I-AT-01 (124I-p5+14, iodine-124I evuzamitide) is a a novel iodine-124 (124I) labeled 45 L-amino acid peptide suitable for PET/CT imaging that has been shown to bind systemic amyloid deposits of diverse types in all organs, including the heart. The peptide binds amyloid through multivalent electro",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.670637"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Arm Group: Patients will receive a single IV injection of 124I-AT-01 radiotracer and PET/CT imaging",
+          "snippet": "Arm: Patients will receive a single IV injection of 124I-AT-01 radiotracer and PET/CT imaging - 124I-AT-01 (124I-p5+14, iodine-124I evuzamitide) is an iodine-124 (124I) labeled 45 L-amino acid peptide suitable for PET/CT imaging. The peptide binds many forms of amyloid through multivalent electrostatic interactions with the amyloid fibril and ubiquitous heparan sulfate proteoglycans.\n\n124I-AT-01 has been evaluated previously in an open-label Phase 1/2 clinical trial, AMY1001, performed at th",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.670643"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.670649"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT05968846",
+            "orgStudyIdInfo": {
+              "id": "UTMC-AT01-163117"
+            },
+            "organization": {
+              "fullName": "University of Tennessee Graduate School of Medicine",
+              "class": "OTHER"
+            },
+            "briefTitle": "Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure Changes in Organ-specific Amyloid Load",
+            "officialTitle": "Repeat PET/CT Imaging of Patients With Systemic Amyloidosis Using Amyloid Reactive Peptide 124I-AT-01 (124I-p5+14, Iodine-124I-evuzamitide) to Measure Changes in Organ-specific Amyloid Load"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2024-12",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2022-12-07",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2023-08-01",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2023-09-01",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2023-06-30",
+            "studyFirstSubmitQcDate": "2023-07-28",
+            "studyFirstPostDateStruct": {
+              "date": "2023-08-01",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2024-12-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2024-12-05",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "University of Tennessee Graduate School of Medicine",
+              "class": "OTHER"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": false,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The goal of this research study is to determine whether changes in organ-specific uptake of 124I- AT-01 can be measured by PET/CT imaging and further, whether these values correlate with changes in a subject's disease status and thereby enable monitoring of disease response over time in terms of organ-specific amyloid load.",
+            "detailedDescription": "This is a single center, open label, prospective study using 124I-AT-01 PET/CT imaging to evaluate changes in amyloid load in patients with systemic amyloidosis who had undergone 124I-AT-01 imaging.\n\nConsented eligible patients will provide 3 tablespoons of blood for the following laboratory tests: CMP, CBC, CRP, Troponin, NT-proBNP, LDH, FLC and anti-drug antibody (ADA) analyses. A urine sample will also be collected to assess renal function. If required, a pregnancy test will be administered.\n\nPatients will then undergo a transthoracic echocardiographic examination and vital sign assessment before receiving an intravenous injection of no more than 2 mCi 124I-AT-01 followed, 5 h thereafter, by repeat vital sign measurements and PET/CT imaging from crown to thighs with a dynamic PET acquisition over the heart. Previously acquired 124I- AT-01 PET/CT images will be used as baseline values to determine quantitative changes in uptake of the radiotracer in the heart, liver, spleen, and kidney (and other organs deemed positive following visual inspection of the baseline and repeat imaging) as a measure of changes in amyloid load. Optionally, if the patients can return to the study site within \\~30 days post injection of 124I-AT-01, a second (post-injection) blood draw and ADA evaluation will be performed."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Systemic Amyloidosis"
+            ],
+            "keywords": [
+              "systemic amyoidosis",
+              "p5+14",
+              "AT-01",
+              "PET/CT",
+              "evuzamitide"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "BASIC_SCIENCE",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 19,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Patients will receive a single IV injection of 124I-AT-01 radiotracer and PET/CT imaging",
+                "type": "EXPERIMENTAL",
+                "description": "124I-AT-01 (124I-p5+14, iodine-124I evuzamitide) is an iodine-124 (124I) labeled 45 L-amino acid peptide suitable for PET/CT imaging. The peptide binds many forms of amyloid through multivalent electrostatic interactions with the amyloid fibril and ubiquitous heparan sulfate proteoglycans.\n\n124I-AT-01 has been evaluated previously in an open-label Phase 1/2 clinical trial, AMY1001, performed at the University of Tennessee Medical Center (IND# 132282; NCT T03678259).\n\nIn this repeat imaging study, patients previously enrolled in the AMY1001 study, in whom positive PET/CT imaging findings were observed will undergo repeat imaging to assess changes in radiotracer uptake in the liver, spleen, heart and kidneys.",
+                "interventionNames": [
+                  "Drug: Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)",
+                "description": "124I-AT-01 (124I-p5+14, iodine-124I evuzamitide) is a a novel iodine-124 (124I) labeled 45 L-amino acid peptide suitable for PET/CT imaging that has been shown to bind systemic amyloid deposits of diverse types in all organs, including the heart. The peptide binds amyloid through multivalent electrostatic interactions with the amyloid fibril and ubiquitous heparan sulfate proteoglycans.",
+                "armGroupLabels": [
+                  "Patients will receive a single IV injection of 124I-AT-01 radiotracer and PET/CT imaging"
+                ],
+                "otherNames": [
+                  "124I-p5+14",
+                  "iodine-124-evuzamitide"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "To measure visual and quantitative changes in organ-specific uptake of 124I-AT-01",
+                "description": "The goal of this research study is to determine whether changes in organ-specific uptake of 124I- AT-01 can be measured by PET/CT imaging and further, whether these values correlate with changes in a subject's disease status and thereby enable monitoring of disease response over time in terms of organ-specific amyloid load. The specific aim of this study is to measure visual and quantitative changes in organ-specific uptake of 124I-AT-01 from baseline, in patients with systemic amyloidosis, using PET/CT imaging.",
+                "timeFrame": "From enrollment to the end of the study is 8 days"
+              }
+            ],
+            "otherOutcomes": [
+              {
+                "measure": "Measures of Interest",
+                "description": "For AL, ATTR and all patients, we will correlate visual and quantitative changes in 124I- AT-01 uptake, from baseline, in the heart, liver and kidney with echocardiographic parameters (including left ventricular wall thickness (cm), intraventricular wall thickness (cm), and global logitudinal strain (%)) and serum biomarker levels (including NTproBNP, eGFR, creatinine, AST and ALT) assessed prior to imaging and from data recorded in the patients' medical record.",
+                "timeFrame": "From enrollment to the end of the study is 8 days"
+              },
+              {
+                "measure": "Measure of Interest",
+                "description": "For AL, ATTR and all patients, we will correlate visual and quantitative changes in organ-specific 124I-AT-01 uptake (percent change in radiotracer uptake from baseline) with change in disease status (progression, response, or stable state) when this can be established from data (serum biomarkers and cardiac imaging parameters) in the patients' medical record or collected during the AMY1001 trial.",
+                "timeFrame": "From enrollment to the end of the study is 8 days"
+              },
+              {
+                "measure": "Measure of Interest",
+                "description": "For all patients, correlate organ-specific percent change in radiotracer uptake with type of therapeutic intervention and assess qualitatively whether the patient feels that their disease is improving or worsening.",
+                "timeFrame": "From enrollment to the end of the study is 8 days"
+              },
+              {
+                "measure": "Measure of interest",
+                "description": "For AL patients, correlate visual and quantitative changes in organ-specific 124I-AT-01 uptake (percent change in radiotracer uptake from baseline) with change in serum free light chains over the period between imaging studies, when available in the medical record.",
+                "timeFrame": "From enrollment to the end of is the study is 8 days"
+              },
+              {
+                "measure": "Measure of Interest",
+                "description": "Compare changes, when possible, in radiotracer distribution from baseline based on analysis dynamic PET data.",
+                "timeFrame": "From enrollment to the end of the study is 8 days"
+              },
+              {
+                "measure": "Measure of Interest",
+                "description": "Compare changes, when possible, in ejection fraction from baseline based on analysis dynamic PET data.",
+                "timeFrame": "From enrollment to the end of the study is 8 days"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Must have given written informed consent (signed and dated) and any authorizations required by local law and be able to comply with all study requirements.\n* Must have a diagnosis of systemic amyloidosis based on the patient's medical record.\n* Must have undergone PET/CT imaging with 124I-AT-01 as part of the AMY1001 study (IND #132282) with visually positive uptake of radiotracer in at least one abdominothoracic organ.\n* Must have been imaged with 124I-AT-01 as part of the AMY1001 study (IND #132282) more than 12 months prior to repeat imaging.\n* Females: must be non-pregnant and non-lactating and either: surgically sterile (e.g., tubal occlusion, hysterectomy, bilateral salpingectomy, bilateral oophorectomy); post-menopausal (defined as 12 months of spontaneous amenorrhea in females \\> 55 years of age or, in females \u2264 55 years, 12 months of spontaneous amenorrhea without an alternative medical cause and follicle-stimulating hormone (FSH) levels in the post-menopausal range for the laboratory involved).\n\nExclusion Criteria:\n\n* Disabling dementia or other mental or behavioral disease.\n* Patients on dialysis.\n* Inability or unwillingness to comply with the study requirements.\n* Patients taking heparin, or heparin derivatives (e.g. low molecular weight heparins) for anticoagulation.\n* Other reason that would make the subject inappropriate for entry into this study.\n* Inability to lie still for 60 minutes on the PET/CT scanner.\n* History of iodine (potassium iodide) allergy.\n* Positive ADA finding defined as significantly higher than normal human serum mean values AND with a mean value at least five times greater than the mean value of the normal human serum control.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "University of Tennessee Graduate School of Medicine",
+                "city": "Knoxville",
+                "state": "Tennessee",
+                "zip": "37920",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.96064,
+                  "lon": -83.92074
+                }
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT05968846",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11109018/",
+          "identifier": "PMC:11109018",
+          "title": "Longitudinal PET/CT imaging with iodine ((124)I) evuzamitide reveals organ response to plasma cell immunotherapy in a patient with AL amyloidosis.",
+          "snippet": "Title: Longitudinal PET/CT imaging with iodine ((124)I) evuzamitide reveals organ response to plasma cell immunotherapy in a patient with AL amyloidosis.\nAuthors: Lands R, Martin EB, Powell D et al.\nJournal: Amyloid",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:57.479691"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12416754/",
+          "identifier": "PMC:12416754",
+          "title": "A tale of two tracers - amyloid imaging with investigational radiotracers iodine ((124)I) evuzamitide and (99m)Tc-p5+14 (AT-05).",
+          "snippet": "Title: A tale of two tracers - amyloid imaging with investigational radiotracers iodine ((124)I) evuzamitide and (99m)Tc-p5+14 (AT-05).\nAuthors: Martin EB, Kassira A, Stuckey A et al.\nJournal: J Nucl Cardiol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:57.479733"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "11109018",
+          "12416754"
+        ],
+        "pmc_count": 2,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)_no_structured_match": true,
+        "uniprot_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT05968846",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Repeat PET/ CT Imaging of Patients With Amyloid 124I-AT-01 to Measure ...",
+          "snippet": "Web result for: NCT05968846 Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure Changes in ",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:58.725132"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure ...",
+          "snippet": "Web result for: NCT05968846 Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure Changes in ",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:58.725180"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://inclinicaltrials.com/systemic-amyloidosis/NCT05968846/",
+          "identifier": "NCT05968846",
+          "title": "Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure",
+          "snippet": "Web result for: NCT05968846 Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure Changes in ",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:58.725198"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://decentrialz.com/clinical-trials/NCT05968846/repeat-pet-ct-imaging-of-patients-with-amyloid-124i-at-01-to-measure-changes-in-organ-specific-amyloid-load",
+          "identifier": "NCT05968846",
+          "title": "Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure ...",
+          "snippet": "Web result for: NCT05968846 Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure Changes in ",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:58.725213"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT05968846/",
+          "identifier": "NCT05968846",
+          "title": "Trial | NCT05968846",
+          "snippet": "Web result for: NCT05968846 Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure Changes in ",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:58.725228"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 9,
+        "duckduckgo_html_length": 21081
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT05968846",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL5314633/",
+          "identifier": "CHEMBL5314633",
+          "title": "IODINE I124 EVUZAMITIDE - ChEMBL",
+          "snippet": "Molecule: IODINE I124 EVUZAMITIDE\nType: Protein\nMax clinical phase: 2.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:58.689691"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2114340/",
+          "identifier": "CHEMBL2114340",
+          "title": "CHEMBL2114340 - ChEMBL",
+          "snippet": "Molecule: CHEMBL2114340\nType: Small molecule\nMolecular weight: 168.16\nBioactivity: Excretion=21.3 % (Mus musculus); Excretion=26.4 % (Mus musculus); Excretion=3.0 % (Mus musculus); Excretion=0.6 % (Mus musculus); Excretion=4.2 % (Mus musculus)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:59.215156"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2108713/",
+          "identifier": "CHEMBL2108713",
+          "title": "IODINE I 124 GIRENTUXIMAB - ChEMBL",
+          "snippet": "Molecule: IODINE I 124 GIRENTUXIMAB\nType: Antibody\nMax clinical phase: 3.0\nMechanism: Carbonic anhydrase IX binding agent",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:59.528705"
+        }
+      ],
+      "raw_data": {
+        "chembl_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)_count": 5,
+        "chembl_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)_molecules": [
+          {
+            "chembl_id": "CHEMBL5314633",
+            "pref_name": "IODINE I124 EVUZAMITIDE",
+            "mol_type": "Protein",
+            "helm_notation": null,
+            "max_phase": "2.0"
+          },
+          {
+            "chembl_id": "CHEMBL2114340",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL2108713",
+            "pref_name": "IODINE I 124 GIRENTUXIMAB",
+            "mol_type": "Antibody",
+            "helm_notation": null,
+            "max_phase": "3.0"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "rcsb_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "apd_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT05968846",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT05968846",
+          "identifier": "NCT05968846",
+          "title": "Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure Changes in Organ-specific Amyloid Load",
+          "snippet": "Title: Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure Changes in Organ-specific Amyloid Load\nStatus: Completed\nPhase: Phase 2\nCountries: United States\nConditions: Systemic Amyloidosis\nInterventions: Drug: Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T17:16:58.848595"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT05968846",
+          "public_title": "Repeat PET/CT Imaging of Patients With Amyloid 124I-AT-01 to Measure Changes in Organ-specific Amyloid Load",
+          "scientific_title": "Repeat PET/CT Imaging of Patients With Systemic Amyloidosis Using Amyloid Reactive Peptide 124I-AT-01 (124I-p5+14, Iodine-124I-evuzamitide) to Measure Changes in Organ-specific Amyloid Load",
+          "recruitment_status": "Completed",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Basic Science. Masking: None (Open Label).",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Systemic Amyloidosis"
+          ],
+          "interventions": [
+            "Drug: Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT05968846",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4389229507",
+          "identifier": "https://doi.org/10.1182/blood-2023-189401",
+          "title": "Longitudinal PET/CT Imaging with Iodine ( 124I) Evuzamitide Reveals Organ Response to Plasma Cell Immunotherapy in a Patient with AL Amyloidosis",
+          "snippet": "Title: Longitudinal PET/CT Imaging with Iodine ( 124I) Evuzamitide Reveals Organ Response to Plasma Cell Immunotherapy in a Patient with AL Amyloidosis\nYear: 2023\nCitations: 2\nAbstract: Background:Iodine-124-evuzamitide is a novel amyloidophilic peptide (p5+14), labeled with iodine-124, for detecting amyloid by positron emission/x-ray computed tomographic (PET/CT) imaging ( Pharmaceuticals 2023 Apr 21;16(4):629). PET is an inherentl",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:57.584626"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4389246939",
+          "identifier": "https://doi.org/10.1182/blood-2023-189488",
+          "title": "Structural and Functional Cardiac Parameters in Patients with AL Amyloidosis Correlate with Uptake of the Amyloidophilic Radiotracer Iodine ( 124I) Evuzamitide",
+          "snippet": "Title: Structural and Functional Cardiac Parameters in Patients with AL Amyloidosis Correlate with Uptake of the Amyloidophilic Radiotracer Iodine ( 124I) Evuzamitide\nYear: 2023\nAbstract: Background: The deposition of fibrillar aggregates of monoclonal free light chains in the heart is a characteristic feature of light chain associated (AL) amyloidosis. Cardiac amyloid is the major cause of morbidity and mortality in these patients. S",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:57.584879"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4389229146",
+          "identifier": "https://doi.org/10.1182/blood-2023-189157",
+          "title": "Systemic Amyloid Response in Patients with AL Amyloidosis Assessed By Serial Iodine ( 124I) Evuzamitide PET/CT Imaging",
+          "snippet": "Title: Systemic Amyloid Response in Patients with AL Amyloidosis Assessed By Serial Iodine ( 124I) Evuzamitide PET/CT Imaging\nYear: 2023\nAbstract: Background: Immunoglobulin light chain (AL) amyloidosis is a systemic disorder. Fibrillar aggregates of monoclonal free light chains, or fragments thereof, can deposit in any organ or tissue. Invariably, more than one anatomic site is involved, inclu",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:57.585065"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 3
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT05968846",
+      "citations": [
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/d904d2b412737365f9552a819ac69a565b8b98ba",
+          "identifier": "PMID:37990984",
+          "title": "Longitudinal PET/CT imaging with iodine (124I) evuzamitide reveals organ response to plasma cell immunotherapy in a patient with AL amyloidosis",
+          "snippet": "Title: Longitudinal PET/CT imaging with iodine (124I) evuzamitide reveals organ response to plasma cell immunotherapy in a patient with AL amyloidosis\nTLDR: This is the first report using an amyloid-binding radiotracer, capable of visualizing all major organs including the heart, demonstrating the complex pattern of organ response and regression of AL amyloids in the context of concurrent biomarker improvement and changes in organ volume.\nYear: 2023\nCitations: 5",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T17:17:00.492836"
+        },
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/f081a00af4ed0c563337a62390d67c99c2d76549",
+          "identifier": "DOI:10.1182/blood-2023-189488",
+          "title": "Structural and Functional Cardiac Parameters in Patients with AL Amyloidosis Correlate with Uptake of the Amyloidophilic Radiotracer Iodine ( 124I) Evuzamitide",
+          "snippet": "Title: Structural and Functional Cardiac Parameters in Patients with AL Amyloidosis Correlate with Uptake of the Amyloidophilic Radiotracer Iodine ( 124I) Evuzamitide\nTLDR: A single site, open label pilot study that evaluates the cardiac uptake of 124I-evuzamitide PET/CT imaging with contemporaneous echocardiographic and serum biomarkers and concludes this radiotracer has the potential to serve as a first line diagnostic agent capable of providing whole body semi-quantitative estimation of organ-specific amyloid load.\nYear: 2023",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T17:17:00.492902"
+        },
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/d14a1ce28f16f779c28298acd49a0ab939f7a567",
+          "identifier": "DOI:10.1182/blood-2023-189157",
+          "title": "Systemic Amyloid Response in Patients with AL Amyloidosis Assessed By Serial Iodine ( 124I) Evuzamitide PET/CT Imaging",
+          "snippet": "Title: Systemic Amyloid Response in Patients with AL Amyloidosis Assessed By Serial Iodine ( 124I) Evuzamitide PET/CT Imaging\nTLDR: A pilot study of eight patients with AL amyloidosis who underwent serial PET/CT imaging using a novel amyloids-binding, iodine-124-labelled peptide, designated iodine- 124-evuzamitide finds a strongly positive, significant correlation between the change in cardiac SUVR mean and change in single point serum NTproBNP concentration.\nYear: 2023",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T17:17:00.492931"
+        }
+      ],
+      "raw_data": {
+        "ss_nct_hits": 3,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT05968846",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.jcmg.2023.08.009",
+          "identifier": "DOI:10.1016/j.jcmg.2023.08.009",
+          "title": "Cardiac Amyloid Detection by PET/CT Imaging of Iodine (124I) Evuzamitide (124I-p5+14)",
+          "snippet": "Title: Cardiac Amyloid Detection by PET/CT Imaging of Iodine (124I) Evuzamitide (124I-p5+14)\nJournal: JACC: Cardiovascular Imaging\nYear: 2023",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:57.613130"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1093/ehjci/ehaa946.0291",
+          "identifier": "DOI:10.1093/ehjci/ehaa946.0291",
+          "title": "Detection of cardiac amyloidosis by PET/CT imaging using 124I-p5+14 peptide",
+          "snippet": "Title: Detection of cardiac amyloidosis by PET/CT imaging using 124I-p5+14 peptide\nJournal: European Heart Journal\nYear: 2020\nAbstract: Abstract\n               \n                  Introduction\n                  Systemic amyloidosis is characterized by the deposition of protein fibrils in abdominothoracic organs, notably the heart, leading to organ dysfunction and significant morbidity",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:57.613181"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.nuclcard.2025.102376",
+          "identifier": "DOI:10.1016/j.nuclcard.2025.102376",
+          "title": "A Tale of Two Tracers - A Qualitative Comparison of the PET and SPECT Amyloid-Imaging Agents, 124I-Evuzamitide (AT-01) and 99mTc-p5+14 (AT-05), that are Derived from the Same Synthetic Amyloid-Binding Peptide, p5+14",
+          "snippet": "Title: A Tale of Two Tracers - A Qualitative Comparison of the PET and SPECT Amyloid-Imaging Agents, 124I-Evuzamitide (AT-01) and 99mTc-p5+14 (AT-05), that are Derived from the Same Synthetic Amyloid-Binding Peptide, p5+14\nJournal: Journal of Nuclear Cardiology\nYear: 2025",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:57.613195"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 25,
+        "biorxiv_prefilter_dropped": 25
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT05968846_total": 0,
+        "sec_edgar_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT05968846",
+      "citations": [],
+      "raw_data": {
+        "nih_reporter_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)_count": 0,
+        "nih_reporter_Injection of peptide p5+14 radiolabeled with iodine-124 (124I-AT-01)_funded": false
+      },
+      "error": null
+    }
+  ]
+}

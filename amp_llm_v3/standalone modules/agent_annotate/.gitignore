@@ -1,0 +1,5 @@
+# transient SQLite WAL state — runtime-only, must not be committed
+results/edam.db-wal
+results/edam.db-shm
+# uncompressed corpus — track .json.gz instead (113 MB exceeds GitHub 100 MB limit)
+scripts/full_corpus_merged_unknown.json

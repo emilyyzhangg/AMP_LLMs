@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT01704781",
+  "pmid": "DOI:10.1101/2025.04.23.25325569",
+  "source": "biorxiv_medrxiv",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "YES",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "YES",
+    "q4_failure": "UNCLEAR",
+    "q5_advanced": "NO",
+    "evidence_quote": "Inflammatory microenvironment impairs the therapeutic effect of daratumumab-lenalidomide in multiple myeloma"
+  },
+  "verdict": "POSITIVE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

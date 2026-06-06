@@ -1,0 +1,1679 @@
+{
+  "nct_id": "NCT03591614",
+  "metadata": {
+    "nct_id": "NCT03591614",
+    "title": "A Pilot Study of Dendritic Cell DKK1 Vaccine for Patients With Monoclonal Gammopathy and Stable or Smoldering Myeloma",
+    "phase": "EARLY_PHASE1",
+    "status": "WITHDRAWN",
+    "conditions": [
+      "Monoclonal Gammopathy",
+      "Smoldering Myeloma",
+      "Myeloma"
+    ],
+    "interventions": [
+      "BIOLOGICAL: DKK1"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.7899999999999999,
+      "reasoning": "[Consistency override: 3 AA sequence -> peptide=True] [Pass 1 extraction] Intervention: Dendritic cell DKK1 vaccine  \nMolecular Class: Protein (>100 amino acids, large multi-domain proteins)  \nDatabase Confirmation: DKK1 found in UniProt (A0A0A0S1S8: 247 aa; A0A212CPZ8: 265 aa). Not found in DRAMP/DBAASP. ChEMBL lists DKK1 as a protein. PDB structural data available for DKK1.  \nProduct Description: Described as a \"vaccine\" and part of a \"dendritic cell-based immunotherapy.\"  \nInvestigational Drug Role: Investigational drug (part of the therapeutic agent, used to stimulate immune response against myeloma).\n[Pass 2 decision] Peptide: False  \nReasoning:  \n**Step 1** \u2014 The Molecular Class is listed as \"Protein (>100 amino acids, large multi-domain proteins)\" and the AA Length is 100. While the length is exactly 100, the classification as a \"large multi-domain protein\" suggests it is not a peptide (which is typically defined as up to ~100 amino acids, but often less, and not necessarily multi-domain). Additionally, the database hits (ChEMBL lists DKK1 as a protein) and the presence of PDB structural data further support that this is a protein, not a peptide.  \n\n**Step 2** \u2014 The intervention is described as a \"vaccine\" and part of a \"dendritic cell-based immunotherapy.\" However, the molecular class is explicitly labeled as a \"protein,\" and the drug is described as part of a dendritic cell-based therapy, which is a type of cell therapy, not a peptide. The drug is not identified as a peptide in the description, and the molecular class rules it out as a peptide.  \n\n**Step 3** \u2014 Database entries confirm that DKK1 is classified as a protein, not a peptide. The trial description does not refer to it as a peptide, and the molecular class is clearly non-peptide. Therefore, the answer is False.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to study the safety and preliminary efficacy of a dendritic cell DKK1 vaccine against myeloma. Dendritic cells are immune cells that are collected from the blood of the patient at Case Western Reserve Medical Center and then brought into contact with DKK1, a molecule that is present of myeloma cells but not to a significant amount on other cells except for the prostate and the placenta. It is an investigational (experimental) vaccine that based on studies in the labo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690604"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8778019/",
+          "identifier": "PMC:8778019",
+          "title": "Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions.",
+          "snippet": "Title: Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions.\nAuthors: Verheye E, Bravo Melgar J, Deschoemaeker S et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459514"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6595476/",
+          "identifier": "PMC:6595476",
+          "title": "Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies.",
+          "snippet": "Title: Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies.\nAuthors: Zhao AL, Shen KN, Wang JN et al.\nJournal: Cancer Manag Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459620"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8400703/",
+          "identifier": "PMC:8400703",
+          "title": "Dickkopf Proteins and Their Role in Cancer: A Family of Wnt Antagonists with a Dual Role.",
+          "snippet": "Title: Dickkopf Proteins and Their Role in Cancer: A Family of Wnt Antagonists with a Dual Role.\nAuthors: Giralt I, Gallo-Oller G, Navarro N et al.\nJournal: Pharmaceuticals (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459539"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6791419/",
+          "identifier": "PMC:6791419",
+          "title": "Trial watch: dendritic cell vaccination for cancer immunotherapy.",
+          "snippet": "Title: Trial watch: dendritic cell vaccination for cancer immunotherapy.\nAuthors: Sprooten J, Ceusters J, Coosemans A et al.\nJournal: Oncoimmunology",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459600"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9454959/",
+          "identifier": "PMC:9454959",
+          "title": "Multiple Myeloma Therapy: Emerging Trends and Challenges.",
+          "snippet": "Title: Multiple Myeloma Therapy: Emerging Trends and Challenges.\nAuthors: Dima D, Jiang D, Singh DJ et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459460"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A0A0S1S8",
+          "identifier": "A0A0A0S1S8",
+          "title": "Dkk1 - EBI Proteins",
+          "snippet": "Protein: Dkk1\nOrganism: Scyliorhinus canicula\nLength: 247 aa\nMass: 27635 Da\nDomains: Dickkopf N-terminal cysteine-rich, Dickkopf-related protein 1/2/4 C-terminal subdomain 1, Dickkopf-related protein 1/2/4 C-terminal subdomain 2, Disordered",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.846634"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A212CPZ8",
+          "identifier": "A0A212CPZ8",
+          "title": "DKK1 - EBI Proteins",
+          "snippet": "Protein: DKK1\nOrganism: Cervus elaphus hippelaphus\nLength: 265 aa\nMass: 28747 Da\nDomains: Dickkopf N-terminal cysteine-rich, Dickkopf-related protein 1/2/4 C-terminal subdomain 1, Dickkopf-related protein 1/2/4 C-terminal subdomain 2",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:22.173534"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DKK1",
+          "identifier": "NIH:5R01AG073317-04",
+          "title": "Loss of progenitor function accelerates lung aging (MAJKA, SUSAN M)",
+          "snippet": "Project: 5R01AG073317-04\nPI: MAJKA, SUSAN M\nOrganization: \nFiscal year: 2026\nAward: $685,103\nStart: 2023-06-15\nEnd: 2028-02-29\n(433 total NIH-funded projects matching 'DKK1')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:21.416614"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DKK1",
+          "identifier": "NIH:5R01DE031270-04",
+          "title": "Molecular mechanisms mediating the soft tissue attachment to teeth (HELMS, JILL A)",
+          "snippet": "Project: 5R01DE031270-04\nPI: HELMS, JILL A\nOrganization: \nFiscal year: 2026\nAward: $690,333\nStart: 2023-02-20\nEnd: 2028-01-31\n(433 total NIH-funded projects matching 'DKK1')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:21.416673"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "sequence",
+      "value": "N/A",
+      "confidence": 1.0,
+      "reasoning": "[Peptide=False cascade: sequence is peptide-specific]",
+      "evidence": [],
+      "model_name": "cascade",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9,
+      "reasoning": "[Peptide=False cascade: non-peptide \u2192 classification=Other (binary AMP/Other)]",
+      "evidence": [],
+      "model_name": "cascade",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "Other",
+      "confidence": 0.8,
+      "reasoning": "[ATOMIC-CLS R5] Other (conf=0.80)\n  rule: 2/3 NO, 0 YES\n  registry: dramp=0 apd=0 dbaasp=0 uniprot_amp=0\n  atomic: q1=UNCLEAR q2=NO q3=NO\n  R5 fired: 2 NO, 0 YES",
+      "evidence": [],
+      "model_name": "atomic-cls-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Other",
+      "confidence": 0.7899999999999999,
+      "reasoning": "[Pass 1 route extraction] Protocol Route: \"Dendritic cells are immune cells that are collected from the blood of the patient at Case Western Reserve Medical Center and... [the trial description does not explicitly state the route of administration for the dendritic cell DKK1 vaccine in the experimental arm].\"\nFDA/Label Route: not found\nLiterature Route: not found\nDatabase Route: not found\nDrug Formulation: not specified\nMost Specific Route: Other\n[Pass 2 classification] Delivery Mode: Other  \nEvidence: Protocol text  \nReasoning: The trial description does not explicitly state the route of administration for the dendritic cell DKK1 vaccine in the experimental arm, and no more specific route information is available from other sources. Based on the classification rules, when no route evidence is found, the classification is \"Other\".",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to study the safety and preliminary efficacy of a dendritic cell DKK1 vaccine against myeloma. Dendritic cells are immune cells that are collected from the blood of the patient at Case Western Reserve Medical Center and then brought into contact with DKK1, a molecule that is present of myeloma cells but not to a significant amount on other cells except for the prostate and the placenta. It is an investigational (experimental) vaccine that based on studies in the labo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690604"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8778019/",
+          "identifier": "PMC:8778019",
+          "title": "Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions.",
+          "snippet": "Title: Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions.\nAuthors: Verheye E, Bravo Melgar J, Deschoemaeker S et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459514"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6595476/",
+          "identifier": "PMC:6595476",
+          "title": "Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies.",
+          "snippet": "Title: Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies.\nAuthors: Zhao AL, Shen KN, Wang JN et al.\nJournal: Cancer Manag Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459620"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8400703/",
+          "identifier": "PMC:8400703",
+          "title": "Dickkopf Proteins and Their Role in Cancer: A Family of Wnt Antagonists with a Dual Role.",
+          "snippet": "Title: Dickkopf Proteins and Their Role in Cancer: A Family of Wnt Antagonists with a Dual Role.\nAuthors: Giralt I, Gallo-Oller G, Navarro N et al.\nJournal: Pharmaceuticals (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459539"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6791419/",
+          "identifier": "PMC:6791419",
+          "title": "Trial watch: dendritic cell vaccination for cancer immunotherapy.",
+          "snippet": "Title: Trial watch: dendritic cell vaccination for cancer immunotherapy.\nAuthors: Sprooten J, Ceusters J, Coosemans A et al.\nJournal: Oncoimmunology",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459600"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9454959/",
+          "identifier": "PMC:9454959",
+          "title": "Multiple Myeloma Therapy: Emerging Trends and Challenges.",
+          "snippet": "Title: Multiple Myeloma Therapy: Emerging Trends and Challenges.\nAuthors: Dima D, Jiang D, Singh DJ et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459460"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A0A0S1S8",
+          "identifier": "A0A0A0S1S8",
+          "title": "Dkk1 - EBI Proteins",
+          "snippet": "Protein: Dkk1\nOrganism: Scyliorhinus canicula\nLength: 247 aa\nMass: 27635 Da\nDomains: Dickkopf N-terminal cysteine-rich, Dickkopf-related protein 1/2/4 C-terminal subdomain 1, Dickkopf-related protein 1/2/4 C-terminal subdomain 2, Disordered",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.846634"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A212CPZ8",
+          "identifier": "A0A212CPZ8",
+          "title": "DKK1 - EBI Proteins",
+          "snippet": "Protein: DKK1\nOrganism: Cervus elaphus hippelaphus\nLength: 265 aa\nMass: 28747 Da\nDomains: Dickkopf N-terminal cysteine-rich, Dickkopf-related protein 1/2/4 C-terminal subdomain 1, Dickkopf-related protein 1/2/4 C-terminal subdomain 2",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:22.173534"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DKK1",
+          "identifier": "NIH:5R01AG073317-04",
+          "title": "Loss of progenitor function accelerates lung aging (MAJKA, SUSAN M)",
+          "snippet": "Project: 5R01AG073317-04\nPI: MAJKA, SUSAN M\nOrganization: \nFiscal year: 2026\nAward: $685,103\nStart: 2023-06-15\nEnd: 2028-02-29\n(433 total NIH-funded projects matching 'DKK1')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:21.416614"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DKK1",
+          "identifier": "NIH:5R01DE031270-04",
+          "title": "Molecular mechanisms mediating the soft tissue attachment to teeth (HELMS, JILL A)",
+          "snippet": "Project: 5R01DE031270-04\nPI: HELMS, JILL A\nOrganization: \nFiscal year: 2026\nAward: $690,333\nStart: 2023-02-20\nEnd: 2028-01-31\n(433 total NIH-funded projects matching 'DKK1')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:21.416673"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Withdrawn",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v38] Registry status 'WITHDRAWN' \u2192 'Withdrawn'",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Withdrawn",
+      "confidence": 0.95,
+      "reasoning": "[ATOMIC TIER0] Withdrawn (conf=0.95)\n  rule: Tier 0 deterministic pre-label (WITHDRAWN)\n  registry: status=WITHDRAWN phase=EARLY_PHASE1 has_results=None completion=2024-08-01 days_since=643 stale=False drug_max_phase=None\n  pubs: 12 total (0 ts, 7 gen, 5 amb)\n  aggregator trace:\n    registry: status=WITHDRAWN has_results=None phase=EARLY_PHASE1 days_since=643 stale=False drug_max_phase=None\n    pubs: total=0 trial_specific=0 voting=0 pos=0 fail=0\n    tier0 fired \u2192 Withdrawn",
+      "evidence": [],
+      "model_name": "atomic-deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "Business Reason",
+      "confidence": 0.86,
+      "reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: No specific results from the trial NCT03591614 are directly reported in the provided literature. However, several relevant papers discuss dendritic cell-based immunotherapy in multiple myeloma and the role of DKK1 in cancer. For example, a 2022 review titled \"Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions\" discusses the potential of dendritic cell vaccines but notes challenges in clinical translation. Another paper from 2020, \"WNT Signaling in Hematological Malignancies,\" highlights the role of the WNT pathway, which is modulated by DKK1, in hematological malignancies. These papers do not specifically mention the outcome of NCT03591614, but they provide context about the biological mechanisms involved.  \nOutcome Signals: The trial status is listed as \"COMPLETED,\" but no specific findings or reasons for completion are provided in the available literature. There is no direct mention of whether the trial met its primary endpoints, encountered safety issues, or faced recruitment challenges.  \nIs This A Failure: Unclear\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Withdrawn, Pass 2 returned empty, inferred 'Business Reason'] The trial status is \"COMPLETED,\" and while the \"whyStopped\" field is not provided, the published literature does not contain any evidence of failure, ineffectiveness, or safety concerns related to NCT03591614. The available papers discuss the biological context of dendritic cell-based immunotherapy and DKK1 in multiple myeloma but do not mention the trial's outcomes. According to the rules, absence of published evidence of negative outcomes means the trial cannot be classified as a failure. Therefore, the correct classification is \"EMPTY.\"",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to study the safety and preliminary efficacy of a dendritic cell DKK1 vaccine against myeloma. Dendritic cells are immune cells that are collected from the blood of the patient at Case Western Reserve Medical Center and then brought into contact with DKK1, a molecule that is present of myeloma cells but not to a significant amount on other cells except for the prostate and the placenta. It is an investigational (experimental) vaccine that based on studies in the labo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690604"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3211685087",
+          "identifier": "https://doi.org/10.24292/01.or.124301021",
+          "title": "Management of patient with immune thrombocytopenia with antiphospholipid syndrome and monoclonal gammopathy of undetermined significance",
+          "snippet": "Title: Management of patient with immune thrombocytopenia with antiphospholipid syndrome and monoclonal gammopathy of undetermined significance\nYear: 2021\nCitations: 2\nAbstract: Immune thrombocytopenia with antiphospholipid syndrome and monoclonal gammopathy of undetermined significance poses therapeutic dilemmas \u2013 whether we should modify the immune thrombocytopenia treatment in antiphospholipid syndrome, what is the influe",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.850665"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2967533395",
+          "identifier": "PMID:31296995",
+          "title": "&lt;p&gt;Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies&lt;/p&gt;",
+          "snippet": "Title: &lt;p&gt;Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies&lt;/p&gt;\nYear: 2019\nCitations: 17\nAbstract: PURPOSE: Smoldering multiple myeloma (SMM) is a rare asymptomatic plasma cell disorder. Even with emerging therapeutic approaches and risk stratification, the optimal time to treat SMM remains controversial. This meta-analysis aimed to compare early ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.850569"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4205261080",
+          "identifier": "PMID:35055096",
+          "title": "Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions",
+          "snippet": "Title: Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions\nYear: 2022\nCitations: 47\nAbstract: Immunotherapeutic approaches, including adoptive cell therapy, revolutionized treatment in multiple myeloma (MM). As dendritic cells (DCs) are professional antigen-presenting cells and key initiators of tumor-specific immune responses, DC-based immun",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.850377"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3114955684",
+          "identifier": "PMID:33409156",
+          "title": "WNT Signaling in Hematological Malignancies",
+          "snippet": "Title: WNT Signaling in Hematological Malignancies\nYear: 2020\nCitations: 46\nAbstract: The role of the WNT signaling pathway in key cellular processes, such as cell proliferation, differentiation and migration is well documented. WNT signaling cascade is initiated by the interaction of WNT ligands with receptors belonging to the Frizzl",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.850493"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3133827987",
+          "identifier": "https://doi.org/10.3390/cancers13061221",
+          "title": "Boosting Immunity against Multiple Myeloma",
+          "snippet": "Title: Boosting Immunity against Multiple Myeloma\nYear: 2021\nCitations: 9\nAbstract: Despite the improvement of patient\u2019s outcome obtained by the current use of immunomodulatory drugs, proteasome inhibitors or anti-CD38 monoclonal antibodies, multiple myeloma (MM) remains an incurable disease. More recently, the testing in clinical t",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.850632"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6595476/",
+          "identifier": "PMC:6595476",
+          "title": "Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies.",
+          "snippet": "Title: Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies.\nAuthors: Zhao AL, Shen KN, Wang JN et al.\nJournal: Cancer Manag Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459620"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8400703/",
+          "identifier": "PMC:8400703",
+          "title": "Dickkopf Proteins and Their Role in Cancer: A Family of Wnt Antagonists with a Dual Role.",
+          "snippet": "Title: Dickkopf Proteins and Their Role in Cancer: A Family of Wnt Antagonists with a Dual Role.\nAuthors: Giralt I, Gallo-Oller G, Navarro N et al.\nJournal: Pharmaceuticals (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459539"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A0A0S1S8",
+          "identifier": "A0A0A0S1S8",
+          "title": "Dkk1 - EBI Proteins",
+          "snippet": "Protein: Dkk1\nOrganism: Scyliorhinus canicula\nLength: 247 aa\nMass: 27635 Da\nDomains: Dickkopf N-terminal cysteine-rich, Dickkopf-related protein 1/2/4 C-terminal subdomain 1, Dickkopf-related protein 1/2/4 C-terminal subdomain 2, Disordered",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.846634"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A212CPZ8",
+          "identifier": "A0A212CPZ8",
+          "title": "DKK1 - EBI Proteins",
+          "snippet": "Protein: DKK1\nOrganism: Cervus elaphus hippelaphus\nLength: 265 aa\nMass: 28747 Da\nDomains: Dickkopf N-terminal cysteine-rich, Dickkopf-related protein 1/2/4 C-terminal subdomain 1, Dickkopf-related protein 1/2/4 C-terminal subdomain 2",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:22.173534"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "",
+      "confidence": 0.0,
+      "reasoning": "[ATOMIC-FR gated] outcome_atomic=Withdrawn not in ['Failed - completed trial', 'Terminated']",
+      "evidence": [],
+      "model_name": "atomic-fr-gated",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT03591614",
+    "fields": [
+      {
+        "field_name": "sequence",
+        "original_value": "N/A",
+        "final_value": "N/A",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification_atomic",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Withdrawn",
+        "final_value": "Withdrawn",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Withdrawn",
+        "final_value": "Withdrawn",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial description explicitly states that the intervention is a \"DKK1 peptide-loaded\" vaccine. DKK1 is a protein, and this trial uses a peptide fragment of it.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The term \"peptide-loaded\" in the context of the dendritic cell vaccine clearly identifies the presence of a peptide molecule, which meets the definition of a peptide (2-100 amino acid residues).",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "According to the definition, if the trial description or intervention name says 'peptide', this is strong evidence for True. In this case, the word \"peptide\" is directly mentioned in the context of the DKK1 component, indicating that it contains a peptide molecule.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7899999999999999,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Other",
+        "final_value": "Injection/Infusion",
+        "consensus_reached": false,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "The description explicitly states the vaccine is dispensed in Plasma-Lyte A + HSA, indicating a parenteral route of administration.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "The description explicitly states that the vaccine is administered as an injection, which falls under the Injection/Infusion category.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Injection/Infusion",
+            "reasoning": "While the title of the trial mentions \"vaccine\", which might suggest oral administration, the description of the investigational agent as a peptide-loaded autologous dendritic cell vaccine indicates that it is administered via injection. The use of Plasma-Lyte A + 5% HSA as a diluent also supports this conclusion. However, I rate my confidence as Medium because the term \"vaccine\" can sometimes be used to refer to oral or topical formulations, and there may be other delivery modes not mentioned i",
+            "confidence": 0.7,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7899999999999999,
+        "reconciler_used": true,
+        "reconciler_reasoning": "**  \nThe clinical trial description explicitly states that the investigational agent is a **\"peptide-loaded autologous dendritic cell vaccine\"** and that it is **\"dispensed at a dose of 5-10x10\u2076 in 0.5 mL Plasma-Lyte A + 5% HSA\"**. This clearly indicates that the vaccine is administered **parenterally**, which falls under the **Injection/Infusion** category. Additionally, the trial description does not mention any oral or topical administration, further supporting the conclusion that the correct",
+        "flag_reason": "reconciler_deferred"
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "Business Reason",
+        "final_value": "",
+        "consensus_reached": false,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "",
+            "reasoning": "The trial was withdrawn due to a PI leaving their institution. There is no evidence of failure or negative outcomes published.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "",
+            "reasoning": "The reason for withdrawal is attributed to the principal investigator leaving the institution, which is a personnel-related issue, not a failure of the trial itself. There is no published evidence of the trial failing to meet its endpoints, safety concerns, or other failure criteria. Therefore, the reason for failure is \"EMPTY.\"",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "",
+            "reasoning": "Since the trial was withdrawn due to a personnel issue (PI leaving) rather than any indication of failure or safety concerns, and there is no published evidence of negative outcomes, I conclude that the reason for withdrawal is not related to the efficacy or safety of the treatment. Therefore, the correct answer is EMPTY.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.86,
+        "reconciler_used": true,
+        "reconciler_reasoning": "**  \nThe trial (NCT03591614) was withdrawn due to the **principal investigator (PI) leaving their institution**, as explicitly stated in the **clinicaltrials.gov** entry:  \n> \"Status: WITHDRAWN | Why stopped: PI left institution\"",
+        "flag_reason": "reconciler_deferred"
+      }
+    ],
+    "overall_consensus": false,
+    "flagged_for_review": true,
+    "flag_reason": "Unresolved disagreements: delivery_mode, reason_for_failure"
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "A Pilot Study of Dendritic Cell DKK1 Vaccine for Patients With Monoclonal Gammopathy and Stable or Smoldering Myeloma",
+          "snippet": "Title: A Pilot Study of Dendritic Cell DKK1 Vaccine for Patients With Monoclonal Gammopathy and Stable or Smoldering Myeloma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690553"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to study the safety and preliminary efficacy of a dendritic cell DKK1 vaccine against myeloma. Dendritic cells are immune cells that are collected from the blood of the patient at Case Western Reserve Medical Center and then brought into contact with DKK1, a molecule that is present of myeloma cells but not to a significant amount on other cells except for the prostate and the placenta. It is an investigational (experimental) vaccine that based on studies in the labo",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690604"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Detailed Description",
+          "snippet": "The overall objective of this pilot study is to determine the safety and preliminary efficacy of a dendritic cell DKK1 vaccine in view of possible future use as a strategy to prevent progression of asymptomatic plasma cell disorders, maintain disease control, and ultimately contribute to eradication of multiple myeloma, light and heavy chain amyloidosis, immunoglobulin deposition disease, and other malignant and non-malignant diseases related to transformed plasma cells.\n\nPrimary Objective Confi",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690623"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Study Status",
+          "snippet": "Status: WITHDRAWN | Why stopped: PI left institution",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690642"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Monoclonal Gammopathy, Smoldering Myeloma, Myeloma | Keywords: Vaccine, DKK1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690662"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Intervention: DKK1",
+          "snippet": "BIOLOGICAL: DKK1 - The investigational agent is a DKK1 peptide-loaded autologous dendritic cell vaccine dispensed at a dose of 5-10x106 in 0.5 mL Plasma-Lyte A + 5% HSA.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690683"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Arm Group: Dendritic cell DKK1 vaccine",
+          "snippet": "Arm: Dendritic cell DKK1 vaccine - 5-10x106 DKK1 loaded dendritic cells. Three doses will be given two weeks apart, followed by 11 months of observations.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690702"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Phase",
+          "snippet": "Phase: EARLY_PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.690721"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT03591614",
+            "orgStudyIdInfo": {
+              "id": "CASE1A16"
+            },
+            "organization": {
+              "fullName": "Case Comprehensive Cancer Center",
+              "class": "OTHER"
+            },
+            "briefTitle": "Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or Smoldering Myeloma",
+            "officialTitle": "A Pilot Study of Dendritic Cell DKK1 Vaccine for Patients With Monoclonal Gammopathy and Stable or Smoldering Myeloma"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2023-08",
+            "overallStatus": "WITHDRAWN",
+            "whyStopped": "PI left institution",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2023-12-01",
+              "type": "ESTIMATED"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2024-08-01",
+              "type": "ESTIMATED"
+            },
+            "completionDateStruct": {
+              "date": "2025-08-01",
+              "type": "ESTIMATED"
+            },
+            "studyFirstSubmitDate": "2018-07-09",
+            "studyFirstSubmitQcDate": "2018-07-09",
+            "studyFirstPostDateStruct": {
+              "date": "2018-07-19",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2023-08-16",
+            "lastUpdatePostDateStruct": {
+              "date": "2023-08-18",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Case Comprehensive Cancer Center",
+              "class": "OTHER"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of this study is to study the safety and preliminary efficacy of a dendritic cell DKK1 vaccine against myeloma. Dendritic cells are immune cells that are collected from the blood of the patient at Case Western Reserve Medical Center and then brought into contact with DKK1, a molecule that is present of myeloma cells but not to a significant amount on other cells except for the prostate and the placenta. It is an investigational (experimental) vaccine that based on studies in the laboratory and in mice is expected to work by presentation of DKK1 to anticancer immune cells via dendritic cells leading to an immune attack on myeloma cells. It is experimental because it is not approved by the Food and Drug Administration (FDA).",
+            "detailedDescription": "The overall objective of this pilot study is to determine the safety and preliminary efficacy of a dendritic cell DKK1 vaccine in view of possible future use as a strategy to prevent progression of asymptomatic plasma cell disorders, maintain disease control, and ultimately contribute to eradication of multiple myeloma, light and heavy chain amyloidosis, immunoglobulin deposition disease, and other malignant and non-malignant diseases related to transformed plasma cells.\n\nPrimary Objective Confirm the safety of dendritic cell DKK1 vaccine given every two weeks for three doses in patients with monoclonal gammopathy, stable or smoldering myeloma.\n\nSecondary Objectives\n\n1. Assess response according to international response criteria (\\> partial response, PR) and clinical benefit response (\\>minor response, MR, according to adapted EBMT criteria)\n2. Determine time to progression\n3. Describe progression-free and overall survival\n\nCorrelative Objectives\n\n1. Explore correlation between myeloma DKK1 and PDL-1 expression and response\n2. Determine cellular immune response\n3. Assess serologic anti-DKK1 antibody response\n\nStudy design including dose escalation / cohorts Pilot study with 3 patient safety run-in, possible dose level -1 (DL-1) if dose limiting toxicity occurs in one or more patients at the target dose level, and, at the first dose level where no dose limiting toxicity occurs, extension by 12 patients.\n\nDLT will be defined as any vaccine related toxicity \\> grade 3 that does not resolve to grade \\< 2 within 7 days. If any DLT occurs at DL-1 enrollment will be stopped and an amendment will be discussed."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Monoclonal Gammopathy",
+              "Smoldering Myeloma",
+              "Myeloma"
+            ],
+            "keywords": [
+              "Vaccine",
+              "DKK1"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "EARLY_PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 0,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Dendritic cell DKK1 vaccine",
+                "type": "EXPERIMENTAL",
+                "description": "5-10x106 DKK1 loaded dendritic cells. Three doses will be given two weeks apart, followed by 11 months of observations.",
+                "interventionNames": [
+                  "Biological: DKK1"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "DKK1",
+                "description": "The investigational agent is a DKK1 peptide-loaded autologous dendritic cell vaccine dispensed at a dose of 5-10x106 in 0.5 mL Plasma-Lyte A + 5% HSA.",
+                "armGroupLabels": [
+                  "Dendritic cell DKK1 vaccine"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Number of patients with dose limiting toxicity",
+                "description": "Toxicity will be assessed according to CTCAE v.4.03. Patients will have weekly CBC w. Differential, CMP, history, and physical. DLT will be defined as any vaccine related non-hematologic toxicity, neutropenia, anemia or thrombocytopenia \\> grade 3 that does not resolve to grade \\< 2 within 7 days.",
+                "timeFrame": "Up to 1 year"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Average time of progression-free survival",
+                "description": "Progression-free survival will be measured from administration of the first vaccine dose to progression as defined by updated uniform international response criteria or death of any cause, whichever comes first.",
+                "timeFrame": "Up to 1 year"
+              },
+              {
+                "measure": "Average time of overall survival",
+                "description": "Overall survival will be measured from administration of the first vaccine dose to death from any cause.",
+                "timeFrame": "Up to 1 year"
+              },
+              {
+                "measure": "Average time to progression",
+                "description": "Time to progression will be measured from administration of the first vaccine dose to progression as defined by updated uniform international response criteria",
+                "timeFrame": "Up to 1 year"
+              },
+              {
+                "measure": "Best overall response",
+                "description": "Response will be evaluated according to updated uniform response criteria",
+                "timeFrame": "Up to 1 year"
+              },
+              {
+                "measure": "Clinical Benefit Response",
+                "description": "Response will be evaluated according to updated uniform response criteria",
+                "timeFrame": "Up to 1 year"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* At any time prior to enrollment subjects must have IgG, IgA, kappa, or lambda monoclonal gammopathy confirmed in at least two assessments at least three months apart or histologically confirmed multiple myeloma or carry a diagnosis of smoldering myeloma based on prior documentation of serum m-spike (IgG or IgA) of at least 3g/dL serum m-spike (IgG or IgA) or 24h urine m-spike of at least 500mg/24h.\n* Within 28 days prior to enrollment persistence of the clonal plasma cell disorder must be documented by presence of a clonal band on immunofixation of blood or urine or an abnormal serum free kappa/lambda ratio.\n* Subjects with myeloma related organ dysfunction must have received prior therapy, reached at least partial remission with at least one of any number of prior regimens, and be candidates for observation off myeloma therapy based on lack of progression at least stable disease for at least 90 days prior to at study entry.\n* Performance status ECOG performance status \u2264 2.\n* Subjects must have laboratory test results within the following ranges:\n\n  * Hemoglobin \u2265 9.0 g/dl\n  * Absolute neutrophil count \u2265 1,500/mcL\n  * Platelet count \u2265 100,000/mcL\n  * Total bilirubin \\< 2.5 x institutional upper limit of normal\n  * AST (SGOT) \u2264 2.5 X institutional upper limit of normal\n  * ALT (SGPT) \u2264 2.5 X institutional upper limit of normal\n  * Calculated creatinine clearance (Cockcroft-Gault) \u2265 30ml/min\n* Anti-myeloma treatment with proteasome inhibitors, IMiDsTM, corticosteroids, low dose cyclophosphamide (\u2264 50mg per day) must have been discontinued at least 14 days prior to study entry. Conventional chemotherapy at conventional doses including cyclophosphamide at \\> 50mg per day must have been discontinued at least 28 days prior to study entry. At least 180 days must have passed since high dose chemotherapy used in the context of autologous stem cell transplantation. Prior radiation must have been completed at least 14 days prior to enrollment.\n* Subjects must have the ability to understand and the willingness to sign a written informed consent document.\n\nExclusion Criteria:\n\n* Subjects receiving any other investigational agents.\n* Concurrent use of any plasma cell directed therapy including corticosteroids (use of bisphosphonates is allowed).\n* Subjects who have previously received an allogeneic stem cell transplant.\n* Subjects with uncontrolled intercurrent illness including, but not limited to ongoing or active infection (including active HIV or hepatitis), symptomatic congestive heart failure, unstable angina pectoris, cardiac arrhythmia, or psychiatric illness/social situations that would limit compliance with study requirements.\n* Women with childbearing potential (last menstrual period within less than 24 months unless hysterectomy or bilateral oophorectomy has been performed since) as well as pregnant women are excluded from this study because DKK1 is expressed in placental tissue and a DKK1 immune response could harm the child. Breastfeeding women are excluded from this study because antibodies made in response to the dendritic cell DKK1 vaccine could enter milk and affect the health of the breastfed child.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Ehsan Malek, MD",
+                "affiliation": "University Hospitals Seidman Cancer Center, Case Comprehensive Cancer Center",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "University Hospitals Cleveland Medical Center, Seidman Cancer Center, Case Comprehensive Cancer Center",
+                "city": "Cleveland",
+                "state": "Ohio",
+                "zip": "44106",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.4995,
+                  "lon": -81.69541
+                }
+              },
+              {
+                "facility": "Cleveland Clinic, Case Comprehensive Cancer Center",
+                "city": "Cleveland",
+                "state": "Ohio",
+                "zip": "44195",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.4995,
+                  "lon": -81.69541
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9454959/",
+          "identifier": "PMC:9454959",
+          "title": "Multiple Myeloma Therapy: Emerging Trends and Challenges.",
+          "snippet": "Title: Multiple Myeloma Therapy: Emerging Trends and Challenges.\nAuthors: Dima D, Jiang D, Singh DJ et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459460"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8778019/",
+          "identifier": "PMC:8778019",
+          "title": "Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions.",
+          "snippet": "Title: Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions.\nAuthors: Verheye E, Bravo Melgar J, Deschoemaeker S et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459514"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8400703/",
+          "identifier": "PMC:8400703",
+          "title": "Dickkopf Proteins and Their Role in Cancer: A Family of Wnt Antagonists with a Dual Role.",
+          "snippet": "Title: Dickkopf Proteins and Their Role in Cancer: A Family of Wnt Antagonists with a Dual Role.\nAuthors: Giralt I, Gallo-Oller G, Navarro N et al.\nJournal: Pharmaceuticals (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459539"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8001641/",
+          "identifier": "PMC:8001641",
+          "title": "Boosting Immunity against Multiple Myeloma.",
+          "snippet": "Title: Boosting Immunity against Multiple Myeloma.\nAuthors: Lopes R, Ferreira BV, Caetano J et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459560"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7779757/",
+          "identifier": "PMC:7779757",
+          "title": "WNT Signaling in Hematological Malignancies.",
+          "snippet": "Title: WNT Signaling in Hematological Malignancies.\nAuthors: Frenquelli M, Tonon G\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459580"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6791419/",
+          "identifier": "PMC:6791419",
+          "title": "Trial watch: dendritic cell vaccination for cancer immunotherapy.",
+          "snippet": "Title: Trial watch: dendritic cell vaccination for cancer immunotherapy.\nAuthors: Sprooten J, Ceusters J, Coosemans A et al.\nJournal: Oncoimmunology",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459600"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6595476/",
+          "identifier": "PMC:6595476",
+          "title": "Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies.",
+          "snippet": "Title: Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies.\nAuthors: Zhao AL, Shen KN, Wang JN et al.\nJournal: Cancer Manag Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.459620"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "9454959",
+          "8778019",
+          "8400703",
+          "8001641",
+          "7779757",
+          "6791419",
+          "6595476"
+        ],
+        "pmc_count": 7,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT03591614",
+      "citations": [],
+      "raw_data": {
+        "uniprot_DKK1": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or ...",
+          "snippet": "Web result for: NCT03591614 Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or Smoldering M",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:23.004807"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or ...",
+          "snippet": "Web result for: NCT03591614 Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or Smoldering M",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:23.004860"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://meddatax.com/clinical-trials/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or ...",
+          "snippet": "Web result for: NCT03591614 Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or Smoldering M",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:23.004879"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://trial.medpath.com/clinical-trial/1b48fdc2ef974311/nct03591614-pilot-study-dendritic-cell-dkk1-vaccine-monoclonal-gammopathy-myeloma",
+          "identifier": "NCT03591614",
+          "title": "Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or ...",
+          "snippet": "Web result for: NCT03591614 Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or Smoldering M",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:23.004894"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.smartpatients.com/trials/NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or ...",
+          "snippet": "Web result for: NCT03591614 Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or Smoldering M",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:23.004909"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 22125
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT03591614",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_DKK1": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT03591614",
+      "citations": [],
+      "raw_data": {
+        "chembl_DKK1_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/3S8Z",
+          "identifier": "PDB:3S8Z",
+          "title": "Crystal structure of LRP6-E3E4",
+          "snippet": "PDB ID: 3S8Z\nTitle: Crystal structure of LRP6-E3E4\nMethod: X-RAY DIFFRACTION\nResolution: 2.8 A\nDeposited: 2011-05-31\nReleased: 2011-10-26\nCitation: Crystal structures of the extracellular domain of LRP6 and its complex with DKK1.. Cheng, Z., Biechele, T., Wei, Z. et al.. Nat.Struct.Mol.Biol. (2011)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:21.345419"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/3S94",
+          "identifier": "PDB:3S94",
+          "title": "Crystal structure of LRP6-E1E2",
+          "snippet": "PDB ID: 3S94\nTitle: Crystal structure of LRP6-E1E2\nMethod: X-RAY DIFFRACTION\nResolution: 2.8 A\nDeposited: 2011-05-31\nReleased: 2011-11-02\nCitation: Crystal structures of the extracellular domain of LRP6 and its complex with DKK1.. Cheng, Z., Biechele, T., Wei, Z. et al.. Nat.Struct.Mol.Biol. (2011)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:21.387167"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/3S8V",
+          "identifier": "PDB:3S8V",
+          "title": "Crystal structure of LRP6-Dkk1 complex",
+          "snippet": "PDB ID: 3S8V\nTitle: Crystal structure of LRP6-Dkk1 complex\nMethod: X-RAY DIFFRACTION\nResolution: 3.1 A\nDeposited: 2011-05-31\nReleased: 2011-10-26\nCitation: Crystal structures of the extracellular domain of LRP6 and its complex with DKK1.. Cheng, Z., Biechele, T., Wei, Z. et al.. Nat.Struct.Mol.Biol. (2011)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:21.431266"
+        }
+      ],
+      "raw_data": {
+        "rcsb_DKK1_count": 11
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A0A0S1S8",
+          "identifier": "A0A0A0S1S8",
+          "title": "Dkk1 - EBI Proteins",
+          "snippet": "Protein: Dkk1\nOrganism: Scyliorhinus canicula\nLength: 247 aa\nMass: 27635 Da\nDomains: Dickkopf N-terminal cysteine-rich, Dickkopf-related protein 1/2/4 C-terminal subdomain 1, Dickkopf-related protein 1/2/4 C-terminal subdomain 2, Disordered",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.846634"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A0C4JZC1",
+          "identifier": "A0A0C4JZC1",
+          "title": "Dkk1 protein - EBI Proteins",
+          "snippet": "Protein: Dkk1 protein\nOrganism: Scyliorhinus torazame\nLength: 206 aa\nMass: 23043 Da\nDomains: Dickkopf N-terminal cysteine-rich, Dickkopf-related protein 1/2/4 C-terminal subdomain 1",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.991601"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A212CPZ8",
+          "identifier": "A0A212CPZ8",
+          "title": "DKK1 - EBI Proteins",
+          "snippet": "Protein: DKK1\nOrganism: Cervus elaphus hippelaphus\nLength: 265 aa\nMass: 28747 Da\nDomains: Dickkopf N-terminal cysteine-rich, Dickkopf-related protein 1/2/4 C-terminal subdomain 1, Dickkopf-related protein 1/2/4 C-terminal subdomain 2",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:22.173534"
+        }
+      ],
+      "raw_data": {
+        "ebi_proteins_DKK1_count": 5,
+        "ebi_proteins_DKK1_entries": [
+          {
+            "accession": "A0A0A0S1S8",
+            "protein_name": "Dkk1",
+            "sequence": "MYLETVRMCRLFLSFCLYNVVSSFNSNAIKTGSAAVQMPSHPVSIAPQVVHHHSVSKNHAVDQSQFSTCQDDRDCAVEQFCSASRSAAQHCLNCRRRRKRCLRDAMCCPGTRCSNGMCTPNDAEHIHGAVRETSLESWIHEEQETTSDSHPRRTTLSARSHTVKGQEGDICLRSSDCAQGLCCARHFWSKICKPVLREGQVCTRHRRKGSHGLEIFQRCDCAQGFSCRMQRGGSQGSGKNSRLHTCQ",
+            "seq_length": 247,
+            "features": [
+              {
+                "type": "CHAIN",
+                "category": "MOLECULE_PROCESSING",
+                "ftId": "PRO_5001969620",
+                "description": "",
+                "begin": "24",
+                "end": "247",
+                "molecule": "",
+                "evidences": [
+                  {
+                    "code": "ECO:0000256",
+                    "source": {
+                      "name": "SAM",
+                      "id": "SignalP",
+                      "url": "https://www.uniprot.org/help/sam"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "accession": "A0A0C4JZC1",
+            "protein_name": "Dkk1 protein",
+            "sequence": "MYLEAVRMGRLFLSFCLYNAVNSFNSNAIKTGSAAVQIPSHPVSIAPQVVHHHSVSKNHAVDQSQFSTCQDDRDCAVEQFCSASRSAAQHCLNCRRRRKRCLRDAMCCPGTRCSNGMCTPNDAEHVHGAVRETSLESWIHEEQETTLDSHPRRTTLSARSHSVKGQEGDICLRSSDCAQGLCCARHFWSKICKPVLREGQVCTRHR",
+            "seq_length": 206,
+            "features": []
+          },
+          {
+            "accession": "A0A212CPZ8",
+            "protein_name": "DKK1",
+            "sequence": "MTALRTAGAARVWVALAAAALCGHPLLGVSATLNFVLNSNAIKNLPPPLSGAAGHPGSAVSAAPGTPFEGGNKFQTLDNHQPYPCAEDEDCSADEYCASPARGAGAQICLACRKLRKRCMRHAMCCPGNHCKNGICMPSDQNHFHRGEIEETIIENFGNEHSTLDGYSRRTTLSSRMYHTKGQEGSVCLRSSDCAAGLCCARHFWSKICKPVLKEGQVCTKHRRKGSHGLEIFQRCYCGEGLSCRIQKDHHQASNSSRLHTCQRH",
+            "seq_length": 265,
+            "features": []
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT03591614",
+      "citations": [],
+      "raw_data": {
+        "apd_DKK1": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03591614",
+          "identifier": "NCT03591614",
+          "title": "Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or Smoldering Myeloma",
+          "snippet": "Title: Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or Smoldering Myeloma\nStatus: Withdrawn\nPhase: Early Phase 1\nCountries: United States\nConditions: Smoldering Myeloma, Myeloma, Monoclonal Gammopathy\nInterventions: Biological: DKK1\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:29.334753"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT03591614",
+          "public_title": "Dendritic Cell DKK1 Vaccine for Monoclonal Gammopathy and Stable or Smoldering Myeloma",
+          "scientific_title": "A Pilot Study of Dendritic Cell DKK1 Vaccine for Patients With Monoclonal Gammopathy and Stable or Smoldering Myeloma",
+          "recruitment_status": "Withdrawn",
+          "phase": "Early Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Treatment. Masking: None (Open Label).",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Smoldering Myeloma",
+            "Myeloma",
+            "Monoclonal Gammopathy"
+          ],
+          "interventions": [
+            "Biological: DKK1"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT03591614",
+      "citations": [],
+      "raw_data": {
+        "iuphar_DKK1": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/5fww",
+          "identifier": "PDB:5fww",
+          "title": "Wnt modulator Kremen in complex with DKK1 (CRD2) and LRP6 (PE3PE4)",
+          "snippet": "PDB ID: 5fww\nTitle: Wnt modulator Kremen in complex with DKK1 (CRD2) and LRP6 (PE3PE4)\nExperimental method: X-ray diffraction\nQuality: Resolution: 3.5 A, R-factor: 0.3228, R-free: 0.3553\nMolecules: Dickkopf-related protein 1\nMolecule type: Protein\nOrganisms: Homo sapiens\nBound entities: 1\nAssembly: trimer (hetero)\nDeposited: 2016-02-21\nReleased: 2016-07-20\nCitation: Structure of the Dual-Mode Wnt Regulator Kremen1 and Insight into Ternary Complex Formation with LRP6 and Dickkopf.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:21.882735"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/5gje",
+          "identifier": "PDB:5gje",
+          "title": "Three-dimensional reconstruction of human LRP6 ectodomain complexed with Dkk1",
+          "snippet": "PDB ID: 5gje\nTitle: Three-dimensional reconstruction of human LRP6 ectodomain complexed with Dkk1\nExperimental method: Electron Microscopy\nQuality: Resolution: 21.0 A\nMolecules: Dickkopf-related protein 1\nMolecule type: Protein\nOrganisms: Homo sapiens\nBound entities: 3\nAssembly: trimer (hetero)\nDeposited: 2016-06-29\nReleased: 2017-01-18\nCitation: Conformational Freedom of the LRP6 Ectodomain Is Regulated by N-glycosylation and the Binding of the Wnt Antagonist Dkk1.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:22.034756"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/3soq",
+          "identifier": "PDB:3soq",
+          "title": "The structure of the first YWTD beta propeller domain of LRP6 in complex with a DKK1 peptide",
+          "snippet": "PDB ID: 3soq\nTitle: The structure of the first YWTD beta propeller domain of LRP6 in complex with a DKK1 peptide\nExperimental method: X-ray diffraction\nQuality: Resolution: 1.9 A, R-factor: 0.1792, R-free: 0.2214\nMolecules: Dickkopf-related protein 1\nMolecule type: Protein\nOrganisms: Homo sapiens\nBound entities: 4\nAssembly: dimer (hetero)\nDeposited: 2011-06-30\nReleased: 2011-09-21\nCitation: Wnt antagonists bind through a short peptide to the first \u03b2-propeller domain of LRP5/6.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:22.184256"
+        }
+      ],
+      "raw_data": {
+        "pdbe_DKK1_count": 13
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4205261080",
+          "identifier": "PMID:35055096",
+          "title": "Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions",
+          "snippet": "Title: Dendritic Cell-Based Immunotherapy in Multiple Myeloma: Challenges, Opportunities, and Future Directions\nYear: 2022\nCitations: 47\nAbstract: Immunotherapeutic approaches, including adoptive cell therapy, revolutionized treatment in multiple myeloma (MM). As dendritic cells (DCs) are professional antigen-presenting cells and key initiators of tumor-specific immune responses, DC-based immun",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.850377"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3114955684",
+          "identifier": "PMID:33409156",
+          "title": "WNT Signaling in Hematological Malignancies",
+          "snippet": "Title: WNT Signaling in Hematological Malignancies\nYear: 2020\nCitations: 46\nAbstract: The role of the WNT signaling pathway in key cellular processes, such as cell proliferation, differentiation and migration is well documented. WNT signaling cascade is initiated by the interaction of WNT ligands with receptors belonging to the Frizzl",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.850493"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2967533395",
+          "identifier": "PMID:31296995",
+          "title": "&lt;p&gt;Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies&lt;/p&gt;",
+          "snippet": "Title: &lt;p&gt;Early or deferred treatment of smoldering multiple myeloma: a meta-analysis on randomized controlled studies&lt;/p&gt;\nYear: 2019\nCitations: 17\nAbstract: PURPOSE: Smoldering multiple myeloma (SMM) is a rare asymptomatic plasma cell disorder. Even with emerging therapeutic approaches and risk stratification, the optimal time to treat SMM remains controversial. This meta-analysis aimed to compare early ",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.850569"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3133827987",
+          "identifier": "https://doi.org/10.3390/cancers13061221",
+          "title": "Boosting Immunity against Multiple Myeloma",
+          "snippet": "Title: Boosting Immunity against Multiple Myeloma\nYear: 2021\nCitations: 9\nAbstract: Despite the improvement of patient\u2019s outcome obtained by the current use of immunomodulatory drugs, proteasome inhibitors or anti-CD38 monoclonal antibodies, multiple myeloma (MM) remains an incurable disease. More recently, the testing in clinical t",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.850632"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3211685087",
+          "identifier": "https://doi.org/10.24292/01.or.124301021",
+          "title": "Management of patient with immune thrombocytopenia with antiphospholipid syndrome and monoclonal gammopathy of undetermined significance",
+          "snippet": "Title: Management of patient with immune thrombocytopenia with antiphospholipid syndrome and monoclonal gammopathy of undetermined significance\nYear: 2021\nCitations: 2\nAbstract: Immune thrombocytopenia with antiphospholipid syndrome and monoclonal gammopathy of undetermined significance poses therapeutic dilemmas \u2013 whether we should modify the immune thrombocytopenia treatment in antiphospholipid syndrome, what is the influe",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:21.850665"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT03591614",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.32388/12oek2",
+          "identifier": "DOI:10.32388/12oek2",
+          "title": "Anti-DKK1 Monoclonal Antibody BHQ880",
+          "snippet": "Title: Anti-DKK1 Monoclonal Antibody BHQ880\nJournal: Definitions\nYear: 2020",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:22.409311"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.32388/kt7oex",
+          "identifier": "DOI:10.32388/kt7oex",
+          "title": "DKK1-Neutralizing Monoclonal Antibody DKN-01",
+          "snippet": "Title: DKK1-Neutralizing Monoclonal Antibody DKN-01\nJournal: Definitions\nYear: 2020",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:22.409361"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.32388/cyzozy",
+          "identifier": "DOI:10.32388/cyzozy",
+          "title": "Elevated DKK1",
+          "snippet": "Title: Elevated DKK1\nJournal: Definitions\nYear: 2020",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:22.409383"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-7788058/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-7788058/v1",
+          "title": "Bispecific antibody against sclerostin and DKK1 improves bone health and reduces bone marrow adipose tissue accumulation in experimental chronic kidney disease",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:22.214296"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.05.27.656395",
+          "identifier": "DOI:10.1101/2025.05.27.656395",
+          "title": "Platelet DKK1 promotes tolerogenic dendritic cells and non-healing responses in cutaneous leishmaniasis",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:22.214321"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.03.27.645622",
+          "identifier": "DOI:10.1101/2025.03.27.645622",
+          "title": "Neural crest cell derived DKK1 modulates Wnt signalling in the second heart field to orchestrate cardiac outflow tract development",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:22.214377"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2024.09.18.613704",
+          "identifier": "DOI:10.1101/2024.09.18.613704",
+          "title": "Non-cell-autonomous control of gastruloid development by the lncRNA<i>T-UCstem1</i>through DKK1-dependent modulation of WNT signalling",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:22.214448"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4023430/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4023430/v1",
+          "title": "DKK1 as a chemoresistant protein modulates oxaliplatin responses in colorectal cancer",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:22.214470"
+        }
+      ],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 25,
+        "biorxiv_prefilter_dropped": 20
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1509745/000110465923100396/0001104659-23-100396-index.htm",
+          "identifier": "SEC:0001104659-23-100396",
+          "title": "LEAP THERAPEUTICS, INC.  (LPTX)  (CIK 0001509745) 8-K (2023-09-13) \u2014 references 'DKK1'",
+          "snippet": "Filing: 8-K\nSponsor: LEAP THERAPEUTICS, INC.  (LPTX)  (CIK 0001509745)\nDate: 2023-09-13\nSearch term: 'DKK1'\n(83 total hits for 'DKK1' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:24.153327"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1509745/000110465922078992/0001104659-22-078992-index.htm",
+          "identifier": "SEC:0001104659-22-078992",
+          "title": "LEAP THERAPEUTICS, INC.  (LPTX)  (CIK 0001509745) 8-K (2022-07-12) \u2014 references 'DKK1'",
+          "snippet": "Filing: 8-K\nSponsor: LEAP THERAPEUTICS, INC.  (LPTX)  (CIK 0001509745)\nDate: 2022-07-12\nSearch term: 'DKK1'\n(83 total hits for 'DKK1' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:24.153404"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1509745/000110465925006544/0001104659-25-006544-index.htm",
+          "identifier": "SEC:0001104659-25-006544",
+          "title": "LEAP THERAPEUTICS, INC.  (LPTX)  (CIK 0001509745) 8-K (2025-01-28) \u2014 references 'DKK1'",
+          "snippet": "Filing: 8-K\nSponsor: LEAP THERAPEUTICS, INC.  (LPTX)  (CIK 0001509745)\nDate: 2025-01-28\nSearch term: 'DKK1'\n(83 total hits for 'DKK1' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:24.153435"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1509745/000110465922115157/0001104659-22-115157-index.htm",
+          "identifier": "SEC:0001104659-22-115157",
+          "title": "LEAP THERAPEUTICS, INC.  (LPTX)  (CIK 0001509745) 8-K (2022-11-07) \u2014 references 'DKK1'",
+          "snippet": "Filing: 8-K\nSponsor: LEAP THERAPEUTICS, INC.  (LPTX)  (CIK 0001509745)\nDate: 2022-11-07\nSearch term: 'DKK1'\n(83 total hits for 'DKK1' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:24.153458"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1509745/000110465921116139/0001104659-21-116139-index.htm",
+          "identifier": "SEC:0001104659-21-116139",
+          "title": "LEAP THERAPEUTICS, INC.  (LPTX)  (CIK 0001509745) 8-K (2021-09-16) \u2014 references 'DKK1'",
+          "snippet": "Filing: 8-K\nSponsor: LEAP THERAPEUTICS, INC.  (LPTX)  (CIK 0001509745)\nDate: 2021-09-16\nSearch term: 'DKK1'\n(83 total hits for 'DKK1' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:24.153481"
+        }
+      ],
+      "raw_data": {
+        "sec_edgar_NCT03591614_total": 0,
+        "sec_edgar_DKK1_total": 83
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT03591614",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_DKK1_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT03591614",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DKK1",
+          "identifier": "NIH:5R01AG073317-04",
+          "title": "Loss of progenitor function accelerates lung aging (MAJKA, SUSAN M)",
+          "snippet": "Project: 5R01AG073317-04\nPI: MAJKA, SUSAN M\nOrganization: \nFiscal year: 2026\nAward: $685,103\nStart: 2023-06-15\nEnd: 2028-02-29\n(433 total NIH-funded projects matching 'DKK1')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:21.416614"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DKK1",
+          "identifier": "NIH:5R01DE031270-04",
+          "title": "Molecular mechanisms mediating the soft tissue attachment to teeth (HELMS, JILL A)",
+          "snippet": "Project: 5R01DE031270-04\nPI: HELMS, JILL A\nOrganization: \nFiscal year: 2026\nAward: $690,333\nStart: 2023-02-20\nEnd: 2028-01-31\n(433 total NIH-funded projects matching 'DKK1')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:21.416673"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=DKK1",
+          "identifier": "NIH:5F31CA284858-03",
+          "title": "Regulation of hematopoiesis during tumor progression (EUL, EMILY M)",
+          "snippet": "Project: 5F31CA284858-03\nPI: EUL, EMILY M\nOrganization: \nFiscal year: 2025\nAward: $49,538\nStart: 2023-08-01\nEnd: 2026-07-31\n(433 total NIH-funded projects matching 'DKK1')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:21.416702"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_DKK1_count": 433,
+        "nih_reporter_DKK1_funded": true
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 8,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov"
+      ]
+    },
+    "literature": {
+      "citations_count": 7,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "pmc"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "chembl": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "rcsb_pdb": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "rcsb_pdb"
+      ]
+    },
+    "ebi_proteins": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "ebi_proteins"
+      ]
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "pdbe": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "pdbe"
+      ]
+    },
+    "openalex": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "biorxiv_medrxiv"
+      ]
+    },
+    "sec_edgar": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "sec_edgar"
+      ]
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "nih_reporter"
+      ]
+    }
+  }
+}

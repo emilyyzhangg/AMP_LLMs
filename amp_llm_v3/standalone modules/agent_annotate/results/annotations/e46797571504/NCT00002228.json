@@ -1,0 +1,1452 @@
+{
+  "nct_id": "NCT00002228",
+  "metadata": {
+    "nct_id": "NCT00002228",
+    "title": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+    "phase": "PHASE2",
+    "status": "COMPLETED",
+    "conditions": [
+      "HIV Infections"
+    ],
+    "interventions": [
+      "DRUG: Enfuvirtide"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v35] Known peptide drug: 'enfuvirtide' matched 'enfuvirtide'",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v9] Known non-AMP drug: 'enfuvirtide' matched 'enfuvirtide'",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "AMP",
+      "confidence": 0.95,
+      "reasoning": "[ATOMIC-CLS R1] AMP (conf=0.95)\n  rule: registry hit: DBAASP[DBAASP:DBAASPS_6056,DBAASP:DBAASPS_6626,DBAASP:DBAASPS_6627]\n  registry: dramp=0 apd=0 dbaasp=5 uniprot_amp=0\n  atomic: q1=UNCLEAR q2=UNCLEAR q3=UNCLEAR\n  R1 fired: deterministic registry hit",
+      "evidence": [],
+      "model_name": "atomic-cls-deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v38] Collected 1 route(s) from all citations",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "snippet": "Title: A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.975197"
+        }
+      ],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Positive",
+      "confidence": 0.8699999999999999,
+      "reasoning": "[Dossier] Trial: NCT00002228\nRegistry Status: COMPLETED\nPhase: PHASE2\nResults Posted: Unknown\nPublications Found: 19 (18 trial-specific, 1 reviews/general)\n  1. Title: Enfuvirtide.\nAuthors: Lalezari Jacob P, Luber Andrew D\nJournal: Drugs of today (Barcelona, Spain : 1998) (2004)\nAbstract: Enfuvirtide PMID:15148534 [TRIAL-SPECIFIC]\n  2. Title: Long-term treatment with subcutaneous T-20, a fusion inhibitor, i\n[LLM decision] The trial (NCT00002228) is completed, and a trial-specific publication (PMID:12637625) explicitly reports that enfuvirtide provided significant antiretroviral benefits when added to an optimized regimen, indicating that the primary endpoint was met. This satisfies the criteria for a \"Positive\" outcome.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Detailed Description",
+          "snippet": "Patients are randomly placed into 1 of 6 groups: 4 dose levels of T-20 are given by subcutaneous infusion and 2 by subcutaneous injection. The entire study lasts 7 weeks; including a 2-week screening period, followed by 28 days of treatment and 1 week of follow-up.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.975226"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2021905358",
+          "identifier": "PMID:22479485",
+          "title": "Impact of Multi-Targeted Antiretroviral Treatment on Gut T Cell Depletion and HIV Reservoir Seeding during Acute HIV Infection",
+          "snippet": "Title: Impact of Multi-Targeted Antiretroviral Treatment on Gut T Cell Depletion and HIV Reservoir Seeding during Acute HIV Infection\nYear: 2012\nCitations: 311\nAbstract: Gut T cell depletion and HIV reservoir seeding increases with progression of AHI. MegaHAART was associated with immune restoration and reduced reservoir size. Our findings could inform research on strategies to achieve HIV drug-free remission.",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.658577"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2045044146",
+          "identifier": "PMID:20100092",
+          "title": "Discordance Between Cerebral Spinal Fluid and Plasma HIV Replication in Patients with Neurological Symptoms Who Are Receiving Suppressive Antiretroviral Therapy",
+          "snippet": "Title: Discordance Between Cerebral Spinal Fluid and Plasma HIV Replication in Patients with Neurological Symptoms Who Are Receiving Suppressive Antiretroviral Therapy\nYear: 2010\nCitations: 404\nAbstract: Despite successful suppression of plasma viremia with antiretroviral therapy, HIV may replicate in CSF, with development of CSF HIV resistance resulting in acute or subacute neurological manifestations.",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.658555"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2117261241",
+          "identifier": "PMID:14511246",
+          "title": "British HIV Association guidelines for the treatment of HIV\u20101\u2010infected adults with antiretroviral therapy 2008",
+          "snippet": "Title: British HIV Association guidelines for the treatment of HIV\u20101\u2010infected adults with antiretroviral therapy 2008\nYear: 2008\nCitations: 1095\nAbstract: Table of contents 1.0 Introduction 2.0 Methodology 2.1 Basing recommendations on evidence 2.2 Implications for research 2.3 Use of surrogate marker data 2.4 Issues concerning design and analysis of clinical trials 2.4.1 Trial designs 2.4.2 Viral load",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.658373"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2133649749",
+          "identifier": "PMID:12637625",
+          "title": "Enfuvirtide, an HIV-1 Fusion Inhibitor, for Drug-Resistant HIV Infection in North and South America",
+          "snippet": "Title: Enfuvirtide, an HIV-1 Fusion Inhibitor, for Drug-Resistant HIV Infection in North and South America\nYear: 2003\nCitations: 911\nAbstract: The addition of enfuvirtide to an optimized antiretroviral regimen provided significant antiretroviral and immunologic benefit through 24 weeks in patients who had previously received multiple antiretroviral drugs and had multidrug-resistant HIV-1 in",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.656356"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2011208161",
+          "identifier": "PMID:23459007",
+          "title": "Comparative Analysis of Measures of Viral Reservoirs in HIV-1 Eradication Studies",
+          "snippet": "Title: Comparative Analysis of Measures of Viral Reservoirs in HIV-1 Eradication Studies\nYear: 2013\nCitations: 576\nAbstract: HIV-1 reservoirs preclude virus eradication in patients receiving highly active antiretroviral therapy (HAART). The best characterized reservoir is a small, difficult-to-quantify pool of resting memory CD4(+) T cells carrying latent but replication-c",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.658529"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12194730/",
+          "identifier": "PMID:12194730",
+          "title": "Long-term treatment with subcutaneous T-20, a fusion inhibitor, in HIV-infected patients: patient satisfaction and impact on activities of daily living.",
+          "snippet": "Title: Long-term treatment with subcutaneous T-20, a fusion inhibitor, in HIV-infected patients: patient satisfaction and impact on activities of daily living.\nAuthors: Cohen C J, Dusek A, Green J et al.\nJournal: AIDS patient care and STDs (2002)\nAbstract: T-20 is a novel antiretroviral agent that inhibits the fusion of human immunodeficiency virus (HIV) with target cell membranes. It is delivered by self-administered, twice-daily, subcutaneous injections. The impact of this mode of administration on patients' ability to conduct normal activities of d",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-04-27T14:16:35.296178"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24452731/",
+          "identifier": "PMID:24452731",
+          "title": "Durability of response to vaccination against viral hepatitis A in HIV-infected patients: a 5-year observation.",
+          "snippet": "Title: Durability of response to vaccination against viral hepatitis A in HIV-infected patients: a 5-year observation.\nAuthors: Jab\u0142onowska E, Kuydowicz J\nJournal: International journal of STD & AIDS (2014)\nAbstract: The aim of this study was to estimate the prevalence of total antibodies to hepatitis A virus (anti-HAV-T) in the group of HIV-positive adults in Lodz region of Poland, and to evaluate the response and long-term immunity after vaccination against hepatitis A virus. In the group of 234 HIV-infected p",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-04-27T14:16:35.296209"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL525076/",
+          "identifier": "CHEMBL525076",
+          "title": "ENFUVIRTIDE - ChEMBL",
+          "snippet": "Molecule: ENFUVIRTIDE\nType: Protein\nMax clinical phase: 4.0\nHELM: PEPTIDE1{[ac].Y.T.S.L.I.H.S.L.I.E.E.S.Q.N.Q.Q.E.K.N.E.Q.E.L.L.E.L.D.K.W.A.S.L.W.N.W.F.[am]}$$$$\nMolecular weight: 4491.94\nFirst approval: 2003\nMechanism: Transmembrane glycoprotein gp41 inhibitor\nBioactivity: EC100=0.001 uM (H9); Reduction=2.0 (Human immunodeficiency virus 1); CL=0.6667 mL.min-1.kg-1 (Cynomolgus monkey); T1/2=8.8 hr (Cynomolgus monkey); IC50=0.006 ug.mL-1 (Human immunodeficiency virus 1)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:33.189308"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_6056",
+          "identifier": "DBAASP:DBAASPS_6056",
+          "title": "Enfuvirtide, ENF, T-20, Fuzeon, DP-178 - DBAASP",
+          "snippet": "Peptide: Enfuvirtide, ENF, T-20, Fuzeon, DP-178\nSequence: YTSLIHSLIEESQNQQEKNEQELLELDKWASLWNWF\nLength: 36 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:31.842368"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Unknown",
+      "confidence": 0.5,
+      "reasoning": "[ATOMIC R8] Unknown (conf=0.50)\n  rule: no rule fired \u2014 insufficient evidence\n  registry: status=COMPLETED phase=PHASE2 has_results=None completion=(none) days_since=None stale=False drug_max_phase=4\n  pubs: 11 total (0 ts, 7 gen, 4 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=COMPLETED has_results=None phase=PHASE2 days_since=None stale=False drug_max_phase=4\n    pubs: total=11 trial_specific=0 voting=0 pos=0 fail=0\n    R8 fired: default Unknown",
+      "evidence": [],
+      "model_name": "atomic-gemma3:12b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "sequence",
+      "value": "(Ac)YTSLIHSLIEESQNQQEKNEQELLELDKWASLWNWF(NH2)",
+      "confidence": 0.7999999999999999,
+      "reasoning": "[Structured v23] Extracted 1 sequence(s) from 4 candidates. DBAASP: Enfuvirtide, ENF, T-20, Fuzeon, DP-178 (36 aa); DBAASP: Enfuvirtide [S138G], T-20 [S138G] (36 aa); DBAASP: Enfuvirtide [S138A], T-20 [S138A] (36 aa); ChEMBL HELM: parsed 36 aa from PEPTIDE1{[ac].Y.T.S.L.I.H.S.L.I.E.E.S.Q.; LLM adjudication: selected candidate 1",
+      "evidence": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4085102/",
+          "identifier": "CHEMBL4085102",
+          "title": "CHEMBL4085102 - ChEMBL",
+          "snippet": "Molecule: CHEMBL4085102\nType: Small molecule\nMolecular weight: 4552.00\nBioactivity: IC50=133000.0 nM (Bile salt export pump); IC50=133000.0 nM (ATP-binding cassette sub-family C member 2); IC50=133000.0 nM (ATP-binding cassette sub-family C member 3); IC50=7500.0 nM (ATP-binding cassette sub-family C member 4)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.722630"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL525076/",
+          "identifier": "CHEMBL525076",
+          "title": "ENFUVIRTIDE - ChEMBL",
+          "snippet": "Molecule: ENFUVIRTIDE\nType: Protein\nMax clinical phase: 4.0\nHELM: PEPTIDE1{[ac].Y.T.S.L.I.H.S.L.I.E.E.S.Q.N.Q.Q.E.K.N.E.Q.E.L.L.E.L.D.K.W.A.S.L.W.N.W.F.[am]}$$$$\nMolecular weight: 4491.94\nFirst approval: 2003\nMechanism: Transmembrane glycoprotein gp41 inhibitor\nBioactivity: EC100=0.001 uM (H9); Reduction=2.0 (Human immunodeficiency virus 1); CL=0.6667 mL.min-1.kg-1 (Cynomolgus monkey); T1/2=8.8 hr (Cynomolgus monkey); IC50=0.006 ug.mL-1 (Human immunodeficiency virus 1)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:33.189308"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "",
+      "confidence": 0.9,
+      "reasoning": "[Pre-check skip] Outcome is 'Positive' \u2014 no failure to explain.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "",
+      "confidence": 0.0,
+      "reasoning": "[ATOMIC-FR gated] outcome_atomic=Unknown not in ['Failed - completed trial', 'Terminated']",
+      "evidence": [],
+      "model_name": "atomic-fr-gated",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT00002228",
+    "fields": [
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification_atomic",
+        "original_value": "AMP",
+        "final_value": "AMP",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion",
+        "final_value": "Injection/Infusion",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Unknown",
+        "final_value": "Unknown",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Positive",
+        "final_value": "Positive",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial data and publications referenced (PMIDs 15148534, 12194730, and 15280778) demonstrate the use and efficacy of enfuvirtide (T-20) in treating HIV-1 infection, particularly in patients with drug-resistant strains. The presence of multiple publications and guidelines referencing its use suggests a positive clinical outcome and acceptance within the medical community.",
+            "confidence": 0.7,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "Outcome: Positive\nConfidence: High\nEvidence: [clinicaltrials_gov] NCT00002228: Status: COMPLETED; [openalex] PMID:12637625: \"The addition of enfuvirtide to an optimized antiretroviral regimen provided significant antiretroviral and immunologic benefit through 24 weeks in patients who had previously received multiple antiretroviral drugs and had multidrug-resistant HIV-1 in\"; [openalex] PMID:14511246: \"Table of contents 1.0 Introduction 2.0 Methodology 2.1 Basing recommendations on evidence 2.2 I",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Positive",
+            "reasoning": "The trial was completed, and multiple publications show positive results, indicating that the primary endpoints were met. The publications also demonstrate the safety and efficacy of Enfuvirtide in HIV-infected patients, which is consistent with a positive outcome.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.8699999999999999,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "sequence",
+        "original_value": "(Ac)YTSLIHSLIEESQNQQEKNEQELLELDKWASLWNWF(NH2)",
+        "final_value": "(Ac)YTSLIHSLIEESQNQQEKNEQELLELDKWASLWNWF(NH2)",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": null,
+            "reasoning": "Unknown field: sequence",
+            "confidence": 0.0,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": null,
+            "reasoning": "Unknown field: sequence",
+            "confidence": 0.0,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": null,
+            "reasoning": "Unknown field: sequence",
+            "confidence": 0.0,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7999999999999999,
+        "reconciler_used": true,
+        "reconciler_reasoning": "The evidence from DBAASP and ChEMBL provides the exact sequence of Enfuvirtide (T-20), including the acetylated (Ac) and amidated (NH2) termini. The primary annotator's answer matches this sequence precisely, and the verifiers' inability to provide a valid alternative or evidence to contradict this sequence supports the correctness of the primary answer. The sequence is well-documented in multiple databases, confirming its accuracy.",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "snippet": "Title: A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.975197"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Brief Summary",
+          "snippet": "The purpose of this study is to see if it is safe and effective to give T-20 to HIV-positive adults. T-20 is an anti-HIV drug.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.975217"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Detailed Description",
+          "snippet": "Patients are randomly placed into 1 of 6 groups: 4 dose levels of T-20 are given by subcutaneous infusion and 2 by subcutaneous injection. The entire study lasts 7 weeks; including a 2-week screening period, followed by 28 days of treatment and 1 week of follow-up.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.975226"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.975236"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: HIV Infections | Keywords: Injections, Subcutaneous, HIV-1, Anti-HIV Agents, peptide T20",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.975247"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Intervention: Enfuvirtide",
+          "snippet": "DRUG: Enfuvirtide",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.975256"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00002228",
+          "identifier": "NCT00002228",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.975266"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00002228",
+            "orgStudyIdInfo": {
+              "id": "295A"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "TRI-003"
+              }
+            ],
+            "organization": {
+              "fullName": "NIH AIDS Clinical Trials Information Service",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "A Study of T-20 in HIV-Positive Adults",
+            "officialTitle": "A Phase II Evaluation of the Safety, Plasma Pharmacokinetics, and Antiviral Activity of T-20 Administered to HIV-1 Positive Adults By Continuous Subcutaneous Infusion or Subcutaneous Injection"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "1999-04",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "studyFirstSubmitDate": "1999-11-02",
+            "studyFirstSubmitQcDate": "2001-08-30",
+            "studyFirstPostDateStruct": {
+              "date": "2001-08-31",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2005-06-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2005-06-24",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "Trimeris",
+              "class": "INDUSTRY"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of this study is to see if it is safe and effective to give T-20 to HIV-positive adults. T-20 is an anti-HIV drug.",
+            "detailedDescription": "Patients are randomly placed into 1 of 6 groups: 4 dose levels of T-20 are given by subcutaneous infusion and 2 by subcutaneous injection. The entire study lasts 7 weeks; including a 2-week screening period, followed by 28 days of treatment and 1 week of follow-up."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "HIV Infections"
+            ],
+            "keywords": [
+              "Injections, Subcutaneous",
+              "HIV-1",
+              "Anti-HIV Agents",
+              "peptide T20"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "primaryPurpose": "TREATMENT"
+            },
+            "enrollmentInfo": {
+              "count": 78
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "Enfuvirtide"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria\n\nConcurrent Medication:\n\nAllowed:\n\n* Any antiretroviral agent, provided the regimen has not changed within 6 weeks of the screening visit.\n* Antibiotics for bacterial infections.\n* Prophylactic medications for P. carinii pneumonia and for M. avium, including azithromycin.\n* Medications for symptomatic treatment such as antipyretics, analgesics, and antiemetics.\n\nPatients must have:\n\nHIV-1 seropositive status.\n\nExclusion Criteria\n\nCo-existing Condition:\n\nPatients with the following symptoms or conditions are excluded:\n\nConcurrent neoplasm (except for basal cell carcinoma of the skin, in situ carcinoma of the cervix, and non-disseminated stable Kaposi's sarcoma).\n\nConcurrent Medication:\n\nExcluded:\n\n* Patients must not be taking any concurrent antiretroviral therapy (for at least 2 weeks prior to baseline) or the patient is to be on a stable antiretroviral regimen which has not changed for at least 6 weeks prior to baseline.\n* Treatment with any of the following:\n* immunomodulators, biological response modifiers, chemotherapy that cannot be discontinued for the duration of the study, astemizole, terfenadine, cisapride, triazolam, midazolam, rifampin, clarithromycin, or an investigational drug within 30 days prior to the initial visit.\n\nPatients with the following prior conditions are excluded:\n\n* Evidence of active opportunistic infections, or unexplained temperature greater than or equal to 38.5 Celsius for 7 consecutive days within 30 days prior to screening visit.\n* Chronic diarrhea (defined as greater than 3 liquid stools per day which persists for 15 days) within 30 days prior to screening visit.\n* Diagnosis of hemophilia or other clotting disorders.\n\nPrior Medication:\n\nExcluded:\n\n\\- Prior treatment with an HIV vaccine.\n\nPrior Treatment:\n\nExcluded:\n\nMajor organ allograft.\n\nRisk Behavior:\n\nExcluded:\n\nEvidence of substance abuse or addiction that, in the opinion of the investigator, may interfere with the patient's ability to comply with the dosing schedule and protocol evaluations.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Sam Hopkins",
+                "role": "STUDY_CHAIR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Univ of Alabama at Birmingham / 1917 AIDS O/P Cln",
+                "city": "Birmingham",
+                "state": "Alabama",
+                "zip": "35294",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 33.52066,
+                  "lon": -86.80249
+                }
+              },
+              {
+                "facility": "UCLA School of Medicine / Ctr for Research and Education",
+                "city": "Los Angeles",
+                "state": "California",
+                "zip": "900951793",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 34.05223,
+                  "lon": -118.24368
+                }
+              },
+              {
+                "facility": "San Francisco Gen Hosp",
+                "city": "San Francisco",
+                "state": "California",
+                "zip": "94110",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.77493,
+                  "lon": -122.41942
+                }
+              },
+              {
+                "facility": "Quest Clinical Research",
+                "city": "San Francisco",
+                "state": "California",
+                "zip": "94115",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 37.77493,
+                  "lon": -122.41942
+                }
+              },
+              {
+                "facility": "IDC Research Initiative",
+                "city": "Altamonte Springs",
+                "state": "Florida",
+                "zip": "32701",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 28.66111,
+                  "lon": -81.36562
+                }
+              },
+              {
+                "facility": "Northwestern Univ / Infect Dis Div / Pasavant Pav 828",
+                "city": "Chicago",
+                "state": "Illinois",
+                "zip": "60611",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.85003,
+                  "lon": -87.65005
+                }
+              },
+              {
+                "facility": "Johns Hopkins Hosp",
+                "city": "Baltimore",
+                "state": "Maryland",
+                "zip": "21287",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 39.29038,
+                  "lon": -76.61219
+                }
+              },
+              {
+                "facility": "CRI of New England",
+                "city": "Brookline",
+                "state": "Massachusetts",
+                "zip": "02445",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 42.33176,
+                  "lon": -71.12116
+                }
+              },
+              {
+                "facility": "NYU Med Ctr / C & D Building",
+                "city": "New York",
+                "state": "New York",
+                "zip": "10016",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 40.71427,
+                  "lon": -74.00597
+                }
+              },
+              {
+                "facility": "Univ North Carolina at Chapel Hill / Dept of Medicine",
+                "city": "Chapel Hill",
+                "state": "North Carolina",
+                "zip": "27599",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 35.9132,
+                  "lon": -79.05584
+                }
+              },
+              {
+                "facility": "Univ of Texas / Thomas Street Clinic",
+                "city": "Houston",
+                "state": "Texas",
+                "zip": "77030",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 29.76328,
+                  "lon": -95.36327
+                }
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/15148534/",
+          "identifier": "PMID:15148534",
+          "title": "Enfuvirtide.",
+          "snippet": "Title: Enfuvirtide.\nAuthors: Lalezari Jacob P, Luber Andrew D\nJournal: Drugs of today (Barcelona, Spain : 1998) (2004)\nAbstract: Enfuvirtide (Fuzeon, T-20), jointly developed by Trimeris Inc. and Roche Pharmaceuticals, is the first of a new class of antiretroviral agents called fusion inhibitors that block HIV-1 entry into the host cell by binding to the gp41 subunit of the HIV-1 envelope glycoprotein. In vitro and in vivo st",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-04-27T14:16:35.296119"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/12194730/",
+          "identifier": "PMID:12194730",
+          "title": "Long-term treatment with subcutaneous T-20, a fusion inhibitor, in HIV-infected patients: patient satisfaction and impact on activities of daily living.",
+          "snippet": "Title: Long-term treatment with subcutaneous T-20, a fusion inhibitor, in HIV-infected patients: patient satisfaction and impact on activities of daily living.\nAuthors: Cohen C J, Dusek A, Green J et al.\nJournal: AIDS patient care and STDs (2002)\nAbstract: T-20 is a novel antiretroviral agent that inhibits the fusion of human immunodeficiency virus (HIV) with target cell membranes. It is delivered by self-administered, twice-daily, subcutaneous injections. The impact of this mode of administration on patients' ability to conduct normal activities of d",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-04-27T14:16:35.296178"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/15280778/",
+          "identifier": "PMID:15280778",
+          "title": "Immunological and virological study of enfuvirtide-treated HIV-positive patients.",
+          "snippet": "Title: Immunological and virological study of enfuvirtide-treated HIV-positive patients.\nAuthors: Barretina Jordi, Blanco Juli\u00e0, Bonjoch Anna et al.\nJournal: AIDS (London, England) (2004)\nAbstract: OBJECTIVE: To evaluate the predictive value and evolution of immunological and virological parameters related to HIV entry and pathogenesis in patients receiving enfuvirtide (ENF) plus an optimized regimen. METHODS: A phase III clinical trial substudy of ENF in 22 patients measured virus coreceptor ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-04-27T14:16:35.296198"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/24452731/",
+          "identifier": "PMID:24452731",
+          "title": "Durability of response to vaccination against viral hepatitis A in HIV-infected patients: a 5-year observation.",
+          "snippet": "Title: Durability of response to vaccination against viral hepatitis A in HIV-infected patients: a 5-year observation.\nAuthors: Jab\u0142onowska E, Kuydowicz J\nJournal: International journal of STD & AIDS (2014)\nAbstract: The aim of this study was to estimate the prevalence of total antibodies to hepatitis A virus (anti-HAV-T) in the group of HIV-positive adults in Lodz region of Poland, and to evaluate the response and long-term immunity after vaccination against hepatitis A virus. In the group of 234 HIV-infected p",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-04-27T14:16:35.296209"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/27109949/",
+          "identifier": "PMID:27109949",
+          "title": "Kidney Transplantation in HIV-Infected Recipients: Therapeutic Strategy and Outcomes in Monocentric Experience.",
+          "snippet": "Title: Kidney Transplantation in HIV-Infected Recipients: Therapeutic Strategy and Outcomes in Monocentric Experience.\nAuthors: Baisi A, Nava F, Baisi B et al.\nJournal: Transplantation proceedings (2016)\nAbstract: BACKGROUND: In Human immunodeficiency virus (HIV)-positive patients undergoing kidney transplantation, outcomes and immunosuppression (IS) protocol are not yet established due to infectious and neoplastic risks as well as to pharmacokinetic interactions with antiretroviral therapy (TARV). METHODS: W",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-04-27T14:16:35.296218"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12713194/",
+          "identifier": "PMC:12713194",
+          "title": "Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.",
+          "snippet": "Title: Next-generation antiviral peptides: AI-driven design, translational delivery platforms, and future therapeutic directions.\nAuthors: Mashhadi Abolghasem Shirazi M, Haghighat S, Nikbakht Z et al.\nJournal: Virus Res",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.347326"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12713194"
+        ],
+        "pmc_count": 1,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "Study T-20 HIV-Positive Adults",
+        "pubmed_fallback_ids": [
+          "15148534",
+          "12194730",
+          "15280778",
+          "24452731",
+          "27109949"
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Enfuvirtide_no_structured_match": true,
+        "uniprot_Enfuvirtide": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_6056",
+          "identifier": "DBAASP:DBAASPS_6056",
+          "title": "Enfuvirtide, ENF, T-20, Fuzeon, DP-178 - DBAASP",
+          "snippet": "Peptide: Enfuvirtide, ENF, T-20, Fuzeon, DP-178\nSequence: YTSLIHSLIEESQNQQEKNEQELLELDKWASLWNWF\nLength: 36 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:31.842368"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_6626",
+          "identifier": "DBAASP:DBAASPS_6626",
+          "title": "Enfuvirtide [S138G], T-20 [S138G] - DBAASP",
+          "snippet": "Peptide: Enfuvirtide [S138G], T-20 [S138G]\nSequence: YTSLIHSLIEEGQNQQEKNEQELLELDKWASLWNWF\nLength: 36 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:31.842416"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_6627",
+          "identifier": "DBAASP:DBAASPS_6627",
+          "title": "Enfuvirtide [S138A], T-20 [S138A] - DBAASP",
+          "snippet": "Peptide: Enfuvirtide [S138A], T-20 [S138A]\nSequence: YTSLIHSLIEEAQNQQEKNEQELLELDKWASLWNWF\nLength: 36 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:31.842451"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_6628",
+          "identifier": "DBAASP:DBAASPS_6628",
+          "title": "Enfuvirtide [S138V], T-20 [S138V] - DBAASP",
+          "snippet": "Peptide: Enfuvirtide [S138V], T-20 [S138V]\nSequence: YTSLIHSLIEEVQNQQEKNEQELLELDKWASLWNWF\nLength: 36 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:31.842471"
+        },
+        {
+          "source_name": "dbaasp",
+          "source_url": "https://dbaasp.org/peptide-card?id=DBAASPS_6629",
+          "identifier": "DBAASP:DBAASPS_6629",
+          "title": "Enfuvirtide [S138L], T-20 [S138L] - DBAASP",
+          "snippet": "Peptide: Enfuvirtide [S138L], T-20 [S138L]\nSequence: YTSLIHSLIEELQNQQEKNEQELLELDKWASLWNWF\nLength: 36 aa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:31.842481"
+        }
+      ],
+      "raw_data": {
+        "dbaasp_Enfuvirtide_match": "eq",
+        "dbaasp_Enfuvirtide": {
+          "total": 18,
+          "entries": [
+            {
+              "id": 6056,
+              "dbaaspId": "DBAASPS_6056",
+              "name": "Enfuvirtide, ENF, T-20, Fuzeon, DP-178",
+              "nTerminus": null,
+              "sequence": "YTSLIHSLIEESQNQQEKNEQELLELDKWASLWNWF",
+              "sequenceLength": 36,
+              "pdb": "",
+              "pubchemCid": null,
+              "cTerminus": null,
+              "complexity": "monomer",
+              "synthesisType": "Synthetic"
+            },
+            {
+              "id": 6626,
+              "dbaaspId": "DBAASPS_6626",
+              "name": "Enfuvirtide [S138G], T-20 [S138G]",
+              "nTerminus": null,
+              "sequence": "YTSLIHSLIEEGQNQQEKNEQELLELDKWASLWNWF",
+              "sequenceLength": 36,
+              "pdb": "",
+              "pubchemCid": null,
+              "cTerminus": null,
+              "complexity": "monomer",
+              "synthesisType": "Synthetic"
+            },
+            {
+              "id": 6627,
+              "dbaaspId": "DBAASPS_6627",
+              "name": "Enfuvirtide [S138A], T-20 [S138A]",
+              "nTerminus": null,
+              "sequence": "YTSLIHSLIEEAQNQQEKNEQELLELDKWASLWNWF",
+              "sequenceLength": 36,
+              "pdb": "",
+              "pubchemCid": null,
+              "cTerminus": null,
+              "complexity": "monomer",
+              "synthesisType": "Synthetic"
+            },
+            {
+              "id": 6628,
+              "dbaaspId": "DBAASPS_6628",
+              "name": "Enfuvirtide [S138V], T-20 [S138V]",
+              "nTerminus": null,
+              "sequence": "YTSLIHSLIEEVQNQQEKNEQELLELDKWASLWNWF",
+              "sequenceLength": 36,
+              "pdb": "",
+              "pubchemCid": null,
+              "cTerminus": null,
+              "complexity": "monomer",
+              "synthesisType": "Synthetic"
+            },
+            {
+              "id": 6629,
+              "dbaaspId": "DBAASPS_6629",
+              "name": "Enfuvirtide [S138L], T-20 [S138L]",
+              "nTerminus": null,
+              "sequence": "YTSLIHSLIEELQNQQEKNEQELLELDKWASLWNWF",
+              "sequenceLength": 36,
+              "pdb": "",
+              "pubchemCid": null,
+              "cTerminus": null,
+              "complexity": "monomer",
+              "synthesisType": "Synthetic"
+            }
+          ]
+        },
+        "dbaasp_Enfuvirtide_sequences": [
+          {
+            "name": "Enfuvirtide, ENF, T-20, Fuzeon, DP-178",
+            "sequence": "YTSLIHSLIEESQNQQEKNEQELLELDKWASLWNWF",
+            "length": 36,
+            "dbaasp_id": "DBAASPS_6056"
+          },
+          {
+            "name": "Enfuvirtide [S138G], T-20 [S138G]",
+            "sequence": "YTSLIHSLIEEGQNQQEKNEQELLELDKWASLWNWF",
+            "length": 36,
+            "dbaasp_id": "DBAASPS_6626"
+          },
+          {
+            "name": "Enfuvirtide [S138A], T-20 [S138A]",
+            "sequence": "YTSLIHSLIEEAQNQQEKNEQELLELDKWASLWNWF",
+            "length": 36,
+            "dbaasp_id": "DBAASPS_6627"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4085102/",
+          "identifier": "CHEMBL4085102",
+          "title": "CHEMBL4085102 - ChEMBL",
+          "snippet": "Molecule: CHEMBL4085102\nType: Small molecule\nMolecular weight: 4552.00\nBioactivity: IC50=133000.0 nM (Bile salt export pump); IC50=133000.0 nM (ATP-binding cassette sub-family C member 2); IC50=133000.0 nM (ATP-binding cassette sub-family C member 3); IC50=7500.0 nM (ATP-binding cassette sub-family C member 4)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.722630"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL525076/",
+          "identifier": "CHEMBL525076",
+          "title": "ENFUVIRTIDE - ChEMBL",
+          "snippet": "Molecule: ENFUVIRTIDE\nType: Protein\nMax clinical phase: 4.0\nHELM: PEPTIDE1{[ac].Y.T.S.L.I.H.S.L.I.E.E.S.Q.N.Q.Q.E.K.N.E.Q.E.L.L.E.L.D.K.W.A.S.L.W.N.W.F.[am]}$$$$\nMolecular weight: 4491.94\nFirst approval: 2003\nMechanism: Transmembrane glycoprotein gp41 inhibitor\nBioactivity: EC100=0.001 uM (H9); Reduction=2.0 (Human immunodeficiency virus 1); CL=0.6667 mL.min-1.kg-1 (Cynomolgus monkey); T1/2=8.8 hr (Cynomolgus monkey); IC50=0.006 ug.mL-1 (Human immunodeficiency virus 1)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:33.189308"
+        }
+      ],
+      "raw_data": {
+        "chembl_Enfuvirtide_count": 2,
+        "chembl_Enfuvirtide_helm": "PEPTIDE1{[ac].Y.T.S.L.I.H.S.L.I.E.E.S.Q.N.Q.Q.E.K.N.E.Q.E.L.L.E.L.D.K.W.A.S.L.W.N.W.F.[am]}$$$$",
+        "chembl_Enfuvirtide_molecules": [
+          {
+            "chembl_id": "CHEMBL4085102",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL525076",
+            "pref_name": "ENFUVIRTIDE",
+            "mol_type": "Protein",
+            "helm_notation": "PEPTIDE1{[ac].Y.T.S.L.I.H.S.L.I.E.E.S.Q.N.Q.Q.E.K.N.E.Q.E.L.L.E.L.D.K.W.A.S.L.W.N.W.F.[am]}$$$$",
+            "max_phase": "4.0"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/2OT5",
+          "identifier": "PDB:2OT5",
+          "title": "Crystal structure of the HIV gp41 core with the enfuvirtide resistance mutation N43D",
+          "snippet": "PDB ID: 2OT5\nTitle: Crystal structure of the HIV gp41 core with the enfuvirtide resistance mutation N43D\nMethod: X-RAY DIFFRACTION\nResolution: 1.8 A\nDeposited: 2007-02-07\nReleased: 2008-06-17\nCitation: Impact of the enfuvirtide resistance mutation N43D and the associated baseline polymorphism E137K on peptide sensitivity and six-helix bundle structure.. Bai, X., Wilson, K.L., Seedorff, J.E. et al.. Biochemistry (2008)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-27T14:16:31.951170"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/3CYO",
+          "identifier": "PDB:3CYO",
+          "title": "Structure of a longer thermalstable core domain of HIV-1 GP41 containing the enfuvirtide resistance mutation N43D and complementary mutation E137K",
+          "snippet": "PDB ID: 3CYO\nTitle: Structure of a longer thermalstable core domain of HIV-1 GP41 containing the enfuvirtide resistance mutation N43D and complementary mutation E137K\nMethod: X-RAY DIFFRACTION\nResolution: 2.1 A\nDeposited: 2008-04-25\nReleased: 2008-06-17\nCitation: Impact of the enfuvirtide resistance mutation N43D and the associated baseline polymorphism E137K on peptide sensitivity and six-helix bundle structure.. Bai, X., Wilson, K.L., Seedorff, J.E. et al.. Biochemistry (2008)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-27T14:16:31.990177"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/5Y14",
+          "identifier": "PDB:5Y14",
+          "title": "Crystal structure of LP-40/N44",
+          "snippet": "PDB ID: 5Y14\nTitle: Crystal structure of LP-40/N44\nMethod: X-RAY DIFFRACTION\nResolution: 1.762 A\nDeposited: 2017-07-19\nReleased: 2017-11-08\nCitation: Enfuvirtide (T20)-Based Lipopeptide Is a Potent HIV-1 Cell Fusion Inhibitor: Implications for Viral Entry and Inhibition. Ding, X., Zhang, X., Chong, H. et al.. J. Virol. (2017)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-27T14:16:32.028174"
+        }
+      ],
+      "raw_data": {
+        "rcsb_Enfuvirtide_count": 9
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Enfuvirtide_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "apd_Enfuvirtide": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "ictrp_error": ""
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Enfuvirtide": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/2ot5",
+          "identifier": "PDB:2ot5",
+          "title": "Crystal structure of the HIV gp41 core with the enfuvirtide resistance mutation N43D",
+          "snippet": "PDB ID: 2ot5\nTitle: Crystal structure of the HIV gp41 core with the enfuvirtide resistance mutation N43D\nExperimental method: X-ray diffraction\nQuality: Resolution: 1.8 A, R-factor: 0.2340, R-free: 0.2580\nMolecules: Envelope glycoprotein\nMolecule type: Protein\nOrganisms: Human immunodeficiency virus 1\nAssembly: trimer (homo)\nDeposited: 2007-02-07\nReleased: 2008-06-17\nCitation: Impact of the enfuvirtide resistance mutation N43D and the associated baseline polymorphism E137K on peptide sensitivity and six-helix bundle structure.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-27T14:16:32.406779"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/3cp1",
+          "identifier": "PDB:3cp1",
+          "title": "Structure of a longer thermalstable core domain of HIV-1 gp41 containing the enfuvirtide resistance mutation N43D",
+          "snippet": "PDB ID: 3cp1\nTitle: Structure of a longer thermalstable core domain of HIV-1 gp41 containing the enfuvirtide resistance mutation N43D\nExperimental method: X-ray diffraction\nQuality: Resolution: 2.0 A, R-factor: 0.2490, R-free: 0.2860\nMolecules: Transmembrane protein gp41\nMolecule type: Protein\nOrganisms: Human immunodeficiency virus 1\nAssembly: trimer (homo)\nDeposited: 2008-03-30\nReleased: 2008-06-17\nCitation: Impact of the enfuvirtide resistance mutation N43D and the associated baseline polymorphism E137K on peptide sensitivity and six-helix bundle structure.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-27T14:16:32.544848"
+        },
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/3cyo",
+          "identifier": "PDB:3cyo",
+          "title": "Structure of a longer thermalstable core domain of HIV-1 GP41 containing the enfuvirtide resistance mutation N43D and complementary mutation E137K",
+          "snippet": "PDB ID: 3cyo\nTitle: Structure of a longer thermalstable core domain of HIV-1 GP41 containing the enfuvirtide resistance mutation N43D and complementary mutation E137K\nExperimental method: X-ray diffraction\nQuality: Resolution: 2.1 A, R-factor: 0.2420, R-free: 0.3320\nMolecules: Transmembrane protein gp41\nMolecule type: Protein\nOrganisms: Human immunodeficiency virus 1\nAssembly: trimer (homo)\nDeposited: 2008-04-25\nReleased: 2008-06-17\nCitation: Impact of the enfuvirtide resistance mutation N43D and the associated baseline polymorphism E137K on peptide sensitivity and six-helix bundle structure.",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-27T14:16:32.683928"
+        }
+      ],
+      "raw_data": {
+        "pdbe_Enfuvirtide_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2133649749",
+          "identifier": "PMID:12637625",
+          "title": "Enfuvirtide, an HIV-1 Fusion Inhibitor, for Drug-Resistant HIV Infection in North and South America",
+          "snippet": "Title: Enfuvirtide, an HIV-1 Fusion Inhibitor, for Drug-Resistant HIV Infection in North and South America\nYear: 2003\nCitations: 911\nAbstract: The addition of enfuvirtide to an optimized antiretroviral regimen provided significant antiretroviral and immunologic benefit through 24 weeks in patients who had previously received multiple antiretroviral drugs and had multidrug-resistant HIV-1 in",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.656356"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2117261241",
+          "identifier": "PMID:14511246",
+          "title": "British HIV Association guidelines for the treatment of HIV\u20101\u2010infected adults with antiretroviral therapy 2008",
+          "snippet": "Title: British HIV Association guidelines for the treatment of HIV\u20101\u2010infected adults with antiretroviral therapy 2008\nYear: 2008\nCitations: 1095\nAbstract: Table of contents 1.0 Introduction 2.0 Methodology 2.1 Basing recommendations on evidence 2.2 Implications for research 2.3 Use of surrogate marker data 2.4 Issues concerning design and analysis of clinical trials 2.4.1 Trial designs 2.4.2 Viral load",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.658373"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2011208161",
+          "identifier": "PMID:23459007",
+          "title": "Comparative Analysis of Measures of Viral Reservoirs in HIV-1 Eradication Studies",
+          "snippet": "Title: Comparative Analysis of Measures of Viral Reservoirs in HIV-1 Eradication Studies\nYear: 2013\nCitations: 576\nAbstract: HIV-1 reservoirs preclude virus eradication in patients receiving highly active antiretroviral therapy (HAART). The best characterized reservoir is a small, difficult-to-quantify pool of resting memory CD4(+) T cells carrying latent but replication-c",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.658529"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2045044146",
+          "identifier": "PMID:20100092",
+          "title": "Discordance Between Cerebral Spinal Fluid and Plasma HIV Replication in Patients with Neurological Symptoms Who Are Receiving Suppressive Antiretroviral Therapy",
+          "snippet": "Title: Discordance Between Cerebral Spinal Fluid and Plasma HIV Replication in Patients with Neurological Symptoms Who Are Receiving Suppressive Antiretroviral Therapy\nYear: 2010\nCitations: 404\nAbstract: Despite successful suppression of plasma viremia with antiretroviral therapy, HIV may replicate in CSF, with development of CSF HIV resistance resulting in acute or subacute neurological manifestations.",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.658555"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2021905358",
+          "identifier": "PMID:22479485",
+          "title": "Impact of Multi-Targeted Antiretroviral Treatment on Gut T Cell Depletion and HIV Reservoir Seeding during Acute HIV Infection",
+          "snippet": "Title: Impact of Multi-Targeted Antiretroviral Treatment on Gut T Cell Depletion and HIV Reservoir Seeding during Acute HIV Infection\nYear: 2012\nCitations: 311\nAbstract: Gut T cell depletion and HIV reservoir seeding increases with progression of AHI. MegaHAART was associated with immune restoration and reduced reservoir size. Our findings could inform research on strategies to achieve HIV drug-free remission.",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:16:32.658577"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 0,
+        "openalex_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1097/01.aids.0000131350.22032.b5",
+          "identifier": "DOI:10.1097/01.aids.0000131350.22032.b5",
+          "title": "Immunological and virological study of enfuvirtide-treated HIV-positive patients",
+          "snippet": "Title: Immunological and virological study of enfuvirtide-treated HIV-positive patients\nJournal: AIDS\nYear: 2004",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-27T14:16:35.028783"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1097/00002030-200311210-00001",
+          "identifier": "DOI:10.1097/00002030-200311210-00001",
+          "title": "Breastfeeding and HIV transmission; Clinical trials for enfuvirtide (Fuzeon, T-20)",
+          "snippet": "Title: Breastfeeding and HIV transmission; Clinical trials for enfuvirtide (Fuzeon, T-20)\nJournal: AIDS\nYear: 2003",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-27T14:16:35.028839"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.2147/btt.s3187",
+          "identifier": "DOI:10.2147/btt.s3187",
+          "title": "T20QoL: an observational multicenter cohort study to evaluate the quality of life in HIV-patients treated with enfuvirtide (ENF, T-20) in combination with an optimized background therapy",
+          "snippet": "Title: T20QoL: an observational multicenter cohort study to evaluate the quality of life in HIV-patients treated with enfuvirtide (ENF, T-20) in combination with an optimized background therapy\nJournal: Biologics: Targets &amp; Therapy\nYear: 2008",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-27T14:16:35.028851"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT00002228",
+      "citations": [
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.2.20490/v1",
+          "identifier": "DOI:10.21203/rs.2.20490/v1",
+          "title": "HIV-1 gp41 genetic diversity and enfuvirtide resistance-associated mutations among enfuvirtide-na\u00efve patients in southern China",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-27T14:16:33.115356"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/472746",
+          "identifier": "DOI:10.1101/472746",
+          "title": "Massively parallel profiling of HIV-1 resistance to the fusion inhibitor enfuvirtide",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2018})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-27T14:16:33.115372"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202409.0897.v1",
+          "identifier": "DOI:10.20944/preprints202409.0897.v1",
+          "title": "Advanced ENF Region Classification Using UniTS-SinSpec: A Novel Approach Integrating Sinusoidal Activation Function and Spectral Attention",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-27T14:16:33.175367"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4040901/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4040901/v1",
+          "title": "1D-CNN-based Audio Tampering Detection Using ENF Signals",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-27T14:16:33.175374"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4343252/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4343252/v1",
+          "title": "Surface Toughening - Functionality and testing of a stress reducing technology of bonded joints using DCB and ENF specimen made of 8552/IM7 carbon composite and PVDF bonded with EA9695 film adhesive",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-04-27T14:16:33.175381"
+        }
+      ],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 68,
+        "biorxiv_prefilter_dropped": 63
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT00002228_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT00002228",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 7,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov"
+      ]
+    },
+    "literature": {
+      "citations_count": 6,
+      "has_data": true,
+      "quality_avg": 0.892,
+      "error": null,
+      "source_names": [
+        "pmc",
+        "pubmed"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "web_context": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "dbaasp": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "dbaasp"
+      ]
+    },
+    "chembl": {
+      "citations_count": 2,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "rcsb_pdb"
+      ]
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "pdbe": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "pdbe"
+      ]
+    },
+    "openalex": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "biorxiv_medrxiv"
+      ]
+    },
+    "sec_edgar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    }
+  }
+}

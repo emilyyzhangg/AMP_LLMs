@@ -1,0 +1,1150 @@
+{
+  "nct_id": "NCT03199872",
+  "completed_at": "2026-04-27 07:16:12 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT03199872",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03199872",
+          "identifier": "NCT03199872",
+          "title": "A Phase I/II Study of RV001V, a RhoC Anticancer Vaccine, Against Metastasis From Solid Tumours",
+          "snippet": "Title: A Phase I/II Study of RV001V, a RhoC Anticancer Vaccine, Against Metastasis From Solid Tumours",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.955525"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03199872",
+          "identifier": "NCT03199872",
+          "title": "Brief Summary",
+          "snippet": "The study will evaluate safety and immunological response to RhoC peptide vaccine in patients with prostate cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.955616"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03199872",
+          "identifier": "NCT03199872",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.955640"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03199872",
+          "identifier": "NCT03199872",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Prostate Cancer | Keywords: Prostatectomised cancer patients",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.955672"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03199872",
+          "identifier": "NCT03199872",
+          "title": "Intervention: RV001V",
+          "snippet": "BIOLOGICAL: RV001V - Sc injection",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.955698"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03199872",
+          "identifier": "NCT03199872",
+          "title": "Arm Group: RV001V",
+          "snippet": "Arm: RV001V - RV001 Vaccine 0.1 mg/mL (RV001V). RV001V consists of the peptide RV001 and the adjuvant Montanide ISA 51.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.955724"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03199872",
+          "identifier": "NCT03199872",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.972820"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03199872",
+          "identifier": "NCT03199872",
+          "title": "Results Posted",
+          "snippet": "Results Posted: Yes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.972847"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03199872",
+          "identifier": "NCT03199872",
+          "title": "Primary Outcome: Proportions of Participants With Treatment-related Adverse Events",
+          "snippet": "Primary Outcome: Proportions of Participants With Treatment-related Adverse Events \u2014 Proportions of participants with treatment-related adverse events as assessed by CTCAE v4.0 (timeframe: 8 month)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-27T14:14:54.972868"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT03199872",
+            "orgStudyIdInfo": {
+              "id": "RhoVac-001"
+            },
+            "organization": {
+              "fullName": "RhoVac APS",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "RV001V, a RhoC Anticancer Vaccine, Against Metastasis From Solid Tumours",
+            "officialTitle": "A Phase I/II Study of RV001V, a RhoC Anticancer Vaccine, Against Metastasis From Solid Tumours"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2020-06",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2017-03-30",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2018-08-01",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2019-03-29",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2017-06-19",
+            "studyFirstSubmitQcDate": "2017-06-24",
+            "studyFirstPostDateStruct": {
+              "date": "2017-06-27",
+              "type": "ACTUAL"
+            },
+            "resultsFirstSubmitDate": "2019-10-16",
+            "resultsFirstSubmitQcDate": "2020-06-08",
+            "resultsFirstPostDateStruct": {
+              "date": "2020-06-09",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2020-06-08",
+            "lastUpdatePostDateStruct": {
+              "date": "2020-06-09",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "RhoVac APS",
+              "class": "INDUSTRY"
+            },
+            "collaborators": [
+              {
+                "name": "Dantrials Aps",
+                "class": "INDUSTRY"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": false,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The study will evaluate safety and immunological response to RhoC peptide vaccine in patients with prostate cancer"
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Prostate Cancer"
+            ],
+            "keywords": [
+              "Prostatectomised cancer patients"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1",
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 22,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "RV001V",
+                "type": "EXPERIMENTAL",
+                "description": "RV001 Vaccine 0.1 mg/mL (RV001V). RV001V consists of the peptide RV001 and the adjuvant Montanide ISA 51.",
+                "interventionNames": [
+                  "Biological: RV001V"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "RV001V",
+                "description": "Sc injection",
+                "armGroupLabels": [
+                  "RV001V"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Proportions of Participants With Treatment-related Adverse Events",
+                "description": "Proportions of participants with treatment-related adverse events as assessed by CTCAE v4.0",
+                "timeFrame": "8 month"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Immunological Response",
+                "description": "RV001-specific immunological response after treatment from baseline to each treatment and follow-up",
+                "timeFrame": "12 months"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Patients prostatectomised (PT) due to histologically verified adenocarcinoma of the prostate gland who currently are not being treated, or expected within the next 8 months to be treated, with any anti-cancer treatment.\n* ECOG performance status 0 or 1.\n\nExclusion Criteria:\n\n* Patient has been treated with Androgen Deprivation Therapy (ADT), or expected to receive such treatment within the next 8 months from enrolment.\n* Severe medical conditions, such as but not limited to severe asthma/chronic obstructive pulmonary disease (COPD), New York Heart Association (NYHA) grading 3 or above, poorly regulated insulin dependent diabetes, any significant organ damage as judged by the Investigator.",
+            "healthyVolunteers": false,
+            "sex": "MALE",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Jesper Sonne, MD, PhD",
+                "affiliation": "Dantrials Aps",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Rigshospitalet",
+                "city": "Copenhagen",
+                "zip": "2400",
+                "country": "Denmark",
+                "geoPoint": {
+                  "lat": 55.67594,
+                  "lon": 12.56553
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "33184050",
+                "type": "DERIVED",
+                "citation": "Schuhmacher J, Heidu S, Balchen T, Richardson JR, Schmeltz C, Sonne J, Schweiker J, Rammensee HG, Thor Straten P, Roder MA, Brasso K, Gouttefangeas C. Vaccination against RhoC induces long-lasting immune responses in patients with prostate cancer: results from a phase I/II clinical trial. J Immunother Cancer. 2020 Nov;8(2):e001157. doi: 10.1136/jitc-2020-001157."
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        },
+        "results_section": {
+          "participantFlowModule": {
+            "groups": [
+              {
+                "id": "FG000",
+                "title": "Experimental: RV001V",
+                "description": "RV001 Vaccine 0.1 mg/mL (RV001V). RV001V consists of the peptide RV001 and the adjuvant Montanide ISA 51.\n\nRV001V: A total of 11 s.c.injection with RV001V. The first 6 injections were given every 2 weeks, whereas the remaining 5 vaccinations were administered with 4 weeks between each injection."
+              }
+            ],
+            "periods": [
+              {
+                "title": "Overall Study",
+                "milestones": [
+                  {
+                    "type": "STARTED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "22"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "COMPLETED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "22"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT COMPLETED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "0"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "baselineCharacteristicsModule": {
+            "groups": [
+              {
+                "id": "BG000",
+                "title": "Experimental: RV001V",
+                "description": "RV001 Vaccine 0.1 mg/mL (RV001V). RV001V consists of the peptide RV001 and the adjuvant Montanide ISA 51.\n\nRV001V: Sc injection"
+              }
+            ],
+            "denoms": [
+              {
+                "units": "Participants",
+                "counts": [
+                  {
+                    "groupId": "BG000",
+                    "value": "22"
+                  }
+                ]
+              }
+            ],
+            "measures": [
+              {
+                "title": "Age, Categorical",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "<=18 years",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Between 18 and 65 years",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "5"
+                          }
+                        ]
+                      },
+                      {
+                        "title": ">=65 years",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "17"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Age, Continuous",
+                "paramType": "MEAN",
+                "dispersionType": "STANDARD_DEVIATION",
+                "unitOfMeasure": "years",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "67.6",
+                            "spread": "6.1"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Sex: Female, Male",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "Female",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Male",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "22"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Race (NIH/OMB)",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "American Indian or Alaska Native",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Asian",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Native Hawaiian or Other Pacific Islander",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Black or African American",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "White",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "22"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "More than one race",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Unknown or Not Reported",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Region of Enrollment",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "title": "Denmark",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "22"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "outcomeMeasuresModule": {
+            "outcomeMeasures": [
+              {
+                "type": "PRIMARY",
+                "title": "Proportions of Participants With Treatment-related Adverse Events",
+                "description": "Proportions of participants with treatment-related adverse events as assessed by CTCAE v4.0",
+                "reportingStatus": "POSTED",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "timeFrame": "8 month",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Experimental: RV001V",
+                    "description": "RV001 Vaccine 0.1 mg/mL (RV001V). RV001V consists of the peptide RV001 and the adjuvant Montanide ISA 51.\n\nRV001V: Sc injection"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "22"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "22"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Immunological Response",
+                "description": "RV001-specific immunological response after treatment from baseline to each treatment and follow-up",
+                "reportingStatus": "POSTED",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "timeFrame": "12 months",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Experimental: RV001V",
+                    "description": "RV001 Vaccine 0.1 mg/mL (RV001V). RV001V consists of the peptide RV001 and the adjuvant Montanide ISA 51.\n\nRV001V: Sc injection"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "21"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "18"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "adverseEventsModule": {
+            "frequencyThreshold": "0",
+            "timeFrame": "20 months",
+            "description": "Non-TEAEs (Treatment Emergent Adverse Events) took place before the first vaccination.\n\nTEAEs took place after first vaccination and up to start of follow up phase (Visit 13). Only related AEs and SAEs are to be captured in the follow up period.",
+            "eventGroups": [
+              {
+                "id": "EG000",
+                "title": "Experimental: RV001V",
+                "description": "RV001 Vaccine 0.1 mg/mL (RV001V). RV001V consists of the peptide RV001 and the adjuvant Montanide ISA 51.\n\nRV001V: Sc injection",
+                "deathsNumAffected": 0,
+                "deathsNumAtRisk": 22,
+                "seriousNumAffected": 4,
+                "seriousNumAtRisk": 22,
+                "otherNumAffected": 22,
+                "otherNumAtRisk": 22
+              }
+            ],
+            "seriousEvents": [
+              {
+                "term": "Impaired healing",
+                "organSystem": "General disorders",
+                "sourceVocabulary": "MedDRA (10.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numEvents": 1,
+                    "numAffected": 1,
+                    "numAtRisk": 22
+                  }
+                ]
+              },
+              {
+                "term": "Pneumonia",
+                "organSystem": "Infections and infestations",
+                "sourceVocabulary": "MedDRA (10.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numEvents": 1,
+                    "numAffected": 1,
+                    "numAtRisk": 22
+                  }
+                ]
+              },
+              {
+                "term": "Arthralgia",
+                "organSystem": "Musculoskeletal and connective tissue disorders",
+                "sourceVocabulary": "MedDRA (10.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numEvents": 2,
+                    "numAffected": 2,
+                    "numAtRisk": 22
+                  }
+                ]
+              }
+            ],
+            "otherEvents": [
+              {
+                "term": "Injection site reaction",
+                "organSystem": "General disorders",
+                "sourceVocabulary": "MedDRA (10.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numEvents": 22,
+                    "numAffected": 22,
+                    "numAtRisk": 22
+                  }
+                ]
+              }
+            ]
+          },
+          "moreInfoModule": {
+            "certainAgreement": {
+              "piSponsorEmployee": false,
+              "restrictiveAgreement": false
+            },
+            "pointOfContact": {
+              "title": "Steven Glazer, MD",
+              "organization": "RhoVac ApS",
+              "email": "sgl@rhovac.com",
+              "phone": "+4525674434"
+            }
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT03199872",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/33184050/",
+          "identifier": "PMID:33184050",
+          "title": "Vaccination against RhoC induces long-lasting immune responses in patients with prostate cancer: results from a phase I/II clinical trial.",
+          "snippet": "Title: Vaccination against RhoC induces long-lasting immune responses in patients with prostate cancer: results from a phase I/II clinical trial.\nAuthors: Schuhmacher Juliane, Heidu Sonja, Balchen Torben et al.\nJournal: Journal for immunotherapy of cancer (2020)\nAbstract: BACKGROUND: Peptide-based vaccination is a rational option for immunotherapy of prostate cancer. In this first-in-man phase I/II study, we assessed the safety, tolerability and immunological impact of a synthetic long peptide vaccine targeting Ras homolog gene family member C (RhoC) in patients with",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-04-27T14:15:25.755101"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12561977/",
+          "identifier": "PMC:12561977",
+          "title": "CAR-T Cell Therapy for Prostate Cancer: Current Advances and Future Perspectives.",
+          "snippet": "Title: CAR-T Cell Therapy for Prostate Cancer: Current Advances and Future Perspectives.\nAuthors: Calabr\u00f2 ML, Ettari R, Di Chio C et al.\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604379"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12031432/",
+          "identifier": "PMC:12031432",
+          "title": "Vaccination Against RhoC in Prostate Cancer Patients Induces Potent and Long-Lasting CD4(+) T Cell Responses with Cytolytic Potential in the Absence of Clinical Efficacy: A Randomized Phase II Trial.",
+          "snippet": "Title: Vaccination Against RhoC in Prostate Cancer Patients Induces Potent and Long-Lasting CD4(+) T Cell Responses with Cytolytic Potential in the Absence of Clinical Efficacy: A Randomized Phase II Trial.\nAuthors: Fresnillo Sal\u00f3 S, Schuhmacher J, Rahbech A et al.\nJournal: Vaccines (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604457"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11982186/",
+          "identifier": "PMC:11982186",
+          "title": "Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.",
+          "snippet": "Title: Multi-disciplinary approaches paving the way for clinically effective peptide vaccines for cancer.\nAuthors: Shah BA, Holden JA, Lenzo JC et al.\nJournal: NPJ Vaccines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604495"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11937122/",
+          "identifier": "PMC:11937122",
+          "title": "The application of emerging immunotherapy in the treatment of prostate cancer: progress, dilemma and promise.",
+          "snippet": "Title: The application of emerging immunotherapy in the treatment of prostate cancer: progress, dilemma and promise.\nAuthors: Che J, Liu Y, Liu Y et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604524"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10539309/",
+          "identifier": "PMC:10539309",
+          "title": "Immunogenomic profiles associated with response to life-prolonging agents in prostate cancer.",
+          "snippet": "Title: Immunogenomic profiles associated with response to life-prolonging agents in prostate cancer.\nAuthors: Conteduca V, Brighi N, Schepisi G et al.\nJournal: Br J Cancer",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604561"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11066472/",
+          "identifier": "PMC:11066472",
+          "title": "Advances in therapeutic cancer vaccines: Harnessing immune adjuvants for enhanced efficacy and future perspectives.",
+          "snippet": "Title: Advances in therapeutic cancer vaccines: Harnessing immune adjuvants for enhanced efficacy and future perspectives.\nAuthors: Ren D, Xiong S, Ren Y et al.\nJournal: Comput Struct Biotechnol J",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604591"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10565399/",
+          "identifier": "PMC:10565399",
+          "title": "The role of CD4(+) T cells in tumor and chronic viral immune responses.",
+          "snippet": "Title: The role of CD4(+) T cells in tumor and chronic viral immune responses.\nAuthors: Xie L, Fang J, Yu J et al.\nJournal: MedComm (2020)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604612"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10531627/",
+          "identifier": "PMC:10531627",
+          "title": "Emerging Immunotherapy Approaches for Treating Prostate Cancer.",
+          "snippet": "Title: Emerging Immunotherapy Approaches for Treating Prostate Cancer.\nAuthors: Meng L, Yang Y, Mortazavi A et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604639"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9788126/",
+          "identifier": "PMC:9788126",
+          "title": "Recent Advances in Cancer Vaccines: Challenges, Achievements, and Futuristic Prospects.",
+          "snippet": "Title: Recent Advances in Cancer Vaccines: Challenges, Achievements, and Futuristic Prospects.\nAuthors: Gupta M, Wahi A, Sharma P et al.\nJournal: Vaccines (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604667"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9394279/",
+          "identifier": "PMC:9394279",
+          "title": "The Immunotherapy and Immunosuppressive Signaling in Therapy-Resistant Prostate Cancer.",
+          "snippet": "Title: The Immunotherapy and Immunosuppressive Signaling in Therapy-Resistant Prostate Cancer.\nAuthors: Xu P, Wasielewski LJ, Yang JC et al.\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604688"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8931585/",
+          "identifier": "PMC:8931585",
+          "title": "Cancer vaccines as promising immuno-therapeutics: platforms and current progress.",
+          "snippet": "Title: Cancer vaccines as promising immuno-therapeutics: platforms and current progress.\nAuthors: Liu J, Fu M, Wang M et al.\nJournal: J Hematol Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604716"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8910587/",
+          "identifier": "PMC:8910587",
+          "title": "Immunotherapy in Advanced Prostate Cancer-Light at the End of the Tunnel?",
+          "snippet": "Title: Immunotherapy in Advanced Prostate Cancer-Light at the End of the Tunnel?\nAuthors: von Amsberg G, Alsdorf W, Karagiannis P et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604737"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8228524/",
+          "identifier": "PMC:8228524",
+          "title": "Cancer Vaccines for Genitourinary Tumors: Recent Progresses and Future Possibilities.",
+          "snippet": "Title: Cancer Vaccines for Genitourinary Tumors: Recent Progresses and Future Possibilities.\nAuthors: Maiorano BA, Schinzari G, Ciardiello D et al.\nJournal: Vaccines (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604764"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7662471/",
+          "identifier": "PMC:7662471",
+          "title": "Vaccination against RhoC induces long-lasting immune responses in patients with prostate cancer: results from a phase I/II clinical trial.",
+          "snippet": "Title: Vaccination against RhoC induces long-lasting immune responses in patients with prostate cancer: results from a phase I/II clinical trial.\nAuthors: Schuhmacher J, Heidu S, Balchen T et al.\nJournal: J Immunother Cancer",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604785"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6279318/",
+          "identifier": "PMC:6279318",
+          "title": "Trial watch: Peptide-based vaccines in anticancer therapy.",
+          "snippet": "Title: Trial watch: Peptide-based vaccines in anticancer therapy.\nAuthors: Bezu L, Kepp O, Cerrato G et al.\nJournal: Oncoimmunology",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.604809"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [
+          "33184050"
+        ],
+        "pubmed_count": 1,
+        "pmc_ids": [
+          "12561977",
+          "12031432",
+          "11982186",
+          "11937122",
+          "10539309",
+          "11066472",
+          "10565399",
+          "10531627",
+          "9788126",
+          "9394279",
+          "8931585",
+          "8910587",
+          "8228524",
+          "7662471",
+          "6279318"
+        ],
+        "pmc_count": 15,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "uniprot_RV001V_no_structured_match": true,
+        "uniprot_RV001V": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "duckduckgo_status": 202
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_RV001V": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT03199872",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1743079/",
+          "identifier": "CHEMBL1743079",
+          "title": "TEPROTUMUMAB - ChEMBL",
+          "snippet": "Molecule: TEPROTUMUMAB\nType: Antibody\nMax clinical phase: 4.0\nHELM: PEPTIDE1{E.I.V.L.T.Q.S.P.A.T.L.S.L.S.P.G.E.R.A.T.L.S.C.R.A.S.Q.S.V.S.S.Y.L.A.W.Y.Q.Q.K.P.G.Q.A.P.R.L\nFirst approval: 2020\nMechanism: Insulin-like growth factor I receptor antagonist",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.983356"
+        }
+      ],
+      "raw_data": {
+        "chembl_RV001V_count": 1,
+        "chembl_RV001V_helm": "PEPTIDE1{E.I.V.L.T.Q.S.P.A.T.L.S.L.S.P.G.E.R.A.T.L.S.C.R.A.S.Q.S.V.S.S.Y.L.A.W.Y.Q.Q.K.P.G.Q.A.P.R.L.L.I.Y.D.A.S.K.R.A.T.G.I.P.A.R.F.S.G.S.G.S.G.T.D.F.T.L.T.I.S.S.L.E.P.E.D.F.A.V.Y.Y.C.Q.Q.R.S.K.W.P.P.W.T.F.G.Q.G.T.K.V.E.S.K.R.T.V.A.A.P.S.V.F.I.F.P.P.S.D.E.Q.L.K.S.G.T.A.S.V.V.C.L.L.N.N.F.Y.P.R.E.A.K.V.Q.W.K.V.D.N.A.L.Q.S.G.N.S.Q.E.S.V.T.E.Q.D.S.K.D.S.T.Y.S.L.S.S.T.L.T.L.S.K.A.D.Y.E.K.H.K.V.Y.A.C.E.V.T.H.Q.G.L.S.S.P.V.T.K.S.F.N.R.G.E.C}|PEPTIDE2{Q.V.E.L.V.E.S.G.G.G.V.V.Q.P.G.R.S.Q.R.L.S.C.A.A.S.G.F.T.F.S.S.Y.G.M.H.W.V.R.Q.A.P.G.K.G.L.E.W.V.A.I.I.W.F.D.G.S.S.T.Y.Y.A.D.S.V.R.G.R.F.T.I.S.R.D.N.S.K.N.T.L.Y.L.Q.M.N.S.L.R.A.E.D.T.A.V.Y.F.C.A.R.E.L.G.R.R.Y.F.D.L.W.G.R.G.T.L.V.S.V.S.S.A.S.T.K.G.P.S.V.F.P.L.A.P.S.S.K.S.T.S.G.G.T.A.A.L.G.C.L.V.K.D.Y.F.P.E.P.V.T.V.S.W.N.S.G.A.L.T.S.G.V.H.T.F.P.A.V.L.Q.S.S.G.L.Y.S.L.S.S.V.V.T.V.P.S.S.S.L.G.T.Q.T.Y.I.C.N.V.N.H.K.P.S.N.T.K.V.D.K.K.V.E.P.K.S.C.D.K.T.H.T.C.P.P.C.P.A.P.E.L.L.G.G.P.S.V.F.L.F.P.P.K.P.K.D.T.L.M.I.S.R.T.P.E.V.T.C.V.V.V.D.V.S.H.E.D.P.E.V.K.F.N.W.Y.V.D.G.V.E.V.H.N.A.K.T.K.P.R.E.E.Q.Y.N.S.T.Y.R.V.V.S.V.L.T.V.L.H.Q.D.W.L.N.G.K.E.Y.K.C.K.V.S.N.K.A.L.P.A.P.I.E.K.T.I.S.K.A.K.G.Q.P.R.E.P.Q.V.Y.T.L.P.P.S.R.D.E.L.T.K.N.Q.V.S.L.T.C.L.V.K.G.F.Y.P.S.D.I.A.V.E.W.E.S.N.G.Q.P.E.N.N.Y.K.T.T.P.P.V.L.D.S.D.G.S.F.F.L.Y.S.K.L.T.V.D.K.S.R.W.Q.Q.G.N.V.F.S.C.S.V.M.H.E.A.L.H.N.H.Y.T.Q.K.S.L.S.L.S.P.G.K}|PEPTIDE3{Q.V.E.L.V.E.S.G.G.G.V.V.Q.P.G.R.S.Q.R.L.S.C.A.A.S.G.F.T.F.S.S.Y.G.M.H.W.V.R.Q.A.P.G.K.G.L.E.W.V.A.I.I.W.F.D.G.S.S.T.Y.Y.A.D.S.V.R.G.R.F.T.I.S.R.D.N.S.K.N.T.L.Y.L.Q.M.N.S.L.R.A.E.D.T.A.V.Y.F.C.A.R.E.L.G.R.R.Y.F.D.L.W.G.R.G.T.L.V.S.V.S.S.A.S.T.K.G.P.S.V.F.P.L.A.P.S.S.K.S.T.S.G.G.T.A.A.L.G.C.L.V.K.D.Y.F.P.E.P.V.T.V.S.W.N.S.G.A.L.T.S.G.V.H.T.F.P.A.V.L.Q.S.S.G.L.Y.S.L.S.S.V.V.T.V.P.S.S.S.L.G.T.Q.T.Y.I.C.N.V.N.H.K.P.S.N.T.K.V.D.K.K.V.E.P.K.S.C.D.K.T.H.T.C.P.P.C.P.A.P.E.L.L.G.G.P.S.V.F.L.F.P.P.K.P.K.D.T.L.M.I.S.R.T.P.E.V.T.C.V.V.V.D.V.S.H.E.D.P.E.V.K.F.N.W.Y.V.D.G.V.E.V.H.N.A.K.T.K.P.R.E.E.Q.Y.N.S.T.Y.R.V.V.S.V.L.T.V.L.H.Q.D.W.L.N.G.K.E.Y.K.C.K.V.S.N.K.A.L.P.A.P.I.E.K.T.I.S.K.A.K.G.Q.P.R.E.P.Q.V.Y.T.L.P.P.S.R.D.E.L.T.K.N.Q.V.S.L.T.C.L.V.K.G.F.Y.P.S.D.I.A.V.E.W.E.S.N.G.Q.P.E.N.N.Y.K.T.T.P.P.V.L.D.S.D.G.S.F.F.L.Y.S.K.L.T.V.D.K.S.R.W.Q.Q.G.N.V.F.S.C.S.V.M.H.E.A.L.H.N.H.Y.T.Q.K.S.L.S.L.S.P.G.K}|PEPTIDE4{E.I.V.L.T.Q.S.P.A.T.L.S.L.S.P.G.E.R.A.T.L.S.C.R.A.S.Q.S.V.S.S.Y.L.A.W.Y.Q.Q.K.P.G.Q.A.P.R.L.L.I.Y.D.A.S.K.R.A.T.G.I.P.A.R.F.S.G.S.G.S.G.T.D.F.T.L.T.I.S.S.L.E.P.E.D.F.A.V.Y.Y.C.Q.Q.R.S.K.W.P.P.W.T.F.G.Q.G.T.K.V.E.S.K.R.T.V.A.A.P.S.V.F.I.F.P.P.S.D.E.Q.L.K.S.G.T.A.S.V.V.C.L.L.N.N.F.Y.P.R.E.A.K.V.Q.W.K.V.D.N.A.L.Q.S.G.N.S.Q.E.S.V.T.E.Q.D.S.K.D.S.T.Y.S.L.S.S.T.L.T.L.S.K.A.D.Y.E.K.H.K.V.Y.A.C.E.V.T.H.Q.G.L.S.S.P.V.T.K.S.F.N.R.G.E.C}$PEPTIDE1,PEPTIDE1,23:R3-88:R3|PEPTIDE2,PEPTIDE2,368:R3-426:R3|PEPTIDE3,PEPTIDE3,22:R3-96:R3|PEPTIDE2,PEPTIDE2,145:R3-201:R3|PEPTIDE4,PEPTIDE4,23:R3-88:R3|PEPTIDE3,PEPTIDE3,368:R3-426:R3|PEPTIDE4,PEPTIDE4,135:R3-195:R3|PEPTIDE1,PEPTIDE1,135:R3-195:R3|PEPTIDE2,PEPTIDE3,230:R3-230:R3|PEPTIDE2,PEPTIDE2,22:R3-96:R3|PEPTIDE2,PEPTIDE3,227:R3-227:R3|PEPTIDE3,PEPTIDE4,221:R3-215:R3|PEPTIDE2,PEPTIDE2,262:R3-322:R3|PEPTIDE3,PEPTIDE3,145:R3-201:R3|PEPTIDE2,PEPTIDE1,221:R3-215:R3|PEPTIDE3,PEPTIDE3,262:R3-322:R3$$$",
+        "chembl_RV001V_molecules": [
+          {
+            "chembl_id": "CHEMBL1743079",
+            "pref_name": "TEPROTUMUMAB",
+            "mol_type": "Antibody",
+            "helm_notation": "PEPTIDE1{E.I.V.L.T.Q.S.P.A.T.L.S.L.S.P.G.E.R.A.T.L.S.C.R.A.S.Q.S.V.S.S.Y.L.A.W.Y.Q.Q.K.P.G.Q.A.P.R.L.L.I.Y.D.A.S.K.R.A.T.G.I.P.A.R.F.S.G.S.G.S.G.T.D.F.T.L.T.I.S.S.L.E.P.E.D.F.A.V.Y.Y.C.Q.Q.R.S.K.W.P.P.W.T.F.G.Q.G.T.K.V.E.S.K.R.T.V.A.A.P.S.V.F.I.F.P.P.S.D.E.Q.L.K.S.G.T.A.S.V.V.C.L.L.N.N.F.Y.P.R.E.A.K.V.Q.W.K.V.D.N.A.L.Q.S.G.N.S.Q.E.S.V.T.E.Q.D.S.K.D.S.T.Y.S.L.S.S.T.L.T.L.S.K.A.D.Y.E.K.H.K.V.Y.A.C.E.V.T.H.Q.G.L.S.S.P.V.T.K.S.F.N.R.G.E.C}|PEPTIDE2{Q.V.E.L.V.E.S.G.G.G.V.V.Q.P.G.R.S.Q.R.L.S.C.A.A.S.G.F.T.F.S.S.Y.G.M.H.W.V.R.Q.A.P.G.K.G.L.E.W.V.A.I.I.W.F.D.G.S.S.T.Y.Y.A.D.S.V.R.G.R.F.T.I.S.R.D.N.S.K.N.T.L.Y.L.Q.M.N.S.L.R.A.E.D.T.A.V.Y.F.C.A.R.E.L.G.R.R.Y.F.D.L.W.G.R.G.T.L.V.S.V.S.S.A.S.T.K.G.P.S.V.F.P.L.A.P.S.S.K.S.T.S.G.G.T.A.A.L.G.C.L.V.K.D.Y.F.P.E.P.V.T.V.S.W.N.S.G.A.L.T.S.G.V.H.T.F.P.A.V.L.Q.S.S.G.L.Y.S.L.S.S.V.V.T.V.P.S.S.S.L.G.T.Q.T.Y.I.C.N.V.N.H.K.P.S.N.T.K.V.D.K.K.V.E.P.K.S.C.D.K.T.H.T.C.P.P.C.P.A.P.E.L.L.G.G.P.S.V.F.L.F.P.P.K.P.K.D.T.L.M.I.S.R.T.P.E.V.T.C.V.V.V.D.V.S.H.E.D.P.E.V.K.F.N.W.Y.V.D.G.V.E.V.H.N.A.K.T.K.P.R.E.E.Q.Y.N.S.T.Y.R.V.V.S.V.L.T.V.L.H.Q.D.W.L.N.G.K.E.Y.K.C.K.V.S.N.K.A.L.P.A.P.I.E.K.T.I.S.K.A.K.G.Q.P.R.E.P.Q.V.Y.T.L.P.P.S.R.D.E.L.T.K.N.Q.V.S.L.T.C.L.V.K.G.F.Y.P.S.D.I.A.V.E.W.E.S.N.G.Q.P.E.N.N.Y.K.T.T.P.P.V.L.D.S.D.G.S.F.F.L.Y.S.K.L.T.V.D.K.S.R.W.Q.Q.G.N.V.F.S.C.S.V.M.H.E.A.L.H.N.H.Y.T.Q.K.S.L.S.L.S.P.G.K}|PEPTIDE3{Q.V.E.L.V.E.S.G.G.G.V.V.Q.P.G.R.S.Q.R.L.S.C.A.A.S.G.F.T.F.S.S.Y.G.M.H.W.V.R.Q.A.P.G.K.G.L.E.W.V.A.I.I.W.F.D.G.S.S.T.Y.Y.A.D.S.V.R.G.R.F.T.I.S.R.D.N.S.K.N.T.L.Y.L.Q.M.N.S.L.R.A.E.D.T.A.V.Y.F.C.A.R.E.L.G.R.R.Y.F.D.L.W.G.R.G.T.L.V.S.V.S.S.A.S.T.K.G.P.S.V.F.P.L.A.P.S.S.K.S.T.S.G.G.T.A.A.L.G.C.L.V.K.D.Y.F.P.E.P.V.T.V.S.W.N.S.G.A.L.T.S.G.V.H.T.F.P.A.V.L.Q.S.S.G.L.Y.S.L.S.S.V.V.T.V.P.S.S.S.L.G.T.Q.T.Y.I.C.N.V.N.H.K.P.S.N.T.K.V.D.K.K.V.E.P.K.S.C.D.K.T.H.T.C.P.P.C.P.A.P.E.L.L.G.G.P.S.V.F.L.F.P.P.K.P.K.D.T.L.M.I.S.R.T.P.E.V.T.C.V.V.V.D.V.S.H.E.D.P.E.V.K.F.N.W.Y.V.D.G.V.E.V.H.N.A.K.T.K.P.R.E.E.Q.Y.N.S.T.Y.R.V.V.S.V.L.T.V.L.H.Q.D.W.L.N.G.K.E.Y.K.C.K.V.S.N.K.A.L.P.A.P.I.E.K.T.I.S.K.A.K.G.Q.P.R.E.P.Q.V.Y.T.L.P.P.S.R.D.E.L.T.K.N.Q.V.S.L.T.C.L.V.K.G.F.Y.P.S.D.I.A.V.E.W.E.S.N.G.Q.P.E.N.N.Y.K.T.T.P.P.V.L.D.S.D.G.S.F.F.L.Y.S.K.L.T.V.D.K.S.R.W.Q.Q.G.N.V.F.S.C.S.V.M.H.E.A.L.H.N.H.Y.T.Q.K.S.L.S.L.S.P.G.K}|PEPTIDE4{E.I.V.L.T.Q.S.P.A.T.L.S.L.S.P.G.E.R.A.T.L.S.C.R.A.S.Q.S.V.S.S.Y.L.A.W.Y.Q.Q.K.P.G.Q.A.P.R.L.L.I.Y.D.A.S.K.R.A.T.G.I.P.A.R.F.S.G.S.G.S.G.T.D.F.T.L.T.I.S.S.L.E.P.E.D.F.A.V.Y.Y.C.Q.Q.R.S.K.W.P.P.W.T.F.G.Q.G.T.K.V.E.S.K.R.T.V.A.A.P.S.V.F.I.F.P.P.S.D.E.Q.L.K.S.G.T.A.S.V.V.C.L.L.N.N.F.Y.P.R.E.A.K.V.Q.W.K.V.D.N.A.L.Q.S.G.N.S.Q.E.S.V.T.E.Q.D.S.K.D.S.T.Y.S.L.S.S.T.L.T.L.S.K.A.D.Y.E.K.H.K.V.Y.A.C.E.V.T.H.Q.G.L.S.S.P.V.T.K.S.F.N.R.G.E.C}$PEPTIDE1,PEPTIDE1,23:R3-88:R3|PEPTIDE2,PEPTIDE2,368:R3-426:R3|PEPTIDE3,PEPTIDE3,22:R3-96:R3|PEPTIDE2,PEPTIDE2,145:R3-201:R3|PEPTIDE4,PEPTIDE4,23:R3-88:R3|PEPTIDE3,PEPTIDE3,368:R3-426:R3|PEPTIDE4,PEPTIDE4,135:R3-195:R3|PEPTIDE1,PEPTIDE1,135:R3-195:R3|PEPTIDE2,PEPTIDE3,230:R3-230:R3|PEPTIDE2,PEPTIDE2,22:R3-96:R3|PEPTIDE2,PEPTIDE3,227:R3-227:R3|PEPTIDE3,PEPTIDE4,221:R3-215:R3|PEPTIDE2,PEPTIDE2,262:R3-322:R3|PEPTIDE3,PEPTIDE3,145:R3-201:R3|PEPTIDE2,PEPTIDE1,221:R3-215:R3|PEPTIDE3,PEPTIDE3,262:R3-322:R3$$$",
+            "max_phase": "4.0"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "rcsb_RV001V": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_RV001V_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "apd_RV001V": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "ictrp_error": ""
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "iuphar_RV001V": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "pdbe_RV001V_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT03199872",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4220679821",
+          "identifier": "PMID:35303904",
+          "title": "Cancer vaccines as promising immuno-therapeutics: platforms and current progress",
+          "snippet": "Title: Cancer vaccines as promising immuno-therapeutics: platforms and current progress\nYear: 2022\nCitations: 676\nAbstract: Research on tumor immunotherapy has made tremendous progress in the past decades, with numerous studies entering the clinical evaluation. The cancer vaccine is considered a promising therapeutic strategy in the immunotherapy of solid tumors. Cancer v",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.953938"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2890854864",
+          "identifier": "PMID:30524907",
+          "title": "Trial watch: Peptide-based vaccines in anticancer therapy",
+          "snippet": "Title: Trial watch: Peptide-based vaccines in anticancer therapy\nYear: 2018\nCitations: 157\nAbstract: Peptide-based anticancer vaccination aims at stimulating an immune response against one or multiple tumor-associated antigens (TAAs) following immunization with purified, recombinant or synthetically engineered epitopes. Despite high expectations, th",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.954066"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3102686571",
+          "identifier": "PMID:33184050",
+          "title": "Vaccination against RhoC induces long-lasting immune responses in patients with prostate cancer: results from a phase I/II clinical trial",
+          "snippet": "Title: Vaccination against RhoC induces long-lasting immune responses in patients with prostate cancer: results from a phase I/II clinical trial\nYear: 2020\nCitations: 60\nAbstract: NCT03199872.",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.954084"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4386879617",
+          "identifier": "PMID:37762648",
+          "title": "Emerging Immunotherapy Approaches for Treating Prostate Cancer",
+          "snippet": "Title: Emerging Immunotherapy Approaches for Treating Prostate Cancer\nYear: 2023\nCitations: 34\nAbstract: Immunotherapy has emerged as an important approach for cancer treatment, but its clinical efficacy has been limited in prostate cancer compared to other malignancies. This review summarizes key immunotherapy strategies under evaluation for prostate c",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.954150"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3160394214",
+          "identifier": "PMID:34207536",
+          "title": "Cancer Vaccines for Genitourinary Tumors: Recent Progresses and Future Possibilities",
+          "snippet": "Title: Cancer Vaccines for Genitourinary Tumors: Recent Progresses and Future Possibilities\nYear: 2021\nCitations: 24\nAbstract: Further preclinical and clinical studies will improve the knowledge about cancer vaccines in genitourinary malignancies to optimize dosage, select targets with a driver role for tumor development and growth, and finally overcome resistance mechanisms",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-27T14:15:23.954172"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT03199872",
+      "citations": [
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/8a7367ffa08124a8c426dc2709db35040664f381",
+          "identifier": "PMID:33184050",
+          "title": "Vaccination against RhoC induces long-lasting immune responses in patients with prostate cancer: results from a phase I/II clinical trial",
+          "snippet": "Title: Vaccination against RhoC induces long-lasting immune responses in patients with prostate cancer: results from a phase I/II clinical trial\nTLDR: Targeting of RhoC induced a potent and long-lasting T cell immunity in the majority of the patients, and the study demonstrates an excellent safety and tolerability profile.\nYear: 2020\nCitations: 49",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-27T14:15:27.306836"
+        }
+      ],
+      "raw_data": {
+        "ss_nct_hits": 1,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT03199872",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.32388/xdijnz",
+          "identifier": "DOI:10.32388/xdijnz",
+          "title": "RhoC Peptide Vaccine RV001V",
+          "snippet": "Title: RhoC Peptide Vaccine RV001V\nJournal: Definitions\nYear: 2020",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-27T14:15:25.491804"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.31525/ct1-nct04114825",
+          "identifier": "DOI:10.31525/ct1-nct04114825",
+          "title": "Study of RV001V in Biochemical Failure Following Curatively Intended Therapy For Localized Prostate Cancer",
+          "snippet": "Title: Study of RV001V in Biochemical Failure Following Curatively Intended Therapy For Localized Prostate Cancer\nJournal: Case Medical Research\nYear: 2019",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-27T14:15:25.491863"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1007/978-1-4614-6438-9_59-1",
+          "identifier": "DOI:10.1007/978-1-4614-6438-9_59-1",
+          "title": "RhoC (RHOC)",
+          "snippet": "Title: RhoC (RHOC)\nJournal: Encyclopedia of Signaling Molecules\nYear: 2016",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-27T14:15:25.491890"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 0,
+        "biorxiv_prefilter_dropped": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT03199872_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT03199872",
+      "citations": [],
+      "raw_data": {
+        "note": "No interventions to search"
+      },
+      "error": null
+    }
+  ]
+}

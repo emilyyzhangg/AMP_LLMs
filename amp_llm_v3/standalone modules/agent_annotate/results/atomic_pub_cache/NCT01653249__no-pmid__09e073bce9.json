@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT01653249",
+  "pmid": "PMC:8515132",
+  "source": "pmc",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "YES",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "YES",
+    "q4_failure": "NO",
+    "q5_advanced": "UNCLEAR",
+    "evidence_quote": "whose Cervical High-Grade Squamous Intraepithelial Lesion Regressed."
+  },
+  "verdict": "POSITIVE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

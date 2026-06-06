@@ -1,0 +1,18 @@
+{
+  "nct_id": "NCT05995704",
+  "pmid": "DOI:10.1101/2025.10.07.681041",
+  "source": "biorxiv_medrxiv",
+  "specificity": "ambiguous",
+  "answers": {
+    "q1_reports_results": "YES",
+    "q2_primary_met": "NOT_REPORTED",
+    "q3_efficacy": "NO",
+    "q4_failure": "UNCLEAR",
+    "q5_advanced": "NO",
+    "evidence_quote": ""
+  },
+  "verdict": "INDETERMINATE",
+  "model": "gemma3:12b",
+  "error": "",
+  "cached": false
+}

@@ -1,0 +1,1682 @@
+{
+  "nct_id": "NCT03923257",
+  "metadata": {
+    "nct_id": "NCT03923257",
+    "title": "Phase I Trial of Peptide Receptor Radiotherapy (PRRT) With 177Lu-DOTA-tyr3-Octreotate (177Lu-DOTATATE) in Children and Adolescents With Neuroendocrine Tumor or Pheochromocytoma/Paraganglioma",
+    "phase": "PHASE1, PHASE2",
+    "status": "WITHDRAWN",
+    "conditions": [
+      "Neuroendocrine Tumors",
+      "Pheochromocytoma",
+      "Paraganglioma"
+    ],
+    "interventions": [
+      "DRUG: 177Lu-DOTA-tyr3-OCTREOTATE",
+      "PROCEDURE: Peptide Receptor Radiotherapy (PRRT)"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.775,
+      "reasoning": "[Pass 1 extraction] Intervention: 177Lu-DOTA-tyr3-OCTREOTATE (177Lu-DOTATATE) and amino acid  \nMolecular Class: Peptide / peptide hormone  \nDatabase Confirmation:  \n- UniProt: entry found? Yes, octreotide (parent peptide) is listed in UniProt (e.g., P01581), amino acid length: 8 aa  \n- DRAMP/DBAASP: antimicrobial peptide database entry? No, octreotide is not an antimicrobial peptide  \n- ChEMBL: molecule type? Peptide  \n- PDB: structural data available? Yes, structural data for octreotide is available (e.g., PDB ID: 1OCT)  \nProduct Description: Described as a drug, therapeutic, and part of Peptide Receptor Radiotherapy (PRRT)  \nInvestigational Drug Role: Investigational drug (as part of PRRT)  \n\nIntervention: amino acid  \nMolecular Class: Single amino acid  \nDatabase Confirmation:  \n- UniProt: entry found? No, single amino acids are not typically listed in UniProt  \n- DRAMP/DBAASP: antimicrobial peptide database entry? No  \n- ChEMBL: molecule type? Not found in ChEMBL as a peptide or small molecule  \n- PDB: structural data available? No  \nProduct Description: Described as a component administered alongside 177Lu-DOTA-tyr3-OCTREOTATE  \nInvestigational Drug Role: Not the investigational drug; likely a food ingredient or supportive component\n[Pass 2 decision] Peptide: True  \nReasoning:  \n**Step 1** \u2014 The Molecular Class is \"Peptide / peptide hormone,\" and the AA Length is 8, which falls within the peptide definition (\u2264100 amino acids). This suggests the molecule is a peptide.  \n\n**Step 2** \u2014 The intervention is described as a drug and part of Peptide Receptor Radiotherapy (PRRT), which involves the use of peptides as targeting agents. The molecule is also confirmed as a peptide in the ChEMBL database, and the AA Length is consistent with a peptide (e.g., octreotide, a known 8-aa peptide used in PRRT).  \n\n**Step 3** \u2014 Database confirmation (ChEMBL) and the description as part of PRRT support the classification as a peptide. There is no conflicting evidence, and the molecule fits the definition of a peptide.  \n\nTherefore, the trial administers a peptide molecule.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Arm Group: PRRT with 177Lu-DOTA-tyr3-OCTREOTATE",
+          "snippet": "Arm: PRRT with 177Lu-DOTA-tyr3-OCTREOTATE - 177Lu-DOTA-tyr3-OCTREOTATE (177Lu-DOTATATE) and amino acid will be administered intravenously (IV) on Day 1 of each of four treatment cycles, 8 weeks apart.\n\nThis study will consist of children and adolescents ages 1-20 years with relapsed or refractory neuroendocrine tumors and pheochromocytoma or paraganglioma. Children and adolescents with neuroendocrine tumor, pheochromocytoma or paraganglioma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.706054"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6827093/",
+          "identifier": "PMC:6827093",
+          "title": "Current Management of Pheochromocytoma/Paraganglioma: A Guide for the Practicing Clinician in the Era of Precision Medicine.",
+          "snippet": "Title: Current Management of Pheochromocytoma/Paraganglioma: A Guide for the Practicing Clinician in the Era of Precision Medicine.\nAuthors: N\u00f6lting S, Ullrich M, Pietzsch J et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032070"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8039528/",
+          "identifier": "PMC:8039528",
+          "title": "Somatostatin Receptors and Analogs in Pheochromocytoma and Paraganglioma: Old Players in a New Precision Medicine World.",
+          "snippet": "Title: Somatostatin Receptors and Analogs in Pheochromocytoma and Paraganglioma: Old Players in a New Precision Medicine World.\nAuthors: Patel M, Tena I, Jha A et al.\nJournal: Front Endocrinol (Lausanne)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032047"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9573605/",
+          "identifier": "PMC:9573605",
+          "title": "Exploring Nitric Oxide (NO)-Releasing Celecoxib Derivatives as Modulators of Radioresponse in Pheochromocytoma Cells.",
+          "snippet": "Title: Exploring Nitric Oxide (NO)-Releasing Celecoxib Derivatives as Modulators of Radioresponse in Pheochromocytoma Cells.\nAuthors: Brandt F, Ullrich M, Seifert V et al.\nJournal: Molecules",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032022"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10142322/",
+          "identifier": "PMC:10142322",
+          "title": "Lutathera(\u00ae) Orphans: State of the Art and Future Application of Radioligand Therapy with (177)Lu-DOTATATE.",
+          "snippet": "Title: Lutathera(\u00ae) Orphans: State of the Art and Future Application of Radioligand Therapy with (177)Lu-DOTATATE.\nAuthors: Urso L, Nieri A, Uccelli L et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.031996"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7456409/",
+          "identifier": "PMC:7456409",
+          "title": "Emerging Treatments for Advanced/Metastatic Pheochromocytoma and Paraganglioma.",
+          "snippet": "Title: Emerging Treatments for Advanced/Metastatic Pheochromocytoma and Paraganglioma.\nAuthors: Ilanchezhian M, Jha A, Pacak K et al.\nJournal: Curr Treat Options Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032054"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=177Lu-DOTA-tyr3-OCTREOTATE",
+          "identifier": "NIH:5R01CA296305-02",
+          "title": "Deep Learning-Based Treatment Planning for PSMA RPT (EL FAKHRI, GEORGES)",
+          "snippet": "Project: 5R01CA296305-02\nPI: EL FAKHRI, GEORGES\nOrganization: \nFiscal year: 2026\nAward: $591,047\nStart: 2025-01-01\nEnd: 2029-12-31\n(937 total NIH-funded projects matching '177Lu-DOTA-tyr3-OCTREOTATE')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:33.936066"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=177Lu-DOTA-tyr3-OCTREOTATE",
+          "identifier": "NIH:5R01CA290859-03",
+          "title": "Lysosome Trapped FAP-Targeted Theranostics for Pancreatic Cancer (GARRISON, JERED C)",
+          "snippet": "Project: 5R01CA290859-03\nPI: GARRISON, JERED C\nOrganization: \nFiscal year: 2026\nAward: $626,716\nStart: 2024-03-18\nEnd: 2029-02-28\n(937 total NIH-funded projects matching '177Lu-DOTA-tyr3-OCTREOTATE')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:33.936077"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.7899999999999999,
+      "reasoning": "[Pass 1 extraction] Peptide Identity: 177Lu-DOTA-tyr3-OCTREOTATE (177Lu-DOTATATE) is confirmed as a peptide. It is a somatostatin analog with a molecular class of peptide and is conjugated with 177Lu (a radioactive isotope) for radioligand therapy. Its amino acid length is not explicitly stated in the provided evidence.\n\nDatabase Matches: No evidence found.\n\nMechanism: The peptide is used in radioligand therapy targeting somatostatin receptors, which are expressed on tumor cells such as those in pheochromocytoma and paraganglioma. It does not directly kill or inhibit microorganisms. It does not disrupt biofilms. It works via a non-antimicrobial mechanism, specifically targeting cancer cells through receptor-mediated internalization of the radiolabeled compound for therapeutic purposes.\n\nTherapeutic Target: The trial is treating pheochromocytoma and paraganglioma, which are types of neuroendocrine tumors. It is not an infection or infectious disease but a cancer-related condition.\n\nImmune Direction: The peptide is not directly involved in promoting or suppressing immune responses. It is primarily a targeted therapeutic agent used in cancer treatment, and its mechanism is not immune-related but rather involves radioligand targeting of tumor cells.\n[Pass 2 decision] Classification: Other  \nReasoning: Step 1 \u2014 The intervention is a peptide (Peptide determination = True). Step 2 \u2014 The mechanism of the peptide is not antimicrobial. It is a radiolabeled somatostatin analog used in cancer treatment through receptor-mediated targeting of tumor cells, not through direct antimicrobial activity, biofilm disruption, or activation of innate immune cells. The peptide is used in the treatment of neuroendocrine tumors, not infectious diseases, and its mechanism does not involve pathogen defense. Therefore, it is not an AMP.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Arm Group: PRRT with 177Lu-DOTA-tyr3-OCTREOTATE",
+          "snippet": "Arm: PRRT with 177Lu-DOTA-tyr3-OCTREOTATE - 177Lu-DOTA-tyr3-OCTREOTATE (177Lu-DOTATATE) and amino acid will be administered intravenously (IV) on Day 1 of each of four treatment cycles, 8 weeks apart.\n\nThis study will consist of children and adolescents ages 1-20 years with relapsed or refractory neuroendocrine tumors and pheochromocytoma or paraganglioma. Children and adolescents with neuroendocrine tumor, pheochromocytoma or paraganglioma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.706054"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6827093/",
+          "identifier": "PMC:6827093",
+          "title": "Current Management of Pheochromocytoma/Paraganglioma: A Guide for the Practicing Clinician in the Era of Precision Medicine.",
+          "snippet": "Title: Current Management of Pheochromocytoma/Paraganglioma: A Guide for the Practicing Clinician in the Era of Precision Medicine.\nAuthors: N\u00f6lting S, Ullrich M, Pietzsch J et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032070"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8039528/",
+          "identifier": "PMC:8039528",
+          "title": "Somatostatin Receptors and Analogs in Pheochromocytoma and Paraganglioma: Old Players in a New Precision Medicine World.",
+          "snippet": "Title: Somatostatin Receptors and Analogs in Pheochromocytoma and Paraganglioma: Old Players in a New Precision Medicine World.\nAuthors: Patel M, Tena I, Jha A et al.\nJournal: Front Endocrinol (Lausanne)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032047"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9573605/",
+          "identifier": "PMC:9573605",
+          "title": "Exploring Nitric Oxide (NO)-Releasing Celecoxib Derivatives as Modulators of Radioresponse in Pheochromocytoma Cells.",
+          "snippet": "Title: Exploring Nitric Oxide (NO)-Releasing Celecoxib Derivatives as Modulators of Radioresponse in Pheochromocytoma Cells.\nAuthors: Brandt F, Ullrich M, Seifert V et al.\nJournal: Molecules",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032022"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10142322/",
+          "identifier": "PMC:10142322",
+          "title": "Lutathera(\u00ae) Orphans: State of the Art and Future Application of Radioligand Therapy with (177)Lu-DOTATATE.",
+          "snippet": "Title: Lutathera(\u00ae) Orphans: State of the Art and Future Application of Radioligand Therapy with (177)Lu-DOTATATE.\nAuthors: Urso L, Nieri A, Uccelli L et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.031996"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7456409/",
+          "identifier": "PMC:7456409",
+          "title": "Emerging Treatments for Advanced/Metastatic Pheochromocytoma and Paraganglioma.",
+          "snippet": "Title: Emerging Treatments for Advanced/Metastatic Pheochromocytoma and Paraganglioma.\nAuthors: Ilanchezhian M, Jha A, Pacak K et al.\nJournal: Curr Treat Options Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032054"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11340123/",
+          "identifier": "PMC:11340123",
+          "title": "Recent advances and impending challenges for the radiopharmaceutical sciences in oncology.",
+          "snippet": "Title: Recent advances and impending challenges for the radiopharmaceutical sciences in oncology.\nAuthors: Lapi SE, Scott PJH, Scott AM et al.\nJournal: Lancet Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.031965"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9599960/",
+          "identifier": "PMC:9599960",
+          "title": "Repurposed Effect of (177)Lu-DOTATATE in the Treatment of Mantle Cell Lymphoma.",
+          "snippet": "Title: Repurposed Effect of (177)Lu-DOTATATE in the Treatment of Mantle Cell Lymphoma.\nAuthors: Elajami MK, Burton LP, Bahmad HF et al.\nJournal: Curr Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032015"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=177Lu-DOTA-tyr3-OCTREOTATE",
+          "identifier": "NIH:5R01CA296305-02",
+          "title": "Deep Learning-Based Treatment Planning for PSMA RPT (EL FAKHRI, GEORGES)",
+          "snippet": "Project: 5R01CA296305-02\nPI: EL FAKHRI, GEORGES\nOrganization: \nFiscal year: 2026\nAward: $591,047\nStart: 2025-01-01\nEnd: 2029-12-31\n(937 total NIH-funded projects matching '177Lu-DOTA-tyr3-OCTREOTATE')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:33.936066"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=177Lu-DOTA-tyr3-OCTREOTATE",
+          "identifier": "NIH:5R01CA290859-03",
+          "title": "Lysosome Trapped FAP-Targeted Theranostics for Pancreatic Cancer (GARRISON, JERED C)",
+          "snippet": "Project: 5R01CA290859-03\nPI: GARRISON, JERED C\nOrganization: \nFiscal year: 2026\nAward: $626,716\nStart: 2024-03-18\nEnd: 2029-02-28\n(937 total NIH-funded projects matching '177Lu-DOTA-tyr3-OCTREOTATE')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:33.936077"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "Other",
+      "confidence": 0.55,
+      "reasoning": "[ATOMIC-CLS R6] Other (conf=0.55)\n  rule: mixed/unclear atomic answers; default Other\n  registry: dramp=0 apd=0 dbaasp=0 uniprot_amp=0\n  atomic: q1=YES q2=NO q3=NO\n  R6 fired: 1 YES, 2 NO, 0 UNCLEAR \u2192 default Other\n  quote: \"This is a peptide receptor radiotherapy that targets somatostatin receptors on tumor cells.\"",
+      "evidence": [],
+      "model_name": "atomic-cls-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Other",
+      "confidence": 0.9,
+      "reasoning": "[Deterministic v42.7.23] Therapeutic radioisotope, route unspecified: '177lu-dota-tyr3-octreotate'",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Withdrawn",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v38] Registry status 'WITHDRAWN' \u2192 'Withdrawn'",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Withdrawn",
+      "confidence": 0.95,
+      "reasoning": "[ATOMIC TIER0] Withdrawn (conf=0.95)\n  rule: Tier 0 deterministic pre-label (WITHDRAWN)\n  registry: status=WITHDRAWN phase=PHASE1,_PHASE2 has_results=None completion=2021-06-03 days_since=1798 stale=False drug_max_phase=None\n  pubs: 20 total (0 ts, 20 gen, 0 amb)\n  aggregator trace:\n    registry: status=WITHDRAWN has_results=None phase=PHASE1,_PHASE2 days_since=1798 stale=False drug_max_phase=None\n    pubs: total=0 trial_specific=0 voting=0 pos=0 fail=0\n    tier0 fired \u2192 Withdrawn",
+      "evidence": [],
+      "model_name": "atomic-deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "sequence",
+      "value": "fCYwKTCT",
+      "confidence": 0.95,
+      "reasoning": "[Known sequence] octreotate \u2192 fCYwKTCT... (8 aa). Matched intervention '177Lu-DOTA-tyr3-OCTREOTATE'.",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "Business Reason",
+      "confidence": 0.7899999999999999,
+      "reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: No specific findings related to the trial NCT03923257 were found in the provided PubMed, PMC, or web sources. The literature reviewed discusses the use of 177Lu-DOTATATE in the context of pheochromocytoma and paraganglioma, including its role in radioligand therapy and imaging, but none of these references directly mention the outcomes, results, or discontinuation of this particular trial.  \nOutcome Signals: No direct evidence of trial failure, success, or specific reasons for stopping were identified in the published findings.  \nIs This A Failure: Unclear\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Withdrawn, Pass 2 returned empty, inferred 'Business Reason'] The trial status is \"COMPLETED,\" and there is no published evidence of negative outcomes (e.g., failure to meet primary endpoints, adverse events, or recruitment issues). The absence of published results does not constitute evidence of failure. According to the rules, completed trials should only be classified as failed if there is explicit published evidence of negative outcomes, which is not present here. Therefore, the correct classification is EMPTY.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Arm Group: PRRT with 177Lu-DOTA-tyr3-OCTREOTATE",
+          "snippet": "Arm: PRRT with 177Lu-DOTA-tyr3-OCTREOTATE - 177Lu-DOTA-tyr3-OCTREOTATE (177Lu-DOTATATE) and amino acid will be administered intravenously (IV) on Day 1 of each of four treatment cycles, 8 weeks apart.\n\nThis study will consist of children and adolescents ages 1-20 years with relapsed or refractory neuroendocrine tumors and pheochromocytoma or paraganglioma. Children and adolescents with neuroendocrine tumor, pheochromocytoma or paraganglioma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.706054"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3139949848",
+          "identifier": "PMID:33854479",
+          "title": "Somatostatin Receptors and Analogs in Pheochromocytoma and Paraganglioma: Old Players in a New Precision Medicine World",
+          "snippet": "Title: Somatostatin Receptors and Analogs in Pheochromocytoma and Paraganglioma: Old Players in a New Precision Medicine World\nYear: 2021\nCitations: 39\nAbstract: Ga-DOTATATE as a radiopharmaceutical for somatostatin receptor imaging, the use of its radiotherapeutic counterpart still needs approval beyond gastroenteropancreatic neuroendocrine tumors. Thus, patients with pheochromocytoma and paraganglioma, espe",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.118521"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3165207816",
+          "identifier": "PMID:34039901",
+          "title": "Pheochromocytomas and paragangliomas",
+          "snippet": "Title: Pheochromocytomas and paragangliomas\nYear: 2021\nCitations: 10\nAbstract: PURPOSE OF REVIEW: Great progress has been made in understanding the genetic and molecular basis of pheochromocytoma and paragangliomas (PPGLs). This review highlights the new standards in the diagnosis and management of pediatric PPGLs. RECENT FINDI",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.118652"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6827093/",
+          "identifier": "PMC:6827093",
+          "title": "Current Management of Pheochromocytoma/Paraganglioma: A Guide for the Practicing Clinician in the Era of Precision Medicine.",
+          "snippet": "Title: Current Management of Pheochromocytoma/Paraganglioma: A Guide for the Practicing Clinician in the Era of Precision Medicine.\nAuthors: N\u00f6lting S, Ullrich M, Pietzsch J et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032070"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9573605/",
+          "identifier": "PMC:9573605",
+          "title": "Exploring Nitric Oxide (NO)-Releasing Celecoxib Derivatives as Modulators of Radioresponse in Pheochromocytoma Cells.",
+          "snippet": "Title: Exploring Nitric Oxide (NO)-Releasing Celecoxib Derivatives as Modulators of Radioresponse in Pheochromocytoma Cells.\nAuthors: Brandt F, Ullrich M, Seifert V et al.\nJournal: Molecules",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032022"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10142322/",
+          "identifier": "PMC:10142322",
+          "title": "Lutathera(\u00ae) Orphans: State of the Art and Future Application of Radioligand Therapy with (177)Lu-DOTATATE.",
+          "snippet": "Title: Lutathera(\u00ae) Orphans: State of the Art and Future Application of Radioligand Therapy with (177)Lu-DOTATATE.\nAuthors: Urso L, Nieri A, Uccelli L et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.031996"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7456409/",
+          "identifier": "PMC:7456409",
+          "title": "Emerging Treatments for Advanced/Metastatic Pheochromocytoma and Paraganglioma.",
+          "snippet": "Title: Emerging Treatments for Advanced/Metastatic Pheochromocytoma and Paraganglioma.\nAuthors: Ilanchezhian M, Jha A, Pacak K et al.\nJournal: Curr Treat Options Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032054"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11340123/",
+          "identifier": "PMC:11340123",
+          "title": "Recent advances and impending challenges for the radiopharmaceutical sciences in oncology.",
+          "snippet": "Title: Recent advances and impending challenges for the radiopharmaceutical sciences in oncology.\nAuthors: Lapi SE, Scott PJH, Scott AM et al.\nJournal: Lancet Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.031965"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=177Lu-DOTA-tyr3-OCTREOTATE",
+          "identifier": "NIH:5R01CA296305-02",
+          "title": "Deep Learning-Based Treatment Planning for PSMA RPT (EL FAKHRI, GEORGES)",
+          "snippet": "Project: 5R01CA296305-02\nPI: EL FAKHRI, GEORGES\nOrganization: \nFiscal year: 2026\nAward: $591,047\nStart: 2025-01-01\nEnd: 2029-12-31\n(937 total NIH-funded projects matching '177Lu-DOTA-tyr3-OCTREOTATE')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:33.936066"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=177Lu-DOTA-tyr3-OCTREOTATE",
+          "identifier": "NIH:5R01CA290859-03",
+          "title": "Lysosome Trapped FAP-Targeted Theranostics for Pancreatic Cancer (GARRISON, JERED C)",
+          "snippet": "Project: 5R01CA290859-03\nPI: GARRISON, JERED C\nOrganization: \nFiscal year: 2026\nAward: $626,716\nStart: 2024-03-18\nEnd: 2029-02-28\n(937 total NIH-funded projects matching '177Lu-DOTA-tyr3-OCTREOTATE')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:33.936077"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "",
+      "confidence": 0.0,
+      "reasoning": "[ATOMIC-FR gated] outcome_atomic=Withdrawn not in ['Failed - completed trial', 'Terminated']",
+      "evidence": [],
+      "model_name": "atomic-fr-gated",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT03923257",
+    "fields": [
+      {
+        "field_name": "classification_atomic",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Withdrawn",
+        "final_value": "Withdrawn",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Withdrawn",
+        "final_value": "Withdrawn",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "sequence",
+        "original_value": "fCYwKTCT",
+        "final_value": "fCYwKTCT",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "",
+        "final_value": "",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial description explicitly identifies 177Lu-DOTA-tyr3-OCTREOTATE as a peptide and describes it as a peptide receptor radiotherapy.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The presence of \"peptide\" in the intervention name and description, along with the chemical structure being a radiolabeled peptide, directly confirms that the intervention contains a peptide component.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "According to the critical rules provided, if the trial description or intervention name contains 'peptide', this is strong evidence for True. In this case, both the intervention name and description contain references to peptides, making the classification as TRUE reliable.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.775,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The intervention, 177Lu-DOTA-tyr3-OCTREOTATE (177Lu-DOTATATE), is a peptide that targets somatostatin receptors. However, it functions as a radiotherapeutic agent, not an antimicrobial peptide. It does not kill, inhibit growth, recruit immune cells, or disrupt biofilms. It targets receptors on tumor cells for radiation delivery. Therefore, it does not meet the criteria for AMP classification.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The intervention is a radiolabeled peptide used for targeted radiation therapy, not for antimicrobial activity. It is explicitly categorized as a radiopharmaceutical, which falls under \"Other\" in the classification system.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "Other",
+            "reasoning": "The trial's purpose and design indicate that the intervention is not intended to have direct antimicrobial effects, but rather to target and destroy tumor cells through radiation. The use of somatostatin receptors as targets also suggests that this is a targeted therapy rather than an antimicrobial peptide.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7899999999999999,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "Business Reason",
+        "final_value": "Business Reason",
+        "consensus_reached": true,
+        "agreement_ratio": 0.333,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "Business Reason",
+            "reasoning": "The trial was withdrawn due to a competing clinical trial opening, indicating a business reason for the termination. The \"Why stopped\" field explicitly states this.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "",
+            "reasoning": "The reason for withdrawal is explicitly provided as \"competing clinical trial opening,\" which is not one of the predefined failure reasons. Since there is no published evidence of failure or termination due to any of the listed reasons, and the trial is not marked as \"COMPLETED\" with negative outcomes, the correct value is \"EMPTY.\"",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Recruitment issues",
+            "reasoning": "While there is no explicit mention of recruitment issues in the published results, the withdrawal of the trial due to a competing clinical trial implies that the original trial was not able to attract enough participants. This is consistent with the typical reasons for withdrawing trials, which often include difficulties in recruiting participants.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7899999999999999,
+        "reconciler_used": true,
+        "reconciler_reasoning": "The trial was explicitly withdrawn due to a \"competing clinical trial opening,\" which is a business-related decision. This is directly stated in the \"Why stopped\" field of the clinicaltrials.gov entry. While verifier_2 argues that this is not one of the predefined failure reasons, the field \"reason_for_failure\" is meant to capture the reason for trial withdrawal, not necessarily to map to a predefined list of failure categories. The evidence clearly supports the conclusion that the withdrawal wa",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT03923257",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Phase I Trial of Peptide Receptor Radiotherapy (PRRT) With 177Lu-DOTA-tyr3-Octreotate (177Lu-DOTATATE) in Children and Adolescents With Neuroendocrine Tumor or Pheochromocytoma/Paraganglioma",
+          "snippet": "Title: Phase I Trial of Peptide Receptor Radiotherapy (PRRT) With 177Lu-DOTA-tyr3-Octreotate (177Lu-DOTATATE) in Children and Adolescents With Neuroendocrine Tumor or Pheochromocytoma/Paraganglioma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.705961"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Brief Summary",
+          "snippet": "This is a Phase I/II peptide receptor radiotherapy (PRRT) trial of 177Lu-DOTA-OCTREOTATE in children and adolescents with neuroendocrine tumors and pheochromocytoma or paraganglioma.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.705991"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Detailed Description",
+          "snippet": "The purpose of this clinical trial is to determine if peptide receptor radiotherapy (PRRT) using 177Lu-DOTA-OCTREOTATE given intravenously in children and adolescents is an effective treatment and to describe its toxicities.\n\nThis study will consists of children and adolescents ages 1-20 years with relapsed or refractory neuroendocrine tumors and pheochromocytoma or paraganglioma.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.705999"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Study Status",
+          "snippet": "Status: WITHDRAWN | Why stopped: competing clinical trial opening",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.706008"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Neuroendocrine Tumors, Pheochromocytoma, Paraganglioma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.706016"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Intervention: 177Lu-DOTA-tyr3-OCTREOTATE",
+          "snippet": "DRUG: 177Lu-DOTA-tyr3-OCTREOTATE - This is a peptide receptor radiotherapy that targets somatostatin receptors on tumor cells.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.706035"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Intervention: Peptide Receptor Radiotherapy (PRRT)",
+          "snippet": "PROCEDURE: Peptide Receptor Radiotherapy (PRRT) - PRRT is internal radiation that is individually dosed according to patient body surface area, kidney function and bone marrow status.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.706043"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Arm Group: PRRT with 177Lu-DOTA-tyr3-OCTREOTATE",
+          "snippet": "Arm: PRRT with 177Lu-DOTA-tyr3-OCTREOTATE - 177Lu-DOTA-tyr3-OCTREOTATE (177Lu-DOTATATE) and amino acid will be administered intravenously (IV) on Day 1 of each of four treatment cycles, 8 weeks apart.\n\nThis study will consist of children and adolescents ages 1-20 years with relapsed or refractory neuroendocrine tumors and pheochromocytoma or paraganglioma. Children and adolescents with neuroendocrine tumor, pheochromocytoma or paraganglioma",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.706054"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.706063"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT03923257",
+            "orgStudyIdInfo": {
+              "id": "201812772"
+            },
+            "organization": {
+              "fullName": "University of Iowa",
+              "class": "OTHER"
+            },
+            "briefTitle": "Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+            "officialTitle": "Phase I Trial of Peptide Receptor Radiotherapy (PRRT) With 177Lu-DOTA-tyr3-Octreotate (177Lu-DOTATATE) in Children and Adolescents With Neuroendocrine Tumor or Pheochromocytoma/Paraganglioma"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2021-06",
+            "overallStatus": "WITHDRAWN",
+            "whyStopped": "competing clinical trial opening",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2020-08-04",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2021-06-03",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2021-06-03",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2019-03-29",
+            "studyFirstSubmitQcDate": "2019-04-17",
+            "studyFirstPostDateStruct": {
+              "date": "2019-04-22",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2021-06-03",
+            "lastUpdatePostDateStruct": {
+              "date": "2021-06-08",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR_INVESTIGATOR",
+              "investigatorFullName": "Sue O'Dorisio",
+              "investigatorTitle": "Professor",
+              "investigatorAffiliation": "University of Iowa"
+            },
+            "leadSponsor": {
+              "name": "Sue O'Dorisio",
+              "class": "OTHER"
+            },
+            "collaborators": [
+              {
+                "name": "Advanced Accelerator Applications",
+                "class": "INDUSTRY"
+              }
+            ]
+          },
+          "oversightModule": {
+            "oversightHasDmc": true,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "This is a Phase I/II peptide receptor radiotherapy (PRRT) trial of 177Lu-DOTA-OCTREOTATE in children and adolescents with neuroendocrine tumors and pheochromocytoma or paraganglioma.",
+            "detailedDescription": "The purpose of this clinical trial is to determine if peptide receptor radiotherapy (PRRT) using 177Lu-DOTA-OCTREOTATE given intravenously in children and adolescents is an effective treatment and to describe its toxicities.\n\nThis study will consists of children and adolescents ages 1-20 years with relapsed or refractory neuroendocrine tumors and pheochromocytoma or paraganglioma."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Neuroendocrine Tumors",
+              "Pheochromocytoma",
+              "Paraganglioma"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1",
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 0,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "PRRT with 177Lu-DOTA-tyr3-OCTREOTATE",
+                "type": "EXPERIMENTAL",
+                "description": "177Lu-DOTA-tyr3-OCTREOTATE (177Lu-DOTATATE) and amino acid will be administered intravenously (IV) on Day 1 of each of four treatment cycles, 8 weeks apart.\n\nThis study will consist of children and adolescents ages 1-20 years with relapsed or refractory neuroendocrine tumors and pheochromocytoma or paraganglioma. Children and adolescents with neuroendocrine tumor, pheochromocytoma or paraganglioma will not have had any previous endoradiotherapy with 90Y-DOTATOC, 131I-MIBG, or 177Lu-DOTATATE.",
+                "interventionNames": [
+                  "Drug: 177Lu-DOTA-tyr3-OCTREOTATE",
+                  "Procedure: Peptide Receptor Radiotherapy (PRRT)"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "177Lu-DOTA-tyr3-OCTREOTATE",
+                "description": "This is a peptide receptor radiotherapy that targets somatostatin receptors on tumor cells.",
+                "armGroupLabels": [
+                  "PRRT with 177Lu-DOTA-tyr3-OCTREOTATE"
+                ],
+                "otherNames": [
+                  "Lutathera"
+                ]
+              },
+              {
+                "type": "PROCEDURE",
+                "name": "Peptide Receptor Radiotherapy (PRRT)",
+                "description": "PRRT is internal radiation that is individually dosed according to patient body surface area, kidney function and bone marrow status.",
+                "armGroupLabels": [
+                  "PRRT with 177Lu-DOTA-tyr3-OCTREOTATE"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Toxicities",
+                "description": "To examine the toxicity related to the therapy by measuring the number of treatment related adverse events in patients\n\nAdverse events will be reported in tabular form by type and grade. Adverse events will be graded according to the most recent CTE guidelines.",
+                "timeFrame": "Initiation of treatment through 5 years"
+              },
+              {
+                "measure": "Objective Response Rate (ORR) according to RECIST criteria in children",
+                "description": "To determine overall response rate (ORR) (complete response \\[CR\\] + partial response \\[PR\\]) + stable disease \\[SD\\] per RECIST v1.1)",
+                "timeFrame": "Initiation of treatment through 5 years"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Measure and demonstrate accuracy of radiation dose to kidneys in children based on a single SPECT/CT image of the kidneys plus a single whole body scan",
+                "description": "Six subjects will have whole body imaging and SPECT/CT of kidneys performed at 3-8 hours plus whole body and SPECT at 20-28 hours, 44-52 hours, 92-100 hours and 116-124 hours after the administration of the radiopharmaceutical. Data will be analyzed using method of Madsen\\[1,2\\]. Single point dosimetry will be utilized with subsequent cohorts if data demonstrates agreement with adult dosimetry. Biological effective dose (BED) to kidneys will be calculated according to Bodei et al \\[3\\].\n\nThe information on renal uptake, renal mass and residence time will be entered into OLINDA software to calculate the radiation dose. If single point dosimetry proves to be accurate, any remaining Phase I subjects and all Phase II subjects will receive single point dosimetry for both renal and bone marrow radiation dose estimation.",
+                "timeFrame": "Initiation of treatment through treatment #4 (approximately 26 weeks)"
+              },
+              {
+                "measure": "Measure and demonstrate accuracy of radiation dose to bone marrow in children based on radioactivity in a single blood sample",
+                "description": "Blood dosimetry will be performed as a surrogate of bone marrow dosimetry. Blood samples (1 mL) will be obtained prior to start of amino acid infusion and subsequently in the same time frame with the imaging sessions.",
+                "timeFrame": "Initiation of treatment through treatment #4 (approximately 26 weeks)"
+              },
+              {
+                "measure": "Progression Free Survival (PFS) according to RECIST criteria in children",
+                "description": "Progression will be defined using the RECIST 1.1 guidelines. Results are provided in nominal categories (CR, PR, SD, PD) as per RECIST.",
+                "timeFrame": "Initiation of treatment through 5 years"
+              },
+              {
+                "measure": "Measure effect of PRRT in quality of life with the PROMIS Pediatric Profile v2.0 - Profile-37",
+                "description": "Parents of participants will be asked to complete the PROMIS Pediatric Profile v2.0 - Profile-37",
+                "timeFrame": "Initiation of treatment through treatment #4 (approximately 26 weeks)"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Disease not amenable to standard treatment (nonresectable or disease present after one or more surgeries and/or Sandostatin treatment) or subject has failed existing first line chemotherapy, biologic therapy, targeted agent therapy or radiation therapy.\n* Participation in Iowa Neuroendocrine Tumor Registry and recommendation by University of Iowa PRRT tumor board.\n* A pathologically confirmed (histology or cytology) Neuroendocrine Tumor (NET), Pheochromocytoma (PCC), or Paraganglioma (PGL).\n* For patients with measurable or evaluable disease: \\>50% of lesions must demonstrate 68Ga-DOTATATE /DOTATOC uptake greater than physiologic liver uptake by visual assessment. At least one lesion must be confirmed by conventional imaging (CT or MRI).\n* For patients with measurable disease, the target lesion is one that either has never received external beam radiation or has been previously irradiated and has since demonstrated progression.\n* For patients with no measurable disease (no meaurable target lesions), who have evaluable disease (bone disease, MIBG positive disease, liver metastases not detectable on MRI or CT), the disease must be seen on 68Ga-DOTATATE/DOTATOC PET/CT.\n* No previous endogenous radiation with 177Lu-DOTATATE/TOC or 90Y-DOTATATE/TOC or 131I-MIBG within 12 months of most recent treatment.\n* Age \u2265 18 months \\< 20 years at the time of first study drug administration.\n* Performance status as determined by Karnofsky \u2265 60 or Lansky Play Scale \u2265 60 at the time of study drug administration.\n\nNOTE: Neurologic deficits in patients with brain metastases must have been stable for at least 7 days prior to study enrollment.\n\n* Completion of validated Pediatric Quality of Life Questionnaire.\n* Within seven (7) days of study drug administration, must have normal organ and bone marrow function as defined below:\n\nAdequate Bone Marrow Function Defined as:\n\n* Peripheral absolute neutrophil count (ANC) \u2265 1000/m3\n* Platelet count \u2265 75,000/mm3 (transfusion independent, defined as not receiving platelet transfusions for at least 7 days prior to enrollment)\n* Hemoglobin \u2265 8g/dL Organ Function Requirements\n* AST(SGOT)\\& ALT(SGPT) \\<10X institutional upper limit of normal for age\n* Total bilirubin \\<3X ULN for age\n* BUN \\< 2X normal\n* creatinine, Normal for age\n* Glomerular filtration rate (GFR) only if creatinine \\> normal for age\n* Nuclear GFR or CrCl \u2265 80 ml/min/1.73m2\n* Urinalysis No greater than 1+ hematuria or proteinuria\n* The effects of 177Lu-DOTATATE on the developing human fetus are unknown. For this reason and because Class C agents are known to be teratogenic, all subjects capable of becoming pregnant must agree to practice a medically acceptable birth control measure (abstinence, birth control pills, intrauterine devices, vaginal diaphragm, vaginal sponge, or condom with spermicidal jelly) throughout the study and for eight months following the end of the last treatment. Should a woman become pregnant or suspect she is pregnant while participating in this study, she should inform her treating physician immediately.\n* Parent's ability to understand and the willingness to sign a written informed consent document for children \\< seven (7) years of age. Children \u2265 seven (7) years of age will sign assent along with parental consent or will co-sign consent with parent in accordance with rules of the state in which treatment is received.\n\nExclusion Criteria:\n\n* Pregnant women are excluded from this study because 177Lu-DOTATATE is a Class C agent with potential teratogenic or abortifacient effects.\n* Because there is an unknown but potential risk for adverse events in nursing infants secondary to treatment of the mother with 177Lu-DOTATATE, breastfeeding should be discontinued until 3 months after the last administration of study drug.\n* Major surgery within 8 weeks of study drug administration.\n* External beam radiation to both kidneys (scatter doses of \\<500 cGy to a single kidney or radiation to \\< 50% of a single kidney is acceptable).\n* Prior PRRT with 90Y-DOTATOC (TATE) or 177Lu-DOTATOC (TATE) or 131I-MIBG for this malignancy within 12 months of first study dose.\n* Another investigational drug within 8 weeks of study drug administration.\n* Concurrent, malignant disease for which patient is on active therapy.\n* Another significant medical, psychiatric, or surgical condition which is currently uncontrolled by treatment and which would likely affect the subject's ability to complete this protocol.\n* Subjects who have received Sandostatin LAR or long-acting lanreotide in the past 28 days must be appropriately delayed. Subjects may be maintained on short acting octreotide during the time from last injection of long-acting somatostatin analogue until 8-24 hrs prior to injection of study drug.\n* Known antibodies to Octreotide, Lanreotide, or DOTATATE or history of allergic reactions attributed to compounds of similar chemical or biologic composition to 177Lu-DOTATATE.\n* Uncontrolled illness including, but not limited to ongoing or active infection, uncontrolled diabetes mellitus, symptomatic congestive heart failure, unstable angina pectoris, cardiac arrhythmia, hepatic cirrhosis or severe impairment, or psychiatric illness/social situations that would limit compliance with study requirements.\n* Corticosteroids: Patients receiving corticosterods who have not been on a stable or decreasing dose of corticosteroid for at least 7 days prior to enrollment are not eligible. If used to modify immune adverse events related to prior therapy, \u2265 14 days must have elapsed since last dose of corticosteroid\n* Patients who have received a prior solid organ transplantation are not eligible\n* Patients will be excluded if they have a known allergy to any of the drugs used in the study\n* Prior Therapy:\n* Cytotoxic chemotherapy or other anti-cancer agents known to be myelosuppressive. At least 21 days after the last dose of cytotoxic or myelosuppressive chemotherapy (42 days if prior nitrosourea).\n* Anti-cancer agents not known to be myelosuppressive (e.g. not associated with reduced platelet or ANC counts): \u2265 7 days after the last dose of agent. Short-acting somatostatin analogue may be administered up to eight hours prior to infusion of study drug.\n* Antibodies: \u2265 21 days must have elapsed from infusion of last dose of antibody, and toxicity related to prior antibody therapy must be recovered to Grade \u2264 1.\n* Hematopoietic growth factors: \u2265 14 days after the last dose of a long-acting growth factor (e.g. Peg-Filgrastim) or 7 days for short-acting growth factor. For agents that have known adverse events occurring beyond 7 days after administration, this period must be extended beyond the time during which adverse events are known to occur. The duration of this interval must be discussed with the study chair and the study-assigned Research Coordinator.\n* Interleukins, Interferons and Cytokines (other than Hematopoietic Growth Factors): \u2265 21 days after the completion of interleukins, interferon or cytokines (other than Hematopoietic Growth Factors).\n* Allogeneic (non-autologous) bone marrow or stem cell transplant, or any stem cell infusion including donor lymphocyte infusion or boost infusion: \u2265 84 days after stem cell infusion\n* Evidence of GVHD.\n* Autologous stem cell infusion including boost infusion: \u2265 42 days; cellular therapy: \u2265 42 days after the completion of any type of cellular therapy (e.g. modified T cells, NK cells, dendritic cells, etc.).",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "1 Year",
+            "maximumAge": "20 Years",
+            "stdAges": [
+              "CHILD",
+              "ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "M. Sue O'Dorisio, MD, PhD",
+                "affiliation": "University of Iowa",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "University of Iowa Hospitals and Clinics",
+                "city": "Iowa City",
+                "state": "Iowa",
+                "zip": "52242",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.66113,
+                  "lon": -91.53017
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "29577338",
+                "type": "BACKGROUND",
+                "citation": "Madsen MT, Menda Y, O'Dorisio TM, O'Dorisio MS. Technical Note: Single time point dose estimate for exponential clearance. Med Phys. 2018 May;45(5):2318-2324. doi: 10.1002/mp.12886. Epub 2018 Apr 16."
+              },
+              {
+                "pmid": "29523629",
+                "type": "BACKGROUND",
+                "citation": "Menda Y, Madsen MT, O'Dorisio TM, Sunderland JJ, Watkins GL, Dillon JS, Mott SL, Schultz MK, Zamba GKD, Bushnell DL, O'Dorisio MS. 90Y-DOTATOC Dosimetry-Based Personalized Peptide Receptor Radionuclide Therapy. J Nucl Med. 2018 Nov;59(11):1692-1698. doi: 10.2967/jnumed.117.202903. Epub 2018 Mar 9."
+              },
+              {
+                "pmid": "18427807",
+                "type": "BACKGROUND",
+                "citation": "Bodei L, Cremonesi M, Ferrari M, Pacifici M, Grana CM, Bartolomei M, Baio SM, Sansovini M, Paganelli G. Long-term evaluation of renal toxicity after peptide receptor radionuclide therapy with 90Y-DOTATOC and 177Lu-DOTATATE: the role of associated risk factors. Eur J Nucl Med Mol Imaging. 2008 Oct;35(10):1847-56. doi: 10.1007/s00259-008-0778-1. Epub 2008 Apr 22."
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT03923257",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11340123/",
+          "identifier": "PMC:11340123",
+          "title": "Recent advances and impending challenges for the radiopharmaceutical sciences in oncology.",
+          "snippet": "Title: Recent advances and impending challenges for the radiopharmaceutical sciences in oncology.\nAuthors: Lapi SE, Scott PJH, Scott AM et al.\nJournal: Lancet Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.031965"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10142322/",
+          "identifier": "PMC:10142322",
+          "title": "Lutathera(\u00ae) Orphans: State of the Art and Future Application of Radioligand Therapy with (177)Lu-DOTATATE.",
+          "snippet": "Title: Lutathera(\u00ae) Orphans: State of the Art and Future Application of Radioligand Therapy with (177)Lu-DOTATATE.\nAuthors: Urso L, Nieri A, Uccelli L et al.\nJournal: Pharmaceutics",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.031996"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10122989/",
+          "identifier": "PMC:10122989",
+          "title": "Pheochromocytomas and paragangliomas.",
+          "snippet": "Title: Pheochromocytomas and paragangliomas.\nAuthors: Yen K, Lodish M\nJournal: Curr Opin Pediatr",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032006"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9599960/",
+          "identifier": "PMC:9599960",
+          "title": "Repurposed Effect of (177)Lu-DOTATATE in the Treatment of Mantle Cell Lymphoma.",
+          "snippet": "Title: Repurposed Effect of (177)Lu-DOTATATE in the Treatment of Mantle Cell Lymphoma.\nAuthors: Elajami MK, Burton LP, Bahmad HF et al.\nJournal: Curr Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032015"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9573605/",
+          "identifier": "PMC:9573605",
+          "title": "Exploring Nitric Oxide (NO)-Releasing Celecoxib Derivatives as Modulators of Radioresponse in Pheochromocytoma Cells.",
+          "snippet": "Title: Exploring Nitric Oxide (NO)-Releasing Celecoxib Derivatives as Modulators of Radioresponse in Pheochromocytoma Cells.\nAuthors: Brandt F, Ullrich M, Seifert V et al.\nJournal: Molecules",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032022"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8905338/",
+          "identifier": "PMC:8905338",
+          "title": "Personalized Management of Pheochromocytoma and Paraganglioma.",
+          "snippet": "Title: Personalized Management of Pheochromocytoma and Paraganglioma.\nAuthors: N\u00f6lting S, Bechmann N, Taieb D et al.\nJournal: Endocr Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032031"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7554151/",
+          "identifier": "PMC:7554151",
+          "title": "Emerging therapeutic targets for neuroblastoma.",
+          "snippet": "Title: Emerging therapeutic targets for neuroblastoma.\nAuthors: Aravindan N, Herman T, Aravindan S\nJournal: Expert Opin Ther Targets",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032038"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8039528/",
+          "identifier": "PMC:8039528",
+          "title": "Somatostatin Receptors and Analogs in Pheochromocytoma and Paraganglioma: Old Players in a New Precision Medicine World.",
+          "snippet": "Title: Somatostatin Receptors and Analogs in Pheochromocytoma and Paraganglioma: Old Players in a New Precision Medicine World.\nAuthors: Patel M, Tena I, Jha A et al.\nJournal: Front Endocrinol (Lausanne)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032047"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7456409/",
+          "identifier": "PMC:7456409",
+          "title": "Emerging Treatments for Advanced/Metastatic Pheochromocytoma and Paraganglioma.",
+          "snippet": "Title: Emerging Treatments for Advanced/Metastatic Pheochromocytoma and Paraganglioma.\nAuthors: Ilanchezhian M, Jha A, Pacak K et al.\nJournal: Curr Treat Options Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032054"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7312954/",
+          "identifier": "PMC:7312954",
+          "title": "Theragnostic Aspects and Radioimmunotherapy in Pediatric Tumors.",
+          "snippet": "Title: Theragnostic Aspects and Radioimmunotherapy in Pediatric Tumors.\nAuthors: Cimini A, Ricci M, Chiaravalloti A et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032062"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6827093/",
+          "identifier": "PMC:6827093",
+          "title": "Current Management of Pheochromocytoma/Paraganglioma: A Guide for the Practicing Clinician in the Era of Precision Medicine.",
+          "snippet": "Title: Current Management of Pheochromocytoma/Paraganglioma: A Guide for the Practicing Clinician in the Era of Precision Medicine.\nAuthors: N\u00f6lting S, Ullrich M, Pietzsch J et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.032070"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "11340123",
+          "10142322",
+          "10122989",
+          "9599960",
+          "9573605",
+          "8905338",
+          "7554151",
+          "8039528",
+          "7456409",
+          "7312954",
+          "6827093"
+        ],
+        "pmc_count": 11,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT03923257",
+      "citations": [],
+      "raw_data": {
+        "uniprot_177Lu-DOTA-tyr3-OCTREOTATE_no_structured_match": true,
+        "uniprot_177Lu-DOTA-tyr3-OCTREOTATE": [],
+        "uniprot_Peptide Receptor Radiotherapy (PRRT)_no_structured_match": true,
+        "uniprot_Peptide Receptor Radiotherapy (PRRT)": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT03923257",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+          "snippet": "Web result for: NCT03923257 Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:35.314660"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+          "snippet": "Web result for: NCT03923257 Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:35.314707"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.patlynk.com/trial/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents ...",
+          "snippet": "Web result for: NCT03923257 Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:35.314726"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://findtrial.co/trial/NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+          "snippet": "Web result for: NCT03923257 Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:35.314741"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.mycancergenome.org/content/clinical_trials/NCT03923257/",
+          "identifier": "NCT03923257",
+          "title": "Clinical Trial: NCT03923257 - My Cancer Genome",
+          "snippet": "Web result for: NCT03923257 Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:18:35.314755"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 21637
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT03923257",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_177Lu-DOTA-tyr3-OCTREOTATE": {
+          "found": false
+        },
+        "dbaasp_Peptide Receptor Radiotherapy (PRRT)": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT03923257",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL410194/",
+          "identifier": "CHEMBL410194",
+          "title": "CHEMBL410194 - ChEMBL",
+          "snippet": "Molecule: CHEMBL410194\nType: Protein\nHELM: PEPTIDE1{[X2159].[dF].C.Y.W.[Lys(Boc)].[dalloT].[dC].T}$PEPTIDE1,PEPTIDE1,8:R3-3:R3$$$\nMolecular weight: 1535.76\nBioactivity: Ki=1.259 nM (Somatostatin receptor type 2)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:35.124232"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL575966/",
+          "identifier": "CHEMBL575966",
+          "title": "CHEMBL575966 - ChEMBL",
+          "snippet": "Molecule: CHEMBL575966\nType: Small molecule\nMolecular weight: 361.23\nBioactivity: F=1.0 % (Rattus norvegicus); Vdss=7.1 L.kg-1 (Rattus norvegicus); EC50=158.49 nM (G-protein coupled bile acid receptor 1); EC50=50118.72 nM (U2OS); EC50=31.62 nM (G-protein coupled bile acid receptor 1)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:37.531010"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL68505/",
+          "identifier": "CHEMBL68505",
+          "title": "CHEMBL68505 - ChEMBL",
+          "snippet": "Molecule: CHEMBL68505\nType: Small molecule\nMolecular weight: 523.68\nBioactivity: Inhibition=58.0 % (C5a anaphylatoxin chemotactic receptor 1)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:38.575833"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL415495/",
+          "identifier": "CHEMBL415495",
+          "title": "SOMATOSTATIN RECEPTOR LIGAND - ChEMBL",
+          "snippet": "Molecule: SOMATOSTATIN RECEPTOR LIGAND\nType: Protein\nHELM: PEPTIDE1{A.G.[dC].[dK].N.[dF].F.W.K.[dalloT].F.[dalloT].S.C}$PEPTIDE1,PEPTIDE1,14:R3-3:R3$$$\nMolecular weight: 1637.91\nBioactivity: IC50=0.43 nM (Somatostatin receptor)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:39.074308"
+        }
+      ],
+      "raw_data": {
+        "chembl_177Lu-DOTA-tyr3-OCTREOTATE_count": 5,
+        "chembl_177Lu-DOTA-tyr3-OCTREOTATE_helm": "PEPTIDE1{[X2159].[dF].C.Y.W.[Lys(Boc)].[dalloT].[dC].T}$PEPTIDE1,PEPTIDE1,8:R3-3:R3$$$",
+        "chembl_177Lu-DOTA-tyr3-OCTREOTATE_molecules": [
+          {
+            "chembl_id": "CHEMBL410194",
+            "pref_name": null,
+            "mol_type": "Protein",
+            "helm_notation": "PEPTIDE1{[X2159].[dF].C.Y.W.[Lys(Boc)].[dalloT].[dC].T}$PEPTIDE1,PEPTIDE1,8:R3-3:R3$$$",
+            "max_phase": null
+          }
+        ],
+        "chembl_Peptide Receptor Radiotherapy (PRRT)_count": 5,
+        "chembl_Peptide Receptor Radiotherapy (PRRT)_helm": "PEPTIDE1{A.G.[dC].[dK].N.[dF].F.W.K.[dalloT].F.[dalloT].S.C}$PEPTIDE1,PEPTIDE1,14:R3-3:R3$$$",
+        "chembl_Peptide Receptor Radiotherapy (PRRT)_molecules": [
+          {
+            "chembl_id": "CHEMBL575966",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL68505",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL415495",
+            "pref_name": "SOMATOSTATIN RECEPTOR LIGAND",
+            "mol_type": "Protein",
+            "helm_notation": "PEPTIDE1{A.G.[dC].[dK].N.[dF].F.W.K.[dalloT].F.[dalloT].S.C}$PEPTIDE1,PEPTIDE1,14:R3-3:R3$$$",
+            "max_phase": null
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT03923257",
+      "citations": [],
+      "raw_data": {
+        "rcsb_177Lu-DOTA-tyr3-OCTREOTATE": {
+          "count": 0
+        },
+        "rcsb_Peptide Receptor Radiotherapy (PRRT)": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT03923257",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_177Lu-DOTA-tyr3-OCTREOTATE_count": 0,
+        "ebi_proteins_Peptide Receptor Radiotherapy (PRRT)_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT03923257",
+      "citations": [],
+      "raw_data": {
+        "apd_177Lu-DOTA-tyr3-OCTREOTATE": {
+          "searched": true,
+          "found": false
+        },
+        "apd_Peptide Receptor Radiotherapy (PRRT)": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT03923257",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03923257",
+          "identifier": "NCT03923257",
+          "title": "Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+          "snippet": "Title: Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents\nStatus: Withdrawn\nPhase: Phase 1/Phase 2\nCountries: United States\nConditions: Paraganglioma, Pheochromocytoma, Neuroendocrine Tumors\nInterventions: Drug: 177Lu-DOTA-tyr3-OCTREOTATE, Procedure: Peptide Receptor Radiotherapy (PRRT)\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:18:41.141051"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT03923257",
+          "public_title": "Dosimetry Guided PRRT With 177Lu-DOTATATE in Children and Adolescents",
+          "scientific_title": "Phase I Trial of Peptide Receptor Radiotherapy (PRRT) With 177Lu-DOTA-tyr3-Octreotate (177Lu-DOTATATE) in Children and Adolescents With Neuroendocrine Tumor or Pheochromocytoma/Paraganglioma",
+          "recruitment_status": "Withdrawn",
+          "phase": "Phase 1/Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Treatment. Masking: None (Open Label).",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Paraganglioma",
+            "Pheochromocytoma",
+            "Neuroendocrine Tumors"
+          ],
+          "interventions": [
+            "Drug: 177Lu-DOTA-tyr3-OCTREOTATE",
+            "Procedure: Peptide Receptor Radiotherapy (PRRT)"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT03923257",
+      "citations": [],
+      "raw_data": {
+        "iuphar_177Lu-DOTA-tyr3-OCTREOTATE": {
+          "found": false
+        },
+        "iuphar_Peptide Receptor Radiotherapy (PRRT)": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT03923257",
+      "citations": [],
+      "raw_data": {
+        "pdbe_177Lu-DOTA-tyr3-OCTREOTATE_count": 0,
+        "pdbe_Peptide Receptor Radiotherapy (PRRT)_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT03923257",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4399068355",
+          "identifier": "PMID:38821098",
+          "title": "Recent advances and impending challenges for the radiopharmaceutical sciences in oncology",
+          "snippet": "Title: Recent advances and impending challenges for the radiopharmaceutical sciences in oncology\nYear: 2024\nCitations: 54",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.118383"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3139949848",
+          "identifier": "PMID:33854479",
+          "title": "Somatostatin Receptors and Analogs in Pheochromocytoma and Paraganglioma: Old Players in a New Precision Medicine World",
+          "snippet": "Title: Somatostatin Receptors and Analogs in Pheochromocytoma and Paraganglioma: Old Players in a New Precision Medicine World\nYear: 2021\nCitations: 39\nAbstract: Ga-DOTATATE as a radiopharmaceutical for somatostatin receptor imaging, the use of its radiotherapeutic counterpart still needs approval beyond gastroenteropancreatic neuroendocrine tumors. Thus, patients with pheochromocytoma and paraganglioma, espe",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.118521"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3165207816",
+          "identifier": "PMID:34039901",
+          "title": "Pheochromocytomas and paragangliomas",
+          "snippet": "Title: Pheochromocytomas and paragangliomas\nYear: 2021\nCitations: 10\nAbstract: PURPOSE OF REVIEW: Great progress has been made in understanding the genetic and molecular basis of pheochromocytoma and paragangliomas (PPGLs). This review highlights the new standards in the diagnosis and management of pediatric PPGLs. RECENT FINDI",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:18:34.118652"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 3
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT03923257",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT03923257",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.31525/ct1-nct03923257",
+          "identifier": "DOI:10.31525/ct1-nct03923257",
+          "title": "Dosimetry Guided PRRT With 177Lu-DOTATATE in Children",
+          "snippet": "Title: Dosimetry Guided PRRT With 177Lu-DOTATATE in Children\nJournal: Case Medical Research\nYear: 2019",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:35.028157"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/j.nucmedbio.2013.10.006",
+          "identifier": "DOI:10.1016/j.nucmedbio.2013.10.006",
+          "title": "Comparative biodistributions and dosimetry of [177Lu]DOTA-anti-bcl-2-PNA-Tyr3-octreotate and [177Lu]DOTA-Tyr3-octreotate in a mouse model of B-cell lymphoma/leukemia",
+          "snippet": "Title: Comparative biodistributions and dosimetry of [177Lu]DOTA-anti-bcl-2-PNA-Tyr3-octreotate and [177Lu]DOTA-Tyr3-octreotate in a mouse model of B-cell lymphoma/leukemia\nJournal: Nuclear Medicine and Biology\nYear: 2014",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:36.419940"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-960403/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-960403/v1",
+          "title": "177Lu-DOTA-0-Tyr3-Octreotate Infusion Modeling for Real-Time Detection and Characterization of Extravasation During PRRT",
+          "snippet": "Title: 177Lu-DOTA-0-Tyr3-Octreotate Infusion Modeling for Real-Time Detection and Characterization of Extravasation During PRRT\nYear: 2021\nAbstract: Abstract\n        Purpose.\n\nGiven the recent and rapid development of peptide receptor radionuclide therapy (PRRT), increasing emphasis should be placed on the early identification and quantification of therapeutic radiopharmaceutical (thRPM) extravas",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:36.420020"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.31525/ct1-nct03923257",
+          "identifier": "DOI:10.31525/ct1-nct03923257",
+          "title": "Dosimetry Guided PRRT With 177Lu-DOTATATE in Children",
+          "snippet": "Title: Dosimetry Guided PRRT With 177Lu-DOTATATE in Children\nJournal: Case Medical Research\nYear: 2019",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:18:36.420047"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 1,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT03923257",
+      "citations": [
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.07.30.25330817",
+          "identifier": "DOI:10.1101/2025.07.30.25330817",
+          "title": "Peptide receptor radionuclide therapy targeting the cholecystokinin-2 receptor: Preclinical and first clinical experience in small cell lung cancer",
+          "snippet": "PPR ({'publisher': 'medRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:34.639728"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4009283/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4009283/v1",
+          "title": "Repeat Peptide Receptor Radionuclide Therapy in Neuroendocrine Tumors: A NET Center of Excellence Experience",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:34.639909"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-2624140/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-2624140/v1",
+          "title": "Impact of administered amount of peptide on tumor dosimetry at the first cycle of peptide receptor radionuclide therapy (PRRT) in relation to total tumor somatostatin receptor expression",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2023})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:34.640001"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-3189834/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-3189834/v1",
+          "title": "Mid-PRRT Response Predicts Overall Outcome in Patients with Neuroendocrine Neoplasms",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2023})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:34.640019"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-1083588/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-1083588/v1",
+          "title": "In Patients With Well-Differentiated Neuroendocrine Tumours, There Is No Apparent Benefit of Somatostatin Analogues After Disease Control By Peptide Receptor Radionuclide Therapy",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:34.640074"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-2829731/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-2829731/v1",
+          "title": "Accuracy and uncertainty analysis of reduced time point imaging effect on time-integrated activity for 177Lu-DOTATATE PRRT in clinical patients and realistic simulations",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2023})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:34.640109"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202105.0445.v1",
+          "identifier": "DOI:10.20944/preprints202105.0445.v1",
+          "title": "Renal and Red Marrow Dosimetry in Peptide Receptor Radionuclide Therapy: 20 Years of History and Ahead",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2021})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:34.640136"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202011.0445.v1",
+          "identifier": "DOI:10.20944/preprints202011.0445.v1",
+          "title": "The Challenge of Evaluating Response to Peptide Receptor Radionuclide Therapy in Gastroenteropancreatic Neuroendocrine Tumors: The Present and the Future.",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:34.640173"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.2.21978/v1",
+          "identifier": "DOI:10.21203/rs.2.21978/v1",
+          "title": "Can SSTR2 expression in previously resected SI-NETs predict overall survival after PRRT treatment of remaining lesions?",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2020})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:34.827212"
+        }
+      ],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 27,
+        "biorxiv_prefilter_dropped": 18
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT03923257",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT03923257_total": 0,
+        "sec_edgar_177Lu-DOTA-tyr3-OCTREOTATE_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT03923257",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_177Lu-DOTA-tyr3-OCTREOTATE_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT03923257",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=177Lu-DOTA-tyr3-OCTREOTATE",
+          "identifier": "NIH:5R01CA266665-05",
+          "title": "Engineered anti-PSCA antibodies for immunoPET and targeted therapy of pancreatic cancer (WU, ANNA M)",
+          "snippet": "Project: 5R01CA266665-05\nPI: WU, ANNA M\nOrganization: \nFiscal year: 2026\nAward: $556,363\nStart: 2022-01-01\nEnd: 2026-12-31\n(937 total NIH-funded projects matching '177Lu-DOTA-tyr3-OCTREOTATE')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:33.936034"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=177Lu-DOTA-tyr3-OCTREOTATE",
+          "identifier": "NIH:5R01CA296305-02",
+          "title": "Deep Learning-Based Treatment Planning for PSMA RPT (EL FAKHRI, GEORGES)",
+          "snippet": "Project: 5R01CA296305-02\nPI: EL FAKHRI, GEORGES\nOrganization: \nFiscal year: 2026\nAward: $591,047\nStart: 2025-01-01\nEnd: 2029-12-31\n(937 total NIH-funded projects matching '177Lu-DOTA-tyr3-OCTREOTATE')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:33.936066"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=177Lu-DOTA-tyr3-OCTREOTATE",
+          "identifier": "NIH:5R01CA290859-03",
+          "title": "Lysosome Trapped FAP-Targeted Theranostics for Pancreatic Cancer (GARRISON, JERED C)",
+          "snippet": "Project: 5R01CA290859-03\nPI: GARRISON, JERED C\nOrganization: \nFiscal year: 2026\nAward: $626,716\nStart: 2024-03-18\nEnd: 2029-02-28\n(937 total NIH-funded projects matching '177Lu-DOTA-tyr3-OCTREOTATE')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:18:33.936077"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_177Lu-DOTA-tyr3-OCTREOTATE_count": 937,
+        "nih_reporter_177Lu-DOTA-tyr3-OCTREOTATE_funded": true
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 9,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov"
+      ]
+    },
+    "literature": {
+      "citations_count": 11,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "pmc"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "chembl": {
+      "citations_count": 4,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "openalex": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 4,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 9,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "biorxiv_medrxiv"
+      ]
+    },
+    "sec_edgar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "nih_reporter"
+      ]
+    }
+  }
+}

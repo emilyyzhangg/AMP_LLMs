@@ -1,0 +1,15 @@
+{
+  "run_id": "bakeoff_qwen3_14b",
+  "nct": "NCT03164486",
+  "legacy_outcome": "Active, not recruiting",
+  "atomic": {
+    "value": "Active, not recruiting",
+    "confidence": 0.9,
+    "rule": "R6",
+    "reasoning": "[ATOMIC R6] Active, not recruiting (conf=0.90)\n  rule: registry status ACTIVE_NOT_RECRUITING, not stale\n  registry: status=ACTIVE_NOT_RECRUITING phase=EARLY_PHASE1 has_results=None completion=2026-12 days_since=-224 stale=False drug_max_phase=None\n  pubs: 14 total (0 ts, 14 gen, 0 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=ACTIVE_NOT_RECRUITING has_results=None phase=EARLY_PHASE1 days_since=-224 stale=False drug_max_phase=None\n    pubs: total=14 trial_specific=0 voting=0 pos=0 fail=0\n    R6 fired: status=ACTIVE_NOT_RECRUITING, stale=False",
+    "model_name": "atomic-gemma3:12b",
+    "skip_verification": true
+  },
+  "source_annotation_path": "/Users/amphoraxe/Developer/amphoraxe/llm.amphoraxe.ca/amp_llm_v3/standalone modules/agent_annotate/results/annotations/f6535916f390/NCT03164486.json",
+  "elapsed_sec": 0.0
+}

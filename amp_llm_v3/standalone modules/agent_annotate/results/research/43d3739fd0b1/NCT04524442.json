@@ -1,0 +1,2948 @@
+{
+  "nct_id": "NCT04524442",
+  "completed_at": "2026-05-06 10:08:04 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "A Multicenter, Open-label Post Authorization Safety Study to Evaluate the Effect of LysaKare\u00ae Infusion on Serum Potassium Levels in GEP-NET Patients Eligible for Lutathera\u00ae Treatment",
+          "snippet": "Title: A Multicenter, Open-label Post Authorization Safety Study to Evaluate the Effect of LysaKare\u00ae Infusion on Serum Potassium Levels in GEP-NET Patients Eligible for Lutathera\u00ae Treatment",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.725230"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Brief Summary",
+          "snippet": "The purpose of the study was to evaluate the effect of arginine/lysine solution administration on serum potassium levels. A systematic assessment of serum potassium levels was performed during infusion and up to 24 hours post start of infusion compared to baseline.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.725243"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Detailed Description",
+          "snippet": "The study schedule for each patient consisted of a screening period followed by an infusion day with an optional overnight in-clinic stay, and a follow up call 48h post infusion.\n\nScreening Phase:\n\nAt screening, patient eligibility was determined according to inclusion and exclusion criteria, with evaluation of patient's vital signs, ECG and laboratory parameters. The duration of screening could be as short as one day but could not exceed 7 days. Patients who showed potassium level \\> 6.0 mmol/L",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.725250"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.725256"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Gastroenteropancreatic Neuroendocrine Tumors | Keywords: GEP-NET, Neuroendocrine tumors, NETs, carcinoid tumors, LysaKare, arginine/lysine, amino acid, Peptide Receptor Radionuclide Therapy, PRRT, Lutathera, Lutetium Lu 177 oxodotreotide, Lutetium Lu 177 dotatate",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.725264"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Intervention: arginine/lysine",
+          "snippet": "DRUG: arginine/lysine - 1000 milliliters (mL) administered at a constant rate of 250 mL per hour",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.725271"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Arm Group: GEP-NET",
+          "snippet": "Arm: GEP-NET - One dose of arginine/lysine solution administered intravenously over a 4-hour period",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.725279"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Phase",
+          "snippet": "Phase: PHASE4",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.725285"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Results Posted",
+          "snippet": "Results Posted: Yes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.725292"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Primary Outcome: Mean Change From Baseline in Serum Potassium Levels Over 24 Hours",
+          "snippet": "Primary Outcome: Mean Change From Baseline in Serum Potassium Levels Over 24 Hours \u2014 Serum potassium levels at each collection time point will be measured at local laboratories of study sites using validated methods. The potassium concentration results will be summarized descriptively (timeframe: Day 0/Infusion Day (Hour 0, Hour 2, Hour 4, Hour 6, Hour 8, Hour 12, Hour 24))",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.725302"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT04524442",
+            "orgStudyIdInfo": {
+              "id": "CAAA001A12401"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "2019-004073-76",
+                "type": "EUDRACT_NUMBER"
+              }
+            ],
+            "organization": {
+              "fullName": "Advanced Accelerator Applications",
+              "class": "INDUSTRY"
+            },
+            "briefTitle": "Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult Gastroenteropancreatic Neuroendocrine Tumor (GEP-NET) Patients",
+            "officialTitle": "A Multicenter, Open-label Post Authorization Safety Study to Evaluate the Effect of LysaKare\u00ae Infusion on Serum Potassium Levels in GEP-NET Patients Eligible for Lutathera\u00ae Treatment"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2025-01",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2021-01-25",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2023-11-18",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2023-11-18",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2020-08-20",
+            "studyFirstSubmitQcDate": "2020-08-20",
+            "studyFirstPostDateStruct": {
+              "date": "2020-08-24",
+              "type": "ACTUAL"
+            },
+            "resultsFirstSubmitDate": "2024-11-09",
+            "resultsFirstSubmitQcDate": "2025-01-23",
+            "resultsFirstPostDateStruct": {
+              "date": "2025-01-24",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2025-01-23",
+            "lastUpdatePostDateStruct": {
+              "date": "2025-01-24",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Advanced Accelerator Applications",
+              "class": "INDUSTRY"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": false,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "The purpose of the study was to evaluate the effect of arginine/lysine solution administration on serum potassium levels. A systematic assessment of serum potassium levels was performed during infusion and up to 24 hours post start of infusion compared to baseline.",
+            "detailedDescription": "The study schedule for each patient consisted of a screening period followed by an infusion day with an optional overnight in-clinic stay, and a follow up call 48h post infusion.\n\nScreening Phase:\n\nAt screening, patient eligibility was determined according to inclusion and exclusion criteria, with evaluation of patient's vital signs, ECG and laboratory parameters. The duration of screening could be as short as one day but could not exceed 7 days. Patients who showed potassium level \\> 6.0 mmol/L (\\> 5.5 mmol/L for Poland only) at screening could have their potassium level corrected and could be re-screened afterwards.\n\nTreatment Phase:\n\nEligible patients were admitted to the in-clinic unit and dosed with arginine/lysine solution for infusion of 1,000 mL, which was administered intravenously over a period of 4 hours. Before the infusion (at 0 h time point), a set of baseline tests were performed. During and after the infusion, patient condition was monitored for evaluation of any adverse events. Only patients with a potassium level of \u2264 6 mmol/L at screening (\\> 5.5 mmol/L for Poland only) were allowed to be dosed. Potassium testing on the infusion day was performed at 0h (before the infusion), and at 2h, 4h, 6h, 8h, 12h, and 24h after the start of infusion. Vital signs and ECGs were taken as specified in the assessment schedule. All patients were monitored closely for signs and symptoms of hyperkalemia, e.g. dyspnoea, weakness, numbness, chest pain and cardiac manifestations (conduction abnormalities and cardiac arrhythmias). Other common adverse reactions during arginine/lysine solution administration are nausea and vomiting. Before the start of arginine/lysine solution infusion, an intravenous bolus of an anti-emetic was given. The choice of anti-emetic drugs was at the discretion of the physician.\n\nFollow-up Phase:\n\nAll patients were called for a safety follow-up in 48 hours after dosing. Patients were not scheduled to receive repeat dosing with arginine/lysine solution as concomitant medication with Lutathera\u00ae within 7 days of the arginine/lysine solution infusion in the study."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Gastroenteropancreatic Neuroendocrine Tumors"
+            ],
+            "keywords": [
+              "GEP-NET",
+              "Neuroendocrine tumors",
+              "NETs",
+              "carcinoid tumors",
+              "LysaKare",
+              "arginine/lysine",
+              "amino acid",
+              "Peptide Receptor Radionuclide Therapy",
+              "PRRT",
+              "Lutathera",
+              "Lutetium Lu 177 oxodotreotide",
+              "Lutetium Lu 177 dotatate"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE4"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "OTHER",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 42,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "GEP-NET",
+                "type": "EXPERIMENTAL",
+                "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period",
+                "interventionNames": [
+                  "Drug: arginine/lysine"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "arginine/lysine",
+                "description": "1000 milliliters (mL) administered at a constant rate of 250 mL per hour",
+                "armGroupLabels": [
+                  "GEP-NET"
+                ],
+                "otherNames": [
+                  "LysaKare"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Mean Change From Baseline in Serum Potassium Levels Over 24 Hours",
+                "description": "Serum potassium levels at each collection time point will be measured at local laboratories of study sites using validated methods. The potassium concentration results will be summarized descriptively and will include mean change, maximum change, time to the maximum change, and the overall dynamics of the potassium concentration curve during and after the arginine/lysine infusion.",
+                "timeFrame": "Day 0/Infusion Day (Hour 0, Hour 2, Hour 4, Hour 6, Hour 8, Hour 12, Hour 24)"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Percentage of Participants With Treatment Adverse Events (AEs) & Serious Adverse Events (SAEs)",
+                "description": "Safety measured by the percentage of participants with treatment emergent adverse events (starting from the signing of the ICF until the end of the follow-up call (48 hours after infusion).",
+                "timeFrame": "Day 0/Infusion Day up to 48 hours post infusion"
+              },
+              {
+                "measure": "Number of Participants With Notable Changes in Vital Signs",
+                "description": "Safety measured by the notable post-baseline changes in vital signs: (systolic blood pressure, diastolic blood pressure, pulse rate \\& weight) compared to baseline.",
+                "timeFrame": "Day 0/Infusion Day (0, 2, 4, 6, 8, 12 and 24 hours)"
+              },
+              {
+                "measure": "Number of Participants With Notable Changes in Electrocardiogram (ECG)",
+                "description": "Safety measured by the notable post-baseline changes in ECG values compared to baseline PR, QRS, QT, QTcF, and RR intervals were obtained from 12-lead ECGs for each subject during the study",
+                "timeFrame": "Day 0/Infusion Day (0, 4, 8 and 24 hours)"
+              },
+              {
+                "measure": "Number of Participants With Notable Changes in Hematology Parameters",
+                "description": "Safety measured by the notable post-baseline changes in Hematology parameters compared to baseline as represented by Shift tables based on common toxicity criteria (CTC) grades. Each participant was counted only for the worst grade observed post-baseline. Notable change is the shift to higher grades from baseline.",
+                "timeFrame": "Day 0/Infusion Day (0 and 24 hours)"
+              },
+              {
+                "measure": "Number of Participants With Notable Changes in Chemistry Parameters",
+                "description": "Safety measured by the notable post-baseline changes in Chemistry parameters compared to baseline. Each participant was counted only for the worst grade observed post-baseline. Notable change is the shift to higher grades from baseline.\n\nKey shifts were in the following parameters: creatinine, lactate dehydrogenase and creatinine clearance.",
+                "timeFrame": "Day 0/Infusion Day (0 and 24 hours)"
+              },
+              {
+                "measure": "Number of Participants With Notable Changes in Electrolyte Parameters",
+                "description": "Safety measured by the notable post-baseline changes in Electrolyte parameters compared to baseline. Each participant was counted only for the worst grade observed post-baseline. Notable change is the shift to higher grades from baseline.",
+                "timeFrame": "Day 0/Infusion Day (0, 2, 4, 6, 8, 12 and 24 hours)"
+              },
+              {
+                "measure": "Mean Change From Baseline in Blood Gas Parameter, pH, Over 24 Hours",
+                "description": "Safety measured by the mean changes in blood gas compared to baseline. Blood gas parameter: pH.",
+                "timeFrame": "Day 0/Infusion Day (0, 2, 4, 6, 8, 12 and 24 hours)"
+              },
+              {
+                "measure": "Mean Change From Baseline in Blood Gas Parameter, Lactic Acid, Over 24 Hours",
+                "description": "Safety measured by the mean changes in blood gas compared to baseline. Blood gas parameter: Lactic Acid",
+                "timeFrame": "Day 0/Infusion Day (0, 2, 4, 6, 8, 12 and 24 hours)"
+              },
+              {
+                "measure": "Mean Change From Baseline in Blood Gas Parameter, Partial Pressure Carbon Dioxide, Over 24 Hours",
+                "description": "Safety measured by the mean changes in blood gas compared to baseline. Blood gas parameter: Partial Pressure Carbon Dioxide.",
+                "timeFrame": "Day 0/Infusion Day (0, 2, 4, 6, 8, 12 and 24 hours)"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n* Patients with somatostatin receptor positive gastroenteropancreatic neuroendocrine tumours (GEP-NETs), who are eligible for the treatment with Lutathera as per Lutathera label indication.\n* Patients who have provided a signed informed consent form to participate in the study, obtained prior to the start of any protocol related procedures.\n\nExclusion Criteria:\n\n* Pre-existing hyperkalemia (\\>6.0 mmol/L at screening) if not adequately corrected before starting the LysaKare (arginine/lysine) infusion. For Poland only, pre-existing hyperkalemia (\\> 5.5 mmol/L at screening) if not adequately corrected before starting the LysaKare (arginine/lysine) infusion.\n* Instances when Lutathera is not recommended per the Lutathera Summary of Product Characteristics (SmPC).\n* Pregnancy or lactation, positive pregnancy test at screening or pre-dose based on the contraindication for Lutathera.\n* Any significant medical or social condition which may interfere with the subject's ability to comply with the study visit schedule or the study assessments.\n* Patients who have received any investigational agent within the last 30 days.\n* Patients that have received a dose of Lutathera prior to the screening visit or are scheduled for Peptide Receptor Repeat (PRRT) treatment within 7 days of the study infusion of arginine/lysine solution.\n* Other protocol-defined exclusion criteria may apply.\n\nExclusion Criteria (Poland Only):\n\n\\- Pre-existing hyperkalemia (\\> 5.5 mmol/L at screening) if not adequately corrected before starting the arginine/lysine solution infusion.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Novartis Pharmaceuticals",
+                "affiliation": "Novartis Pharmaceuticals",
+                "role": "STUDY_DIRECTOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "Istituto Europeo di Oncologia",
+                "city": "Milan",
+                "state": "MI",
+                "zip": "20141",
+                "country": "Italy",
+                "geoPoint": {
+                  "lat": 45.46427,
+                  "lon": 9.18951
+                }
+              },
+              {
+                "facility": "Erasmus University Medical Center",
+                "city": "Rotterdam",
+                "state": "Gelderland",
+                "zip": "3015",
+                "country": "Netherlands"
+              },
+              {
+                "facility": "Gammed-Centrum Diagnostyczno-Lecznicze",
+                "city": "Warsaw",
+                "zip": "02-351",
+                "country": "Poland",
+                "geoPoint": {
+                  "lat": 52.22977,
+                  "lon": 21.01178
+                }
+              },
+              {
+                "facility": "University Hospitals Birmingham NHS Foundation Trust",
+                "city": "Birmingham",
+                "zip": "B15 2GW",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 52.48142,
+                  "lon": -1.89983
+                }
+              },
+              {
+                "facility": "University Hospitals Coventry & Warwickshire NHS Trust",
+                "city": "Coventry",
+                "zip": "CV2 2DX",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 52.40656,
+                  "lon": -1.51217
+                }
+              },
+              {
+                "facility": "Royal Surrey Country Hospital",
+                "city": "Guildford",
+                "zip": "GU2 7XX",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 51.23536,
+                  "lon": -0.57427
+                }
+              },
+              {
+                "facility": "Liverpool Royal Hospital",
+                "city": "Liverpool",
+                "zip": "L7 8YA",
+                "country": "United Kingdom",
+                "geoPoint": {
+                  "lat": 53.41058,
+                  "lon": -2.97794
+                }
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "YES",
+            "description": "Novartis is committed to sharing with qualified external researchers, access to patient-level data and supporting clinical documents from eligible studies. These requests are reviewed and approved by an independent review panel on the basis of scientific merit. All data provided is anonymized to respect the privacy of patients who have participated in the trial in line with applicable laws and regulations.\n\nThis trial data availability is according to the criteria and process described on www.clinicalstudydatarequest.com",
+            "url": "http://www.clinicalstudydatarequest.com"
+          }
+        },
+        "results_section": {
+          "participantFlowModule": {
+            "preAssignmentDetails": "The study schedule for each participant consisted of a screening period followed by an infusion day with an optional overnight in-clinic stay, and a follow-up call.",
+            "recruitmentDetails": "A total of 42 participants were enrolled in 7 centers in 4 countries.",
+            "groups": [
+              {
+                "id": "FG000",
+                "title": "GEP-NET",
+                "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+              }
+            ],
+            "periods": [
+              {
+                "title": "Overall Study",
+                "milestones": [
+                  {
+                    "type": "STARTED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "42"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Treated",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "41"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Not Treated",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Post-treatment Follow-up Phase (48 Hrs Post-infusion)",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "40"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "COMPLETED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "41"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT COMPLETED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "1"
+                      }
+                    ]
+                  }
+                ],
+                "dropWithdraws": [
+                  {
+                    "type": "Subject Decision",
+                    "reasons": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "1"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "baselineCharacteristicsModule": {
+            "populationDescription": "Safety Set: The Safety Set (SAF) comprises all subjects who received any administration of the LysaKare infusion in the study.",
+            "groups": [
+              {
+                "id": "BG000",
+                "title": "GEP-NET",
+                "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+              }
+            ],
+            "denoms": [
+              {
+                "units": "Participants",
+                "counts": [
+                  {
+                    "groupId": "BG000",
+                    "value": "41"
+                  }
+                ]
+              }
+            ],
+            "measures": [
+              {
+                "title": "Age, Continuous",
+                "paramType": "MEAN",
+                "dispersionType": "STANDARD_DEVIATION",
+                "unitOfMeasure": "Years",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "57.7",
+                            "spread": "9.46"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Sex: Female, Male",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "Female",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "19"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Male",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "22"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Race/Ethnicity, Customized",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "White",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "38"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Black or African American",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "3"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "outcomeMeasuresModule": {
+            "outcomeMeasures": [
+              {
+                "type": "PRIMARY",
+                "title": "Mean Change From Baseline in Serum Potassium Levels Over 24 Hours",
+                "description": "Serum potassium levels at each collection time point will be measured at local laboratories of study sites using validated methods. The potassium concentration results will be summarized descriptively and will include mean change, maximum change, time to the maximum change, and the overall dynamics of the potassium concentration curve during and after the arginine/lysine infusion.",
+                "populationDescription": "Evaluable Set: The Evaluable Set comprises all subjects who received any volume of the LysaKare infusion and provided both pre-dose and at least one post-dose (between 4 and 8 hours) potassium levels measured from serum.",
+                "reportingStatus": "POSTED",
+                "paramType": "MEAN",
+                "dispersionType": "Standard Deviation",
+                "unitOfMeasure": "mmol/L",
+                "timeFrame": "Day 0/Infusion Day (Hour 0, Hour 2, Hour 4, Hour 6, Hour 8, Hour 12, Hour 24)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "GEP-NET",
+                    "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "25"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "title": "Pre-dose (hour 0)",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "25"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "4.3",
+                            "spread": "0.397"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 2",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "23"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0.25",
+                            "spread": "0.452"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 4",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "25"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0.60",
+                            "spread": "0.666"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 6",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "25"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0.49",
+                            "spread": "0.602"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 8",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "25"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0.38",
+                            "spread": "0.487"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 12",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "24"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0.24",
+                            "spread": "0.557"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 24",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "25"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0.07",
+                            "spread": "0.396"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Percentage of Participants With Treatment Adverse Events (AEs) & Serious Adverse Events (SAEs)",
+                "description": "Safety measured by the percentage of participants with treatment emergent adverse events (starting from the signing of the ICF until the end of the follow-up call (48 hours after infusion).",
+                "populationDescription": "Safety Set: The Safety Set (SAF) comprises all subjects who received any administration of the LysaKare infusion in the study.",
+                "reportingStatus": "POSTED",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "timeFrame": "Day 0/Infusion Day up to 48 hours post infusion",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "GEP-NET",
+                    "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "41"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "title": "Adverse Event (AEs)",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "11"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Treatment-related AEs",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "6"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Serious Adverse Events (SAEs)",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Fatal SAEs",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "AEs leading to discontinuation",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "AEs leading to Interrruption",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "AEs requiring additional therapy",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "5"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Treatment related AEs req. additional therapy",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "3"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Number of Participants With Notable Changes in Vital Signs",
+                "description": "Safety measured by the notable post-baseline changes in vital signs: (systolic blood pressure, diastolic blood pressure, pulse rate \\& weight) compared to baseline.",
+                "populationDescription": "The Safety Set (SAF) comprises all subjects who received any administration of the LysaKare infusion in the study.",
+                "reportingStatus": "POSTED",
+                "paramType": "NUMBER",
+                "unitOfMeasure": "Participants",
+                "timeFrame": "Day 0/Infusion Day (0, 2, 4, 6, 8, 12 and 24 hours)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "GEP-NET",
+                    "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "41"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "title": "Systolic blood pressure (mmHg): \u2265180 with increase from baseline of \u226520",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Systolic blood pressure (mmHg): \u2264 90 with decrease from baseline of \u226520",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Diastolic blood pressure (mmHg): \u2265105 with increase from baseline of \u226515",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Diastolic blood pressure (mmHg): \u2264 50 with decrease from baseline of \u226515",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Pulse rate (bpm): \u2265100 with increase from baseline of >25%",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Pulse rate (bpm): \u2264 50 with decrease from baseline of > 25%",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Weight (kg): increase \u226510% from Baseline",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Weight (kg): decrease > 10% from Baseline",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Number of Participants With Notable Changes in Electrocardiogram (ECG)",
+                "description": "Safety measured by the notable post-baseline changes in ECG values compared to baseline PR, QRS, QT, QTcF, and RR intervals were obtained from 12-lead ECGs for each subject during the study",
+                "populationDescription": "Safety Set: The Safety Set (SAF) comprises all subjects who received any administration of the LysaKare infusion in the study.",
+                "reportingStatus": "POSTED",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "calculatePct": false,
+                "timeFrame": "Day 0/Infusion Day (0, 4, 8 and 24 hours)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "GEP-NET",
+                    "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "41"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "title": "QTcF (ms): Increase >30 to \u2264 60 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "7"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QTcF (ms): Increase >60 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QTcF (ms): New >450 to \u2264 480 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "39"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "7"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QTcF (ms): New >480 to \u2264 500 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QTcF (ms); New >500 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QT (ms): Increase >30 to \u2264 60 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "9"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QT (ms): Increase >60 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "2"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QT (ms): New >450 to \u2264 480 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "39"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "6"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QT (ms): New >480 to \u2264 500 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "1"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QT (ms): New >500 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "PR (ms): Increase >25% and PR >200 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "29"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "1"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "PR (ms): New PR >200 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "29"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "6"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QRS (ms): Increase >25% and QRS >120 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "2"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "QRS (ms): New QRS >120 ms",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "2"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "HR (bpm): Increase >25% and HR >100 bpm",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "HR (bpm): Decrease >25% and HR <50 bpm",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "41"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Number of Participants With Notable Changes in Hematology Parameters",
+                "description": "Safety measured by the notable post-baseline changes in Hematology parameters compared to baseline as represented by Shift tables based on common toxicity criteria (CTC) grades. Each participant was counted only for the worst grade observed post-baseline. Notable change is the shift to higher grades from baseline.",
+                "populationDescription": "Safety Set: The Safety Set (SAF) comprises all subjects who received any administration of the LysaKare infusion in the study.",
+                "reportingStatus": "POSTED",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "timeFrame": "Day 0/Infusion Day (0 and 24 hours)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "GEP-NET",
+                    "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "41"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Number of Participants With Notable Changes in Chemistry Parameters",
+                "description": "Safety measured by the notable post-baseline changes in Chemistry parameters compared to baseline. Each participant was counted only for the worst grade observed post-baseline. Notable change is the shift to higher grades from baseline.\n\nKey shifts were in the following parameters: creatinine, lactate dehydrogenase and creatinine clearance.",
+                "populationDescription": "Safety Set: The Safety Set (SAF) comprises all subjects who received any administration of the LysaKare infusion in the study.",
+                "reportingStatus": "POSTED",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "timeFrame": "Day 0/Infusion Day (0 and 24 hours)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "GEP-NET",
+                    "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "41"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "title": "Creatinine (increase)",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "4"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Lactate dehydrogenase (increase)",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "3"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Creatinine clearance (decrease)",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "4"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Number of Participants With Notable Changes in Electrolyte Parameters",
+                "description": "Safety measured by the notable post-baseline changes in Electrolyte parameters compared to baseline. Each participant was counted only for the worst grade observed post-baseline. Notable change is the shift to higher grades from baseline.",
+                "populationDescription": "Safety Set: The Safety Set (SAF) comprises all subjects who received any administration of the LysaKare infusion in the study.",
+                "reportingStatus": "POSTED",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "timeFrame": "Day 0/Infusion Day (0, 2, 4, 6, 8, 12 and 24 hours)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "GEP-NET",
+                    "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "41"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "title": "For Potassium (increase)",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "7"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "For sodium (decrease)",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "12"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Mean Change From Baseline in Blood Gas Parameter, pH, Over 24 Hours",
+                "description": "Safety measured by the mean changes in blood gas compared to baseline. Blood gas parameter: pH.",
+                "populationDescription": "Safety Set: The Safety Set (SAF) comprises all subjects who received any administration of the LysaKare infusion in the study.",
+                "reportingStatus": "POSTED",
+                "paramType": "MEAN",
+                "dispersionType": "Standard Deviation",
+                "unitOfMeasure": "unitless",
+                "timeFrame": "Day 0/Infusion Day (0, 2, 4, 6, 8, 12 and 24 hours)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "GEP-NET",
+                    "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "41"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "title": "Day 0/Infusion Day (Pre-dose) (hour 0)",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "36"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "7.35",
+                            "spread": "0.046"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 2",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "36"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.03",
+                            "spread": "0.046"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 4",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "36"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.06",
+                            "spread": "0.055"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 6",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "36"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.05",
+                            "spread": "0.051"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 8",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "35"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.05",
+                            "spread": "0.056"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 12",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "33"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.03",
+                            "spread": "0.054"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 24",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "35"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.04",
+                            "spread": "0.051"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Mean Change From Baseline in Blood Gas Parameter, Lactic Acid, Over 24 Hours",
+                "description": "Safety measured by the mean changes in blood gas compared to baseline. Blood gas parameter: Lactic Acid",
+                "populationDescription": "Safety Set: The Safety Set (SAF) comprises all subjects who received any administration of the LysaKare infusion in the study.",
+                "reportingStatus": "POSTED",
+                "paramType": "MEAN",
+                "dispersionType": "Standard Deviation",
+                "unitOfMeasure": "mmol/L",
+                "timeFrame": "Day 0/Infusion Day (0, 2, 4, 6, 8, 12 and 24 hours)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "GEP-NET",
+                    "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "41"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "title": "Day 0/Infusion Day (Pre-dose) (hour 0)",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "35"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "1.40",
+                            "spread": "0.604"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 2",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "35"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.07",
+                            "spread": "0.671"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 4",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "35"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.23",
+                            "spread": "0.523"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 6",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "35"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.26",
+                            "spread": "0.546"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 8",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "33"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.19",
+                            "spread": "0.465"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 12",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "33"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.21",
+                            "spread": "0.657"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 24",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "34"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-0.16",
+                            "spread": "0.650"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Mean Change From Baseline in Blood Gas Parameter, Partial Pressure Carbon Dioxide, Over 24 Hours",
+                "description": "Safety measured by the mean changes in blood gas compared to baseline. Blood gas parameter: Partial Pressure Carbon Dioxide.",
+                "populationDescription": "Safety Set: The Safety Set (SAF) comprises all subjects who received any administration of the LysaKare infusion in the study.",
+                "reportingStatus": "POSTED",
+                "paramType": "MEAN",
+                "dispersionType": "Standard Deviation",
+                "unitOfMeasure": "mmHg",
+                "timeFrame": "Day 0/Infusion Day (0, 2, 4, 6, 8, 12 and 24 hours)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "GEP-NET",
+                    "description": "One dose of arginine/lysine solution administered intravenously over a 4-hour period"
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "41"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "title": "Day 0/Infusion Day (Pre-dose) (hour 0)",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "36"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "50.53",
+                            "spread": "8.712"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 2",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "36"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-1.08",
+                            "spread": "6.670"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 4",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "36"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-2.44",
+                            "spread": "8.717"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 6",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "36"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-4.90",
+                            "spread": "8.507"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 8",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "35"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-4.87",
+                            "spread": "8.399"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 12",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "33"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-5.71",
+                            "spread": "8.002"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Change from Baseline (BL) to Hour 24",
+                    "denoms": [
+                      {
+                        "units": "Participants",
+                        "counts": [
+                          {
+                            "groupId": "OG000",
+                            "value": "35"
+                          }
+                        ]
+                      }
+                    ],
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "-2.54",
+                            "spread": "8.242"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "adverseEventsModule": {
+            "frequencyThreshold": "2",
+            "timeFrame": "Adverse Events (AEs) were collected from the administration of the study treatment up to 48 hours in addition to the infusion time, an average of 52 hours total.",
+            "description": "Any sign or symptom that occurs during the conduct of the trial and safety follow-up.",
+            "eventGroups": [
+              {
+                "id": "EG000",
+                "title": "All Participants",
+                "description": "All participants enrolled in the study who received one dose of arginine/lysine solution administered intravenously over a 4-hour period",
+                "deathsNumAffected": 0,
+                "deathsNumAtRisk": 41,
+                "seriousNumAffected": 0,
+                "seriousNumAtRisk": 41,
+                "otherNumAffected": 11,
+                "otherNumAtRisk": 41
+              }
+            ],
+            "otherEvents": [
+              {
+                "term": "Abdominal pain",
+                "organSystem": "Gastrointestinal disorders",
+                "sourceVocabulary": "MedDRA (25.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numAffected": 1,
+                    "numAtRisk": 41
+                  }
+                ]
+              },
+              {
+                "term": "Nausea",
+                "organSystem": "Gastrointestinal disorders",
+                "sourceVocabulary": "MedDRA (25.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numAffected": 2,
+                    "numAtRisk": 41
+                  }
+                ]
+              },
+              {
+                "term": "Proctalgia",
+                "organSystem": "Gastrointestinal disorders",
+                "sourceVocabulary": "MedDRA (25.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numAffected": 1,
+                    "numAtRisk": 41
+                  }
+                ]
+              },
+              {
+                "term": "Vomiting",
+                "organSystem": "Gastrointestinal disorders",
+                "sourceVocabulary": "MedDRA (25.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numAffected": 1,
+                    "numAtRisk": 41
+                  }
+                ]
+              },
+              {
+                "term": "Fatigue",
+                "organSystem": "General disorders",
+                "sourceVocabulary": "MedDRA (25.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numAffected": 1,
+                    "numAtRisk": 41
+                  }
+                ]
+              },
+              {
+                "term": "Contusion",
+                "organSystem": "Injury, poisoning and procedural complications",
+                "sourceVocabulary": "MedDRA (25.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numAffected": 1,
+                    "numAtRisk": 41
+                  }
+                ]
+              },
+              {
+                "term": "Hyperkalaemia",
+                "organSystem": "Metabolism and nutrition disorders",
+                "sourceVocabulary": "MedDRA (25.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numAffected": 5,
+                    "numAtRisk": 41
+                  }
+                ]
+              },
+              {
+                "term": "Dizziness",
+                "organSystem": "Nervous system disorders",
+                "sourceVocabulary": "MedDRA (25.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numAffected": 1,
+                    "numAtRisk": 41
+                  }
+                ]
+              },
+              {
+                "term": "Headache",
+                "organSystem": "Nervous system disorders",
+                "sourceVocabulary": "MedDRA (25.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numAffected": 1,
+                    "numAtRisk": 41
+                  }
+                ]
+              },
+              {
+                "term": "Respiratory acidosis",
+                "organSystem": "Respiratory, thoracic and mediastinal disorders",
+                "sourceVocabulary": "MedDRA (25.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numAffected": 1,
+                    "numAtRisk": 41
+                  }
+                ]
+              }
+            ]
+          },
+          "moreInfoModule": {
+            "certainAgreement": {
+              "piSponsorEmployee": false,
+              "restrictionType": "OTHER",
+              "restrictiveAgreement": true,
+              "otherDetails": "The terms and conditions of Novartis' agreements with its investigators may vary. However, Novartis does not prohibit any investigator from publishing. Any publications from a single-site are postponed until the publication of pooled data (i.e., data from all sites) in clinical trial or disclosure of trial results in their entirety."
+            },
+            "pointOfContact": {
+              "title": "Clinical Disclosure Office",
+              "organization": "Novartis Pharmaceuticals",
+              "email": "novartis.email@novartis.com",
+              "phone": "862-778-3000"
+            }
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9913146/",
+          "identifier": "PMC:9913146",
+          "title": "An Update of G-Protein-Coupled Receptor Signaling and Its Deregulation in Gastric Carcinogenesis.",
+          "snippet": "Title: An Update of G-Protein-Coupled Receptor Signaling and Its Deregulation in Gastric Carcinogenesis.\nAuthors: Yan H, Zhang JL, Leung KT et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:49.768130"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "9913146"
+        ],
+        "pmc_count": 1,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT04524442",
+      "citations": [],
+      "raw_data": {
+        "uniprot_arginine/lysine": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult ...",
+          "snippet": "Web result for: NCT04524442 Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult Gastroenteropancrea",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:50.625984"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult ...",
+          "snippet": "Web result for: NCT04524442 Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult Gastroenteropancrea",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:50.626044"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://meddatax.com/clinical-trials/NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult ...",
+          "snippet": "Web result for: NCT04524442 Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult Gastroenteropancrea",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:50.626067"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://cdek.pharmacy.purdue.edu/trial/NCT04524442/",
+          "identifier": "NCT04524442",
+          "title": "Trial | NCT04524442",
+          "snippet": "Web result for: NCT04524442 Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult Gastroenteropancrea",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:50.626083"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT04524442?tab=results&amp;a=25",
+          "identifier": "NCT04524442",
+          "title": "Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult ...",
+          "snippet": "Web result for: NCT04524442 Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult Gastroenteropancrea",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:50.626098"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 21975
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT04524442",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_arginine/lysine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3527063/",
+          "identifier": "CHEMBL3527063",
+          "title": "CHEMBL3527063 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3527063\nType: Small molecule\nBioactivity: Compound recovery=3.8 % (Plasma)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:50.637257"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL8085/",
+          "identifier": "CHEMBL8085",
+          "title": "LYSINE - ChEMBL",
+          "snippet": "Molecule: LYSINE\nType: Small molecule\nMax clinical phase: 2.0\nMolecular weight: 146.19\nMechanism: Radioprotective agent\nBioactivity: Log 1/T=1.07 (Unchecked); LogP=-4.23 (No relevant target); K obs=0.016 (Hairpin ribozyme RNA); K obs=0.013 (Hairpin ribozyme RNA)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:51.908568"
+        }
+      ],
+      "raw_data": {
+        "chembl_arginine/lysine_count": 5,
+        "chembl_arginine/lysine_molecules": [
+          {
+            "chembl_id": "CHEMBL3527063",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL8085",
+            "pref_name": "LYSINE",
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": "2.0"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/1LST",
+          "identifier": "PDB:1LST",
+          "title": "THREE-DIMENSIONAL STRUCTURES OF THE PERIPLASMIC LYSINE-, ARGININE-, ORNITHINE-BINDING PROTEIN WITH AND WITHOUT A LIGAND",
+          "snippet": "PDB ID: 1LST\nTitle: THREE-DIMENSIONAL STRUCTURES OF THE PERIPLASMIC LYSINE-, ARGININE-, ORNITHINE-BINDING PROTEIN WITH AND WITHOUT A LIGAND\nMethod: X-RAY DIFFRACTION\nResolution: 1.8 A\nDeposited: 1993-02-25\nReleased: 1994-06-22\nCitation: Three-dimensional structures of the periplasmic lysine/arginine/ornithine-binding protein with and without a ligand.. Oh, B.H., Pandit, J., Kang, C.H. et al.. J.Biol.Chem. (1993)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:49.256542"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/1LAF",
+          "identifier": "PDB:1LAF",
+          "title": "STRUCTURAL BASES FOR MULTIPLE LIGAND SPECIFICITY OF THE PERIPLASMIC LYSINE-, ARGININE-, ORNITHINE-BINDING PROTEIN",
+          "snippet": "PDB ID: 1LAF\nTitle: STRUCTURAL BASES FOR MULTIPLE LIGAND SPECIFICITY OF THE PERIPLASMIC LYSINE-, ARGININE-, ORNITHINE-BINDING PROTEIN\nMethod: X-RAY DIFFRACTION\nResolution: 2.06 A\nDeposited: 1993-10-06\nReleased: 1995-07-10\nCitation: Structural basis for multiple ligand specificity of the periplasmic lysine-, arginine-, ornithine-binding protein.. Oh, B.H., Ames, G.F., Kim, S.H.. J.Biol.Chem. (1994)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:49.296656"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/2LAO",
+          "identifier": "PDB:2LAO",
+          "title": "THREE-DIMENSIONAL STRUCTURES OF THE PERIPLASMIC LYSINE-, ARGININE-, ORNITHINE-BINDING PROTEIN WITH AND WITHOUT A LIGAND",
+          "snippet": "PDB ID: 2LAO\nTitle: THREE-DIMENSIONAL STRUCTURES OF THE PERIPLASMIC LYSINE-, ARGININE-, ORNITHINE-BINDING PROTEIN WITH AND WITHOUT A LIGAND\nMethod: X-RAY DIFFRACTION\nResolution: 1.9 A\nDeposited: 1993-02-25\nReleased: 1994-06-22\nCitation: Three-dimensional structures of the periplasmic lysine/arginine/ornithine-binding protein with and without a ligand.. Oh, B.H., Pandit, J., Kang, C.H. et al.. J.Biol.Chem. (1993)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:49.337863"
+        }
+      ],
+      "raw_data": {
+        "rcsb_arginine/lysine_count": 4785
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A009HQK2",
+          "identifier": "A0A009HQK2",
+          "title": "Lysine-arginine-ornithine-binding periplasmic family protein - EBI Proteins",
+          "snippet": "Protein: Lysine-arginine-ornithine-binding periplasmic family protein\nOrganism: Acinetobacter baumannii (strain 1295743)\nLength: 257 aa\nMass: 28179 Da\nDomains: Solute-binding protein family 3/N-terminal",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:49.760358"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A009IP01",
+          "identifier": "A0A009IP01",
+          "title": "Histidine/lysine/arginine/ornithine transport system permease protein HisM - EBI Proteins",
+          "snippet": "Protein: Histidine/lysine/arginine/ornithine transport system permease protein HisM\nOrganism: Acinetobacter baumannii (strain 1295743)\nLength: 237 aa\nMass: 26959 Da\nDomains: ABC transmembrane type-1",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:49.902821"
+        },
+        {
+          "source_name": "ebi_proteins",
+          "source_url": "https://www.ebi.ac.uk/proteins/api/proteins/A0A009PC13",
+          "identifier": "A0A009PC13",
+          "title": "Histidine/lysine/arginine/ornithine transport system permease protein HisM - EBI Proteins",
+          "snippet": "Protein: Histidine/lysine/arginine/ornithine transport system permease protein HisM\nOrganism: Acinetobacter baumannii 625974\nLength: 237 aa\nMass: 26888 Da\nDomains: ABC transmembrane type-1",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:50.044836"
+        }
+      ],
+      "raw_data": {
+        "ebi_proteins_arginine/lysine_count": 5,
+        "ebi_proteins_arginine/lysine_entries": [
+          {
+            "accession": "A0A009HQK2",
+            "protein_name": "Lysine-arginine-ornithine-binding periplasmic family protein",
+            "sequence": "MKKIFVSTTLVLAAVATNVQAKDWKVIRFGTESSYAPFEYKTPDGKLTGFDVDLGNAICAKLKAKCVWVENSFDGMIPALKAKKFDGILSSMTVTDERAKQILFSSKIYNTPTRMVAKKGSPLLPTPTSLKGKRVGVQQGTIQETYAKTYWAPKGVSVVPYPTQDLIYQDMMSGRLDATLQDAIMVDRAFLKQPKGKNFSFAGGNVVDVKTLGVGAAIGLRKEDADLKANIDKALTAIIADGTYKKLEKKYFSFSIY",
+            "seq_length": 257,
+            "features": [
+              {
+                "type": "CHAIN",
+                "category": "MOLECULE_PROCESSING",
+                "ftId": "PRO_5001446357",
+                "description": "",
+                "begin": "22",
+                "end": "257",
+                "molecule": "",
+                "evidences": [
+                  {
+                    "code": "ECO:0000256",
+                    "source": {
+                      "name": "SAM",
+                      "id": "SignalP",
+                      "url": "https://www.uniprot.org/help/sam"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "accession": "A0A009IP01",
+            "protein_name": "Histidine/lysine/arginine/ornithine transport system permease protein HisM",
+            "sequence": "MIEILQQYWQSYLWTDGLQMTGVAMTAWLLVLSIGIGFLLAVPLSLARVSENIWLRGPVWLFTYVFRGTPLYIQLLIIYSGIYSFDYIHEHQTLDAFFREGINCTILAFALNTGAYTTEIFAGAIRSIPHGEIEAAQAFGMSKWKLYTRIIIPSMLRRALPFYGNEVILMLHATTIAFTATVPDILKIARDVNAATYDTFSAFGIAAVLYAVLAFILIWIFRKLEKRWLAFLKPSNH",
+            "seq_length": 237,
+            "features": []
+          },
+          {
+            "accession": "A0A009PC13",
+            "protein_name": "Histidine/lysine/arginine/ornithine transport system permease protein HisM",
+            "sequence": "MIEILQQYWQPYLWTDGLQMTGVAMTAWLLVLSIGIGFVLAVPLSLARVSENIWLRGPVWLFTYVFRGTPLYIQLLIIYSGIYSFDYVHEHQTLDAFFREGINCTILAFALNTGAYTTEIFAGAIRSIPHGEIEAAQAFGMSKWKLYTRIIIPSMLCRALPFYGNEVILMLHATTIAFTATVPDILKIARDVNAATYDTFSAFGIAAVLYAVLAFILIWIFRKLEKRWLAFLKPSNH",
+            "seq_length": 237,
+            "features": []
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT04524442",
+      "citations": [],
+      "raw_data": {
+        "apd_arginine/lysine": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT04524442",
+          "identifier": "NCT04524442",
+          "title": "Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult Gastroenteropancreatic Neuroendocrine Tumor (GEP-NET) Patients",
+          "snippet": "Title: Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult Gastroenteropancreatic Neuroendocrine Tumor (GEP-NET) Patients\nStatus: Completed\nPhase: Phase 4\nCountries: Italy, Netherlands, Poland, United Kingdom\nConditions: Gastroenteropancreatic Neuroendocrine Tumors\nInterventions: Drug: arginine/lysine\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:55.727561"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT04524442",
+          "public_title": "Post-Authorization Safety Study (PASS) of LysaKare\u00ae in Adult Gastroenteropancreatic Neuroendocrine Tumor (GEP-NET) Patients",
+          "scientific_title": "A Multicenter, Open-label Post Authorization Safety Study to Evaluate the Effect of LysaKare\u00ae Infusion on Serum Potassium Levels in GEP-NET Patients Eligible for Lutathera\u00ae Treatment",
+          "recruitment_status": "Completed",
+          "phase": "Phase 4",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Other. Masking: None (Open Label).",
+          "countries": [
+            "Italy",
+            "Netherlands",
+            "Poland",
+            "United Kingdom"
+          ],
+          "conditions": [
+            "Gastroenteropancreatic Neuroendocrine Tumors"
+          ],
+          "interventions": [
+            "Drug: arginine/lysine"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT04524442",
+      "citations": [],
+      "raw_data": {
+        "iuphar_arginine/lysine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "pdbe",
+          "source_url": "https://www.ebi.ac.uk/pdbe/entry/pdb/4i6d",
+          "identifier": "PDB:4i6d",
+          "title": "Crystal structure of DPO4 linker region arginine/lysine residues mutant with an incoming dATP",
+          "snippet": "PDB ID: 4i6d\nTitle: Crystal structure of DPO4 linker region arginine/lysine residues mutant with an incoming dATP\nExperimental method: X-ray diffraction\nDeposited: 2012-11-29",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:49.728428"
+        }
+      ],
+      "raw_data": {
+        "pdbe_arginine/lysine_count": 1,
+        "pdbe_summary_4i6d_status": 404
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4318052500",
+          "identifier": "PMID:36765694",
+          "title": "An Update of G-Protein-Coupled Receptor Signaling and Its Deregulation in Gastric Carcinogenesis",
+          "snippet": "Title: An Update of G-Protein-Coupled Receptor Signaling and Its Deregulation in Gastric Carcinogenesis\nYear: 2023\nCitations: 10\nAbstract: G-protein-coupled receptors (GPCRs) belong to a cell surface receptor superfamily responding to a wide range of external signals. The binding of extracellular ligands to GPCRs activates a heterotrimeric G protein and triggers the production of numero",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:49.401904"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 1
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/c0c971de368c2b9e8b71306aa7be38232b91daa9",
+          "identifier": "DOI:10.1016/j.jtct.2025.01.334",
+          "title": "Excellent Outcomes in Patients Receiving Tisagenlecleucel for R/R B-Cell ALL: Results from the European Post-Authorization Safety Study (PASS), on Behalf of the Ctiwp, PDWP and ALWP of the EBMT.",
+          "snippet": "Title: Excellent Outcomes in Patients Receiving Tisagenlecleucel for R/R B-Cell ALL: Results from the European Post-Authorization Safety Study (PASS), on Behalf of the Ctiwp, PDWP and ALWP of the EBMT.\nYear: 2025\nCitations: 1",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:08:04.251775"
+        },
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/0340bc19a418c32a780f48fa24d2bfd7aa9b2252",
+          "identifier": "DOI:10.1016/j.jaad.2024.07.355",
+          "title": "54341 Study Design and Recruitment into the North American Post-authorization Safety Study (PASS) to Monitor Pregnancy and Infant Outcomes Following Dupilumab Exposure During Pregnancy",
+          "snippet": "Title: 54341 Study Design and Recruitment into the North American Post-authorization Safety Study (PASS) to Monitor Pregnancy and Infant Outcomes Following Dupilumab Exposure During Pregnancy\nYear: 2024",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:08:04.251827"
+        },
+        {
+          "source_name": "semantic_scholar",
+          "source_url": "https://www.semanticscholar.org/paper/4ae5711919a06afc16551a35028bc37d4a065e69",
+          "identifier": "DOI:10.1055/s-0043-1777201",
+          "title": "Post-authorization Safety Study (PASS) of Pediatric Patients Initiating Selumetinib Treatment for Symptomatic Inoperable Plexiform Neurofibromas (PNs) Associated with Neurofibromatosis Type 1 (NF1)",
+          "snippet": "Title: Post-authorization Safety Study (PASS) of Pediatric Patients Initiating Selumetinib Treatment for Symptomatic Inoperable Plexiform Neurofibromas (PNs) Associated with Neurofibromatosis Type 1 (NF1)\nYear: 2023",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:08:04.251843"
+        }
+      ],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.31525/cmr-13e9426",
+          "identifier": "DOI:10.31525/cmr-13e9426",
+          "title": "Summary of opinion: LysaKare,arginine / lysine",
+          "snippet": "Title: Summary of opinion: LysaKare,arginine / lysine\nJournal: Case Medical Research\nYear: 2019",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:51.045032"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.31525/cmr-18ff4a5",
+          "identifier": "DOI:10.31525/cmr-18ff4a5",
+          "title": "Human medicines European public assessment report (EPAR):  LysaKare, arginine / lysine, Radiation Injuries, Date of authorisation: 25/07/2019, Status: Authorised",
+          "snippet": "Title: Human medicines European public assessment report (EPAR):  LysaKare, arginine / lysine, Radiation Injuries, Date of authorisation: 25/07/2019, Status: Authorised\nJournal: Case Medical Research\nYear: 2019",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:51.045092"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/b978-0-12-809217-0.00004-0",
+          "identifier": "DOI:10.1016/b978-0-12-809217-0.00004-0",
+          "title": "Study Designs for Post-Authorization Safety Studies",
+          "snippet": "Title: Study Designs for Post-Authorization Safety Studies\nJournal: Post-Authorization Safety Studies of Medicinal Products\nYear: 2018",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:51.045117"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT04524442",
+      "citations": [],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 26,
+        "biorxiv_prefilter_dropped": 26
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1029125/000143774923006899/0001437749-23-006899-index.htm",
+          "identifier": "SEC:0001437749-23-006899",
+          "title": "Panbela Therapeutics, Inc.  (PBLA)  (CIK 0001029125) 10-K (2023-03-16) \u2014 references 'arginine/lysine'",
+          "snippet": "Filing: 10-K\nSponsor: Panbela Therapeutics, Inc.  (PBLA)  (CIK 0001029125)\nDate: 2023-03-16\nSearch term: 'arginine/lysine'\n(2 total hits for 'arginine/lysine' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.792846"
+        },
+        {
+          "source_name": "sec_edgar",
+          "source_url": "https://www.sec.gov/Archives/edgar/data/1029125/000143774924009418/0001437749-24-009418-index.htm",
+          "identifier": "SEC:0001437749-24-009418",
+          "title": "Panbela Therapeutics, Inc.  (PBLA)  (CIK 0001029125) 10-K (2024-03-26) \u2014 references 'arginine/lysine'",
+          "snippet": "Filing: 10-K\nSponsor: Panbela Therapeutics, Inc.  (PBLA)  (CIK 0001029125)\nDate: 2024-03-26\nSearch term: 'arginine/lysine'\n(2 total hits for 'arginine/lysine' in 10-K/10-Q/8-K)",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:53.792901"
+        }
+      ],
+      "raw_data": {
+        "sec_edgar_NCT04524442_total": 0,
+        "sec_edgar_arginine/lysine_total": 2
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT04524442",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_arginine/lysine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT04524442",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=arginine/lysine",
+          "identifier": "NIH:5F31AI181460-03",
+          "title": "Adenoviral manipulation of arginine methylation (ABBOTT, AMBER)",
+          "snippet": "Project: 5F31AI181460-03\nPI: ABBOTT, AMBER\nOrganization: \nFiscal year: 2026\nAward: $38,052\nStart: 2024-05-01\nEnd: 2027-04-30\n(36285 total NIH-funded projects matching 'arginine/lysine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:49.389718"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=arginine/lysine",
+          "identifier": "NIH:5R35GM149230-04",
+          "title": "Mechanism and Inhibition of Histone Modifications (ZHENG, Y. GEORGE)",
+          "snippet": "Project: 5R35GM149230-04\nPI: ZHENG, Y. GEORGE\nOrganization: \nFiscal year: 2026\nAward: $372,972\nStart: 2023-04-01\nEnd: 2028-01-31\n(36285 total NIH-funded projects matching 'arginine/lysine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:49.389777"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=arginine/lysine",
+          "identifier": "NIH:5R35GM156316-02",
+          "title": "Protein arginine methylation in transcription and RNA metabolism (YANG, YANZHONG)",
+          "snippet": "Project: 5R35GM156316-02\nPI: YANG, YANZHONG\nOrganization: \nFiscal year: 2026\nAward: $445,000\nStart: 2025-01-23\nEnd: 2029-12-31\n(36285 total NIH-funded projects matching 'arginine/lysine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:49.389805"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_arginine/lysine_count": 36285,
+        "nih_reporter_arginine/lysine_funded": true
+      },
+      "error": null
+    }
+  ]
+}

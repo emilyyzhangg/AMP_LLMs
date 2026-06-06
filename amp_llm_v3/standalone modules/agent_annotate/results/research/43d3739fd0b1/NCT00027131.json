@@ -1,0 +1,1319 @@
+{
+  "nct_id": "NCT00027131",
+  "completed_at": "2026-05-06 10:07:11 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00027131",
+          "identifier": "NCT00027131",
+          "title": "Vaccination Against High Risk Breast Cancer With Autologous Tumor-Derived Heat Shock Protein 70-Peptide Complexes (HSP70)",
+          "snippet": "Title: Vaccination Against High Risk Breast Cancer With Autologous Tumor-Derived Heat Shock Protein 70-Peptide Complexes (HSP70)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.550312"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00027131",
+          "identifier": "NCT00027131",
+          "title": "Brief Summary",
+          "snippet": "Description: The trial is designed to determine the response of the immune system of patients with breast cancer to a vaccine made from their own tumor. Researchers believe that this particular vaccine, which is made from purified heat shock proteins taken from each patient's tumor, might alert the body's immune system to recognize and attack invading cancer. To be considered potentially eligible for this study you must be a high risk breast cancer patient and have a tumor that can be removed su",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.550375"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00027131",
+          "identifier": "NCT00027131",
+          "title": "Detailed Description",
+          "snippet": "Heat-shock proteins (HSP) are present within normal and cancerous cells. They are among the most ancient molecules in evolution, and are known as protein chaperones because of their abilities to bind polypeptide chains to assist in protein folding, transport or turnover. Works pioneered by Srivastava's group (Srivastava et al. 1998) have shown that HSPs can associate non-covalently with antigenic peptides. Injection of HSP-peptide complexes isolated from tumor cells can induce tumor protection a",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.550392"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00027131",
+          "identifier": "NCT00027131",
+          "title": "Study Status",
+          "snippet": "Status: TERMINATED | Why stopped: difficulty with accrual",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.550410"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00027131",
+          "identifier": "NCT00027131",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Breast Neoplasms | Keywords: vaccine, immunotherapy",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.550430"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00027131",
+          "identifier": "NCT00027131",
+          "title": "Intervention: Heat Shock Protein 70-peptide complexes (HSP70)",
+          "snippet": "BIOLOGICAL: Heat Shock Protein 70-peptide complexes (HSP70)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.550449"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT00027131",
+          "identifier": "NCT00027131",
+          "title": "Phase",
+          "snippet": "Phase: PHASE1, PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.550468"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT00027131",
+            "nctIdAliases": [
+              "NCT00026507"
+            ],
+            "orgStudyIdInfo": {
+              "id": "01-062"
+            },
+            "organization": {
+              "fullName": "UConn Health",
+              "class": "OTHER"
+            },
+            "briefTitle": "Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat Shock Protein 70",
+            "officialTitle": "Vaccination Against High Risk Breast Cancer With Autologous Tumor-Derived Heat Shock Protein 70-Peptide Complexes (HSP70)"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2008-10",
+            "overallStatus": "TERMINATED",
+            "whyStopped": "difficulty with accrual",
+            "startDateStruct": {
+              "date": "2000-12"
+            },
+            "completionDateStruct": {
+              "date": "2002-10"
+            },
+            "studyFirstSubmitDate": "2001-11-27",
+            "studyFirstSubmitQcDate": "2001-11-27",
+            "studyFirstPostDateStruct": {
+              "date": "2001-11-28",
+              "type": "ESTIMATED"
+            },
+            "lastUpdateSubmitDate": "2008-10-07",
+            "lastUpdatePostDateStruct": {
+              "date": "2008-10-08",
+              "type": "ESTIMATED"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "leadSponsor": {
+              "name": "UConn Health",
+              "class": "OTHER"
+            }
+          },
+          "descriptionModule": {
+            "briefSummary": "Description: The trial is designed to determine the response of the immune system of patients with breast cancer to a vaccine made from their own tumor. Researchers believe that this particular vaccine, which is made from purified heat shock proteins taken from each patient's tumor, might alert the body's immune system to recognize and attack invading cancer. To be considered potentially eligible for this study you must be a high risk breast cancer patient and have a tumor that can be removed surgically.\n\nLength/Duration: Vaccinations are administered weekly for six weeks. Follow up visits to the clinic are every three months for two years, then every six months thereafter.",
+            "detailedDescription": "Heat-shock proteins (HSP) are present within normal and cancerous cells. They are among the most ancient molecules in evolution, and are known as protein chaperones because of their abilities to bind polypeptide chains to assist in protein folding, transport or turnover. Works pioneered by Srivastava's group (Srivastava et al. 1998) have shown that HSPs can associate non-covalently with antigenic peptides. Injection of HSP-peptide complexes isolated from tumor cells can induce tumor protection against both pre-established tumors and subsequent tumor challenge by eliciting specific cytotoxic T lymphocyte (CTL) response against a variety of tumors in animals such as sarcoma, lymphoma, melanoma, hepatoma, prostate cancer and lung cancer (Tamura et al).\n\nA previous trial on the role of HSP70 in breast cancer treatment was targeted specifically against patients who had widespread metastasis and who had failed all conventional therapy including intensive multi-agent chemotherapy with DTEC (decadron, taxol, etoposide and cyclophosphamide).\n\nThis pilot study has shown that, (1) HSP70 can be purified successfully from breast cancer cells. (2) The yield of HSP70 is extremely variable and cannot be predicted accurately based on the size of the tumor because of significant heterogeneity of histology and patient's prior history of chemotherapy. (3) HSP70 vaccination is safe and well tolerated.\n\nHypothesis and current protocol\n\nThe biggest challenge of cancer management is to control metastasis. It is perhaps more obvious in breast cancer than in any other tumor. Breast cancer patients rarely die of primary cancer. The tendency of a deadly relapse in distal sites, after years of \"remission\" is the common cause of mortality. Even with newly diagnosed patients who present with stage IV breast cancer, complete response can be achieved in more than 40% of patients with the current multi-modality approach. However, patients with stage IV breast cancer are \"never\" cured because of the risk of late relapses.\n\nThere are several reasons for the unsatisfactory results of immunotherapy in advanced and widespread cancers. First, the tumor burden is too overwhelming. Host defenses are simply over powered. Second, patients at this stage usually have significant co-morbidities, which prevent optimal immune responses. Third, advanced cancer patients often have a compromised functional state of the immune system either quantitatively or qualitatively due to prior cytotoxic therapy, radiation therapy, or as a result of active secretion of immunosuppressive agents by the tumor cells such as TGF-beta. Finally, there is simply not enough time to mount an effective adaptive immune response in these patients.\n\nTherefore, we hypothesize that immunotherapy with HSP70 is more effective as \"consolidation\" therapy for high-risk patients who are rendered to have only minimal residue disease. To test this hypothesis, tumors from patients with high-risk breast cancer will be resected for HSP70 purification. This will be followed by conventional therapy such as hormonal therapy, chemotherapy, radiation therapy, or combined modality treatment. A total of 15 patients who are either in complete remission or in stable partial remission after standard therapy, will be enrolled to test the hypothesis that HSP70 vaccine will lead to improved tumor-specific T cell response in over 40% of patients. As a secondary endpoint, it will be determined whether the immunological responses can be correlated with disease-free survival or progression-free survival."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Breast Neoplasms"
+            ],
+            "keywords": [
+              "vaccine",
+              "immunotherapy"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE1",
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NON_RANDOMIZED",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 15
+            }
+          },
+          "armsInterventionsModule": {
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "Heat Shock Protein 70-peptide complexes (HSP70)"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "ELIGIBILITY\n\nPre-registration inclusion:\n\nMust be at least 18 years of age and capable of giving informed consent.\n\nHigh risk breast cancer defined as the following:\n\n* stage IV breast cancer\n* inflammatory breast carcinoma\n* Stage II breast cancer with more than 10 positive axillary lymph nodes\n* Stage IIIA breast cancer (tumor greater than or equal to 5 cm with at least one positive axillary lymph note)\n\nA minimum of 3 grams of non-necrotic, resectable breast cancer.\n\nECOG Performance Score (PS) less than (\\<3.0).\n\nPre-registration exclusion:\n\n* ECOG Performance Score (PS) greater than or equal to 3.0.\n* Congenital or acquired immunodeficiency including infection with human immunodeficiency virus.\n* Significant behavioral or psychological problems that preclude adequate informed consent or follow-up.\n\nRegistration inclusion:\n\n* Major clinical responses defined as either Complete response (CR) by conventional staging work-up such as CT scan and bone scan.\n\nOr Stable partial response (PR) defined as more than 50% tumor reduction which remains stable by serial CT scans or bone scans over a 3-month span.\n\n* More than 60 micrograms of HSP70 purified.\n* ECOG Performance Score(PS) less than 3.0.\n* Greater than or equal to 4 weeks post cytotoxic therapy.\n\nRegistration exclusion:\n\n* ECOG Performance Score(PS) greater than or equal to 3.0.\n* Purification of HSP70 is unsuccessful qualitatively or quantitatively.\n* On other investigational therapy for breast cancer.\n* Positive serum or urine pregnancy test.\n* Impaired renal function (serum creatinine \\> 2.0) and hepatic function (bilirubin more than 2.0 x and transaminase more than 4.0 x of the upper normal limit).\n* Significant active infection requiring hospitalization;\n* Acquired immunodeficiency or active autoimmune diseases.\n* Significant behavioral or psychological problems that prevent adequate follow-up.",
+            "healthyVolunteers": false,
+            "sex": "FEMALE",
+            "minimumAge": "18 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Zihai Li, MD, P.hD.",
+                "affiliation": "Assistant Professor Medicine & Tumor Immunology",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "University of Connecticut Health Center",
+                "city": "Farmington",
+                "state": "Connecticut",
+                "zip": "06030",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 41.71982,
+                  "lon": -72.83204
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "seeAlsoLinks": [
+              {
+                "label": "UConn web page",
+                "url": "http://www.uchc.edu"
+              }
+            ]
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/35658525/",
+          "identifier": "PMID:35658525",
+          "title": "Three-Year Follow-Up of KTE-X19 in Patients With Relapsed/Refractory Mantle Cell Lymphoma, Including High-Risk Subgroups, in the ZUMA-2 Study.",
+          "snippet": "Title: Three-Year Follow-Up of KTE-X19 in Patients With Relapsed/Refractory Mantle Cell Lymphoma, Including High-Risk Subgroups, in the ZUMA-2 Study.\nAuthors: Wang Michael, Munoz Javier, Goy Andre et al.\nJournal: Journal of clinical oncology : official journal of the American Society of Clinical Oncology (2023)\nAbstract: PURPOSE: Brexucabtagene autoleucel (KTE-X19) autologous anti-CD19 chimeric antigen receptor (CAR) T-cell therapy is approved for the treatment of relapsed/refractory mantle cell lymphoma (MCL). Outcomes after a 3-year follow-up in the pivotal ZUMA-2 study of KTE-X19 in relapsed/refractory MCL are re",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:07:01.117038"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/37643989/",
+          "identifier": "PMID:37643989",
+          "title": "Breastfeeding or breast milk for procedural pain in neonates.",
+          "snippet": "Title: Breastfeeding or breast milk for procedural pain in neonates.\nAuthors: Shah Prakeshkumar S, Torgalkar Ranjit, Shah Vibhuti S\nJournal: The Cochrane database of systematic reviews (2023)\nAbstract: BACKGROUND: Pain in the neonate is associated with acute behavioural and physiological changes. Cumulative pain is associated with morbidities, including adverse neurodevelopmental outcomes. Studies have shown a reduction in changes in physiological parameters and pain score measurements following p",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:07:01.117077"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/27409075/",
+          "identifier": "PMID:27409075",
+          "title": "Proceedings of the 3rd IPLeiria's International Health Congress : Leiria, Portugal. 6-7 May 2016.",
+          "snippet": "Title: Proceedings of the 3rd IPLeiria's International Health Congress : Leiria, Portugal. 6-7 May 2016.\nAuthors: Tom\u00e1s Catarina Cardoso, Oliveira Emanuel, Sousa D. et al.\nJournal: BMC health services research (2016)\nAbstract: S1 Health literacy and health education in adolescence Catarina Cardoso Tom\u00e1s S2 The effect of a walking program on the quality of life and well-being of people with schizophrenia Emanuel Oliveira, D. Sousa, M. Uba-Chupel, G. Furtado, C. Rocha, A. Teixeira, P. Ferreira S3 Diagnosis and innovative tr",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:07:01.117091"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/30913173/",
+          "identifier": "PMID:30913173",
+          "title": "Maternal Immunization.",
+          "snippet": "Title: Maternal Immunization.\nAuthors: Munoz Flor M, Jamieson Denise J\nJournal: Obstetrics and gynecology (2019)\nAbstract: Vaccines administered to women during pregnancy can provide protection against serious infectious diseases for the mother, for the newborn, or both. Maternal immunization boosts the concentration of maternal antibodies that can be transferred across the placenta to directly protect infants too young",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:07:01.117100"
+        },
+        {
+          "source_name": "pubmed",
+          "source_url": "https://pubmed.ncbi.nlm.nih.gov/40578370/",
+          "identifier": "PMID:40578370",
+          "title": "Global, regional, and national trends in routine childhood vaccination coverage from 1980 to 2023 with forecasts to 2030: a systematic analysis for the Global Burden of Disease Study 2023.",
+          "snippet": "Title: Global, regional, and national trends in routine childhood vaccination coverage from 1980 to 2023 with forecasts to 2030: a systematic analysis for the Global Burden of Disease Study 2023.\nJournal: Lancet (London, England) (2025)\nAbstract: BACKGROUND: Since its inception in 1974, the Essential Programme on Immunization (EPI) has achieved remarkable success, averting the deaths of an estimated 154 million children worldwide through routine childhood vaccination. However, more recent decades have seen persistent coverage inequities and ",
+          "quality_score": 0.9,
+          "retrieved_at": "2026-05-06T17:07:01.117108"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10819802/",
+          "identifier": "PMC:10819802",
+          "title": "Microorganisms and Breast Cancer: An In-Depth Analysis of Clinical Studies.",
+          "snippet": "Title: Microorganisms and Breast Cancer: An In-Depth Analysis of Clinical Studies.\nAuthors: Naderi N, Mosahebi A, Williams NR\nJournal: Pathogens",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:06:57.982985"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "10819802"
+        ],
+        "pmc_count": 1,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0,
+        "pubmed_fallback_query": "Vaccination Against High Risk Breast",
+        "pubmed_fallback_ids": [
+          "35658525",
+          "37643989",
+          "27409075",
+          "30913173",
+          "40578370"
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/P11021",
+          "identifier": "P11021",
+          "title": "Endoplasmic reticulum chaperone BiP",
+          "snippet": "Organism: Homo sapiens. Protein: Endoplasmic reticulum chaperone BiP. Accession: P11021. Precursor length: 654 aa. Mature form: Endoplasmic reticulum chaperone BiP 636 aa (636 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:58.008066"
+        },
+        {
+          "source_name": "uniprot",
+          "source_url": "https://www.uniprot.org/uniprotkb/V9HWB4",
+          "identifier": "V9HWB4",
+          "title": "Endoplasmic reticulum chaperone BIP",
+          "snippet": "Organism: Homo sapiens. Protein: Endoplasmic reticulum chaperone BIP. Accession: V9HWB4. Precursor length: 654 aa. Mature form: Endoplasmic reticulum chaperone BIP 636 aa (636 aa total)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:58.008142"
+        }
+      ],
+      "raw_data": {
+        "uniprot_Heat Shock Protein 70-peptide complexes (HSP70)_no_structured_match": true,
+        "uniprot_Heat Shock Protein 70-peptide complexes (HSP70)_resolved_via": "Heat Shock Protein 70",
+        "uniprot_Heat Shock Protein 70-peptide complexes (HSP70)": [
+          {
+            "entryType": "UniProtKB reviewed (Swiss-Prot)",
+            "primaryAccession": "P11021",
+            "organism": {
+              "scientificName": "Homo sapiens",
+              "commonName": "Human",
+              "taxonId": 9606,
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Mammalia",
+                "Eutheria",
+                "Euarchontoglires",
+                "Primates",
+                "Haplorrhini",
+                "Catarrhini",
+                "Hominidae",
+                "Homo"
+              ]
+            },
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "evidences": [
+                    {
+                      "evidenceCode": "ECO:0000305"
+                    }
+                  ],
+                  "value": "Endoplasmic reticulum chaperone BiP"
+                },
+                "ecNumbers": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000269",
+                        "source": "PubMed",
+                        "id": "26655470"
+                      }
+                    ],
+                    "value": "3.6.4.10"
+                  }
+                ]
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000303",
+                        "source": "PubMed",
+                        "id": "2840249"
+                      }
+                    ],
+                    "value": "78 kDa glucose-regulated protein"
+                  },
+                  "shortNames": [
+                    {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000303",
+                          "source": "PubMed",
+                          "id": "2840249"
+                        }
+                      ],
+                      "value": "GRP-78"
+                    }
+                  ]
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000303",
+                        "source": "Reference",
+                        "id": "Ref.4"
+                      }
+                    ],
+                    "value": "Binding-immunoglobulin protein"
+                  },
+                  "shortNames": [
+                    {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000303",
+                          "source": "Reference",
+                          "id": "Ref.4"
+                        }
+                      ],
+                      "value": "BiP"
+                    }
+                  ]
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000305"
+                      }
+                    ],
+                    "value": "Heat shock protein 70 family protein 5"
+                  },
+                  "shortNames": [
+                    {
+                      "evidences": [
+                        {
+                          "evidenceCode": "ECO:0000305"
+                        }
+                      ],
+                      "value": "HSP70 family protein 5"
+                    }
+                  ]
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000312",
+                        "source": "HGNC",
+                        "id": "HGNC:5238"
+                      }
+                    ],
+                    "value": "Heat shock protein family A member 5"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000303",
+                        "source": "Reference",
+                        "id": "Ref.4"
+                      }
+                    ],
+                    "value": "Immunoglobulin heavy chain-binding protein"
+                  }
+                }
+              ],
+              "flag": "Precursor"
+            },
+            "features": [
+              {
+                "type": "Chain",
+                "location": {
+                  "start": {
+                    "value": 19,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 654,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Endoplasmic reticulum chaperone BiP",
+                "featureId": "PRO_0000013566"
+              }
+            ],
+            "sequence": {
+              "value": "MKLSLVAAMLLLLSAARAEEEDKKEDVGTVVGIDLGTTYSCVGVFKNGRVEIIANDQGNRITPSYVAFTPEGERLIGDAAKNQLTSNPENTVFDAKRLIGRTWNDPSVQQDIKFLPFKVVEKKTKPYIQVDIGGGQTKTFAPEEISAMVLTKMKETAEAYLGKKVTHAVVTVPAYFNDAQRQATKDAGTIAGLNVMRIINEPTAAAIAYGLDKREGEKNILVFDLGGGTFDVSLLTIDNGVFEVVATNGDTHLGGEDFDQRVMEHFIKLYKKKTGKDVRKDNRAVQKLRREVEKAKRALSSQHQARIEIESFYEGEDFSETLTRAKFEELNMDLFRSTMKPVQKVLEDSDLKKSDIDEIVLVGGSTRIPKIQQLVKEFFNGKEPSRGINPDEAVAYGAAVQAGVLSGDQDTGDLVLLDVCPLTLGIETVGGVMTKLIPRNTVVPTKKSQIFSTASDNQPTVTIKVYEGERPLTKDNHLLGTFDLTGIPPAPRGVPQIEVTFEIDVNGILRVTAEDKGTGNKNKITITNDQNRLTPEEIERMVNDAEKFAEEDKKLKERIDTRNELESYAYSLKNQIGDKEKLGGKLSSEDKETMEKAVEEKIEWLESHQDADIEDFKAKKKELEEIVQPIISKLYGSAGPPPTGEEDTAEKDEL",
+              "length": 654,
+              "molWeight": 72333,
+              "crc64": "59B7D8D85BC32A00",
+              "md5": "B1C6B1B2AD5AF5823A68D7C9D4841F9F"
+            },
+            "extraAttributes": {
+              "uniParcId": "UPI0000001061"
+            },
+            "_verified_relevance": 0.5
+          },
+          {
+            "entryType": "UniProtKB unreviewed (TrEMBL)",
+            "primaryAccession": "V9HWB4",
+            "organism": {
+              "scientificName": "Homo sapiens",
+              "commonName": "Human",
+              "taxonId": 9606,
+              "evidences": [
+                {
+                  "evidenceCode": "ECO:0000313",
+                  "source": "EMBL",
+                  "id": "ACJ13671.1"
+                }
+              ],
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Mammalia",
+                "Eutheria",
+                "Euarchontoglires",
+                "Primates",
+                "Haplorrhini",
+                "Catarrhini",
+                "Hominidae",
+                "Homo"
+              ]
+            },
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "evidences": [
+                    {
+                      "evidenceCode": "ECO:0000256",
+                      "source": "ARBA",
+                      "id": "ARBA00069311"
+                    }
+                  ],
+                  "value": "Endoplasmic reticulum chaperone BIP"
+                },
+                "ecNumbers": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00012554"
+                      }
+                    ],
+                    "value": "3.6.4.10"
+                  }
+                ]
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00029695"
+                      }
+                    ],
+                    "value": "78 kDa glucose-regulated protein"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00031291"
+                      }
+                    ],
+                    "value": "Binding-immunoglobulin protein"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00019933"
+                      }
+                    ],
+                    "value": "Endoplasmic reticulum chaperone BiP"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00031035"
+                      }
+                    ],
+                    "value": "Heat shock protein 70 family protein 5"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00030223"
+                      }
+                    ],
+                    "value": "Heat shock protein family A member 5"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00033037"
+                      }
+                    ],
+                    "value": "Immunoglobulin heavy chain-binding protein"
+                  }
+                }
+              ]
+            },
+            "features": [
+              {
+                "type": "Chain",
+                "location": {
+                  "start": {
+                    "value": 19,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 654,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Endoplasmic reticulum chaperone BIP",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "SignalP"
+                  }
+                ],
+                "featureId": "PRO_5004776903"
+              }
+            ],
+            "sequence": {
+              "value": "MKLSLVAAMLLLLSAARAEEEDKKEDVGTVVGIDLGTTYSCVGVFKNGRVEIIANDQGNRITPSYVAFTPEGERLIGDAAKNQLTSNPENTVFDAKRLIGRTWNDPSVQQDIKFLPFKVVEKKTKPYIQVDIGGGQTKTFAPEEISAMVLTKMKETAEAYLGKKVTHAVVTVPAYFNDAQRQATKDAGTIAGLNVMRIINEPTAAAIAYGLDKREGEKNILVFDLGGGTFDVSLLTIDNGVFEVVATNGDTHLGGEDFDQRVMEHFIKLYKKKTGKDVRKDNRAVQKLRREVEKAKRALSSQHQARIEIESFYEGEDFSETLTRAKFEELNMDLFRSTMKPVQKVLEDSDLKKSDIDEIVLVGGSTRIPKIQQLVKEFFNGKEPSRGINPDEAVAYGAAVQAGVLSGDQDTGDLVLLDVCPLTLGIETVGGVMTKLIPRNTVVPTKKSQIFSTASDNQPTVTIKVYEGERPLTKDNHLLGTFDLTGIPPAPRGVPQIEVTFEIDVNGILRVTAEDKGTGNKNKITITNDQNRLTPEEIERMVNDAEKFAEEDKKLKERIDTRNELESYAYSLKNQIGDKEKLGGKLSSEDKETMEKAVEEKIEWLESHQDADIEDFKAKKKELEEIVQPIISKLYGSAGPPPTGEEDTAEKDEL",
+              "length": 654,
+              "molWeight": 72333,
+              "crc64": "59B7D8D85BC32A00",
+              "md5": "B1C6B1B2AD5AF5823A68D7C9D4841F9F"
+            },
+            "extraAttributes": {
+              "uniParcId": "UPI0000001061"
+            },
+            "_verified_relevance": 0.5
+          },
+          {
+            "entryType": "UniProtKB unreviewed (TrEMBL)",
+            "primaryAccession": "A0A7P0TAI0",
+            "organism": {
+              "scientificName": "Homo sapiens",
+              "commonName": "Human",
+              "taxonId": 9606,
+              "evidences": [
+                {
+                  "evidenceCode": "ECO:0000313",
+                  "source": "Ensembl",
+                  "id": "ENSP00000506097.1"
+                },
+                {
+                  "evidenceCode": "ECO:0000313",
+                  "source": "Proteomes",
+                  "id": "UP000005640"
+                }
+              ],
+              "lineage": [
+                "Eukaryota",
+                "Metazoa",
+                "Chordata",
+                "Craniata",
+                "Vertebrata",
+                "Euteleostomi",
+                "Mammalia",
+                "Eutheria",
+                "Euarchontoglires",
+                "Primates",
+                "Haplorrhini",
+                "Catarrhini",
+                "Hominidae",
+                "Homo"
+              ]
+            },
+            "proteinDescription": {
+              "recommendedName": {
+                "fullName": {
+                  "evidences": [
+                    {
+                      "evidenceCode": "ECO:0000256",
+                      "source": "ARBA",
+                      "id": "ARBA00069311"
+                    }
+                  ],
+                  "value": "Endoplasmic reticulum chaperone BIP"
+                },
+                "ecNumbers": [
+                  {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00012554"
+                      }
+                    ],
+                    "value": "3.6.4.10"
+                  }
+                ]
+              },
+              "alternativeNames": [
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00029695"
+                      }
+                    ],
+                    "value": "78 kDa glucose-regulated protein"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00031291"
+                      }
+                    ],
+                    "value": "Binding-immunoglobulin protein"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00019933"
+                      }
+                    ],
+                    "value": "Endoplasmic reticulum chaperone BiP"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00031035"
+                      }
+                    ],
+                    "value": "Heat shock protein 70 family protein 5"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00030223"
+                      }
+                    ],
+                    "value": "Heat shock protein family A member 5"
+                  }
+                },
+                {
+                  "fullName": {
+                    "evidences": [
+                      {
+                        "evidenceCode": "ECO:0000256",
+                        "source": "ARBA",
+                        "id": "ARBA00033037"
+                      }
+                    ],
+                    "value": "Immunoglobulin heavy chain-binding protein"
+                  }
+                }
+              ]
+            },
+            "features": [
+              {
+                "type": "Chain",
+                "location": {
+                  "start": {
+                    "value": 19,
+                    "modifier": "EXACT"
+                  },
+                  "end": {
+                    "value": 616,
+                    "modifier": "EXACT"
+                  }
+                },
+                "description": "Endoplasmic reticulum chaperone BIP",
+                "evidences": [
+                  {
+                    "evidenceCode": "ECO:0000256",
+                    "source": "SAM",
+                    "id": "SignalP"
+                  }
+                ],
+                "featureId": "PRO_5030877150"
+              }
+            ],
+            "sequence": {
+              "value": "MKLSLVAAMLLLLSAARAEEEDKKEDVGTVVGIDLGTTYSCVGVFKNGRVEIIANDQGNRITPSYVAFTPEGERLIGDAAKNQLTSNPENTVFDAKRLIGRTWNDPSVQQDIKFLPFKVVEKKTKPYIQVDIGGGQTKTFAPEEISAMVLTKMKETAEAYLGKKVTHAVVTVPAYFNDAQRQATKDAGTIAGLNVMRIINEPTAAAIAYGLDKREGEKNILVFDLGGGTFDVSLLTIDNGVFEVVATNGDTHLGGEDFDQRVMEHFIKLYKKKTGKDVRKDNRAVQKLRREVEKAKRALSSQHQARIEIESFYEGEDFSETLTRAKFEELNMIQQLVKEFFNGKEPSRGINPDEAVAYGAAVQAGVLSGDQDTGDLVLLDVCPLTLGIETVGGVMTKLIPRNTVVPTKKSQIFSTASDNQPTVTIKVYEGERPLTKDNHLLGTFDLTGIPPAPRGVPQIEVTFEIDVNGILRVTAEDKGTGNKNKITITNDQNRLTPEEIERMVNDAEKFAEEDKKLKERIDTRNELESYAYSLKNQIGDKEKLGGKLSSEDKETMEKAVEEKIEWLESHQDADIEDFKAKKKELEEIVQPIISKLYGSAGPPPTGEEDTAEKDEL",
+              "length": 616,
+              "molWeight": 68092,
+              "crc64": "1A19D71A404CE875",
+              "md5": "961270AC7697658796B58D6F96DB7448"
+            },
+            "extraAttributes": {
+              "uniParcId": "UPI00194C8DE0"
+            },
+            "_verified_relevance": 0.5
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT00027131",
+          "identifier": "NCT00027131",
+          "title": "Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat ...",
+          "snippet": "Web result for: NCT00027131 Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat Shock Prote",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:06:58.719883"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://inclinicaltrials.com/breast-neoplasms/NCT00027131/",
+          "identifier": "NCT00027131",
+          "title": "Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat ...",
+          "snippet": "Web result for: NCT00027131 Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat Shock Prote",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:06:58.719938"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.knowcancer.com/cancer-trials/NCT00027131/",
+          "identifier": "NCT00027131",
+          "title": "Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat ...",
+          "snippet": "Web result for: NCT00027131 Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat Shock Prote",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:06:58.719960"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.sciencedirect.com/science/article/pii/S0344033823004351",
+          "identifier": "NCT00027131",
+          "title": "Breast cancer vaccines; A comprehensive and updated review",
+          "snippet": "Web result for: NCT00027131 Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat Shock Prote",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:06:58.719976"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.breastcancer.org/about-breast-cancer/breast-cancer-vaccines",
+          "identifier": "NCT00027131",
+          "title": "What Are Breast Cancer Vaccines and How Might They Work?",
+          "snippet": "Web result for: NCT00027131 Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat Shock Prote",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:06:58.719991"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 24460
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT00027131",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Heat Shock Protein 70-peptide complexes (HSP70)": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3644319/",
+          "identifier": "CHEMBL3644319",
+          "title": "CHEMBL3644319 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3644319\nType: Protein\nHELM: PEPTIDE1{[ac].[dR].D}|PEPTIDE2{A.[dF].R.W.K.[am]}$PEPTIDE1,PEPTIDE2,3:R2-1:R1|PEPTIDE2,PEPTIDE1,5:R3\nMolecular weight: 1001.16\nBioactivity: Ki=46.0 nM (Melanocortin receptor 4); Ki=46.0 nM (Melanocortin receptor 4); Ki=46.0 nM (Melanocortin receptor 4)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:06:59.774240"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1201652/",
+          "identifier": "CHEMBL1201652",
+          "title": "PROTEIN HYDROLYSATE - ChEMBL",
+          "snippet": "Molecule: PROTEIN HYDROLYSATE\nType: Unknown\nMax clinical phase: 4.0\nFirst approval: 1984",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:00.713496"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2107994/",
+          "identifier": "CHEMBL2107994",
+          "title": "SILVER PROTEIN, MILD - ChEMBL",
+          "snippet": "Molecule: SILVER PROTEIN, MILD\nType: Unknown\nMax clinical phase: -1.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:01.966889"
+        }
+      ],
+      "raw_data": {
+        "chembl_Heat Shock Protein 70-peptide complexes (HSP70)_count": 5,
+        "chembl_Heat Shock Protein 70-peptide complexes (HSP70)_helm": "PEPTIDE1{[ac].[dR].D}|PEPTIDE2{A.[dF].R.W.K.[am]}$PEPTIDE1,PEPTIDE2,3:R2-1:R1|PEPTIDE2,PEPTIDE1,5:R3-3:R3$$$",
+        "chembl_Heat Shock Protein 70-peptide complexes (HSP70)_molecules": [
+          {
+            "chembl_id": "CHEMBL3644319",
+            "pref_name": null,
+            "mol_type": "Protein",
+            "helm_notation": "PEPTIDE1{[ac].[dR].D}|PEPTIDE2{A.[dF].R.W.K.[am]}$PEPTIDE1,PEPTIDE2,3:R2-1:R1|PEPTIDE2,PEPTIDE1,5:R3-3:R3$$$",
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL1201652",
+            "pref_name": "PROTEIN HYDROLYSATE",
+            "mol_type": "Unknown",
+            "helm_notation": null,
+            "max_phase": "4.0"
+          },
+          {
+            "chembl_id": "CHEMBL2107994",
+            "pref_name": "SILVER PROTEIN, MILD",
+            "mol_type": "Unknown",
+            "helm_notation": null,
+            "max_phase": "-1.0"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/6ZYH",
+          "identifier": "PDB:6ZYH",
+          "title": "Crystal structure of GRP78 (70kDa heat shock protein 5 / BiP) ATPase domain in complex with ADP and calcium",
+          "snippet": "PDB ID: 6ZYH\nTitle: Crystal structure of GRP78 (70kDa heat shock protein 5 / BiP) ATPase domain in complex with ADP and calcium\nMethod: X-RAY DIFFRACTION\nResolution: 1.88 A\nDeposited: 2020-08-01\nReleased: 2020-12-16\nCitation: Calcium depletion challenges endoplasmic reticulum proteostasis by destabilising BiP-substrate complexes.. Preissler, S., Rato, C., Yan, Y. et al.. Elife (2020)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:06:57.715087"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/7A4U",
+          "identifier": "PDB:7A4U",
+          "title": "Crystal structure of lid-truncated apo BiP in an oligomeric state",
+          "snippet": "PDB ID: 7A4U\nTitle: Crystal structure of lid-truncated apo BiP in an oligomeric state\nMethod: X-RAY DIFFRACTION\nResolution: 1.77 A\nDeposited: 2020-08-20\nReleased: 2020-12-16\nCitation: Calcium depletion challenges endoplasmic reticulum proteostasis by destabilising BiP-substrate complexes.. Preissler, S., Rato, C., Yan, Y. et al.. Elife (2020)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:06:57.755513"
+        },
+        {
+          "source_name": "rcsb_pdb",
+          "source_url": "https://www.rcsb.org/structure/7A4V",
+          "identifier": "PDB:7A4V",
+          "title": "Crystal structure of lid-truncated ADP-bound BiP in an oligomeric state",
+          "snippet": "PDB ID: 7A4V\nTitle: Crystal structure of lid-truncated ADP-bound BiP in an oligomeric state\nMethod: X-RAY DIFFRACTION\nResolution: 1.94 A\nDeposited: 2020-08-20\nReleased: 2020-12-16\nCitation: Calcium depletion challenges endoplasmic reticulum proteostasis by destabilising BiP-substrate complexes.. Preissler, S., Rato, C., Yan, Y. et al.. Elife (2020)",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:06:57.794863"
+        }
+      ],
+      "raw_data": {
+        "rcsb_Heat Shock Protein 70-peptide complexes (HSP70)_count": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT00027131",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Heat Shock Protein 70-peptide complexes (HSP70)_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT00027131",
+      "citations": [],
+      "raw_data": {
+        "apd_Heat Shock Protein 70-peptide complexes (HSP70)": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT00027131",
+          "identifier": "NCT00027131",
+          "title": "Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat Shock Protein 70",
+          "snippet": "Title: Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat Shock Protein 70\nStatus: Terminated\nPhase: Phase 1/Phase 2\nCountries: United States\nConditions: Breast Neoplasms\nInterventions: Biological: Heat Shock Protein 70-peptide complexes (HSP70)\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:02.604499"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT00027131",
+          "public_title": "Vaccination Against High Risk Breast Cancer Using Tumor Derived Heat Shock Protein 70",
+          "scientific_title": "Vaccination Against High Risk Breast Cancer With Autologous Tumor-Derived Heat Shock Protein 70-Peptide Complexes (HSP70)",
+          "recruitment_status": "Terminated",
+          "phase": "Phase 1/Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: Non-Randomized, Endpoint Classification: Pharmacodynamics Study, Intervention Model: Single Group Assignment, Masking: Open Label, Primary Purpose: Treatment",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Breast Neoplasms"
+          ],
+          "interventions": [
+            "Biological: Heat Shock Protein 70-peptide complexes (HSP70)"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT00027131",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Heat Shock Protein 70-peptide complexes (HSP70)": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT00027131",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Heat Shock Protein 70-peptide complexes (HSP70)_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4285595787",
+          "identifier": "PMID:35887137",
+          "title": "The Chaperone System in Breast Cancer: Roles and Therapeutic Prospects of the Molecular Chaperones Hsp27, Hsp60, Hsp70, and Hsp90",
+          "snippet": "Title: The Chaperone System in Breast Cancer: Roles and Therapeutic Prospects of the Molecular Chaperones Hsp27, Hsp60, Hsp70, and Hsp90\nYear: 2022\nCitations: 53\nAbstract: Breast cancer (BC) is a major public health problem, with key pieces of information needed for developing preventive and curative measures still missing. For example, the participation of the chaperone system (CS) in carcinogenesis and anti-cancer re",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:06:58.191159"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 1
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT00027131",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/b978-012442710-5/50073-3",
+          "identifier": "DOI:10.1016/b978-012442710-5/50073-3",
+          "title": "Purification of heat shock protein-peptide complexes for use in vaccination against cancers and intracellular pathogens",
+          "snippet": "Title: Purification of heat shock protein-peptide complexes for use in vaccination against cancers and intracellular pathogens\nJournal: Immunology Methods Manual\nYear: 1996",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:06:58.964461"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1016/b978-012442710-5.50073-3",
+          "identifier": "DOI:10.1016/b978-012442710-5.50073-3",
+          "title": "Purification of heat shock protein-peptide complexes for use in vaccination against cancers and intracellular pathogens",
+          "snippet": "Title: Purification of heat shock protein-peptide complexes for use in vaccination against cancers and intracellular pathogens\nJournal: Immunology Methods Manual\nYear: 1996",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:06:58.964524"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1006/meth.1997.0464",
+          "identifier": "DOI:10.1006/meth.1997.0464",
+          "title": "Purification of Heat Shock Protein\u2013Peptide Complexes for Use in Vaccination against Cancers and Intracellular Pathogens",
+          "snippet": "Title: Purification of Heat Shock Protein\u2013Peptide Complexes for Use in Vaccination against Cancers and Intracellular Pathogens\nJournal: Methods\nYear: 1997",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:06:58.964556"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-6990504/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-6990504/v1",
+          "title": "Heat shock protein 70 in Cynops orientalis: Bidirectional thermal regulation and metabolic optimization in amphibian climatic adaptation",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.912989"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-8172673/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-8172673/v1",
+          "title": "Molecular Insights into Heat-Inducible HSP70s from Psychrophilic Bacteria and Yeast as Indicators of Ecosystem Stress in Antarctica",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.913011"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.07.18.665599",
+          "identifier": "DOI:10.1101/2025.07.18.665599",
+          "title": "Siglec homologs interact with membrane-bound Heat Shock Protein 70 (Hsp70) during early infection of the <i>Schistosoma mansoni</i> susceptible (BB02) <i>Biomphalaria glabrata snail</i> host",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.913032"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202508.2168.v1",
+          "identifier": "DOI:10.20944/preprints202508.2168.v1",
+          "title": "Tuning the Hsp70 Chaperone Cycle: Emerging Roles of GrpE-Like NEFs in Proteostasis and Organelle Function",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.913072"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.07.06.663342",
+          "identifier": "DOI:10.1101/2025.07.06.663342",
+          "title": "Multiple origins, one function: evolutionary pathways of HSP70 proteins in viruses",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.913209"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2025.02.17.637997",
+          "identifier": "DOI:10.1101/2025.02.17.637997",
+          "title": "Phosphorylation-State Modulated Binding of HSP70: Structural Insights and Compensatory Protein Engineering",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2025})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.913229"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.20944/preprints202410.1037.v1",
+          "identifier": "DOI:10.20944/preprints202410.1037.v1",
+          "title": "Title Genetic Analysis of HSP70 and HSF3 Polymorphisms and Their Association with Egg Production Traits of Bangladeshi Hilly Chickens",
+          "snippet": "PPR ({'publisher': 'Preprints.org', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.913268"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.1101/2024.10.30.621172",
+          "identifier": "DOI:10.1101/2024.10.30.621172",
+          "title": "HSP70 is upregulated after heat but not freezing stress in the freeze-tolerant cricket<i>Gryllus veletis</i>",
+          "snippet": "PPR ({'publisher': 'bioRxiv', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.913287"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4593110/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4593110/v1",
+          "title": "Visual Non-Instrumental On-Site Detection of HSP70 Using a Modified Immune Affinity Gel-column Assay",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.913346"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4423115/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4423115/v1",
+          "title": "Expression and SNP profiling of HSP70 gene associated with thermotolerance traits in Munjal Sheep",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.913366"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-4707407/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-4707407/v1",
+          "title": "Circulating Hsp70 - a tumor biomarker for lymph node metastases and early relapse in thoracic cancer",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.913385"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-5240067/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-5240067/v1",
+          "title": "Research Influence Heat Shock on the Quality of Post Goat Oocytes Warming Through Evaluation Maturation Rate and Inspection Protein Heat Shock (HSP-70), Adenosine Triphosphate (ATP), Glutathione (GSH)",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2024})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.619873"
+        },
+        {
+          "source_name": "biorxiv_medrxiv",
+          "source_url": "https://doi.org/10.21203/rs.3.rs-3340870/v1",
+          "identifier": "DOI:10.21203/rs.3.rs-3340870/v1",
+          "title": "Evaluation of the role of HIS-1 and HSP-70 genes in pathology and response to the drugs by antisense oligonucleotides in Leishmania major",
+          "snippet": "PPR ({'publisher': 'Research Square', 'yearOfPublication': 2023})",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:59.619910"
+        }
+      ],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 49,
+        "biorxiv_prefilter_dropped": 36
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT00027131",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT00027131_total": 0,
+        "sec_edgar_Heat Shock Protein 70-peptide complexes (HSP70)_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT00027131",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_Heat Shock Protein 70-peptide complexes (HSP70)_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT00027131",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Heat+Shock+Protein+70-peptide+complexes+(HSP70)",
+          "identifier": "NIH:5R01CA258765-06",
+          "title": "Targeting posttranslational modifications of B7-H4 in carcinogenesis and therapy (WAN, YONG)",
+          "snippet": "Project: 5R01CA258765-06\nPI: WAN, YONG\nOrganization: \nFiscal year: 2026\nAward: $503,234\nStart: 2021-11-09\nEnd: 2027-03-31\n(139 total NIH-funded projects matching 'Heat Shock Protein 70-peptide complexes (HSP70)')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:57.785219"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Heat+Shock+Protein+70-peptide+complexes+(HSP70)",
+          "identifier": "NIH:1R61NS138384-01A1",
+          "title": "Development of therapeutics for SCA48 (SCAGLIONE, KENNETH MATTHEW)",
+          "snippet": "Project: 1R61NS138384-01A1\nPI: SCAGLIONE, KENNETH MATTHEW\nOrganization: \nFiscal year: 2025\nAward: $392,863\nStart: 2025-08-01\nEnd: 2026-07-31\n(139 total NIH-funded projects matching 'Heat Shock Protein 70-peptide complexes (HSP70)')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:57.785255"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Heat+Shock+Protein+70-peptide+complexes+(HSP70)",
+          "identifier": "NIH:5R01NS059690-18",
+          "title": "Molecular Chaperones and Small Molecules (GESTWICKI, JASON E)",
+          "snippet": "Project: 5R01NS059690-18\nPI: GESTWICKI, JASON E\nOrganization: \nFiscal year: 2025\nAward: $450,293\nStart: 2008-02-01\nEnd: 2028-07-31\n(139 total NIH-funded projects matching 'Heat Shock Protein 70-peptide complexes (HSP70)')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:06:57.785268"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_Heat Shock Protein 70-peptide complexes (HSP70)_count": 139,
+        "nih_reporter_Heat Shock Protein 70-peptide complexes (HSP70)_funded": true
+      },
+      "error": null
+    }
+  ]
+}

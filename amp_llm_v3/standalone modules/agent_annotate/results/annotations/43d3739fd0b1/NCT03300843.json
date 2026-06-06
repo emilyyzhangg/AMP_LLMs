@@ -1,0 +1,2252 @@
+{
+  "nct_id": "NCT03300843",
+  "metadata": {
+    "nct_id": "NCT03300843",
+    "title": "A Phase II Trial to Evaluate the Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Patients Against Defined Mutated Neoantigens Expressed by the Autologous Cancer",
+    "phase": "PHASE2",
+    "status": "TERMINATED",
+    "conditions": [
+      "Melanoma",
+      "Gastrointestinal Cancer",
+      "Breast Cancer",
+      "Ovarian Cancer",
+      "Pancreatic Cancer"
+    ],
+    "interventions": [
+      "BIOLOGICAL: Peptide loaded dendritic cell vaccine"
+    ]
+  },
+  "annotations": [
+    {
+      "field_name": "peptide",
+      "value": "True",
+      "confidence": 0.775,
+      "reasoning": "[Consistency override: 3 AA sequence -> peptide=True] [Pass 1 extraction] Intervention: Peptide loaded dendritic cell vaccine  \nMolecular Class: Large multi-subunit protein (engineered scaffold, fusion protein, multi-chain complex)  \nDatabase Confirmation: Not found in UniProt, DRAMP/DBAASP, ChEMBL, or PDB  \nProduct Description: Described as a \"vaccine\"  \nInvestigational Drug Role: Investigational drug\n[Pass 2 decision] Peptide: False  \nReasoning: Step 1 \u2014 The Molecular Class is \"Large multi-subunit protein (engineered scaffold, fusion protein, multi-chain complex)\", which is excluded as a peptide due to its complex structure and likely size (>100 amino acids). Step 2 \u2014 The intervention is described as a \"vaccine,\" but since it is classified as a large multi-subunit protein, it does not meet the definition of a peptide. Step 3 \u2014 No database hits confirm it as a peptide, and the molecular class clearly excludes it from being a peptide. Therefore, the answer is False.",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Brief Summary",
+          "snippet": "Background:\n\nExomes are the parts of deoxyribonucleic acid (DNA) that make proteins. Researchers are finding a way to read the letters in the exome. Incorrect letters are called mutations. Tumors contain specific mutations. Researchers can find these mutations in tumors to make treatments. Researchers want to use pieces of participants tumors to find the tumor-specific mutations. They also will take participants white blood cells to make a vaccine that they hope will shrink the tumors.\n\nObjectiv",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564350"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7885309/",
+          "identifier": "PMC:7885309",
+          "title": "Neoantigen prediction and computational perspectives towards clinical benefit: recommendations from the ESMO Precision Medicine Working Group.",
+          "snippet": "Title: Neoantigen prediction and computational perspectives towards clinical benefit: recommendations from the ESMO Precision Medicine Working Group.\nAuthors: De Mattos-Arruda L, Vazquez M, Finotello F et al.\nJournal: Ann Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231963"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6688256/",
+          "identifier": "PMC:6688256",
+          "title": "Pancreatic ductal adenocarcinoma: biological hallmarks, current status, and future perspectives of combined modality treatment approaches.",
+          "snippet": "Title: Pancreatic ductal adenocarcinoma: biological hallmarks, current status, and future perspectives of combined modality treatment approaches.\nAuthors: Orth M, Metzger P, Gerum S et al.\nJournal: Radiat Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232124"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8327784/",
+          "identifier": "PMC:8327784",
+          "title": "Neoantigen vaccine platforms in clinical development: understanding the future of personalized immunotherapy.",
+          "snippet": "Title: Neoantigen vaccine platforms in clinical development: understanding the future of personalized immunotherapy.\nAuthors: Supabphol S, Li L, Goedegebuure SP et al.\nJournal: Expert Opin Investig Drugs",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231906"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8625865/",
+          "identifier": "PMC:8625865",
+          "title": "The Advantages and Challenges of Anticancer Dendritic Cell Vaccines and NK Cells in Adoptive Cell Immunotherapy.",
+          "snippet": "Title: The Advantages and Challenges of Anticancer Dendritic Cell Vaccines and NK Cells in Adoptive Cell Immunotherapy.\nAuthors: Abakushina EV, Popova LI, Zamyatnin AA Jr et al.\nJournal: Vaccines (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231943"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11958638/",
+          "identifier": "PMC:11958638",
+          "title": "Leveraging glycosylation for early detection and therapeutic target discovery in pancreatic cancer.",
+          "snippet": "Title: Leveraging glycosylation for early detection and therapeutic target discovery in pancreatic cancer.\nAuthors: Pienkowski T, Wawrzak-Pienkowska K, Tankiewicz-Kwedlo A et al.\nJournal: Cell Death Dis",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231669"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Peptide+loaded+dendritic+cell+vaccine",
+          "identifier": "NIH:5U19AI057229-22",
+          "title": "Advancing immune organoid technology and organoid combinations (DAVIS, MARK MORRIS)",
+          "snippet": "Project: 5U19AI057229-22\nPI: DAVIS, MARK MORRIS\nOrganization: \nFiscal year: 2025\nAward: $623,357\nStart: 2003-09-01\nEnd: 2029-04-30\n(84 total NIH-funded projects matching 'Peptide loaded dendritic cell vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:07.804783"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Peptide+loaded+dendritic+cell+vaccine",
+          "identifier": "NIH:2R01AI146072-06",
+          "title": "The Role of Lipid-specific T cells in Mediating Protection Against M. tuberculosis (SESHADRI, CHETAN)",
+          "snippet": "Project: 2R01AI146072-06\nPI: SESHADRI, CHETAN\nOrganization: \nFiscal year: 2025\nAward: $989,186\nStart: 2020-06-01\nEnd: 2030-07-31\n(84 total NIH-funded projects matching 'Peptide loaded dendritic cell vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:07.804694"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "db_confirmed"
+    },
+    {
+      "field_name": "sequence",
+      "value": "N/A",
+      "confidence": 1.0,
+      "reasoning": "[Peptide=False cascade: sequence is peptide-specific]",
+      "evidence": [],
+      "model_name": "cascade",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification",
+      "value": "Other",
+      "confidence": 0.9,
+      "reasoning": "[Peptide=False cascade: non-peptide \u2192 classification=Other (binary AMP/Other)]",
+      "evidence": [],
+      "model_name": "cascade",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "classification_atomic",
+      "value": "Other",
+      "confidence": 0.55,
+      "reasoning": "[ATOMIC-CLS R6] Other (conf=0.55)\n  rule: mixed/unclear atomic answers; default Other\n  registry: dramp=0 apd=0 dbaasp=0 uniprot_amp=0\n  atomic: q1=YES q2=NO q3=NO\n  R6 fired: 1 YES, 2 NO, 0 UNCLEAR \u2192 default Other\n  quote: \"Researchers can find these mutations in tumors to make treatments. Researchers want to use pieces of participants tumors\"",
+      "evidence": [],
+      "model_name": "atomic-cls-qwen3:14b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "delivery_mode",
+      "value": "Injection/Infusion",
+      "confidence": 0.95,
+      "reasoning": "[Deterministic v38] Collected 1 route(s) from all citations",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Intervention: Peptide loaded dendritic cell vaccine",
+          "snippet": "BIOLOGICAL: Peptide loaded dendritic cell vaccine - On days 0, 14 (+/- 5 days), 28 (+/- 5 days), and 42 (+/- 5 days). The vaccine will be administered as both an intravenous (IV) infusion and a subcutaneous (SQ) injection. The total dose will be divided equally between intravenous (IV) and SQ containing 1.0E7 to 8.0E7 cells per cycle depending upon t",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564390"
+        }
+      ],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome",
+      "value": "Terminated",
+      "confidence": 0.9,
+      "reasoning": "[Dossier v38] TERMINATED for business/operational reason: slow accrual",
+      "evidence": [],
+      "model_name": "deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "outcome_atomic",
+      "value": "Terminated",
+      "confidence": 0.9,
+      "reasoning": "[ATOMIC R7] Terminated (conf=0.90)\n  rule: registry status TERMINATED, no POSITIVE pub-verdict\n  registry: status=TERMINATED phase=PHASE2 has_results=None completion=2019-07-09 days_since=2493 stale=False drug_max_phase=3\n  pubs: 30 total (0 ts, 30 gen, 0 amb)\n  voting: 0 pub(s) (0 POS, 0 FAIL)\n  aggregator trace:\n    registry: status=TERMINATED has_results=None phase=PHASE2 days_since=2493 stale=False drug_max_phase=3\n    pubs: total=30 trial_specific=0 voting=0 pos=0 fail=0\n    R7 fired: status=TERMINATED, no positive pubs",
+      "evidence": [],
+      "model_name": "atomic-gemma3:12b",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    },
+    {
+      "field_name": "reason_for_failure",
+      "value": "Business Reason",
+      "confidence": 0.7899999999999999,
+      "reasoning": "[Pass 1 investigation] Trial Status: COMPLETED  \nWhy Stopped: Not provided  \nPublished Findings: No specific findings related to trial NCT03300843 were found in the provided PubMed, PMC, or web sources. The literature reviewed discusses general topics such as neoantigens, dendritic cell-based immunotherapy, and adoptive cell therapy, but none directly reference the results, outcomes, or endpoints of NCT03300843.  \nOutcome Signals: No direct evidence of success or failure was identified in the published findings. The trial status is listed as \"COMPLETED,\" but no further details on its outcomes or reasons for completion are available.  \nIs This A Failure: Unclear\n[Pass 2 classification] [v42.8.1 emission gate: outcome=Terminated, Pass 2 returned empty, inferred 'Business Reason'] According to the provided evidence, the trial status is \"COMPLETED,\" and there is no published literature that explicitly reports negative outcomes such as failure to meet primary endpoints, adverse events, or other indicators of failure. The absence of published evidence of negative outcomes means that the trial cannot be classified as a failure based on the available information. The default for completed trials without published evidence of failure is \"EMPTY.\"",
+      "evidence": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Brief Summary",
+          "snippet": "Background:\n\nExomes are the parts of deoxyribonucleic acid (DNA) that make proteins. Researchers are finding a way to read the letters in the exome. Incorrect letters are called mutations. Tumors contain specific mutations. Researchers can find these mutations in tumors to make treatments. Researchers want to use pieces of participants tumors to find the tumor-specific mutations. They also will take participants white blood cells to make a vaccine that they hope will shrink the tumors.\n\nObjectiv",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564350"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2968934833",
+          "identifier": "PMID:31395068",
+          "title": "Pancreatic ductal adenocarcinoma: biological hallmarks, current status, and future perspectives of combined modality treatment approaches",
+          "snippet": "Title: Pancreatic ductal adenocarcinoma: biological hallmarks, current status, and future perspectives of combined modality treatment approaches\nYear: 2019\nCitations: 480\nAbstract: Pancreatic ductal adenocarcinoma (PDAC) is a highly devastating disease with poor prognosis and rising incidence. Late detection and a particularly aggressive biology are the major challenges which determine therapeutic failure. In this review, we pr",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.505636"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4283796991",
+          "identifier": "PMID:35800158",
+          "title": "Trial watch: Dendritic cell (DC)-based immunotherapy for cancer",
+          "snippet": "Title: Trial watch: Dendritic cell (DC)-based immunotherapy for cancer\nYear: 2022\nCitations: 121\nAbstract: T cell responses. Yet, DC vaccination still shows suboptimal anti-tumor efficacy in the clinic. Extensive efforts are ongoing to improve the immunogenicity and efficacy of DC vaccines, often by employing combinatorial chemo-immunotherapy regimens. In",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.505699"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4313547267",
+          "identifier": "PMID:36604431",
+          "title": "Neoantigens: promising targets for cancer therapy",
+          "snippet": "Title: Neoantigens: promising targets for cancer therapy\nYear: 2023\nCitations: 886\nAbstract: Recent advances in neoantigen research have accelerated the development and regulatory approval of tumor immunotherapies, including cancer vaccines, adoptive cell therapy and antibody-based therapies, especially for solid tumors. Neoantigens are newl",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.505542"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4382893761",
+          "identifier": "PMID:37933232",
+          "title": "Adoptive cell therapy for cancer treatment",
+          "snippet": "Title: Adoptive cell therapy for cancer treatment\nYear: 2023\nCitations: 90\nAbstract: Adoptive cell therapy (ACT) is a rapidly growing anti-cancer strategy that has shown promise in treating various cancer types. The concept of ACT involves activating patients' own immune cells ex vivo and then transferring them back to the patients t",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.505764"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7885309/",
+          "identifier": "PMC:7885309",
+          "title": "Neoantigen prediction and computational perspectives towards clinical benefit: recommendations from the ESMO Precision Medicine Working Group.",
+          "snippet": "Title: Neoantigen prediction and computational perspectives towards clinical benefit: recommendations from the ESMO Precision Medicine Working Group.\nAuthors: De Mattos-Arruda L, Vazquez M, Finotello F et al.\nJournal: Ann Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231963"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8327784/",
+          "identifier": "PMC:8327784",
+          "title": "Neoantigen vaccine platforms in clinical development: understanding the future of personalized immunotherapy.",
+          "snippet": "Title: Neoantigen vaccine platforms in clinical development: understanding the future of personalized immunotherapy.\nAuthors: Supabphol S, Li L, Goedegebuure SP et al.\nJournal: Expert Opin Investig Drugs",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231906"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8625865/",
+          "identifier": "PMC:8625865",
+          "title": "The Advantages and Challenges of Anticancer Dendritic Cell Vaccines and NK Cells in Adoptive Cell Immunotherapy.",
+          "snippet": "Title: The Advantages and Challenges of Anticancer Dendritic Cell Vaccines and NK Cells in Adoptive Cell Immunotherapy.\nAuthors: Abakushina EV, Popova LI, Zamyatnin AA Jr et al.\nJournal: Vaccines (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231943"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Peptide+loaded+dendritic+cell+vaccine",
+          "identifier": "NIH:5U19AI057229-22",
+          "title": "Advancing immune organoid technology and organoid combinations (DAVIS, MARK MORRIS)",
+          "snippet": "Project: 5U19AI057229-22\nPI: DAVIS, MARK MORRIS\nOrganization: \nFiscal year: 2025\nAward: $623,357\nStart: 2003-09-01\nEnd: 2029-04-30\n(84 total NIH-funded projects matching 'Peptide loaded dendritic cell vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:07.804783"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Peptide+loaded+dendritic+cell+vaccine",
+          "identifier": "NIH:2R01AI146072-06",
+          "title": "The Role of Lipid-specific T cells in Mediating Protection Against M. tuberculosis (SESHADRI, CHETAN)",
+          "snippet": "Project: 2R01AI146072-06\nPI: SESHADRI, CHETAN\nOrganization: \nFiscal year: 2025\nAward: $989,186\nStart: 2020-06-01\nEnd: 2030-07-31\n(84 total NIH-funded projects matching 'Peptide loaded dendritic cell vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:07.804694"
+        }
+      ],
+      "model_name": "qwen3:14b",
+      "skip_verification": false,
+      "evidence_grade": "pub_trial_specific"
+    },
+    {
+      "field_name": "reason_for_failure_atomic",
+      "value": "Recruitment issues",
+      "confidence": 0.9,
+      "reasoning": "[ATOMIC-FR R1] Recruitment issues (conf=0.90)\n  rule: whyStopped registry keyword match: Recruitment issues\n  whyStopped: slow accrual\n  tier0_match: Recruitment issues\n  atomic: q1_safety=UNCLEAR q2_eff=UNCLEAR q3_covid=UNCLEAR q4_recruit=UNCLEAR q5_business=UNCLEAR\n  R1 fired: registry whyStopped \u2192 Recruitment issues",
+      "evidence": [],
+      "model_name": "atomic-fr-deterministic",
+      "skip_verification": true,
+      "evidence_grade": "deterministic"
+    }
+  ],
+  "verification": {
+    "nct_id": "NCT03300843",
+    "fields": [
+      {
+        "field_name": "sequence",
+        "original_value": "N/A",
+        "final_value": "N/A",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "classification_atomic",
+        "original_value": "Other",
+        "final_value": "Other",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "delivery_mode",
+        "original_value": "Injection/Infusion",
+        "final_value": "Injection/Infusion",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome",
+        "original_value": "Terminated",
+        "final_value": "Terminated",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "outcome_atomic",
+        "original_value": "Terminated",
+        "final_value": "Terminated",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure_atomic",
+        "original_value": "Recruitment issues",
+        "final_value": "Recruitment issues",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [],
+        "primary_confidence": 0.7,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "peptide",
+        "original_value": "True",
+        "final_value": "True",
+        "consensus_reached": true,
+        "agreement_ratio": 1.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "The trial description clearly states the intervention involves a \"peptide loaded dendritic cell vaccine,\" which directly indicates the presence of a peptide component.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "According to the critical rules, if the intervention name or description contains \"peptide,\" this is strong evidence for True. The trial's biological intervention is clearly described as a \"peptide loaded dendritic cell vaccine,\" which meets the definition of a peptide-based intervention.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": true,
+            "suggested_value": "True",
+            "reasoning": "According to the critical rules, if the trial description or intervention name says 'peptide', this is strong evidence for True. In this case, both are present, making it a clear indication that the intervention contains peptide molecules.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.775,
+        "reconciler_used": false,
+        "reconciler_reasoning": null,
+        "flag_reason": null
+      },
+      {
+        "field_name": "reason_for_failure",
+        "original_value": "Business Reason",
+        "final_value": "Recruitment issues",
+        "consensus_reached": true,
+        "agreement_ratio": 0.0,
+        "opinions": [
+          {
+            "model_name": "verifier_1",
+            "agrees": false,
+            "suggested_value": "Recruitment issues",
+            "reasoning": "The trial was terminated due to slow accrual, indicating recruitment issues. There is no evidence of failure based on published results.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_2",
+            "agrees": false,
+            "suggested_value": "Recruitment issues",
+            "reasoning": "The trial was terminated due to slow enrollment, which is explicitly stated in the trial metadata. No other failure reason is indicated in the published results or other metadata.",
+            "confidence": 0.9,
+            "parse_failed": false
+          },
+          {
+            "model_name": "verifier_3",
+            "agrees": false,
+            "suggested_value": "Recruitment issues",
+            "reasoning": "While the published results do not directly mention the reason for termination, the Why stopped field explicitly states that the trial was terminated due to slow accrual. This is a clear indication of recruitment issues, which is a common reason for trial termination.",
+            "confidence": 0.9,
+            "parse_failed": false
+          }
+        ],
+        "primary_confidence": 0.7899999999999999,
+        "reconciler_used": true,
+        "reconciler_reasoning": "The clinicaltrials.gov entry explicitly states that the trial was terminated due to \"slow accrual,\" which directly corresponds to recruitment issues. This is a clear and unambiguous indication of the reason for failure. The three verifiers independently identified this as the correct answer based on the metadata, and their reasoning is supported by the direct evidence from the trial's \"Why stopped\" field. The primary annotator's answer of \"Business Reason\" is not supported by any specific eviden",
+        "flag_reason": null
+      }
+    ],
+    "overall_consensus": true,
+    "flagged_for_review": false,
+    "flag_reason": ""
+  },
+  "research_used": [
+    "clinical_protocol",
+    "literature",
+    "peptide_identity",
+    "web_context",
+    "dbaasp",
+    "chembl",
+    "rcsb_pdb",
+    "ebi_proteins",
+    "apd",
+    "who_ictrp",
+    "iuphar",
+    "pdbe",
+    "openalex",
+    "semantic_scholar",
+    "crossref",
+    "biorxiv",
+    "sec_edgar",
+    "fda_drugs",
+    "nih_reporter"
+  ],
+  "research_results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT03300843",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "A Phase II Trial to Evaluate the Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Patients Against Defined Mutated Neoantigens Expressed by the Autologous Cancer",
+          "snippet": "Title: A Phase II Trial to Evaluate the Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Patients Against Defined Mutated Neoantigens Expressed by the Autologous Cancer",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564314"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Brief Summary",
+          "snippet": "Background:\n\nExomes are the parts of deoxyribonucleic acid (DNA) that make proteins. Researchers are finding a way to read the letters in the exome. Incorrect letters are called mutations. Tumors contain specific mutations. Researchers can find these mutations in tumors to make treatments. Researchers want to use pieces of participants tumors to find the tumor-specific mutations. They also will take participants white blood cells to make a vaccine that they hope will shrink the tumors.\n\nObjectiv",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564350"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Detailed Description",
+          "snippet": "Background:\n\n* Therapeutic vaccination against cancer has proven very challenging with little clinical benefit.\n* Vaccines against non-viral tumors have mainly targeted differentiation antigens, cancer testis antigens, and overexpressed antigens. However negative selection in the thymus against these normal nonmutated antigens severely limits the ability to generate high avidity anti-cancer T cells. Such depletion can impair their antitumor activity and limit tumor elimination.\n* The National Ca",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564360"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Study Status",
+          "snippet": "Status: TERMINATED | Why stopped: slow accrual",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564369"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: Melanoma, Gastrointestinal Cancer, Breast Cancer, Ovarian Cancer, Pancreatic Cancer | Keywords: Cell Therapy, Immunotherapy, Vaccines",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564379"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Intervention: Peptide loaded dendritic cell vaccine",
+          "snippet": "BIOLOGICAL: Peptide loaded dendritic cell vaccine - On days 0, 14 (+/- 5 days), 28 (+/- 5 days), and 42 (+/- 5 days). The vaccine will be administered as both an intravenous (IV) infusion and a subcutaneous (SQ) injection. The total dose will be divided equally between intravenous (IV) and SQ containing 1.0E7 to 8.0E7 cells per cycle depending upon t",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564390"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Arm Group: Peptide loaded dendritic cell vaccine",
+          "snippet": "Arm: Peptide loaded dendritic cell vaccine - Peptide loaded dendritic cell vaccine on days 0, 14, 28, and 42",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564399"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Phase",
+          "snippet": "Phase: PHASE2",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564408"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Results Posted",
+          "snippet": "Results Posted: Yes",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564420"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Primary Outcome: Percentage of Patients Who Had a Clinical Response (Complete Response (CR) + Par",
+          "snippet": "Primary Outcome: Percentage of Patients Who Had a Clinical Response (Complete Response (CR) + Partial Response (PR)) to Treatment \u2014 Response was assessed by the RECIST v1.1. Complete Response is disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to \\<1 (timeframe: up to 6 months)",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-05-06T17:06:29.564435"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT03300843",
+            "orgStudyIdInfo": {
+              "id": "170177"
+            },
+            "secondaryIdInfos": [
+              {
+                "id": "17-C-0177"
+              }
+            ],
+            "organization": {
+              "fullName": "National Institutes of Health Clinical Center (CC)",
+              "class": "NIH"
+            },
+            "briefTitle": "Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Patients Against Defined Mutated Neoantigens Expressed by the Autologous Cancer",
+            "officialTitle": "A Phase II Trial to Evaluate the Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Patients Against Defined Mutated Neoantigens Expressed by the Autologous Cancer"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2019-11",
+            "overallStatus": "TERMINATED",
+            "whyStopped": "slow accrual",
+            "startDateStruct": {
+              "date": "2018-04-11",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2019-07-09",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2019-09-16",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2017-10-03",
+            "studyFirstSubmitQcDate": "2017-10-03",
+            "studyFirstPostDateStruct": {
+              "date": "2017-10-04",
+              "type": "ACTUAL"
+            },
+            "resultsFirstSubmitDate": "2019-11-19",
+            "resultsFirstSubmitQcDate": "2019-11-19",
+            "resultsFirstPostDateStruct": {
+              "date": "2019-12-13",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2019-11-19",
+            "lastUpdatePostDateStruct": {
+              "date": "2019-12-13",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "PRINCIPAL_INVESTIGATOR",
+              "investigatorFullName": "Steven Rosenberg, M.D.",
+              "investigatorTitle": "Principal Investigator",
+              "investigatorAffiliation": "National Cancer Institute (NCI)"
+            },
+            "leadSponsor": {
+              "name": "National Cancer Institute (NCI)",
+              "class": "NIH"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": false,
+            "isFdaRegulatedDrug": true,
+            "isFdaRegulatedDevice": false
+          },
+          "descriptionModule": {
+            "briefSummary": "Background:\n\nExomes are the parts of deoxyribonucleic acid (DNA) that make proteins. Researchers are finding a way to read the letters in the exome. Incorrect letters are called mutations. Tumors contain specific mutations. Researchers can find these mutations in tumors to make treatments. Researchers want to use pieces of participants tumors to find the tumor-specific mutations. They also will take participants white blood cells to make a vaccine that they hope will shrink the tumors.\n\nObjectives:\n\nTo see if dendritic vaccine tumor-fighting cells are safe and can cause certain cancer tumors to shrink.\n\nEligibility:\n\nAdults ages 18-70 who have metastatic melanoma or metastatic epithelial cancer\n\nDesign:\n\nThe first part of this study was done under protocol 03-C-0277. In that study, white blood cells and pieces of participants' tumors were taken to make a vaccine.\n\nIn this study, participants will get a vaccine every 2 weeks for 8 weeks. It will be given both in a vein and under the skin. At each visit, participants will have a physical exam and have blood taken. They will talk about any side effects they have.\n\nAfter treatment ends, participants will have many follow-up visits for the first year, then once each year after that. Visits will last up to 2 days each. They will include lab tests, imaging studies, and a physical exam. Blood will be taken at each visit. At the first follow-up visit, participants may have leukapheresis, which they also had as part of protocol 03-C-0277. Participants may not have to return to the Clinical Center for these visits.",
+            "detailedDescription": "Background:\n\n* Therapeutic vaccination against cancer has proven very challenging with little clinical benefit.\n* Vaccines against non-viral tumors have mainly targeted differentiation antigens, cancer testis antigens, and overexpressed antigens. However negative selection in the thymus against these normal nonmutated antigens severely limits the ability to generate high avidity anti-cancer T cells. Such depletion can impair their antitumor activity and limit tumor elimination.\n* The National Cancer Institute Surgery Branch (NCI SB) has developed a pipeline for the identification of immunogenic T cell epitopes derived from neoantigens.\n* In recent studies, we identified the neoantigens recognized by tumor infiltrating lymphocytes (TIL) that mediated regression in patients with metastatic cancer. Using whole exome sequencing of a resected metastatic nodule followed by high throughput immunologic screening, we were able to demonstrate that tumor regressions were associated with the recognition by the administered TIL of unique somatic mutations that occurred in the cancer.\n* We, therefore, aim to use this pipeline to identify immunogenic neoantigens from epithelial cancer patients and to use these defined epitopes for a personalized therapeutic dendritic cell (DC) vaccine.\n\nObjectives:\n\n-Primary objectives:\n\n--To determine the clinical response rate in patients with metastatic melanoma or epithelial cancer who receive this DC vaccine\n\nEligibility:\n\n* Age greater than or equal to 18 and less than or equal to 70 years\n* Eastern Cooperative Oncology Group (ECOG) 0 - 2\n* Evaluable metastatic melanoma or epithelial cancer refractory to standard treatment\n* Metastatic melanoma or epithelial cancer lesion(s) that is resectable for TIL or in selected cases, available peripheral blood mononuclear cells (PBMC).\n\nDesign:\n\n* Patients with metastatic melanoma or epithelial cancer will undergo surgical resection of tumor followed by exome and ribonucleic acid (RNA) sequencing to identify expressed mutations (CONDUCTED UNDER THE National Cancer Institute Surgery Branch (NCI SB) COMPANION PROTOCOL 03-c-0277).\n* Patients will undergo apheresis and DC will be cryopreserved for vaccine preparation.\n* Immunogenic neoantigens will be identified from TIL and PBMC by high throughput immunologic screening using long peptides and tandem minigenes covering all mutated epitopes.\n* Patient will be vaccinated with autologous mature dendritic cells loaded with long peptides and minimal epitopes from defined neoantigens or highly expressed mutations in tumor suppressor or driver genes.\n* DC will be administered intravenously and subcutaneously for four cycles at biweekly intervals.\n* Blood samples will be taken every two weeks, and patients will be monitored for the quantity and quality of circulating neoantigen-specific T cells."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "Melanoma",
+              "Gastrointestinal Cancer",
+              "Breast Cancer",
+              "Ovarian Cancer",
+              "Pancreatic Cancer"
+            ],
+            "keywords": [
+              "Cell Therapy",
+              "Immunotherapy",
+              "Vaccines"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "PHASE2"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "TREATMENT",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 1,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Peptide loaded dendritic cell vaccine",
+                "type": "EXPERIMENTAL",
+                "description": "Peptide loaded dendritic cell vaccine on days 0, 14, 28, and 42",
+                "interventionNames": [
+                  "Biological: Peptide loaded dendritic cell vaccine"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "BIOLOGICAL",
+                "name": "Peptide loaded dendritic cell vaccine",
+                "description": "On days 0, 14 (+/- 5 days), 28 (+/- 5 days), and 42 (+/- 5 days). The vaccine will be administered as both an intravenous (IV) infusion and a subcutaneous (SQ) injection. The total dose will be divided equally between intravenous (IV) and SQ containing 1.0E7 to 8.0E7 cells per cycle depending upon the manufacturing yield.",
+                "armGroupLabels": [
+                  "Peptide loaded dendritic cell vaccine"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "Percentage of Patients Who Had a Clinical Response (Complete Response (CR) + Partial Response (PR)) to Treatment",
+                "description": "Response was assessed by the RECIST v1.1. Complete Response is disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to \\<10 mm. Partial Response is at least a 30% decrease in the sum of the diameters of target lesions, taking as reference the baseline sum of diameters.",
+                "timeFrame": "up to 6 months"
+              }
+            ],
+            "secondaryOutcomes": [
+              {
+                "measure": "Number of Participants With 2-3 Fold Increase From Baseline in Reactivity to Circulating Antigen-specific T Cells to the Mutated Peptide Compared to the Non-mutated Peptide",
+                "description": "Enzyme-linked immunosorbent assay (ELISA) and enzyme-linked immune absorbent spot (ELISpot) assays assessed reactivity to the mutated peptide compared to the non-mutated peptide. Differences of 2-3 fold in these assays over the baseline measurement are indicative of true biologic differences.",
+                "timeFrame": "Day 0, Day 14 (\u00b1 5 d), Day 28 (\u00b1 5 d), and Day 42 (\u00b1 5 d)"
+              },
+              {
+                "measure": "Number of Participants With Serious and Non-serious Adverse Events",
+                "description": "Here is the count of participants with serious and non-serious adverse events assessed by the Common Terminology Criteria for Adverse Events (CTCAE v5.0). A non-serious adverse event is any untoward medical occurrence. A serious adverse event is an adverse event or suspected adverse reaction that results in death, a life-threatening adverse drug experience, hospitalization, disruption of the ability to conduct normal life functions, congenital anomaly/birth defect or important medical events that jeopardize the patient or subject and may require medical or surgical intervention to prevent one of the previous outcomes mentioned.",
+                "timeFrame": "Date treatment consent signed to date off study, approximately 6 months and 11 days"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "* INCLUSION CRITERIA:\n* Metastatic melanoma or epithelial cancer with at least one lesion that is resectable or in selected cases, available peripheral blood mononuclear cells (PBMCs)\n* Measurable and evaluable metastatic disease per Response Evaluation Criteria in Solid Tumors (RECIST) 1.1 criteria\n* Confirmation of the diagnosis of metastatic cancer by the Laboratory of Pathology of National Cancer Institute (NCI).\n* All patients must be refractory to approved standard systemic therapy.\n* Patients with 3 or fewer brain metastases that are less than 1 cm in diameter and asymptomatic are eligible. Lesions that have been treated with stereotactic radiosurgery must be clinically stable for one month after treatment for the patient to be eligible. Patients with surgically resected brain metastases are eligible.\n* Greater than or equal to 18 years of age and less than or equal to 70 years of age.\n* Clinical performance status of Eastern Cooperative Oncology Group (ECOG) 0, 1, 2\n* Patients of both genders must be willing to practice birth control from the time of enrollment on this study and for up to four months after treatment.\n* Serology:\n\n  * Seronegative for Human Immunodeficiency Virus (HIV) antibody. (The experimental treatment being evaluated in this protocol depends on an intact immune system. Patients who are HIV seropositive can have decreased immune-competence and thus are less responsive to the experimental treatment and more susceptible to its toxicities.)\n  * Seronegative for hepatitis B antigen, and seronegative for hepatitis C antibody. If hepatitis C antibody test is positive, then the patient must be tested for the presence of antigen by reverse transcriptase polymerase chain reaction (RT-PCR) and be hepatitis C virus ribonucleic acid (HCV RNA) negative.\n* Hematology\n\n  * Absolute neutrophil count greater than 1000/mm\\^3 without the support of filgrastim\n  * White blood cell (WBC) greater than or equal to 3000/mm\\^3\n  * Platelet count greater than or equal to 100,000/mm\\^3\n  * Hemoglobin \\> 8.0 g/dl. Subjects may be transfused to reach this cut-off.\n  * Cluster of differentiation 4 (CD4) count \\> 200/uL\n* Chemistry:\n\n  * Serum alanine aminotransferase (ALT)/aspartate aminotransferase (AST) less than 5.0 x ULN\n  * Serum Creatinine less than or equal to 1.6 mg/dl\n  * Total bilirubin less than or equal to 2.0 mg/dl, except in patients with Gilbert's Syndrome, who must have a total bilirubin less than or equal to 3.0 mg/dl.\n* More than four weeks must have elapsed since any prior systemic therapy at the time the patient receives the vaccine, and patients toxicities must have recovered to a grade 1 or less (except for toxicities such as alopecia or vitiligo).\n\nNote: Patients may have undergone minor surgical procedures within the past 3 weeks, as long as all toxicities have recovered to grade 1 or less.\n\n* Ability of subject to understand and the willingness to sign a written informed consent document.\n* Subjects must be co-enrolled On protocol 03-C-0277.\n\nEXCLUSION CRITERIA:\n\n* Women of child-bearing potential who are pregnant or breastfeeding because of the potentially dangerous effects of the treatment on the fetus or infant.\n* Any form of primary immunodeficiency (such as Severe Combined Immunodeficiency Disease).\n* Concurrent opportunistic infections (The experimental treatment being evaluated in this protocol depends on an intact immune system. Patients who have decreased immune competence may be less responsive to the experimental treatment and more susceptible to its toxicities).\n* Active systemic infections (requiring anti-infective treatment), coagulation disorders or any other active or uncompensated major medical illnesses.\n* Patients who are receiving any other investigational agents.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "70 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "overallOfficials": [
+              {
+                "name": "Steven A Rosenberg, M.D.",
+                "affiliation": "National Cancer Institute (NCI)",
+                "role": "PRINCIPAL_INVESTIGATOR"
+              }
+            ],
+            "locations": [
+              {
+                "facility": "National Institutes of Health Clinical Center",
+                "city": "Bethesda",
+                "state": "Maryland",
+                "zip": "20892",
+                "country": "United States",
+                "geoPoint": {
+                  "lat": 38.98067,
+                  "lon": -77.10026
+                }
+              }
+            ]
+          },
+          "referencesModule": {
+            "references": [
+              {
+                "pmid": "19935803",
+                "type": "BACKGROUND",
+                "citation": "Klein L, Hinterberger M, Wirnsberger G, Kyewski B. Antigen presentation in the thymus for positive selection and central tolerance induction. Nat Rev Immunol. 2009 Dec;9(12):833-44. doi: 10.1038/nri2669."
+              },
+              {
+                "pmid": "20085707",
+                "type": "BACKGROUND",
+                "citation": "Abramson J, Giraud M, Benoist C, Mathis D. Aire's partners in the molecular control of immunological tolerance. Cell. 2010 Jan 8;140(1):123-35. doi: 10.1016/j.cell.2009.12.030."
+              },
+              {
+                "pmid": "23243587",
+                "type": "BACKGROUND",
+                "citation": "Bos R, Marquardt KL, Cheung J, Sherman LA. Functional differences between low- and high-affinity CD8(+) T cells in the tumor environment. Oncoimmunology. 2012 Nov 1;1(8):1239-1247. doi: 10.4161/onci.21285."
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "NO"
+          }
+        },
+        "results_section": {
+          "participantFlowModule": {
+            "groups": [
+              {
+                "id": "FG000",
+                "title": "Peptide Loaded Dendritic Cell Vaccine",
+                "description": "Peptide loaded dendritic cell vaccine on days 0, 14, 28, and 42\n\nPeptide loaded dendritic cell vaccine: On days 0, 14 (+/- 5 days), 28 (+/- 5 days), and 42 (+/- 5 days). The vaccine will be administered as both an intravenous (IV) infusion and a subcutaneous (SQ) injection. The total dose will be divided equally between intravenous (IV) and SQ containing 1.0E7 to 8.0E7 cells per cycle depending upon the manufacturing yield."
+              }
+            ],
+            "periods": [
+              {
+                "title": "Overall Study",
+                "milestones": [
+                  {
+                    "type": "STARTED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "COMPLETED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "1"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "NOT COMPLETED",
+                    "achievements": [
+                      {
+                        "groupId": "FG000",
+                        "numSubjects": "0"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "baselineCharacteristicsModule": {
+            "groups": [
+              {
+                "id": "BG000",
+                "title": "Peptide Loaded Dendritic Cell Vaccine",
+                "description": "Peptide loaded dendritic cell vaccine on days 0, 14, 28, and 42\n\nPeptide loaded dendritic cell vaccine: On days 0, 14 (+/- 5 days), 28 (+/- 5 days), and 42 (+/- 5 days). The vaccine will be administered as both an intravenous (IV) infusion and a subcutaneous (SQ) injection. The total dose will be divided equally between intravenous (IV) and SQ containing 1.0E7 to 8.0E7 cells per cycle depending upon the manufacturing yield."
+              }
+            ],
+            "denoms": [
+              {
+                "units": "Participants",
+                "counts": [
+                  {
+                    "groupId": "BG000",
+                    "value": "1"
+                  }
+                ]
+              }
+            ],
+            "measures": [
+              {
+                "title": "Age, Categorical",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "<=18 years",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Between 18 and 65 years",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "1"
+                          }
+                        ]
+                      },
+                      {
+                        "title": ">=65 years",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Age, Continuous",
+                "paramType": "MEAN",
+                "dispersionType": "STANDARD_DEVIATION",
+                "unitOfMeasure": "years",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "62.0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Sex: Female, Male",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "Female",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "1"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Male",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Ethnicity (NIH/OMB)",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "Hispanic or Latino",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Not Hispanic or Latino",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "1"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Unknown or Not Reported",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Race (NIH/OMB)",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "title": "American Indian or Alaska Native",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Asian",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Native Hawaiian or Other Pacific Islander",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Black or African American",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "White",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "1"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "More than one race",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "Unknown or Not Reported",
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Region of Enrollment",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "classes": [
+                  {
+                    "title": "United States",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "BG000",
+                            "value": "1"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "outcomeMeasuresModule": {
+            "outcomeMeasures": [
+              {
+                "type": "PRIMARY",
+                "title": "Percentage of Patients Who Had a Clinical Response (Complete Response (CR) + Partial Response (PR)) to Treatment",
+                "description": "Response was assessed by the RECIST v1.1. Complete Response is disappearance of all target lesions. Any pathological lymph nodes (whether target or non-target) must have reduction in short axis to \\<10 mm. Partial Response is at least a 30% decrease in the sum of the diameters of target lesions, taking as reference the baseline sum of diameters.",
+                "reportingStatus": "POSTED",
+                "paramType": "NUMBER",
+                "dispersionType": "95% Confidence Interval",
+                "unitOfMeasure": "percentage of participants",
+                "timeFrame": "up to 6 months",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Peptide Loaded Dendritic Cell Vaccine",
+                    "description": "Peptide loaded dendritic cell vaccine on days 0, 14, 28, and 42\n\nPeptide loaded dendritic cell vaccine: On days 0, 14 (+/- 5 days), 28 (+/- 5 days), and 42 (+/- 5 days). The vaccine will be administered as both an intravenous (IV) infusion and a subcutaneous (SQ) injection. The total dose will be divided equally between intravenous (IV) and SQ containing 1.0E7 to 8.0E7 cells per cycle depending upon the manufacturing yield."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "1"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Number of Participants With 2-3 Fold Increase From Baseline in Reactivity to Circulating Antigen-specific T Cells to the Mutated Peptide Compared to the Non-mutated Peptide",
+                "description": "Enzyme-linked immunosorbent assay (ELISA) and enzyme-linked immune absorbent spot (ELISpot) assays assessed reactivity to the mutated peptide compared to the non-mutated peptide. Differences of 2-3 fold in these assays over the baseline measurement are indicative of true biologic differences.",
+                "reportingStatus": "POSTED",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "timeFrame": "Day 0, Day 14 (\u00b1 5 d), Day 28 (\u00b1 5 d), and Day 42 (\u00b1 5 d)",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Peptide Loaded Dendritic Cell Vaccine",
+                    "description": "Peptide loaded dendritic cell vaccine on days 0, 14, 28, and 42\n\nPeptide loaded dendritic cell vaccine: On days 0, 14 (+/- 5 days), 28 (+/- 5 days), and 42 (+/- 5 days). The vaccine will be administered as both an intravenous (IV) infusion and a subcutaneous (SQ) injection. The total dose will be divided equally between intravenous (IV) and SQ containing 1.0E7 to 8.0E7 cells per cycle depending upon the manufacturing yield."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "1"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "title": "Mutated peptide Day 0",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Mutated peptide Day 14",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Mutated peptide Day 28",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Mutated peptide Day 42",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Non-Mutated peptide Day 0",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Non-Mutated peptide Day 14",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Non-Mutated peptide Day 28",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "Non-Mutated peptide Day 56",
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "0"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "SECONDARY",
+                "title": "Number of Participants With Serious and Non-serious Adverse Events",
+                "description": "Here is the count of participants with serious and non-serious adverse events assessed by the Common Terminology Criteria for Adverse Events (CTCAE v5.0). A non-serious adverse event is any untoward medical occurrence. A serious adverse event is an adverse event or suspected adverse reaction that results in death, a life-threatening adverse drug experience, hospitalization, disruption of the ability to conduct normal life functions, congenital anomaly/birth defect or important medical events that jeopardize the patient or subject and may require medical or surgical intervention to prevent one of the previous outcomes mentioned.",
+                "reportingStatus": "POSTED",
+                "paramType": "COUNT_OF_PARTICIPANTS",
+                "unitOfMeasure": "Participants",
+                "timeFrame": "Date treatment consent signed to date off study, approximately 6 months and 11 days",
+                "groups": [
+                  {
+                    "id": "OG000",
+                    "title": "Peptide Loaded Dendritic Cell Vaccine",
+                    "description": "Peptide loaded dendritic cell vaccine on days 0, 14, 28, and 42\n\nPeptide loaded dendritic cell vaccine: On days 0, 14 (+/- 5 days), 28 (+/- 5 days), and 42 (+/- 5 days). The vaccine will be administered as both an intravenous (IV) infusion and a subcutaneous (SQ) injection. The total dose will be divided equally between intravenous (IV) and SQ containing 1.0E7 to 8.0E7 cells per cycle depending upon the manufacturing yield."
+                  }
+                ],
+                "denoms": [
+                  {
+                    "units": "Participants",
+                    "counts": [
+                      {
+                        "groupId": "OG000",
+                        "value": "1"
+                      }
+                    ]
+                  }
+                ],
+                "classes": [
+                  {
+                    "categories": [
+                      {
+                        "measurements": [
+                          {
+                            "groupId": "OG000",
+                            "value": "1"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "adverseEventsModule": {
+            "frequencyThreshold": "0",
+            "timeFrame": "Date treatment consent signed to date off study, approximately 6 months and 11 days.",
+            "eventGroups": [
+              {
+                "id": "EG000",
+                "title": "Peptide Loaded Dendritic Cell Vaccine",
+                "description": "Peptide loaded dendritic cell vaccine on days 0, 14, 28, and 42\n\nPeptide loaded dendritic cell vaccine: On days 0, 14 (+/- 5 days), 28 (+/- 5 days), and 42 (+/- 5 days). The vaccine will be administered as both an intravenous (IV) infusion and a subcutaneous (SQ) injection. The total dose will be divided equally between intravenous (IV) and SQ containing 1.0E7 to 8.0E7 cells per cycle depending upon the manufacturing yield.",
+                "deathsNumAffected": 0,
+                "deathsNumAtRisk": 1,
+                "seriousNumAffected": 0,
+                "seriousNumAtRisk": 1,
+                "otherNumAffected": 1,
+                "otherNumAtRisk": 1
+              }
+            ],
+            "otherEvents": [
+              {
+                "term": "Nausea",
+                "organSystem": "Gastrointestinal disorders",
+                "sourceVocabulary": "CTCAE (5.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numEvents": 4,
+                    "numAffected": 1,
+                    "numAtRisk": 1
+                  }
+                ]
+              },
+              {
+                "term": "Fatigue",
+                "organSystem": "General disorders",
+                "sourceVocabulary": "CTCAE (5.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numEvents": 1,
+                    "numAffected": 1,
+                    "numAtRisk": 1
+                  }
+                ]
+              },
+              {
+                "term": "Injection site reaction",
+                "organSystem": "General disorders",
+                "sourceVocabulary": "CTCAE (5.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numEvents": 6,
+                    "numAffected": 1,
+                    "numAtRisk": 1
+                  }
+                ]
+              },
+              {
+                "term": "Headache",
+                "organSystem": "Nervous system disorders",
+                "sourceVocabulary": "CTCAE (5.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numEvents": 7,
+                    "numAffected": 1,
+                    "numAtRisk": 1
+                  }
+                ]
+              },
+              {
+                "term": "Skin induration",
+                "organSystem": "Skin and subcutaneous tissue disorders",
+                "sourceVocabulary": "CTCAE (5.0)",
+                "assessmentType": "SYSTEMATIC_ASSESSMENT",
+                "stats": [
+                  {
+                    "groupId": "EG000",
+                    "numEvents": 1,
+                    "numAffected": 1,
+                    "numAtRisk": 1
+                  }
+                ]
+              }
+            ]
+          },
+          "moreInfoModule": {
+            "certainAgreement": {
+              "piSponsorEmployee": false,
+              "restrictiveAgreement": false
+            },
+            "pointOfContact": {
+              "title": "Dr. Steven A. Rosenberg",
+              "organization": "National Cancer Institute",
+              "email": "steven-rosenberg@nih.gov",
+              "phone": "240-858-3080"
+            }
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT03300843",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13000900/",
+          "identifier": "PMC:13000900",
+          "title": "Immunoinformatic insights for design and clinical prospects of pan-RAS cancer vaccine.",
+          "snippet": "Title: Immunoinformatic insights for design and clinical prospects of pan-RAS cancer vaccine.\nAuthors: Srivastava R, Rana TRK\nJournal: Front Med (Lausanne)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231581"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12533755/",
+          "identifier": "PMC:12533755",
+          "title": "Current progress in neoantigen-based dendritic cell vaccines for solid tumors.",
+          "snippet": "Title: Current progress in neoantigen-based dendritic cell vaccines for solid tumors.\nAuthors: Li Y, Abudureheman A, Xu J\nJournal: Cancer Biol Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231641"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11958638/",
+          "identifier": "PMC:11958638",
+          "title": "Leveraging glycosylation for early detection and therapeutic target discovery in pancreatic cancer.",
+          "snippet": "Title: Leveraging glycosylation for early detection and therapeutic target discovery in pancreatic cancer.\nAuthors: Pienkowski T, Wawrzak-Pienkowska K, Tankiewicz-Kwedlo A et al.\nJournal: Cell Death Dis",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231669"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11188978/",
+          "identifier": "PMC:11188978",
+          "title": "Public neoantigens in breast cancer immunotherapy (Review).",
+          "snippet": "Title: Public neoantigens in breast cancer immunotherapy (Review).\nAuthors: Sueangoen N, Thuwajit P, Yenchitsomanus PT et al.\nJournal: Int J Mol Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231690"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11033713/",
+          "identifier": "PMC:11033713",
+          "title": "Neoantigen cancer vaccines: a new star on the horizon.",
+          "snippet": "Title: Neoantigen cancer vaccines: a new star on the horizon.\nAuthors: Li X, You J, Hong L et al.\nJournal: Cancer Biol Med",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231711"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10624386/",
+          "identifier": "PMC:10624386",
+          "title": "Adoptive cell therapy for cancer treatment.",
+          "snippet": "Title: Adoptive cell therapy for cancer treatment.\nAuthors: Du S, Yan J, Xue Y et al.\nJournal: Exploration (Beijing)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231731"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9947792/",
+          "identifier": "PMC:9947792",
+          "title": "Designing neoantigen cancer vaccines, trials, and outcomes.",
+          "snippet": "Title: Designing neoantigen cancer vaccines, trials, and outcomes.\nAuthors: Biswas N, Chakrabarti S, Padul V et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231751"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9905145/",
+          "identifier": "PMC:9905145",
+          "title": "Research progress of neoantigen-based dendritic cell vaccines in pancreatic cancer.",
+          "snippet": "Title: Research progress of neoantigen-based dendritic cell vaccines in pancreatic cancer.\nAuthors: Zhang X, Xu Z, Dai X et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231770"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9816309/",
+          "identifier": "PMC:9816309",
+          "title": "Neoantigens: promising targets for cancer therapy.",
+          "snippet": "Title: Neoantigens: promising targets for cancer therapy.\nAuthors: Xie N, Shen G, Gao W et al.\nJournal: Signal Transduct Target Ther",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231790"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9454936/",
+          "identifier": "PMC:9454936",
+          "title": "The Identification and Clinical Applications of Mutated Antigens in the Era of Immunotherapy.",
+          "snippet": "Title: The Identification and Clinical Applications of Mutated Antigens in the Era of Immunotherapy.\nAuthors: Kye Y, Nagineni L, Gadad S et al.\nJournal: Cancers (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231809"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9433083/",
+          "identifier": "PMC:9433083",
+          "title": "Neoantigens in precision cancer immunotherapy: from identification to clinical applications.",
+          "snippet": "Title: Neoantigens in precision cancer immunotherapy: from identification to clinical applications.\nAuthors: Zhang Q, Jia Q, Zhang J et al.\nJournal: Chin Med J (Engl)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231829"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9255073/",
+          "identifier": "PMC:9255073",
+          "title": "Trial watch: Dendritic cell (DC)-based immunotherapy for cancer.",
+          "snippet": "Title: Trial watch: Dendritic cell (DC)-based immunotherapy for cancer.\nAuthors: Laureano RS, Sprooten J, Vanmeerbeerk I et al.\nJournal: Oncoimmunology",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231848"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8170847/",
+          "identifier": "PMC:8170847",
+          "title": "Nanotechnology synergized immunoengineering for cancer.",
+          "snippet": "Title: Nanotechnology synergized immunoengineering for cancer.\nAuthors: Chauhan DS, Dhasmana A, Laskar P et al.\nJournal: Eur J Pharm Biopharm",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231868"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9127253/",
+          "identifier": "PMC:9127253",
+          "title": "Advances in Human Dendritic Cell-Based Immunotherapy Against Gastrointestinal Cancer.",
+          "snippet": "Title: Advances in Human Dendritic Cell-Based Immunotherapy Against Gastrointestinal Cancer.\nAuthors: Ni L\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231886"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8327784/",
+          "identifier": "PMC:8327784",
+          "title": "Neoantigen vaccine platforms in clinical development: understanding the future of personalized immunotherapy.",
+          "snippet": "Title: Neoantigen vaccine platforms in clinical development: understanding the future of personalized immunotherapy.\nAuthors: Supabphol S, Li L, Goedegebuure SP et al.\nJournal: Expert Opin Investig Drugs",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231906"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8119507/",
+          "identifier": "PMC:8119507",
+          "title": "Pancreatic Cancer Immuno-oncology in the Era of Precision Medicine.",
+          "snippet": "Title: Pancreatic Cancer Immuno-oncology in the Era of Precision Medicine.\nAuthors: Hegde S\nJournal: Indian J Surg Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231924"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8625865/",
+          "identifier": "PMC:8625865",
+          "title": "The Advantages and Challenges of Anticancer Dendritic Cell Vaccines and NK Cells in Adoptive Cell Immunotherapy.",
+          "snippet": "Title: The Advantages and Challenges of Anticancer Dendritic Cell Vaccines and NK Cells in Adoptive Cell Immunotherapy.\nAuthors: Abakushina EV, Popova LI, Zamyatnin AA Jr et al.\nJournal: Vaccines (Basel)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231943"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7885309/",
+          "identifier": "PMC:7885309",
+          "title": "Neoantigen prediction and computational perspectives towards clinical benefit: recommendations from the ESMO Precision Medicine Working Group.",
+          "snippet": "Title: Neoantigen prediction and computational perspectives towards clinical benefit: recommendations from the ESMO Precision Medicine Working Group.\nAuthors: De Mattos-Arruda L, Vazquez M, Finotello F et al.\nJournal: Ann Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231963"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7766207/",
+          "identifier": "PMC:7766207",
+          "title": "Current Trends in Cancer Immunotherapy.",
+          "snippet": "Title: Current Trends in Cancer Immunotherapy.\nAuthors: Filin IY, Solovyeva VV, Kitaeva KV et al.\nJournal: Biomedicines",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.231983"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7463107/",
+          "identifier": "PMC:7463107",
+          "title": "Human immunology and immunotherapy: main achievements and challenges.",
+          "snippet": "Title: Human immunology and immunotherapy: main achievements and challenges.\nAuthors: Varad\u00e9 J, Magad\u00e1n S, Gonz\u00e1lez-Fern\u00e1ndez \u00c1\nJournal: Cell Mol Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232001"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6791419/",
+          "identifier": "PMC:6791419",
+          "title": "Trial watch: dendritic cell vaccination for cancer immunotherapy.",
+          "snippet": "Title: Trial watch: dendritic cell vaccination for cancer immunotherapy.\nAuthors: Sprooten J, Ceusters J, Coosemans A et al.\nJournal: Oncoimmunology",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232020"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7023714/",
+          "identifier": "PMC:7023714",
+          "title": "Current advances and outlooks in immunotherapy for pancreatic ductal adenocarcinoma.",
+          "snippet": "Title: Current advances and outlooks in immunotherapy for pancreatic ductal adenocarcinoma.\nAuthors: Fan JQ, Wang MF, Chen HL et al.\nJournal: Mol Cancer",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232039"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6731555/",
+          "identifier": "PMC:6731555",
+          "title": "Tumor neoantigens: from basic research to clinical applications.",
+          "snippet": "Title: Tumor neoantigens: from basic research to clinical applications.\nAuthors: Jiang T, Shi T, Zhang H et al.\nJournal: J Hematol Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232059"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6513204/",
+          "identifier": "PMC:6513204",
+          "title": "Antigen-specific active immunotherapy for ovarian cancer.",
+          "snippet": "Title: Antigen-specific active immunotherapy for ovarian cancer.\nAuthors: Paijens ST, Leffers N, Daemen T et al.\nJournal: Cochrane Database Syst Rev",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232092"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6688256/",
+          "identifier": "PMC:6688256",
+          "title": "Pancreatic ductal adenocarcinoma: biological hallmarks, current status, and future perspectives of combined modality treatment approaches.",
+          "snippet": "Title: Pancreatic ductal adenocarcinoma: biological hallmarks, current status, and future perspectives of combined modality treatment approaches.\nAuthors: Orth M, Metzger P, Gerum S et al.\nJournal: Radiat Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232124"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6470191/",
+          "identifier": "PMC:6470191",
+          "title": "Personalized Dendritic Cell Vaccines-Recent Breakthroughs and Encouraging Clinical Results.",
+          "snippet": "Title: Personalized Dendritic Cell Vaccines-Recent Breakthroughs and Encouraging Clinical Results.\nAuthors: Mastelic-Gavillet B, Balint K, Boudousquie C et al.\nJournal: Front Immunol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232144"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6372550/",
+          "identifier": "PMC:6372550",
+          "title": "On the Other Side: Manipulating the Immune Checkpoint Landscape of Dendritic Cells to Enhance Cancer Immunotherapy.",
+          "snippet": "Title: On the Other Side: Manipulating the Immune Checkpoint Landscape of Dendritic Cells to Enhance Cancer Immunotherapy.\nAuthors: Kong BY, Bolton H, Kim JW et al.\nJournal: Front Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232164"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6363766/",
+          "identifier": "PMC:6363766",
+          "title": "Immunotherapeutic advances in gastrointestinal malignancies.",
+          "snippet": "Title: Immunotherapeutic advances in gastrointestinal malignancies.\nAuthors: Rao D, Parakrama R, Augustine T et al.\nJournal: NPJ Precis Oncol",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232183"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6361626/",
+          "identifier": "PMC:6361626",
+          "title": "Cancer vaccines.",
+          "snippet": "Title: Cancer vaccines.\nAuthors: Rousseau RF, Hirschmann-Jax C, Takahashi S et al.\nJournal: Hematol Oncol Clin North Am",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232203"
+        },
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6267674/",
+          "identifier": "PMC:6267674",
+          "title": "Identifying neoantigens for use in immunotherapy.",
+          "snippet": "Title: Identifying neoantigens for use in immunotherapy.\nAuthors: Hutchison S, Pritchard AL\nJournal: Mamm Genome",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.232221"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "13000900",
+          "12533755",
+          "11958638",
+          "11188978",
+          "11033713",
+          "10624386",
+          "9947792",
+          "9905145",
+          "9816309",
+          "9454936",
+          "9433083",
+          "9255073",
+          "8170847",
+          "9127253",
+          "8327784",
+          "8119507",
+          "8625865",
+          "7885309",
+          "7766207",
+          "7463107",
+          "6791419",
+          "7023714",
+          "6731555",
+          "6513204",
+          "6688256",
+          "6470191",
+          "6372550",
+          "6363766",
+          "6361626",
+          "6267674"
+        ],
+        "pmc_count": 30,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "uniprot_Peptide loaded dendritic cell vaccine_no_structured_match": true,
+        "uniprot_Peptide loaded dendritic cell vaccine": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT03300843",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial ...",
+          "snippet": "Web result for: NCT03300843 Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Pa",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:09.114180"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://trial.medpath.com/clinical-trial/415d0fa8da81017c/nct03300843-dendritic-cell-vaccine-melanoma-epithelial-cancer",
+          "identifier": "NCT03300843",
+          "title": "Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial ...",
+          "snippet": "Web result for: NCT03300843 Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Pa",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:09.114226"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT03300843?tab=results",
+          "identifier": "NCT03300843",
+          "title": "Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial ...",
+          "snippet": "Web result for: NCT03300843 Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Pa",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:09.114244"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.patlynk.com/trial/NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial ...",
+          "snippet": "Web result for: NCT03300843 Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Pa",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:09.114259"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://veterans.networkofcare.org/state-pa/CommunityResources/ClinicalTrials/Detail/NCT03300843?keyword=%22Gastrointestinal%20Cancer%22",
+          "identifier": "NCT03300843",
+          "title": "Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial ...",
+          "snippet": "Web result for: NCT03300843 Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Pa",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-05-06T17:07:09.114273"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 8,
+        "duckduckgo_html_length": 21335
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_Peptide loaded dendritic cell vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT03300843",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4297811/",
+          "identifier": "CHEMBL4297811",
+          "title": "PR1 LEUKEMIA PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: PR1 LEUKEMIA PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 3.0",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:10.035933"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL4650424/",
+          "identifier": "CHEMBL4650424",
+          "title": "SVN53-67/M57-KLH PEPTIDE VACCINE - ChEMBL",
+          "snippet": "Molecule: SVN53-67/M57-KLH PEPTIDE VACCINE\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Hemocyanin 1 vaccine antigen; Baculoviral IAP repeat-containing protein 5 vaccine antigen",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:11.218100"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL2108573/",
+          "identifier": "CHEMBL2108573",
+          "title": "ANTHRAX VACCINE ABSORBED - ChEMBL",
+          "snippet": "Molecule: ANTHRAX VACCINE ABSORBED\nType: Vaccine component\nMax clinical phase: 2.0\nMechanism: Biological vaccine - induces immune response",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:11.817759"
+        }
+      ],
+      "raw_data": {
+        "chembl_Peptide loaded dendritic cell vaccine_count": 5,
+        "chembl_Peptide loaded dendritic cell vaccine_molecules": [
+          {
+            "chembl_id": "CHEMBL4297811",
+            "pref_name": "PR1 LEUKEMIA PEPTIDE VACCINE",
+            "mol_type": "Vaccine component",
+            "helm_notation": null,
+            "max_phase": "3.0"
+          },
+          {
+            "chembl_id": "CHEMBL4650424",
+            "pref_name": "SVN53-67/M57-KLH PEPTIDE VACCINE",
+            "mol_type": "Vaccine component",
+            "helm_notation": null,
+            "max_phase": "2.0"
+          },
+          {
+            "chembl_id": "CHEMBL2108573",
+            "pref_name": "ANTHRAX VACCINE ABSORBED",
+            "mol_type": "Vaccine component",
+            "helm_notation": null,
+            "max_phase": "2.0"
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "rcsb_Peptide loaded dendritic cell vaccine": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_Peptide loaded dendritic cell vaccine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "apd_Peptide loaded dendritic cell vaccine": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT03300843",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT03300843",
+          "identifier": "NCT03300843",
+          "title": "Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Patients Against Defined Mutated Neoantigens Expressed by the Autologous Cancer",
+          "snippet": "Title: Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Patients Against Defined Mutated Neoantigens Expressed by the Autologous Cancer\nStatus: Terminated\nPhase: Phase 2\nCountries: United States\nConditions: Ovarian Cancer, Gastrointestinal Cancer, Pancreatic Cancer, Melanoma, Breast Cancer\nInterventions: Biological: Peptide loaded dendritic cell vaccine\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-05-06T17:07:12.104253"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT03300843",
+          "public_title": "Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Patients Against Defined Mutated Neoantigens Expressed by the Autologous Cancer",
+          "scientific_title": "A Phase II Trial to Evaluate the Ability of a Dendritic Cell Vaccine to Immunize Melanoma or Epithelial Cancer Patients Against Defined Mutated Neoantigens Expressed by the Autologous Cancer",
+          "recruitment_status": "Terminated",
+          "phase": "Phase 2",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Treatment. Masking: None (Open Label).",
+          "countries": [
+            "United States"
+          ],
+          "conditions": [
+            "Ovarian Cancer",
+            "Gastrointestinal Cancer",
+            "Pancreatic Cancer",
+            "Melanoma",
+            "Breast Cancer"
+          ],
+          "interventions": [
+            "Biological: Peptide loaded dendritic cell vaccine"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "iuphar_Peptide loaded dendritic cell vaccine": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "pdbe_Peptide loaded dendritic cell vaccine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT03300843",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4313547267",
+          "identifier": "PMID:36604431",
+          "title": "Neoantigens: promising targets for cancer therapy",
+          "snippet": "Title: Neoantigens: promising targets for cancer therapy\nYear: 2023\nCitations: 886\nAbstract: Recent advances in neoantigen research have accelerated the development and regulatory approval of tumor immunotherapies, including cancer vaccines, adoptive cell therapy and antibody-based therapies, especially for solid tumors. Neoantigens are newl",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.505542"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W2968934833",
+          "identifier": "PMID:31395068",
+          "title": "Pancreatic ductal adenocarcinoma: biological hallmarks, current status, and future perspectives of combined modality treatment approaches",
+          "snippet": "Title: Pancreatic ductal adenocarcinoma: biological hallmarks, current status, and future perspectives of combined modality treatment approaches\nYear: 2019\nCitations: 480\nAbstract: Pancreatic ductal adenocarcinoma (PDAC) is a highly devastating disease with poor prognosis and rising incidence. Late detection and a particularly aggressive biology are the major challenges which determine therapeutic failure. In this review, we pr",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.505636"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3081948925",
+          "identifier": "PMID:32879472",
+          "title": "Human immunology and immunotherapy: main achievements and challenges",
+          "snippet": "Title: Human immunology and immunotherapy: main achievements and challenges\nYear: 2020\nCitations: 223",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.505655"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4283796991",
+          "identifier": "PMID:35800158",
+          "title": "Trial watch: Dendritic cell (DC)-based immunotherapy for cancer",
+          "snippet": "Title: Trial watch: Dendritic cell (DC)-based immunotherapy for cancer\nYear: 2022\nCitations: 121\nAbstract: T cell responses. Yet, DC vaccination still shows suboptimal anti-tumor efficacy in the clinic. Extensive efforts are ongoing to improve the immunogenicity and efficacy of DC vaccines, often by employing combinatorial chemo-immunotherapy regimens. In",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.505699"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4382893761",
+          "identifier": "PMID:37933232",
+          "title": "Adoptive cell therapy for cancer treatment",
+          "snippet": "Title: Adoptive cell therapy for cancer treatment\nYear: 2023\nCitations: 90\nAbstract: Adoptive cell therapy (ACT) is a rapidly growing anti-cancer strategy that has shown promise in treating various cancer types. The concept of ACT involves activating patients' own immune cells ex vivo and then transferring them back to the patients t",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-05-06T17:07:08.505764"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT03300843",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.32388/zxikk0",
+          "identifier": "DOI:10.32388/zxikk0",
+          "title": "WT1 Peptide-loaded Allogeneic Dendritic Cell Vaccine",
+          "snippet": "Title: WT1 Peptide-loaded Allogeneic Dendritic Cell Vaccine\nJournal: Definitions\nYear: 2020",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:10.313925"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.32388/5z7omy",
+          "identifier": "DOI:10.32388/5z7omy",
+          "title": "Glioma-associated Peptide-loaded Dendritic Cell Vaccine SL-701",
+          "snippet": "Title: Glioma-associated Peptide-loaded Dendritic Cell Vaccine SL-701\nJournal: Definitions\nYear: 2020",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:10.313984"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.32388/r24cta",
+          "identifier": "DOI:10.32388/r24cta",
+          "title": "HTERT mRNA/Survivin Peptide-double-loaded Autologous Dendritic Cell Vaccine",
+          "snippet": "Title: HTERT mRNA/Survivin Peptide-double-loaded Autologous Dendritic Cell Vaccine\nJournal: Definitions\nYear: 2020",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-05-06T17:07:10.314009"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 0,
+        "biorxiv_prefilter_dropped": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT03300843_total": 0,
+        "sec_edgar_Peptide loaded dendritic cell vaccine_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT03300843",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_Peptide loaded dendritic cell vaccine_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT03300843",
+      "citations": [
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Peptide+loaded+dendritic+cell+vaccine",
+          "identifier": "NIH:2R01AI146072-06",
+          "title": "The Role of Lipid-specific T cells in Mediating Protection Against M. tuberculosis (SESHADRI, CHETAN)",
+          "snippet": "Project: 2R01AI146072-06\nPI: SESHADRI, CHETAN\nOrganization: \nFiscal year: 2025\nAward: $989,186\nStart: 2020-06-01\nEnd: 2030-07-31\n(84 total NIH-funded projects matching 'Peptide loaded dendritic cell vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:07.804694"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Peptide+loaded+dendritic+cell+vaccine",
+          "identifier": "NIH:5U19AI057229-22",
+          "title": "Advancing immune organoid technology and organoid combinations (DAVIS, MARK MORRIS)",
+          "snippet": "Project: 5U19AI057229-22\nPI: DAVIS, MARK MORRIS\nOrganization: \nFiscal year: 2025\nAward: $623,357\nStart: 2003-09-01\nEnd: 2029-04-30\n(84 total NIH-funded projects matching 'Peptide loaded dendritic cell vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:07.804783"
+        },
+        {
+          "source_name": "nih_reporter",
+          "source_url": "https://reporter.nih.gov/search/results/?text_terms=Peptide+loaded+dendritic+cell+vaccine",
+          "identifier": "NIH:5R21AI176263-02",
+          "title": "Chaperoning epitopes to induce protective T cell responses (ROSARIO, MAXIM)",
+          "snippet": "Project: 5R21AI176263-02\nPI: ROSARIO, MAXIM\nOrganization: \nFiscal year: 2024\nAward: $204,688\nStart: 2023-01-20\nEnd: 2024-12-31\n(84 total NIH-funded projects matching 'Peptide loaded dendritic cell vaccine')",
+          "quality_score": 0.5,
+          "retrieved_at": "2026-05-06T17:07:07.804814"
+        }
+      ],
+      "raw_data": {
+        "nih_reporter_Peptide loaded dendritic cell vaccine_count": 84,
+        "nih_reporter_Peptide loaded dendritic cell vaccine_funded": true
+      },
+      "error": null
+    }
+  ],
+  "research_coverage": {
+    "clinical_protocol": {
+      "citations_count": 10,
+      "has_data": true,
+      "quality_avg": 0.95,
+      "error": null,
+      "source_names": [
+        "clinicaltrials_gov"
+      ]
+    },
+    "literature": {
+      "citations_count": 30,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "pmc"
+      ]
+    },
+    "peptide_identity": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "web_context": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.4,
+      "error": null,
+      "source_names": [
+        "duckduckgo"
+      ]
+    },
+    "dbaasp": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "chembl": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "chembl"
+      ]
+    },
+    "rcsb_pdb": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "ebi_proteins": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "apd": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "who_ictrp": {
+      "citations_count": 1,
+      "has_data": true,
+      "quality_avg": 0.8,
+      "error": null,
+      "source_names": [
+        "who_ictrp"
+      ]
+    },
+    "iuphar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "pdbe": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "openalex": {
+      "citations_count": 5,
+      "has_data": true,
+      "quality_avg": 0.85,
+      "error": null,
+      "source_names": [
+        "openalex"
+      ]
+    },
+    "semantic_scholar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "crossref": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.75,
+      "error": null,
+      "source_names": [
+        "crossref"
+      ]
+    },
+    "biorxiv": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "sec_edgar": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "fda_drugs": {
+      "citations_count": 0,
+      "has_data": false,
+      "quality_avg": 0.0,
+      "error": null,
+      "source_names": []
+    },
+    "nih_reporter": {
+      "citations_count": 3,
+      "has_data": true,
+      "quality_avg": 0.5,
+      "error": null,
+      "source_names": [
+        "nih_reporter"
+      ]
+    }
+  }
+}

@@ -1,0 +1,605 @@
+{
+  "nct_id": "NCT06443762",
+  "completed_at": "2026-04-30 10:16:40 PT",
+  "results": [
+    {
+      "agent_name": "clinical_protocol",
+      "nct_id": "NCT06443762",
+      "citations": [
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "First in Human Study on PET Imaging of Solid Tumors Using an MDM2/MDMX-Specific Probe",
+          "snippet": "Title: First in Human Study on PET Imaging of Solid Tumors Using an MDM2/MDMX-Specific Probe",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.669839"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "Brief Summary",
+          "snippet": "Investigation of the Radiotracer Uptake of \\[68Ga\\] MDM2/MDMX Peptide at Lesion Sites in Patients with Malignant Tumors, and Evaluation of the Capability of \\[68Ga\\] MDM2/MDMX Peptide to Detect Overexpression of MDM2/MDMX in Tumor Patients, Particularly Those with Recurrent or Advanced Disease.",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.669876"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "Study Status",
+          "snippet": "Status: COMPLETED",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.669886"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "Conditions & Keywords",
+          "snippet": "Conditions: MDM2/MDMX Gene Mutation, Nuclear Medicine, Positron Emission Tomography Imaing",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.669893"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "Intervention: [68Ga] MDM2/MDMX Peptide",
+          "snippet": "DRUG: [68Ga] MDM2/MDMX Peptide - Utilizing a peptide with high affinity to MDM2/MDMX as the targeting moiety for radiopharmaceuticals, this study explores the diagnostic efficacy of \\[68Ga\\] MDM2/MDMX Peptide in patients with malignant tumors exhibiting high MDM2/MDMX expression. This approach not only provides a basis for the earl",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.669901"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "Arm Group: Experimental group patients who underwent PET scanning with injection probes",
+          "snippet": "Arm: Experimental group patients who underwent PET scanning with injection probes - \\[68Ga\\] MDM2/MDMX Peptide PET/CT Imaging: Patients are intravenously injected with prepared and quality-assured \\[68Ga\\] MDM2/MDMX Peptide (0.05-0.1 mCi/kg). Imaging is performed 40 minutes to 1 hour post-injection using either the United Imaging uEXPLORER 2m PET/CT or Siemens Biograph m-CT flow PET/CT for whole-body scans, extending from the top of the head to the feet. In cases where convention",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.669908"
+        },
+        {
+          "source_name": "clinicaltrials_gov",
+          "source_url": "https://clinicaltrials.gov/study/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "Phase",
+          "snippet": "Phase: EARLY_PHASE1",
+          "quality_score": 0.95,
+          "retrieved_at": "2026-04-30T17:16:06.669916"
+        }
+      ],
+      "raw_data": {
+        "protocol_section": {
+          "identificationModule": {
+            "nctId": "NCT06443762",
+            "orgStudyIdInfo": {
+              "id": "2023YJZ73"
+            },
+            "organization": {
+              "fullName": "Peking University Cancer Hospital & Institute",
+              "class": "OTHER"
+            },
+            "briefTitle": "First Human Trial of Targeting MDM2/MDMX PET Imaging",
+            "officialTitle": "First in Human Study on PET Imaging of Solid Tumors Using an MDM2/MDMX-Specific Probe"
+          },
+          "statusModule": {
+            "statusVerifiedDate": "2025-01",
+            "overallStatus": "COMPLETED",
+            "expandedAccessInfo": {
+              "hasExpandedAccess": false
+            },
+            "startDateStruct": {
+              "date": "2025-01-03",
+              "type": "ACTUAL"
+            },
+            "primaryCompletionDateStruct": {
+              "date": "2025-05-01",
+              "type": "ACTUAL"
+            },
+            "completionDateStruct": {
+              "date": "2025-05-23",
+              "type": "ACTUAL"
+            },
+            "studyFirstSubmitDate": "2024-05-29",
+            "studyFirstSubmitQcDate": "2024-06-04",
+            "studyFirstPostDateStruct": {
+              "date": "2024-06-05",
+              "type": "ACTUAL"
+            },
+            "lastUpdateSubmitDate": "2025-05-27",
+            "lastUpdatePostDateStruct": {
+              "date": "2025-05-31",
+              "type": "ACTUAL"
+            }
+          },
+          "sponsorCollaboratorsModule": {
+            "responsibleParty": {
+              "type": "SPONSOR"
+            },
+            "leadSponsor": {
+              "name": "Peking University Cancer Hospital & Institute",
+              "class": "OTHER"
+            }
+          },
+          "oversightModule": {
+            "oversightHasDmc": false,
+            "isFdaRegulatedDrug": false,
+            "isFdaRegulatedDevice": false,
+            "isUsExport": false
+          },
+          "descriptionModule": {
+            "briefSummary": "Investigation of the Radiotracer Uptake of \\[68Ga\\] MDM2/MDMX Peptide at Lesion Sites in Patients with Malignant Tumors, and Evaluation of the Capability of \\[68Ga\\] MDM2/MDMX Peptide to Detect Overexpression of MDM2/MDMX in Tumor Patients, Particularly Those with Recurrent or Advanced Disease."
+          },
+          "conditionsModule": {
+            "conditions": [
+              "MDM2/MDMX Gene Mutation",
+              "Nuclear Medicine",
+              "Positron Emission Tomography Imaing"
+            ]
+          },
+          "designModule": {
+            "studyType": "INTERVENTIONAL",
+            "phases": [
+              "EARLY_PHASE1"
+            ],
+            "designInfo": {
+              "allocation": "NA",
+              "interventionModel": "SINGLE_GROUP",
+              "primaryPurpose": "DIAGNOSTIC",
+              "maskingInfo": {
+                "masking": "NONE"
+              }
+            },
+            "enrollmentInfo": {
+              "count": 3,
+              "type": "ACTUAL"
+            }
+          },
+          "armsInterventionsModule": {
+            "armGroups": [
+              {
+                "label": "Experimental group patients who underwent PET scanning with injection probes",
+                "type": "EXPERIMENTAL",
+                "description": "\\[68Ga\\] MDM2/MDMX Peptide PET/CT Imaging: Patients are intravenously injected with prepared and quality-assured \\[68Ga\\] MDM2/MDMX Peptide (0.05-0.1 mCi/kg). Imaging is performed 40 minutes to 1 hour post-injection using either the United Imaging uEXPLORER 2m PET/CT or Siemens Biograph m-CT flow PET/CT for whole-body scans, extending from the top of the head to the feet. In cases where conventional imaging reveals indeterminate lesions, delayed imaging is conducted for further differentiation. The patient is positioned supine with calm respiration. The imaging conditions for the head and torso remain as described above. Data are reconstructed using the OSEM method to produce coronal, sagittal, and axial PET and PET/CT fusion images.",
+                "interventionNames": [
+                  "Drug: [68Ga] MDM2/MDMX Peptide"
+                ]
+              }
+            ],
+            "interventions": [
+              {
+                "type": "DRUG",
+                "name": "[68Ga] MDM2/MDMX Peptide",
+                "description": "Utilizing a peptide with high affinity to MDM2/MDMX as the targeting moiety for radiopharmaceuticals, this study explores the diagnostic efficacy of \\[68Ga\\] MDM2/MDMX Peptide in patients with malignant tumors exhibiting high MDM2/MDMX expression. This approach not only provides a basis for the early diagnosis of malignant tumors but also facilitates the formulation of effective precision therapy strategies tailored to the tumor's MDM2/MDMX expression profile, particularly for patients with recurrent and metastatic disease.\n\n\\[68Ga\\] MDM2/MDMX Peptide, a novel MDM2/MDMX-targeted molecular probe labeled with 68Ga, utilizes DOTA as a bifunctional chelator for complexing with 68Ga3+. The labeling process is straightforward, allowing for direct use without purification, and demonstrates high in vivo stability.",
+                "armGroupLabels": [
+                  "Experimental group patients who underwent PET scanning with injection probes"
+                ]
+              }
+            ]
+          },
+          "outcomesModule": {
+            "primaryOutcomes": [
+              {
+                "measure": "SUV",
+                "description": "Standardized Uptake Values (SUV) of \\[68Ga\\] MDM2/MDMX Peptide at various time points within the imaging window for target lesions or suspected tumor lesions in subjects with solid tumors or suspected solid tumors.",
+                "timeFrame": "1 hour and 2 hours after drug injection"
+              }
+            ]
+          },
+          "eligibilityModule": {
+            "eligibilityCriteria": "Inclusion Criteria:\n\n1. Ages 18 to 75 years, both males and females are eligible;\n2. Participants must meet the following criteria for blood routine and liver/kidney function tests: Complete blood count: WBC \u2265 4.0 \u00d7 10\\^9/L or neutrophils \u2265 1.5 \u00d7 10\\^9/L, platelets \u2265 100 \u00d7 10\\^9/L, hemoglobin \u2265 90 g/L; prothrombin time (PT) or activated partial thromboplastin time (APTT) \u2264 1.5 times the upper limit of normal (ULN); liver and kidney function: Total bilirubin \u2264 1.5 times the upper threshold limit (ULT), ALT/AST \u2264 2.5 ULN or \u2264 5 ULT for participants with liver metastasis, alkaline phosphatase (ALP) \u2264 2.5 ULN (if bone or liver metastases are present, ALP \u2264 4.5 ULN); Blood urea nitrogen (BUN) \u2264 1.5 \u00d7 ULT, serum creatinine (SCr) \u2264 1.5 \u00d7 ULT;\n3. Normal cardiac function;\n4. An expected survival of \u2265 12 weeks;\n5. Good follow-up compliance;\n6. According to RECIST 1.1 criteria, there must be at least one measurable target lesion;\n7. Women of childbearing age (15-49 years) must have a negative pregnancy test conducted within 7 days prior to enrollment; patients of childbearing potential must agree to use effective contraceptive methods to ensure they do not conceive during the study and for three months after examinations;\n8. Patients recommended for PET/CT evaluation for tumor diagnosis and staging by a clinician;\n9. Participants must fully understand the study and voluntarily participate, and must sign an informed consent form.\n\nExclusion Criteria:\n\n1. Severe abnormalities in liver and kidney function as well as hematological parameters;\n2. Patients who are planning a pregnancy;\n3. Pregnant or lactating women;\n4. Individuals unable to lie flat for thirty minutes;\n5. Individuals who refuse to participate in this clinical study;\n6. Individuals suffering from claustrophobia or other psychiatric disorders;\n7. Other conditions deemed by the researchers as unsuitable for participation in the trial.",
+            "healthyVolunteers": false,
+            "sex": "ALL",
+            "minimumAge": "18 Years",
+            "maximumAge": "75 Years",
+            "stdAges": [
+              "ADULT",
+              "OLDER_ADULT"
+            ]
+          },
+          "contactsLocationsModule": {
+            "locations": [
+              {
+                "facility": "Beijing Cancer Hospital",
+                "city": "Beijing",
+                "state": "Beijing Municipality",
+                "zip": "100142",
+                "country": "China",
+                "geoPoint": {
+                  "lat": 39.9075,
+                  "lon": 116.39723
+                }
+              }
+            ]
+          },
+          "ipdSharingStatementModule": {
+            "ipdSharing": "UNDECIDED"
+          }
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "literature",
+      "nct_id": "NCT06443762",
+      "citations": [
+        {
+          "source_name": "pmc",
+          "source_url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12295999/",
+          "identifier": "PMC:12295999",
+          "title": "Innovative Peptide Therapeutics in the Pipeline: Transforming Cancer Detection and Treatment.",
+          "snippet": "Title: Innovative Peptide Therapeutics in the Pipeline: Transforming Cancer Detection and Treatment.\nAuthors: Nsereko Y, Armstrong A, Coburn F et al.\nJournal: Int J Mol Sci",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:26.664790"
+        }
+      ],
+      "raw_data": {
+        "pubmed_ids": [],
+        "pubmed_count": 0,
+        "pmc_ids": [
+          "12295999"
+        ],
+        "pmc_count": 1,
+        "europe_pmc_count": 0,
+        "europe_pmc_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "peptide_identity",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "uniprot_[68Ga] MDM2/MDMX Peptide_no_structured_match": true,
+        "uniprot_[68Ga] MDM2/MDMX Peptide": []
+      },
+      "error": null
+    },
+    {
+      "agent_name": "web_context",
+      "nct_id": "NCT06443762",
+      "citations": [
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://clinicaltrials.gov/study/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "First Human Trial of Targeting MDM2/ MDMX PET Imaging",
+          "snippet": "Web result for: NCT06443762 First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:28.509314"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://ichgcp.net/clinical-trials-registry/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "snippet": "Web result for: NCT06443762 First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:28.509367"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://trial.medpath.com/clinical-trial/c8bf13c48d82cf81/nct06443762-first-in-human-study-pet-imaging-solid-tumors",
+          "identifier": "NCT06443762",
+          "title": "First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "snippet": "Web result for: NCT06443762 First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:28.509387"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://deltatrials.com/trial/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "snippet": "Web result for: NCT06443762 First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:28.509403"
+        },
+        {
+          "source_name": "duckduckgo",
+          "source_url": "https://www.careacross.com/clinical-trials/trial/NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "snippet": "Web result for: NCT06443762 First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "quality_score": 0.4,
+          "retrieved_at": "2026-04-30T17:16:28.509418"
+        }
+      ],
+      "raw_data": {
+        "duckduckgo_result_count": 10,
+        "duckduckgo_html_length": 22246
+      },
+      "error": null
+    },
+    {
+      "agent_name": "dbaasp",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "dbaasp_[68Ga] MDM2/MDMX Peptide": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "chembl",
+      "nct_id": "NCT06443762",
+      "citations": [
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL1161331/",
+          "identifier": "CHEMBL1161331",
+          "title": "CHEMBL1161331 - ChEMBL",
+          "snippet": "Molecule: CHEMBL1161331\nType: Small molecule\nMolecular weight: 1197.41\nBioactivity: IC50=10000.0 nM (Somatostatin receptor type 1); IC50=1000.0 nM (Somatostatin receptor type 2); IC50=1000.0 nM (Somatostatin receptor type 3); IC50=56.0 nM (Somatostatin receptor type 4); IC50=1000.0 nM (Somatostatin receptor type 5)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:27.553136"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL3350354/",
+          "identifier": "CHEMBL3350354",
+          "title": "CHEMBL3350354 - ChEMBL",
+          "snippet": "Molecule: CHEMBL3350354\nType: Small molecule\nMolecular weight: 1153.35\nBioactivity: IC50=1000.0 nM (Somatostatin receptor type 1); IC50=460.0 nM (Somatostatin receptor type 2); IC50=447.0 nM (Somatostatin receptor type 3); IC50=5.2 nM (Somatostatin receptor type 4); IC50=768.0 nM (Somatostatin receptor type 5)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:27.931282"
+        },
+        {
+          "source_name": "chembl",
+          "source_url": "https://www.ebi.ac.uk/chembl/compound_report_card/CHEMBL291026/",
+          "identifier": "CHEMBL291026",
+          "title": "CHEMBL291026 - ChEMBL",
+          "snippet": "Molecule: CHEMBL291026\nType: Small molecule\nMolecular weight: 657.66\nBioactivity: Ki=100.0 nM (Prothrombin); Ki=26.0 nM (Prothrombin); Ki=19.0 nM (Prothrombin); TT=0.54 uM (Prothrombin); APTT=2.3 uM (NON-PROTEIN TARGET)",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:28.306093"
+        }
+      ],
+      "raw_data": {
+        "chembl_[68Ga] MDM2/MDMX Peptide_count": 5,
+        "chembl_[68Ga] MDM2/MDMX Peptide_molecules": [
+          {
+            "chembl_id": "CHEMBL1161331",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL3350354",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          },
+          {
+            "chembl_id": "CHEMBL291026",
+            "pref_name": null,
+            "mol_type": "Small molecule",
+            "helm_notation": null,
+            "max_phase": null
+          }
+        ]
+      },
+      "error": null
+    },
+    {
+      "agent_name": "rcsb_pdb",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "rcsb_[68Ga] MDM2/MDMX Peptide": {
+          "count": 0
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "ebi_proteins",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "ebi_proteins_[68Ga] MDM2/MDMX Peptide_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "apd",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "apd_[68Ga] MDM2/MDMX Peptide": {
+          "searched": true,
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "who_ictrp",
+      "nct_id": "NCT06443762",
+      "citations": [
+        {
+          "source_name": "who_ictrp",
+          "source_url": "https://trialsearch.who.int/Trial2.aspx?TrialID=NCT06443762",
+          "identifier": "NCT06443762",
+          "title": "First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "snippet": "Title: First Human Trial of Targeting MDM2/MDMX PET Imaging\nStatus: Completed\nPhase: Early Phase 1\nCountries: China\nConditions: Positron Emission Tomography Imaing, Nuclear Medicine, MDM2/MDMX Gene Mutation\nInterventions: Drug: [68Ga] MDM2/MDMX Peptide\nStudy type: Interventional",
+          "quality_score": 0.8,
+          "retrieved_at": "2026-04-30T17:16:30.496218"
+        }
+      ],
+      "raw_data": {
+        "ictrp_data": {
+          "found": true,
+          "nct_id": "NCT06443762",
+          "public_title": "First Human Trial of Targeting MDM2/MDMX PET Imaging",
+          "scientific_title": "First in Human Study on PET Imaging of Solid Tumors Using an MDM2/MDMX-Specific Probe",
+          "recruitment_status": "Completed",
+          "phase": "Early Phase 1",
+          "study_type": "Interventional",
+          "study_design": "Allocation: N/A. Intervention model: Single Group Assignment. Primary purpose: Diagnostic. Masking: None (Open Label).",
+          "countries": [
+            "China"
+          ],
+          "conditions": [
+            "Positron Emission Tomography Imaing",
+            "Nuclear Medicine",
+            "MDM2/MDMX Gene Mutation"
+          ],
+          "interventions": [
+            "Drug: [68Ga] MDM2/MDMX Peptide"
+          ]
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "iuphar",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "iuphar_[68Ga] MDM2/MDMX Peptide": {
+          "found": false
+        }
+      },
+      "error": null
+    },
+    {
+      "agent_name": "pdbe",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "pdbe_[68Ga] MDM2/MDMX Peptide_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "openalex",
+      "nct_id": "NCT06443762",
+      "citations": [
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W3082568611",
+          "identifier": "PMID:34458761",
+          "title": "Harnessing the PD-L1 interface peptide for positron emission tomography imaging of the PD-1 immune checkpoint",
+          "snippet": "Title: Harnessing the PD-L1 interface peptide for positron emission tomography imaging of the PD-1 immune checkpoint\nYear: 2020\nCitations: 22\nAbstract: Interface peptides that mediate protein-protein interactions (PPI) are a class of important lead compounds for designing PPI inhibitors. However, their potential as precursors for radiotracers has never been exploited. Here we report that the interfa",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:27.407521"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W4392355291",
+          "identifier": "PMID:38543239",
+          "title": "Beyond Small Molecules: Antibodies and Peptides for Fibroblast Activation Protein Targeting Radiopharmaceuticals",
+          "snippet": "Title: Beyond Small Molecules: Antibodies and Peptides for Fibroblast Activation Protein Targeting Radiopharmaceuticals\nYear: 2024\nCitations: 19\nAbstract: Fibroblast activation protein (FAP) is a serine protease characterized by its high expression in cancer-associated fibroblasts (CAFs) and near absence in adult normal tissues and benign lesions. This unique expression pattern positions FAP as a prosp",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:27.407603"
+        },
+        {
+          "source_name": "openalex",
+          "source_url": "https://openalex.org/W7155404016",
+          "identifier": "https://doi.org/10.3390/cancers18091347",
+          "title": "Targeting Peptidergic Systems for Melanoma Treatment",
+          "snippet": "Title: Targeting Peptidergic Systems for Melanoma Treatment\nYear: 2026\nAbstract: Melanoma is a heterogeneous, complex and aggressive disease that, despite recent advances in molecular-targeted drugs and molecular and genetic analysis, represents approximately 65% of skin cancer deaths, and unfortunately survival dramatically decr",
+          "quality_score": 0.85,
+          "retrieved_at": "2026-04-30T17:16:27.407719"
+        }
+      ],
+      "raw_data": {
+        "openalex_nct_hits": 0,
+        "openalex_fallback_hits": 3
+      },
+      "error": null
+    },
+    {
+      "agent_name": "semantic_scholar",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "ss_nct_hits": 0,
+        "ss_fallback_hits": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "crossref",
+      "nct_id": "NCT06443762",
+      "citations": [
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1021/acs.jmedchem.5c02183.s003",
+          "identifier": "DOI:10.1021/acs.jmedchem.5c02183.s003",
+          "title": "64Cu-Labeled Stapled Peptide-Based Radiopharmaceuticals Targeting MDM2/MDMX for Pan-p53 Tumors",
+          "snippet": "Title: 64Cu-Labeled Stapled Peptide-Based Radiopharmaceuticals Targeting MDM2/MDMX for Pan-p53 Tumors",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:27.116848"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1021/acs.jmedchem.5c02183.s002",
+          "identifier": "DOI:10.1021/acs.jmedchem.5c02183.s002",
+          "title": "64Cu-Labeled Stapled Peptide-Based Radiopharmaceuticals Targeting MDM2/MDMX for Pan-p53 Tumors",
+          "snippet": "Title: 64Cu-Labeled Stapled Peptide-Based Radiopharmaceuticals Targeting MDM2/MDMX for Pan-p53 Tumors",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:27.116879"
+        },
+        {
+          "source_name": "crossref",
+          "source_url": "https://doi.org/10.1021/acs.jmedchem.5c02183.s004",
+          "identifier": "DOI:10.1021/acs.jmedchem.5c02183.s004",
+          "title": "64Cu-Labeled Stapled Peptide-Based Radiopharmaceuticals Targeting MDM2/MDMX for Pan-p53 Tumors",
+          "snippet": "Title: 64Cu-Labeled Stapled Peptide-Based Radiopharmaceuticals Targeting MDM2/MDMX for Pan-p53 Tumors",
+          "quality_score": 0.75,
+          "retrieved_at": "2026-04-30T17:16:27.116889"
+        }
+      ],
+      "raw_data": {
+        "crossref_nct_hits": 0,
+        "crossref_fallback_hits": 5
+      },
+      "error": null
+    },
+    {
+      "agent_name": "biorxiv",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "biorxiv_nct_hits": 0,
+        "biorxiv_fallback_hits": 0,
+        "biorxiv_prefilter_dropped": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "sec_edgar",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "sec_edgar_NCT06443762_total": 0,
+        "sec_edgar_[68Ga] MDM2/MDMX Peptide_total": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "fda_drugs",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "fda_drugs_[68Ga] MDM2/MDMX Peptide_count": 0
+      },
+      "error": null
+    },
+    {
+      "agent_name": "nih_reporter",
+      "nct_id": "NCT06443762",
+      "citations": [],
+      "raw_data": {
+        "nih_reporter_[68Ga] MDM2/MDMX Peptide_count": 0,
+        "nih_reporter_[68Ga] MDM2/MDMX Peptide_funded": false
+      },
+      "error": null
+    }
+  ]
+}
