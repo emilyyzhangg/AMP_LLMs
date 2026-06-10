@@ -478,11 +478,21 @@ python3 scripts/score_full_corpus.py --merged-json scripts/full_corpus_merged_<c
 ```
 
 ### 8.4 Publication outputs (v42.11)
-The canonical publication-ready dataset lives at **`scripts/dataset_v42_11/`** with one CSV per cohort:
-- `train_dev_corpus_5c8d0aa0431a.csv` — 629 NCTs (job `5c8d0aa0431a`, ~63h on prod)
-- `val_8d9398b0af66.csv` — 86 NCTs (sealed validation, PASSES)
-- `test_b9301e02fef5.csv` — 85 NCTs (single-shot test, PASSES → production-ready)
-- `README.md` — cohort definitions, per-field headline accuracy, reproduction instructions
+The canonical publication-ready dataset lives at **`Final Agent Annotations/`** (top-level folder of the repo, sibling of `docs/` and `scripts/`). It bundles every NCT the v42.11 agent has annotated — 1,844 in total — under human-legible filenames:
+
+Per-cohort CSVs (5 files, 1 per source job):
+- `train_629_NCTs.csv` — `5c8d0aa0431a` (~63h on prod)
+- `validation_86_NCTs.csv` — `8d9398b0af66` (sealed validation, PASSES)
+- `test_85_NCTs.csv` — `b9301e02fef5` (sealed single-shot test, PASSES → production-ready)
+- `legacy_test_batch_50_NCTs.csv` — `036fc5dea889` (legacy held-out cohort, re-scored on v42.11)
+- `master_extension_994_NCTs_no_human_GT.csv` — `c74ce600868d` (annotator-master xlsx NCTs without human GT; agent-only output)
+
+Consolidated single-file views (3 files, `Cohort` + `Source Job ID` as leading columns):
+- `ALL_consolidated__train_val_test__800_NCTs.csv` — formal 3-cohort cross-validation only
+- `ALL_consolidated__with_legacy_test_batch__850_NCTs.csv` — + the legacy held-out cohort (4 cohorts, all with human GT)
+- `ALL_consolidated__full_universe__1844_NCTs.csv` — full annotator-master xlsx universe (5 cohorts)
+
+`README.md` — cohort definitions, per-cohort accuracy vs human IRA, LLM stack table, column schema, reproduction instructions
 
 Each CSV is the canonical 16-col standard format (NCT ID, study metadata, then 6 annotation fields × {value, evidence, sources, evidence text}); regenerate with `scripts/export_single_job_csv.py`. The 61-col full audit (per-field confidence, verifier opinions, reasoning chain, consensus status, reconciler usage, manual-review flag, config hash) is not committed but is one command away via the same script.
 
@@ -495,9 +505,9 @@ Companion docs for paper Methods:
 ### 8.5 What to publish
 | Claim | Source | Caveat |
 |---|---|---|
-| Per-field accuracy on test | `PAPER.md` §4.4 + `dataset_v42_11/README.md` | ±3.9pp to ±25.9pp CIs per field; 85-NCT sealed cohort |
+| Per-field accuracy on test | `PAPER.md` §4.4 + `Final Agent Annotations/README.md` | ±3.9pp to ±25.9pp CIs per field; 85-NCT sealed cohort |
 | Beats human inter-rater agreement | `PAPER.md` §4.5 vs-IRA table | True for classification (+4.7pp), peptide (+11.4pp); delivery at IRA; outcome at human ceiling (−0.8pp) |
-| Annotation dataset | `scripts/dataset_v42_11/*.csv` | 800 unique NCTs (629 train + 86 val + 85 test); evidence-grade column in full CSV |
+| Annotation dataset | `Final Agent Annotations/*.csv` | 1,844 unique NCTs (629 train + 86 val + 85 test + 50 legacy + 994 master-extension); per-cohort and consolidated views; evidence-grade column in full CSV |
 | Methodology | `PAPER.md` §3 | Reproducible from main commit `bacc31ce` + `docs/human_ground_truth_*.csv` |
 
 For downstream consumers wanting only high-confidence annotations: regenerate the full CSV and filter to `evidence_grade ∈ {db_confirmed, deterministic}` (per `app/models/annotation.py`).
@@ -534,7 +544,7 @@ for the single loaded model). Use a recent 315-trial research job (e.g.
 
 ### 9.0a export_single_job_csv.py
 
-Exports a completed single-job result to standard (16-col) + full (61-col) CSVs. Use for the v42.11 single-job full-corpus flow and the val/test sealed cohorts; the legacy `merge_full_corpus_results.py` is only for the older two-batch flow. Outputs land in `scripts/` with the naming pattern `<label>_<job_id>_<commit8>{,_full}.csv`. The v42.11 publication-ready dataset at `scripts/dataset_v42_11/` was produced with this script — see that directory's `README.md` for the full provenance.
+Exports a completed single-job result to standard (16-col) + full (61-col) CSVs. Use for the v42.11 single-job full-corpus flow and the val/test sealed cohorts; the legacy `merge_full_corpus_results.py` is only for the older two-batch flow. Outputs land in `scripts/` with the naming pattern `<label>_<job_id>_<commit8>{,_full}.csv`. The v42.11 publication-ready dataset at `Final Agent Annotations/` (top-level folder) was produced with this script — see that directory's `README.md` for the full provenance.
 
 ### 8.1 retroactive_fix.py
 

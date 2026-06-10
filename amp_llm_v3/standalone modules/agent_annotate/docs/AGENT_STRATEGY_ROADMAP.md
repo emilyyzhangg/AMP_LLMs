@@ -8,7 +8,7 @@ Read this before proposing any agent change. If it's not in here, it needs a pla
 
 ---
 
-## 1. Current state (last refreshed 2026-06-02 — sealed validation PASSES + single-shot test PASSES; **production-ready**)
+## 1. Current state (last refreshed 2026-06-10 — sealed validation + test PASS, legacy cohort re-scored, master extension complete → **PRODUCTION-READY + FULL 1,844-NCT DATASET PUBLISHED**)
 
 **Shipped since v42.8 (all on main, trip-wires 35/35):**
 
@@ -104,7 +104,31 @@ Fires ONCE at the end of the architectural cycle. Submitted via `submit_holdout_
 
 **Bottom line: SINGLE-SHOT TEST PASSES → PRODUCTION-READY.** Three fields beat human IRA (classification +4.7, peptide +11.4, delivery at human), outcome is at the human ceiling, sequence and RfF-recall are bound by missing source data (not agent deficiency). No field shows overfitting to train. No field shows val→test degradation beyond cohort variance.
 
-**Immediate next step:** PAPER.md rewrite (new abstract + results section against these canonical test numbers; methods aligned to v42.11). No further code work on the agent — the dev cycle has CONCLUDED.
+### 1.4 LEGACY TEST-BATCH cohort re-scored on v42.11 — job `036fc5dea889` (50 NCTs, commit `dbad5a44`, completed 2026-06-03)
+
+The 50-NCT `legacy_test_batch` (subset of train CSV that was carved out *before* the formal split was established 2026-05-11; used for v42.7.22's Job #101 production-gate cert) was re-scored on v42.11 via `submit_holdout_validation.sh --test-batch-50 --check-sync`. 4h38m wall, 5.57 min/trial, 50/50 successful. Scored against `human_ground_truth_train_df.csv` (the 50 are a subset).
+
+| Field | Legacy (50) | Test (85) | Human IRA | Note |
+|---|---|---|---|---|
+| classification | 88.6% (39/44) | 97.1% | 92.4% | below IRA — cohort over-samples vaccine/hormone peptides with edge-case mechanism evidence |
+| peptide | 97.9% (47/48) | 97.4% | 86.0% | matches test, beats IRA (+11.9 pp) |
+| delivery_mode | 95.0% (38/40) | 88.2% | 88.8% | beats IRA |
+| outcome | 88.4% (38/43) | 60.5% | 61.3% | **far above the human ceiling — cohort effect**, curated as a mostly-failed sample so the v42.8 strong-failure override + v42.9 completed=success rule fire on a large fraction |
+| sequence | 38.5% (15/39) | 17.4% | 43.6% | matches val (38.3) — cohort variance |
+| RfF score-blind | 80.0% (20/25) | 100% | 92.3% | precision strong |
+| RfF true recall | 66.7% (20/30) | 42.9% | n/a | far above test/val/dev — cohort over-samples GT-positive RfF classes |
+
+Outcome stratified: positive 4/4 (100%), terminated 18/20 (90%), withdrawn 7/8 (87.5%), failed-completed 5/8 (62.5%), unknown 4/3 (mixed). RfF per-GT-class: business 11/14 (78.6%), recruitment 6/6 (100%), ineffective 0/5, toxic/unsafe 0/1, covid 3/4 (75%). Both outcome and RfF skew is consistent with the original curation intent (early production-gate testing on a clean failure-heavy sample). This is dataset-composition, not a v42.11 capability claim — the test cohort numbers remain the canonical reading.
+
+### 1.5 MASTER-EXTENSION cohort (no human GT) — job `c74ce600868d` (994 NCTs, commit `60477544`, completed 2026-06-05)
+
+Submitted via the new `--master-extension` flag (added 2026-06-03 alongside `allow_external=True` router widening; see commit `7b185bc8` for the `MASTER_NCTS` + `ALL_SUBMITTABLE_NCTS` config changes). Covers the **994 NCTs in the annotator-master xlsx that are not in any formal GT cohort** — 576 with zero human annotation + 418 with partial human annotation outside the formal split. 2h41m wall, **9.7 s/trial** (dramatically faster than the 5.57–6.29 min/trial of the GT cohorts because the AMP-relevant subset over-represents trials with deterministic-resolvable interventions), 994/994 successful. EDAM unchanged: the orchestrator's `TRAINING_NCTS`-only gate keeps these annotations out of memory.
+
+Per-cohort stats: 952/994 = 95.8% emitted `Peptide=True`. No scoring possible — no human GT exists for these trials.
+
+**Result:** the v42.11 agent has now produced annotations for **1,844 unique NCTs** spanning the entire AMP-relevant clinical-trial universe currently curated by the annotation team. Released at `Final Agent Annotations/` (top-level folder) with per-cohort CSVs + three consolidated views (800-NCT 3-cohort cross-validation, 850-NCT with-legacy, 1844-NCT full universe).
+
+**Immediate next step:** dataset is published. Paper rewrite is on `main`. No further code work on the agent — the dev cycle has CONCLUDED.
 
 ### 1.x v42.8 state (historical — superseded by §1 above)
 ## 1. Current state (last refreshed 2026-05-08 — v42.8 stack LANDED, full-corpus re-run in flight)

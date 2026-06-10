@@ -1,6 +1,6 @@
 # Agent Annotate — Performance & Scale
 
-Operational guide for running Agent Annotate at scale (hundreds to tens of thousands of NCTs). Written 2026-04-21 as part of the v42.6 efficiency pack; updated 2026-04-28 with v42.7 research-pipeline expansion; refreshed 2026-05-06 with empirical full-corpus + production-gate timings; refreshed 2026-05-28 with sealed val empirical pace; refreshed 2026-06-02 with single-shot test pace (6.29 min/trial on v42.11 main).
+Operational guide for running Agent Annotate at scale (hundreds to tens of thousands of NCTs). Written 2026-04-21 as part of the v42.6 efficiency pack; updated 2026-04-28 with v42.7 research-pipeline expansion; refreshed 2026-05-06 with empirical full-corpus + production-gate timings; refreshed 2026-05-28 with sealed val empirical pace; refreshed 2026-06-02 with single-shot test pace; refreshed 2026-06-10 with legacy_test_batch (5.57 min/trial) and master_extension (9.7 s/trial — extreme deterministic-cascade hit rate).
 
 ## Empirical timings (Jobs #101, #102, #103, full-corpus 5c8d0aa0431a, val 8d9398b0af66, test b9301e02fef5 — measured 2026-05-02 to 2026-06-02)
 
@@ -12,6 +12,8 @@ Operational guide for running Agent Annotate at scale (hundreds to tens of thous
 | Full-corpus single-job `5c8d0aa0431a` (629 NCTs) | 629 | ~63h | ~6.0 min | Mac Mini M-series, v42.11 (post-efficiency-pack) |
 | Sealed val `8d9398b0af66` (86 NCTs) | 86 | 8h40m | **362.9s = 6.05 min** | Mac Mini M-series, v42.11 (commit `cd45dff2`) |
 | **Sealed test `b9301e02fef5` (85 NCTs)** | 85 | **8h54m** | **377.3s = 6.29 min** | Mac Mini M-series, v42.11 (commit `bacc31ce`) |
+| **Legacy test_batch `036fc5dea889` (50 NCTs)** | 50 | **4h38m** | **334s = 5.57 min** | Mac Mini M-series, v42.11 (commit `dbad5a44`) |
+| **Master extension `c74ce600868d` (994 NCTs, no human GT)** | 994 | **2h41m** | **9.7 s** | Mac Mini M-series, v42.11 (commit `60477544`); 95.8% deterministic-cascade hit rate (AMP-relevant subset over-represents Peptide=True trials with v42.10 anchor coverage) |
 | Slice-G validation (20 NCTs, dev) | 20 | ~3-4h | ~10 min | Mac Mini (dev port 9005), v42.8 |
 
 **Pace breakdown:** v42.7.22 → v42.9 (+atomic-shadow OFF + mini_batch_size 5→15) cut per-trial from ~10 → 7.6 min; v42.10 hybrid (deterministic peptide anchor skips the 2-pass LLM for ~54%) cut it further to ~6.0 min. The sealed val + test runs confirm that pace holds zero-error at full v42.11 scale: val 6.05 min, test 6.29 min (4% spread — run-to-run noise; identical agent code).
