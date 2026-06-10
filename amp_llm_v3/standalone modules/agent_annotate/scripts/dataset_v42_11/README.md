@@ -10,14 +10,23 @@ This directory contains the v42.11 stack's annotations for 850 unique clinical t
 
 | File | Cohort | NCTs | Source job | Per-trial pace |
 |---|---|---|---|---|
+| **`all_annotations_1844nct.csv`** | **all five** | **1844** | merged from all five below — the full annotator-master xlsx universe | — |
+| **`all_annotations_850nct.csv`** | **train+val+test+legacy** | **850** | merged from the four with human GT | — |
 | **`all_annotations_800nct.csv`** | **train + val + test** | **800** | merged from train/val/test only — the formal 3-cohort split | — |
-| **`all_annotations_850nct.csv`** | **all four** | **850** | merged from all four below | — |
 | `train_dev_corpus_5c8d0aa0431a.csv` | train | 629 | `5c8d0aa0431a` (2026-05-28, ~63 h wall) | ~6.0 min |
 | `val_8d9398b0af66.csv` | val | 86 | `8d9398b0af66` (2026-05-28, 8h40m) | 6.05 min |
 | `test_b9301e02fef5.csv` | test | 85 | `b9301e02fef5` (2026-06-02, 8h54m, 85/85 OK) | 6.29 min |
 | `legacy_test_batch_50_036fc5dea889.csv` | legacy_test_batch | 50 | `036fc5dea889` (2026-06-03, 4h38m) | 5.57 min |
+| `master_extension_c74ce600868d.csv` | master_extension | 994 | `c74ce600868d` (2026-06-05, 2h41m, 994/994 OK) | 9.7 s |
 
-Both consolidated CSVs share the same schema: every annotation in one file with two extra leading columns (`Cohort`, `Source Job ID`). Remaining 20 columns (NCT ID + study metadata + 6 fields × 4 cols each) are identical to the per-cohort files. Use `all_annotations_800nct.csv` for the formal train/val/test cross-validation study; use `all_annotations_850nct.csv` when you also want the legacy_test_batch cohort included.
+All three consolidated CSVs share the same schema: every annotation in one file with two extra leading columns (`Cohort`, `Source Job ID`). Remaining 20 columns (NCT ID + study metadata + 6 fields × 4 cols each) are identical to the per-cohort files.
+
+Pick by the question you're answering:
+- **`all_annotations_800nct.csv`** — formal train/val/test cross-validation study only
+- **`all_annotations_850nct.csv`** — train/val/test + the legacy test_batch held-out cohort (all four cohorts have human GT for scoring)
+- **`all_annotations_1844nct.csv`** — full annotator-master xlsx universe, including the 994 NCTs with no human GT (annotation-only, no scoring possible on the master_extension rows)
+
+The **master_extension** cohort (`c74ce600868d`, 994 trials) annotates AMP-relevant NCTs from the annotator-master xlsx that are not in any formal GT cohort. 952/994 (95.8%) are Peptide=True (the cohort skews to AMP-relevant interventions); since no human annotation exists, these rows cannot be scored against human IRA — they are pure agent output. The 2h41m wall time (~9.7 s/trial) is dramatically faster than the train/val/test cohorts because most trials hit the deterministic peptide-anchor fast path (no LLM call needed).
 
 **Pending:** master-extension job `c74ce600868d` (994 NCTs, ETA ~4.3 days; submitted 2026-06-03) will lift the total to 1844 once complete — the full annotator-master xlsx universe.
 
